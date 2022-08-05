@@ -32,18 +32,25 @@
             <input type="range" [(ngModel)]="this.parameters.thetaMax"
                 min=2 max=16 />
             resolution
-            <input type="range" [(ngModel)]="this.parameters.divisions"
+            <input type="range" [(ngModel)]="this.divisions"
                 min="50" max="200" step="5"/>
-            <input type="checkbox" [(ngModel)]="this.parameters.showWireframe"
+            <input type="checkbox" [(ngModel)]="this.wireframeVisible"
                 (change)="this.wireframeCheckboxChanged($event)"/>
             <label>show wireframe</label>
-            <label>color</label>
-            <input type="color" [(ngModel)]="this.parameters.color"
-                (change)="this.colorPickerChanged($event)"/>
+            <label>surface color</label>
+            <input type="color" [(ngModel)]="this.surfaceColor"
+                (change)="this.surfaceColorChanged($event)"/>
+            <label>wireframe color</label>
+            <input type="color" [(ngModel)]="this.wireframeColor"
+                (change)="this.wireframeColorChanged($event)"/>
         </div>
         <br>
         <button (click)="this.clickGenerateGraph($event)">
             Generate graph
+        </button>
+        <br>
+        <button (click)="this.clickExportImage($event)">
+            Export image
         </button>
     </div>
     <div class="flex-right">

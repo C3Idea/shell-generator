@@ -9,9 +9,6 @@ export class SurfaceParameters {
     omega: number;
     phi: number;
     thetaMax: number;
-    divisions: number;
-    showWireframe: boolean;
-    color: number;
 
     public static Shell1() {
         let p = new SurfaceParameters();
@@ -81,8 +78,5 @@ export class SurfaceParameters {
         this.mu = 0;
         this.omega = 0;
         this.phi = 0;
-        this.divisions     = 50;
-        this.showWireframe = false;
-        this.color = 0xF00000;
     }
 }

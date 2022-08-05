@@ -15,6 +15,8 @@ declare function toRadians(x: number): number;
 export class SurfaceComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
+  @ViewChild('surfaceColorInput')
+  private surfaceColorInputRef!: ElementRef;
 
   // Stage properties
   //@Input() public fieldOfView: number = 45;
@@ -26,9 +28,10 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   private camera!: THREE.PerspectiveCamera;
   private geometry!: ParametricGeometry; 
   private renderer!: THREE.WebGLRenderer;
-  private material!: THREE.MeshStandardMaterial;
+  private surfaceMaterial!: THREE.MeshStandardMaterial;
   private wireframe!: THREE.WireframeGeometry;
   private wire: THREE.LineSegments | undefined;
+  private wireframeMaterial!: THREE.LineBasicMaterial;
   private scene!: THREE.Scene;
   private mesh: THREE.Mesh | undefined;
   private light!: THREE.PointLight;
@@ -36,9 +39,18 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
+  private get surfaceColorInput(): HTMLInputElement {
+    return this.surfaceColorInputRef.nativeElement;
+  }
+
+  // Visual parameters
+  public divisions: number = 50;
+  public surfaceColor: string = "#F0F0F0";
+  public wireframeColor: string = "#000000";
+  public wireframeVisible: boolean = true;
 
   // Surface parameters
-  public parameters = new SurfaceParameters();
+  public parameters: SurfaceParameters = new SurfaceParameters();
 
   private surfaceFunction() {
     let params : SurfaceParameters = this.parameters;
@@ -78,7 +90,7 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   }
 
   private createGeometry(): void {
-    const divisions = this.parameters.divisions;
+    const divisions = this.divisions;
     let meshFunction = this.surfaceFunction();
     this.geometry = new ParametricGeometry(meshFunction, divisions, divisions);
     this.geometry.center();
@@ -89,13 +101,27 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
     this.geometry.scale(scale, scale, scale);
   }
 
-  private createMaterial(): void {
-    if (this.material != undefined) {
-      this.material.dispose();
+  private createSurfaceMaterial(): void {
+    if (this.surfaceMaterial != undefined) {
+      this.surfaceMaterial.dispose();
     }
-    this.material = new THREE.MeshStandardMaterial(
-      { color: this.parameters.color, side: THREE.DoubleSide }
+    this.surfaceMaterial = new THREE.MeshStandardMaterial(
+      { color: this.surfaceColor, side: THREE.DoubleSide }
     );
+  }
+
+  private createWireframeMaterial(): void {
+    if (this.wireframeMaterial != undefined) {
+      this.wireframeMaterial.dispose();
+    }
+    this.wireframeMaterial = new THREE.LineBasicMaterial(
+      { color: this.wireframeColor }
+    )
+  }
+
+  private createMaterials(): void {
+    this.createSurfaceMaterial();
+    this.createWireframeMaterial();
   }
 
   private createMesh(): void {
@@ -103,7 +129,7 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
       this.scene.remove(this.mesh);
       this.mesh = undefined;
     }
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new THREE.Mesh(this.geometry, this.surfaceMaterial);
     this.scene.add(this.mesh);
   }
 
@@ -116,12 +142,13 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
       this.wireframe.dispose();
     }
     this.wireframe = new THREE.WireframeGeometry(this.geometry)
-    this.wire = new THREE.LineSegments(this.wireframe);
+    this.wire = new THREE.LineSegments(this.wireframe, this.wireframeMaterial);
+    this.showWireframe();
   }
 
   private createGraph(): void {
     this.createGeometry();
-    this.createMaterial();
+    this.createMaterials();
     this.createMesh();
     this.createWireframe();
   }
@@ -149,7 +176,7 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0F0F0F);
+    this.scene.background = new THREE.Color("#0F0F0F");
     let aspectRatio = this.getAspectRatio();
     // Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -159,11 +186,13 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
       this.farClippingPlane
     )
     // Light
-    this.light = new THREE.PointLight(0xFFFFFF);
+    this.light = new THREE.PointLight("#FFFFFF");
     this.camera.add(this.light);
     this.scene.add(this.camera);
     // Render
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas })
+    this.renderer = new THREE.WebGLRenderer(
+      { canvas: this.canvas, preserveDrawingBuffer: true }
+    )
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     // Controls
@@ -176,8 +205,8 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
       this.scene.remove(this.mesh);
       this.mesh = undefined;
     }
-    if (this.material != undefined) {
-      this.material.dispose();
+    if (this.surfaceMaterial != undefined) {
+      this.surfaceMaterial.dispose();
     }
     if (this.wire != undefined && this.wire.parent == this.scene) {
       this.scene.remove(this.wire);
@@ -196,7 +225,7 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   }
 
   private showWireframe(): void {
-    if (this.parameters.showWireframe) {
+    if (this.wireframeVisible) {
       if (this.wire != undefined && this.wire.parent == undefined) {
         this.scene.add(this.wire);
       }
@@ -222,6 +251,23 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
     this.setCamera();
   }
 
+  public clickExportImage(event: Event): void {
+    const date  = new Date();
+    const year  = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day   = date.getDate();
+    const stamp = Math.round(date.getTime() / 1000);
+    const name = `shell-${year}${month}${day}_${stamp}`;
+    this.savePNG(this.canvas.toDataURL("image/png", 1.0), name); 
+  }
+
+  private savePNG(path: string, name: string) {
+    const link = document.createElement('a');
+    link.setAttribute("download", name + '.png');
+    link.setAttribute("href", path.replace("image/png", "image/octet-stream"));
+    link.click();
+  }
+
   public shellSelectChange(event: Event): void {
     switch ((event.target as HTMLSelectElement).selectedIndex) {
       case 0:
@@ -242,8 +288,14 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public colorPickerChanged(event: Event): void {
-    this.createMaterial();
+  public surfaceColorChanged(event: Event): void {
+    this.createSurfaceMaterial();
     this.createMesh();
   }
+
+  public wireframeColorChanged(event: Event): void {
+    this.createWireframeMaterial();
+    this.createWireframe();
+  }
+
 }
