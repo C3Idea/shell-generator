@@ -1,0 +1,63 @@
+stages:
+  - dependencies
+  - test
+  - build
+
+install_dependencies:
+  image: node:12-alpine
+  stage: dependencies
+  script:
+    - npm install
+  only:
+    - master
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules
+
+lint:
+  image: node:12-alpine
+  stage: test
+  script:
+    - npm link @angular/cli
+    - ng lint
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules
+    policy: pull
+
+test:
+  image: markhobson/node-chrome:latest
+  stage: test
+  script:
+    - npm link @angular/cli
+    - npm test -- --browsers=ChromeHeadless --watch=false
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules
+    policy: pull
+
+build_image:
+  image: node:12-alpine
+  stage: build
+  script:
+    - npm link @angular/cli
+    - npm run build
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/dist
+    cache:
+      key:
+        files:
+          - package.json
+      paths:
+        - node_modules
+      policy: pull
