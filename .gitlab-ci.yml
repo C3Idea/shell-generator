@@ -54,10 +54,10 @@ build_image:
   artifacts:
     paths:
       - $CI_PROJECT_DIR/dist
-    cache:
-      key:
-        files:
-          - package.json
-      paths:
-        - node_modules
-      policy: pull
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules
+    policy: pull
