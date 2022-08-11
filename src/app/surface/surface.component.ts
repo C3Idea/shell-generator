@@ -12,7 +12,7 @@ declare function toRadians(x: number): number;
   styleUrls: ['./surface.component.css']
 })
 
-export class SurfaceComponent implements OnInit, AfterViewInit {
+export class SurfaceComponent implements AfterViewInit {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
   @ViewChild('surfaceColorInput')
@@ -21,8 +21,8 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   // Stage properties
   //@Input() public fieldOfView: number = 45;
   @Input() public fieldOfView: number = 1;
-  @Input('nearClipping') public nearClippingPlane: number = 1;
-  @Input('farClipping') public farClippingPlane: number = 10000;
+  @Input() public nearClippingPlane: number = 1;
+  @Input() public farClippingPlane: number = 10000;
 
   // Helper properties
   private camera!: THREE.PerspectiveCamera;
@@ -168,9 +168,7 @@ export class SurfaceComponent implements OnInit, AfterViewInit {
   }
 
   constructor() {
-  }
-
-  ngOnInit(): void {
+    // do nothing
   }
 
   ngAfterViewInit(): void {
