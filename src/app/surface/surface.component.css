@@ -1,24 +1,40 @@
-.grid-container {
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: 50px auto;
-    padding: 10px;
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    font-family: 'Lucida Sans', sans-serif;
 }
 
 .flex-container {
     display: flex;
-}
-
-.flex-left {
-    flex: 15%;
-}
-
-.flex-right {
-    flex: 85%;
-    border: 2px solid black;
-}
-
-canvas {
+    flex-wrap: wrap;
     width: 100%;
     height: 100%;
+}
+
+.grid-container {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 65px 350px;
+    padding: 10px;
+}
+
+.slider-label {
+    display: inline-block;
+    width: 45px;
+    text-align: center;
+}
+
+.slider {
+    width: 250px;
+}
+
+.flex-child-1 {
+    flex: 25%;
+}
+    
+.flex-child-2 {
+    flex: 75%;
 }

@@ -1,39 +1,83 @@
 <div class="flex-container">
-    <div class="flex-left">
+    <div class="flex-child-1">
         <h2>Parameters</h2>
         <div class="grid-container">
             template-shell
             <select name="shell-select" (change)="this.shellSelectChange($event)">
-                <option value="0">default</option>
-                <option value="1">shell 1</option>
-                <option value="2">shell 2</option>
-                <option value="3">shell 3</option>
-                <option value="4">shell 4</option>
-            </select>    
-            d
-            <input [(ngModel)]="this.parameters.d"/>
-            A
-            <input [(ngModel)]="this.parameters.A"/>
-            alpha
-            <input [(ngModel)]="this.parameters.alpha"/>
-            beta
-            <input [(ngModel)]="this.parameters.beta"/>
-            a
-            <input [(ngModel)]="this.parameters.a"/>
-            b
-            <input [(ngModel)]="this.parameters.b"/>
-            mu
-            <input [(ngModel)]="this.parameters.mu"/>
-            omega
-            <input [(ngModel)]="this.parameters.omega"/>
-            phi
-            <input [(ngModel)]="this.parameters.phi"/>
-            theta-max
-            <input type="range" [(ngModel)]="this.parameters.thetaMax"
-                min=2 max=16 />
-            resolution
-            <input type="range" [(ngModel)]="this.divisions"
-                min="50" max="200" step="5"/>
+                <option value="0">shell 1</option>
+                <option value="1">shell 2</option>
+                <option value="2">shell 3</option>
+                <option value="3">shell 4</option>
+            </select>
+            <label>A</label>
+            <div>
+                <label class="slider-label">{{ this.parameters.AMin }}</label>
+                <input class="slider" type=range [(ngModel)]="this.parameters.A"
+                    min="{{this.parameters.AMin}}"
+                    max="{{this.parameters.AMax}}"/>
+                <label class="slider-label">{{ this.parameters.AMax }}</label>
+            </div>
+            <label>alpha</label>
+            <div>
+                <label class="slider-label">{{ this.parameters.alphaMin }}</label>
+                <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
+                    min="{{this.parameters.alphaMin}}"
+                    max="{{this.parameters.alphaMax}}"/>
+                <label class="slider-label">{{ this.parameters.alphaMax }}</label>
+            </div>
+            <label>beta</label>
+            <div>
+                <label class="slider-label">{{ this.parameters.betaMin }}</label>
+                <input class="slider" type=range [(ngModel)]="this.parameters.beta"
+                    min="{{this.parameters.betaMin}}"
+                    max="{{this.parameters.betaMax}}"/>
+                <label class="slider-label">{{ this.parameters.betaMax }}</label>
+            </div>
+            <label>a</label>
+            <div>
+                <label class="slider-label">{{ this.parameters.aMin }}</label>
+                <input class="slider" type=range [(ngModel)]="this.parameters.a"
+                    min="{{this.parameters.aMin}}"
+                    max="{{this.parameters.aMax}}"/>
+                <label class="slider-label">{{ this.parameters.aMax }}</label>
+            </div>
+            <label>b</label>
+            <div>
+                <label class="slider-label">{{ this.parameters.bMin }}</label>
+                <input class="slider" type=range [(ngModel)]="this.parameters.b"
+                    min="{{this.parameters.bMin}}"
+                    max="{{this.parameters.bMax}}"/>
+                <label class="slider-label">{{ this.parameters.bMax }}</label>
+            </div>
+            <label>mu</label>
+            <div>
+                <input [(ngModel)]="this.parameters.mu" />
+                <button (click)="this.clickRandomMu($event)">random</button>
+            </div>
+            <label>omega</label>
+            <div>
+                <input [(ngModel)]="this.parameters.omega" />
+                <button (click)="this.clickRandomOmega($event)">random</button>
+            </div>
+            <label>phi</label>
+            <div>
+                <input [(ngModel)]="this.parameters.phi" />
+                <button (click)="this.clickRandomPhi($event)">random</button>
+            </div>
+            <label>theta-max</label>
+            <div>
+                <label class="slider-label">0</label>
+                <input class="slider" type=range [(ngModel)]="this.parameters.thetaMax"
+                    min=0 max=16 />
+                <label class="slider-label">16 Pi</label>
+            </div>
+            <label>resolution</label>
+            <div>
+                <label class="slider-label">low</label>
+                <input class="slider" type=range [(ngModel)]="this.divisions"
+                    min=50 max=200 />
+                <label class="slider-label">high</label>
+            </div>
             <input type="checkbox" [(ngModel)]="this.wireframeVisible"
                 (change)="this.wireframeCheckboxChanged($event)"/>
             <label>show wireframe</label>
@@ -53,7 +97,7 @@
             Export image
         </button>
     </div>
-    <div class="flex-right">
+    <div class="flex-child-2">
         <canvas #canvas id="canvas"></canvas>
     </div>
 </div>

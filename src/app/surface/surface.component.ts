@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { SurfaceParameters } from './surface.parameters';
-
-declare function toRadians(x: number): number;
+import { toRadians, random } from '../../util'
 
 @Component({
   selector: 'app-surface',
@@ -12,11 +11,20 @@ declare function toRadians(x: number): number;
   styleUrls: ['./surface.component.css']
 })
 
+
+
 export class SurfaceComponent implements AfterViewInit {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
   @ViewChild('surfaceColorInput')
   private surfaceColorInputRef!: ElementRef;
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: Event) {
+    this.camera.aspect = this.getAspectRatio();
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize( this.canvas.clientWidth, this.canvas.clientHeight );
+  }
 
   // Stage properties
   //@Input() public fieldOfView: number = 45;
@@ -39,9 +47,6 @@ export class SurfaceComponent implements AfterViewInit {
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
-  private get surfaceColorInput(): HTMLInputElement {
-    return this.surfaceColorInputRef.nativeElement;
-  }
 
   // Visual parameters
   public divisions: number = 50;
@@ -50,7 +55,7 @@ export class SurfaceComponent implements AfterViewInit {
   public wireframeVisible: boolean = true;
 
   // Surface parameters
-  public parameters: SurfaceParameters = new SurfaceParameters();
+  public parameters: SurfaceParameters = SurfaceParameters.Shell1();
 
   private surfaceFunction() {
     let params : SurfaceParameters = this.parameters;
@@ -269,18 +274,15 @@ export class SurfaceComponent implements AfterViewInit {
   public shellSelectChange(event: Event): void {
     switch ((event.target as HTMLSelectElement).selectedIndex) {
       case 0:
-        this.parameters = new SurfaceParameters();
-        break;
-      case 1:
         this.parameters = SurfaceParameters.Shell1();
         break;
-      case 2:
+      case 1:
         this.parameters = SurfaceParameters.Shell2();
         break;
-      case 3:
+      case 2:
         this.parameters = SurfaceParameters.Shell3();
         break;
-      case 4:
+      case 3:
         this.parameters = SurfaceParameters.Shell4();
         break;
     }
@@ -294,6 +296,21 @@ export class SurfaceComponent implements AfterViewInit {
   public wireframeColorChanged(event: Event): void {
     this.createWireframeMaterial();
     this.createWireframe();
+  }
+
+  clickRandomPhi(event: Event): void {
+    const temp = random(this.parameters.phiMin, this.parameters.phiMax);
+    this.parameters.phi = temp;
+  }
+  
+  clickRandomMu(event: Event): void {
+    const temp = random(this.parameters.muMin, this.parameters.muMax);
+    this.parameters.mu = temp;
+  }
+
+  clickRandomOmega(event: Event): void {
+    const temp = random(this.parameters.omegaMin, this.parameters.omegaMax);
+    this.parameters.omega = temp;
   }
 
 }

@@ -9,6 +9,23 @@ export class SurfaceParameters {
     omega: number;
     phi: number;
     thetaMax: number;
+    
+    AMin: number = 5;
+    AMax: number = 13;
+    alphaMin: number = 80;
+    alphaMax: number = 90;
+    betaMin: number = 0;
+    betaMax: number = 85;
+    aMin: number = 1;
+    aMax: number = 6;
+    bMin: number = 1;
+    bMax: number = 6;
+    muMin: number = 0;
+    muMax: number = 45;
+    omegaMin: number = -10;
+    omegaMax: number = 10;
+    phiMin: number = 20;
+    phiMax: number = 80; 
 
     public static Shell1() {
         let p = new SurfaceParameters();

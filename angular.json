@@ -27,7 +27,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "src/js/util.js"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
@@ -99,7 +98,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "src/js/util.js"
             ]
           }
         },
