@@ -1,3 +1,5 @@
+import { random } from "src/util";
+
 export class SurfaceParameters {
     d: number;
     A: number;
@@ -27,7 +29,7 @@ export class SurfaceParameters {
     phiMin: number = 20;
     phiMax: number = 80; 
 
-    public static Shell1() {
+    static Shell1(): SurfaceParameters {
         let p = new SurfaceParameters();
         p.d = 1;
         p.A = 12.2;
@@ -41,7 +43,7 @@ export class SurfaceParameters {
         return p;
     }
 
-    public static Shell2() {
+    static Shell2(): SurfaceParameters {
         let p = new SurfaceParameters();
         p.d = 1;
         p.A = 7.0;
@@ -55,7 +57,7 @@ export class SurfaceParameters {
         return p;
     }
 
-    public static Shell3() {
+    static Shell3(): SurfaceParameters {
         let p = new SurfaceParameters();
         p.d = 1;
         p.A = 5.0;
@@ -69,7 +71,7 @@ export class SurfaceParameters {
         return p;
     }
 
-    public static Shell4() {
+    static Shell4(): SurfaceParameters {
         let p = new SurfaceParameters();
         p.d = 1;
         p.A = 4.5;
@@ -80,6 +82,20 @@ export class SurfaceParameters {
         p.mu = 0;
         p.omega = -50;
         p.phi = 0;
+        return p;
+    }
+
+    static randomParameters(): SurfaceParameters {
+        let p = new SurfaceParameters();
+        p.d = 1;
+        p.A = random(p.AMin, p.AMax);
+        p.alpha = random(p.alphaMin, p.alphaMax);
+        p.beta = random(p.betaMin, p.betaMax);
+        p.a = random(p.aMin, p.aMax);
+        p.b = random(p.bMin, p.bMax);
+        p.mu = random(p.muMin, p.muMax);
+        p.omega = random(p.omegaMin, p.omegaMax);
+        p.phi = random(p.phiMin, p.phiMax);
         return p;
     }
 

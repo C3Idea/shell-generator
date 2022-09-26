@@ -1,103 +1,87 @@
-<div class="flex-container">
-    <div class="flex-child-1">
-        <h2>Parameters</h2>
-        <div class="grid-container">
-            template-shell
-            <select name="shell-select" (change)="this.shellSelectChange($event)">
-                <option value="0">shell 1</option>
-                <option value="1">shell 2</option>
-                <option value="2">shell 3</option>
-                <option value="3">shell 4</option>
-            </select>
-            <label>A</label>
-            <div>
-                <label class="slider-label">{{ this.parameters.AMin }}</label>
-                <input class="slider" type=range [(ngModel)]="this.parameters.A"
-                    min="{{this.parameters.AMin}}"
-                    max="{{this.parameters.AMax}}"/>
-                <label class="slider-label">{{ this.parameters.AMax }}</label>
-            </div>
-            <label>alpha</label>
-            <div>
-                <label class="slider-label">{{ this.parameters.alphaMin }}</label>
-                <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
-                    min="{{this.parameters.alphaMin}}"
-                    max="{{this.parameters.alphaMax}}"/>
-                <label class="slider-label">{{ this.parameters.alphaMax }}</label>
-            </div>
-            <label>beta</label>
-            <div>
-                <label class="slider-label">{{ this.parameters.betaMin }}</label>
-                <input class="slider" type=range [(ngModel)]="this.parameters.beta"
-                    min="{{this.parameters.betaMin}}"
-                    max="{{this.parameters.betaMax}}"/>
-                <label class="slider-label">{{ this.parameters.betaMax }}</label>
-            </div>
-            <label>a</label>
-            <div>
-                <label class="slider-label">{{ this.parameters.aMin }}</label>
-                <input class="slider" type=range [(ngModel)]="this.parameters.a"
-                    min="{{this.parameters.aMin}}"
-                    max="{{this.parameters.aMax}}"/>
-                <label class="slider-label">{{ this.parameters.aMax }}</label>
-            </div>
-            <label>b</label>
-            <div>
-                <label class="slider-label">{{ this.parameters.bMin }}</label>
-                <input class="slider" type=range [(ngModel)]="this.parameters.b"
-                    min="{{this.parameters.bMin}}"
-                    max="{{this.parameters.bMax}}"/>
-                <label class="slider-label">{{ this.parameters.bMax }}</label>
-            </div>
-            <label>mu</label>
-            <div>
-                <input [(ngModel)]="this.parameters.mu" />
-                <button (click)="this.clickRandomMu($event)">random</button>
-            </div>
-            <label>omega</label>
-            <div>
-                <input [(ngModel)]="this.parameters.omega" />
-                <button (click)="this.clickRandomOmega($event)">random</button>
-            </div>
-            <label>phi</label>
-            <div>
-                <input [(ngModel)]="this.parameters.phi" />
-                <button (click)="this.clickRandomPhi($event)">random</button>
-            </div>
-            <label>theta-max</label>
-            <div>
-                <label class="slider-label">0</label>
-                <input class="slider" type=range [(ngModel)]="this.parameters.thetaMax"
-                    min=0 max=16 />
-                <label class="slider-label">16 Pi</label>
-            </div>
-            <label>resolution</label>
-            <div>
-                <label class="slider-label">low</label>
-                <input class="slider" type=range [(ngModel)]="this.divisions"
-                    min=50 max=200 />
-                <label class="slider-label">high</label>
-            </div>
-            <input type="checkbox" [(ngModel)]="this.wireframeVisible"
-                (change)="this.wireframeCheckboxChanged($event)"/>
-            <label>show wireframe</label>
-            <label>surface color</label>
-            <input type="color" [(ngModel)]="this.surfaceColor"
-                (change)="this.surfaceColorChanged($event)"/>
-            <label>wireframe color</label>
-            <input type="color" [(ngModel)]="this.wireframeColor"
-                (change)="this.wireframeColorChanged($event)"/>
+<canvas #canvas id="canvas"></canvas>
+<button id="menu-button" (click)="this.menuButtonClick($event)" >Menu</button>
+<button id="save-image-button" (click)="this.clickExportImage($event)">Save</button>
+<div id="parameters-menu" [hidden]="!this.menuVisible">
+    <div class="grid-container">
+        <label>A</label>
+        <div>
+            <label class="slider-label">{{ this.parameters.AMin }}</label>
+            <input class="slider" type=range [(ngModel)]="this.parameters.A"
+                (change)="this.parameterUpdateEvent($event)"
+                min="{{this.parameters.AMin}}"
+                max="{{this.parameters.AMax}}"
+                />
+            <label class="slider-label">{{ this.parameters.AMax }}</label>
         </div>
-        <br>
-        <button (click)="this.clickGenerateGraph($event)">
-            Generate graph
-        </button>
-        <br>
-        <button (click)="this.clickExportImage($event)">
-            Export image
-        </button>
+        <label>alpha</label>
+        <div>
+            <label class="slider-label">{{ this.parameters.alphaMin }}</label>
+            <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
+                (change)="this.parameterUpdateEvent($event)"
+                min="{{this.parameters.alphaMin}}"
+                max="{{this.parameters.alphaMax}}"/>
+            <label class="slider-label">{{ this.parameters.alphaMax }}</label>
+        </div>
+        <label>beta</label>
+        <div>
+            <label class="slider-label">{{ this.parameters.betaMin }}</label>
+            <input class="slider" type=range [(ngModel)]="this.parameters.beta"
+                (change)="this.parameterUpdateEvent($event)"
+                min="{{this.parameters.betaMin}}"
+                max="{{this.parameters.betaMax}}"/>
+            <label class="slider-label">{{ this.parameters.betaMax }}</label>
+        </div>
+        <label>a</label>
+        <div>
+            <label class="slider-label">{{ this.parameters.aMin }}</label>
+            <input class="slider" type=range [(ngModel)]="this.parameters.a"
+                (change)="this.parameterUpdateEvent($event)"
+                min="{{this.parameters.aMin}}"
+                max="{{this.parameters.aMax}}"/>
+            <label class="slider-label">{{ this.parameters.aMax }}</label>
+        </div>
+        <label>b</label>
+        <div>
+            <label class="slider-label">{{ this.parameters.bMin }}</label>
+            <input class="slider" type=range [(ngModel)]="this.parameters.b"
+                (change)="this.parameterUpdateEvent($event)"
+                min="{{this.parameters.bMin}}"
+                max="{{this.parameters.bMax}}"/>
+            <label class="slider-label">{{ this.parameters.bMax }}</label>
+        </div>
     </div>
-    <div class="flex-child-2">
-        <canvas #canvas id="canvas"></canvas>
+    <div class="button-bar">
+        <button class="shell-button" (click)="this.shellSelectEvent($event)">A</button>
+        <button class="shell-button" (click)="this.shellSelectEvent($event)">B</button>
+        <button class="shell-button" (click)="this.shellSelectEvent($event)">C</button>
+        <button class="shell-button" (click)="this.shellSelectEvent($event)">D</button>
+        <button class="shell-button" (click)="this.randomShellEvent($event)">random</button>
+    </div>
+    <div class="grid-container">
+        <label>theta-max</label>
+        <div>
+            <label class="slider-label">0</label>
+            <input class="slider" type=range [(ngModel)]="this.parameters.thetaMax"
+                (change)="this.parameterUpdateEvent($event)"
+                min=0 max=16 />
+            <label class="slider-label">16 Pi</label>
+        </div>
+        <label>resolution</label>
+        <div>
+            <label class="slider-label">low</label>
+            <input class="slider" type=range [(ngModel)]="this.divisions"
+                (change)="this.parameterUpdateEvent($event)"
+                min=50 max=200 />
+            <label class="slider-label">high</label>
+        </div>
+        <input type="checkbox" [(ngModel)]="this.wireframeVisible"
+            (change)="this.wireframeCheckboxChanged($event)"/>
+        <label>show wireframe</label>
+        <label>surface color</label>
+        <input type="color" [(ngModel)]="this.surfaceColor"
+            (change)="this.surfaceColorChanged($event)"/>
+        <label>wireframe color</label>
+        <input type="color" [(ngModel)]="this.wireframeColor"
+            (change)="this.wireframeColorChanged($event)"/>
     </div>
 </div>

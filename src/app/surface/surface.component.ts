@@ -21,9 +21,12 @@ export class SurfaceComponent implements AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
+    this.fixCanvasSize();
     this.camera.aspect = this.getAspectRatio();
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize( this.canvas.clientWidth, this.canvas.clientHeight );
+    this.renderer.setPixelRatio(devicePixelRatio);
+    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+    this.renderer.render(this.scene, this.camera);
   }
 
   // Stage properties
@@ -49,13 +52,14 @@ export class SurfaceComponent implements AfterViewInit {
   }
 
   // Visual parameters
-  public divisions: number = 50;
-  public surfaceColor: string = "#F0F0F0";
-  public wireframeColor: string = "#000000";
-  public wireframeVisible: boolean = true;
+  divisions: number = 50;
+  surfaceColor: string = "#F0F0F0";
+  wireframeColor: string = "#000000";
+  wireframeVisible: boolean = true;
+  menuVisible: boolean = false;
 
   // Surface parameters
-  public parameters: SurfaceParameters = SurfaceParameters.Shell1();
+  parameters: SurfaceParameters = SurfaceParameters.Shell1();
 
   private surfaceFunction() {
     let params : SurfaceParameters = this.parameters;
@@ -99,10 +103,19 @@ export class SurfaceComponent implements AfterViewInit {
     let meshFunction = this.surfaceFunction();
     this.geometry = new ParametricGeometry(meshFunction, divisions, divisions);
     this.geometry.center();
+    const xmin = this.geometry.boundingBox!.min.x;
+    const xmax = this.geometry.boundingBox!.max.x;
+    const xrange = xmax - xmin;
+    const xscale = 1.0 / xrange;
+    const ymin = this.geometry.boundingBox!.min.y;
+    const ymax = this.geometry.boundingBox!.max.y;
+    const yrange = ymax - ymin;
+    const yscale = 1.0 / yrange;
     const zmin = this.geometry.boundingBox!.min.z;
     const zmax = this.geometry.boundingBox!.max.z;
     const zrange = zmax - zmin;
-    const scale = 1.0 / zrange;
+    const zscale = 1.0 / zrange;
+    const scale = Math.min(xscale, yscale, zscale);
     this.geometry.scale(scale, scale, scale);
   }
 
@@ -151,7 +164,7 @@ export class SurfaceComponent implements AfterViewInit {
     this.showWireframe();
   }
 
-  private createGraph(): void {
+  private createGraphElements(): void {
     this.createGeometry();
     this.createMaterials();
     this.createMesh();
@@ -176,7 +189,18 @@ export class SurfaceComponent implements AfterViewInit {
     // do nothing
   }
 
+  private fixCanvasSize(): void {
+    const width  = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
+    // If it's resolution does not match change it
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
+  }
+
   ngAfterViewInit(): void {
+    this.fixCanvasSize();
     // Scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#0F0F0F");
@@ -201,6 +225,8 @@ export class SurfaceComponent implements AfterViewInit {
     // Controls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.startRenderingLoop();
+    this.createGraph();
+    this.setCamera();
   }
 
   private disposeGraphElements(): void {
@@ -241,27 +267,23 @@ export class SurfaceComponent implements AfterViewInit {
   }
 
   private setCamera(): void {
-    const xmax = this.geometry.boundingBox!.max.x;
-    const ymax = this.geometry.boundingBox!.max.y;
-    const zmax = this.geometry.boundingBox!.max.z;
-    this.camera.position.set(50, 50, 50);
+    this.camera.position.set(50, 50, 0);
     this.controls.update();
   }
 
-  public clickGenerateGraph(event: Event): void {
+  createGraph(): void {
     this.disposeGraphElements();
-    this.createGraph();
-    this.setCamera();
+    this.createGraphElements();
   }
 
-  public clickExportImage(event: Event): void {
+  clickExportImage(event: Event): void {
     const date  = new Date();
     const year  = date.getFullYear();
     const month = date.getMonth() + 1;
     const day   = date.getDate();
     const stamp = Math.round(date.getTime() / 1000);
     const name = `shell-${year}${month}${day}_${stamp}`;
-    this.savePNG(this.canvas.toDataURL("image/png", 1.0), name); 
+    this.savePNG(this.canvas.toDataURL("image/png", 1.0), name);
   }
 
   private savePNG(path: string, name: string) {
@@ -271,21 +293,9 @@ export class SurfaceComponent implements AfterViewInit {
     link.click();
   }
 
-  public shellSelectChange(event: Event): void {
-    switch ((event.target as HTMLSelectElement).selectedIndex) {
-      case 0:
-        this.parameters = SurfaceParameters.Shell1();
-        break;
-      case 1:
-        this.parameters = SurfaceParameters.Shell2();
-        break;
-      case 2:
-        this.parameters = SurfaceParameters.Shell3();
-        break;
-      case 3:
-        this.parameters = SurfaceParameters.Shell4();
-        break;
-    }
+  randomShellEvent(event: Event): void {
+    this.parameters = SurfaceParameters.randomParameters();
+    this.createGraph();
   }
 
   public surfaceColorChanged(event: Event): void {
@@ -298,19 +308,17 @@ export class SurfaceComponent implements AfterViewInit {
     this.createWireframe();
   }
 
-  clickRandomPhi(event: Event): void {
-    const temp = random(this.parameters.phiMin, this.parameters.phiMax);
-    this.parameters.phi = temp;
-  }
-  
-  clickRandomMu(event: Event): void {
-    const temp = random(this.parameters.muMin, this.parameters.muMax);
-    this.parameters.mu = temp;
+  menuButtonClick(event: Event): void {
+    this.menuVisible = !this.menuVisible;
   }
 
-  clickRandomOmega(event: Event): void {
-    const temp = random(this.parameters.omegaMin, this.parameters.omegaMax);
-    this.parameters.omega = temp;
+  parameterUpdateEvent(event: Event): void {
+    this.createGraph();
+  }
+
+  shellSelectEvent(event: Event): void {
+    const temp = event.target as HTMLButtonElement;
+    console.log(temp);
   }
 
 }
