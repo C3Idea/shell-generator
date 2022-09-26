@@ -51,17 +51,17 @@
         </div>
     </div>
     <div class="button-bar">
-        <button class="shell-button" (click)="this.shellSelectEvent($event)">A</button>
-        <button class="shell-button" (click)="this.shellSelectEvent($event)">B</button>
-        <button class="shell-button" (click)="this.shellSelectEvent($event)">C</button>
-        <button class="shell-button" (click)="this.shellSelectEvent($event)">D</button>
-        <button class="shell-button" (click)="this.randomShellEvent($event)">random</button>
+        <button class="shell-button" id="shell-a-button" (click)="this.shellASelectEvent($event)">A</button>
+        <button class="shell-button" id="shell-b-button" (click)="this.shellBSelectEvent($event)">B</button>
+        <button class="shell-button" id="shell-c-button" (click)="this.shellCSelectEvent($event)">C</button>
+        <button class="shell-button" id="shell-d-button" (click)="this.shellDSelectEvent($event)">D</button>
+        <button class="shell-button" id="shell-random-button" (click)="this.randomShellEvent($event)">random</button>
     </div>
     <div class="grid-container">
         <label>theta-max</label>
         <div>
             <label class="slider-label">0</label>
-            <input class="slider" type=range [(ngModel)]="this.parameters.thetaMax"
+            <input class="slider" type=range [(ngModel)]="this.thetaMax"
                 (change)="this.parameterUpdateEvent($event)"
                 min=0 max=16 />
             <label class="slider-label">16 Pi</label>

@@ -52,6 +52,7 @@ export class SurfaceComponent implements AfterViewInit {
   }
 
   // Visual parameters
+  thetaMax: number = 2;
   divisions: number = 50;
   surfaceColor: string = "#F0F0F0";
   wireframeColor: string = "#000000";
@@ -63,7 +64,7 @@ export class SurfaceComponent implements AfterViewInit {
 
   private surfaceFunction() {
     let params : SurfaceParameters = this.parameters;
-    const thetaRange = params.thetaMax * Math.PI;
+    const thetaRange = this.thetaMax * Math.PI;
     const sRange = 4 * Math.PI;
     const alpha = toRadians(params.alpha);
     const beta  = toRadians(params.beta);
@@ -316,9 +317,24 @@ export class SurfaceComponent implements AfterViewInit {
     this.createGraph();
   }
 
-  shellSelectEvent(event: Event): void {
-    const temp = event.target as HTMLButtonElement;
-    console.log(temp);
+  shellASelectEvent(event: Event): void {
+    this.parameters = SurfaceParameters.Shell1();
+    this.createGraph();
+  }
+
+  shellBSelectEvent(event: Event): void {
+    this.parameters = SurfaceParameters.Shell2();
+    this.createGraph();
+  }
+
+  shellCSelectEvent(event: Event): void {
+    this.parameters = SurfaceParameters.Shell3();
+    this.createGraph();
+  }
+
+  shellDSelectEvent(event: Event): void {
+    this.parameters = SurfaceParameters.Shell4();
+    this.createGraph();
   }
 
 }

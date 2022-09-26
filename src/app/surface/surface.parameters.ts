@@ -10,7 +10,6 @@ export class SurfaceParameters {
     mu: number;
     omega: number;
     phi: number;
-    thetaMax: number;
     
     AMin: number = 5;
     AMax: number = 13;
@@ -101,7 +100,6 @@ export class SurfaceParameters {
 
 
     constructor() {
-        this.thetaMax = 2;
         this.d = 1;
         this.A = 0;
         this.alpha = 0;
