@@ -16,16 +16,15 @@ import { toRadians, random } from '../../util'
 export class SurfaceComponent implements AfterViewInit {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
-  @ViewChild('surfaceColorInput')
-  private surfaceColorInputRef!: ElementRef;
 
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
-    this.fixCanvasSize();
-    this.camera.aspect = this.getAspectRatio();
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setPixelRatio(devicePixelRatio);
-    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+    this.renderer.setSize(width, height);
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -190,18 +189,7 @@ export class SurfaceComponent implements AfterViewInit {
     // do nothing
   }
 
-  private fixCanvasSize(): void {
-    const width  = this.canvas.clientWidth;
-    const height = this.canvas.clientHeight;
-    // If it's resolution does not match change it
-    if (this.canvas.width !== width || this.canvas.height !== height) {
-      this.canvas.width = width;
-      this.canvas.height = height;
-    }
-  }
-
   ngAfterViewInit(): void {
-    this.fixCanvasSize();
     // Scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#0F0F0F");
@@ -335,6 +323,10 @@ export class SurfaceComponent implements AfterViewInit {
   shellDSelectEvent(event: Event): void {
     this.parameters = SurfaceParameters.Shell4();
     this.createGraph();
+  }
+
+  canvasClickEvent(event: Event): void {
+    this.menuVisible = false;
   }
 
 }

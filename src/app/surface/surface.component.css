@@ -1,48 +1,37 @@
-html {
-    font-family: 'Lucida Sans', sans-serif;
-}
-
 #canvas {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    outline: none;
 }
 
-#menu-button {
-    position: absolute;
-    object-position: left top;
+#tools-container {
+    margin: 10px;
+    width: 400px;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 1;
-    width: 50px;
-    height: 25px;
-    left: 25px;
-    top: 10px;
 }
 
-#save-image-button {
-    position: absolute;
-    object-position: left top;
-    left: 85px;
+.toolbar-button {
+    margin: 2px;
     width: 50px;
     height: 25px;
-    top: 10px;
 }
 
 #parameters-menu {
-    position: absolute;
     background-color: white;
-    object-position: left top;
-    left: 25px;
-    top: 35px;
-    opacity: 0.75;
-    z-index: 1;
-    width: 425px;
+    opacity: 0.9;
 }
 
 .shell-button {
-    width: 75px;
-    margin: 5px;
-    height: 35px;
+    width: 20%;
+    margin: 10px;
+    height: 25px;
 }
 
 .grid-container {
@@ -59,5 +48,11 @@ html {
 }
 
 .slider {
-    width: 250px;
+    width: 220px;
+}
+
+@media only screen and (max-width: 400px) {
+    #tools-container {
+        width: 100%;
+    }
 }
