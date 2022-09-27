@@ -1,58 +1,56 @@
-#canvas {
-    top: 0;
-    left: 0;
+label {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1.2vh;
+}
+
+#main-container {
     width: 100vw;
     height: 100vh;
-    position: fixed;
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
     outline: none;
+    position: relative;
 }
 
 #tools-container {
-    margin: 10px;
-    width: 400px;
-    height: auto;
-    position: fixed;
-    top: 0;
-    left: 0;
+    width: 300px;
+    height: 360px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
     z-index: 1;
 }
 
-.toolbar-button {
-    margin: 2px;
-    width: 50px;
-    height: 25px;
+.button-bar {
+    width: 100%;
+    text-align: center;
 }
 
 #parameters-menu {
+    width: 100%;
     background-color: white;
-    opacity: 0.9;
+    opacity: 0.8;
 }
 
 .shell-button {
-    width: 20%;
     margin: 10px;
     height: 25px;
+    width: 50px;
 }
 
 .grid-container {
     display: grid;
-    grid-gap: 20px;
-    grid-template-columns: 50px 350px;
-    padding: 10px;
+    grid-template-columns: 100px auto;
 }
 
-.slider-label {
-    display: inline-block;
-    width: 45px;
-    text-align: center;
+.slider-container {
+    width: 100%;
 }
 
 .slider {
-    width: 220px;
-}
-
-@media only screen and (max-width: 400px) {
-    #tools-container {
-        width: 100%;
-    }
+    width: 96%;
+    margin: 2%;
 }
