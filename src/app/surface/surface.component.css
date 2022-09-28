@@ -1,6 +1,5 @@
 label {
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 1.2vh;
 }
 
 #main-container {
@@ -15,13 +14,17 @@ label {
     position: relative;
 }
 
-#tools-container {
-    width: 300px;
-    height: 360px;
+#toolbar {
+    width: 100px;
     position: absolute;
     top: 5px;
     left: 5px;
     z-index: 1;
+}
+
+.toolbar-button {
+    width: 50px;
+    height: 25px;
 }
 
 .button-bar {
@@ -30,9 +33,15 @@ label {
 }
 
 #parameters-menu {
-    width: 100%;
+    width: 300px;
+    height: 380px;
     background-color: white;
     opacity: 0.8;
+    z-index: 1;
+    position: absolute;
+    top: 30px;
+    left: 5px;
+    display: none;
 }
 
 .shell-button {
@@ -53,4 +62,18 @@ label {
 .slider {
     width: 96%;
     margin: 2%;
+}
+
+@media only screen and (max-width: 380px) {
+    #parameters-menu {
+        width: 96%;
+        overflow-y: scroll;
+    }
+}
+
+@media only screen and (max-height: 400px) {
+    #parameters-menu {
+        height: 96%;
+        overflow-y: scroll;
+    }
 }

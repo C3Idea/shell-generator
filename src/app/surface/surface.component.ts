@@ -17,6 +17,9 @@ export class SurfaceComponent implements AfterViewInit {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
 
+  @ViewChild('menu')
+  private menuRef!: ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
@@ -48,6 +51,9 @@ export class SurfaceComponent implements AfterViewInit {
   private controls!: OrbitControls;
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
+  }
+  private get menu(): HTMLDivElement {
+    return this.menuRef.nativeElement;
   }
 
   // Visual parameters
@@ -298,7 +304,12 @@ export class SurfaceComponent implements AfterViewInit {
   }
 
   menuButtonClick(event: Event): void {
-    this.menuVisible = !this.menuVisible;
+    if (this.menuVisible) {
+      this.hideMenu();
+    }
+    else {
+      this.showMenu();
+    }
   }
 
   parameterUpdateEvent(event: Event): void {
@@ -326,7 +337,19 @@ export class SurfaceComponent implements AfterViewInit {
   }
 
   canvasClickEvent(event: Event): void {
+    if (this.menuVisible) {
+      this.hideMenu();
+    } 
+  }
+
+  private hideMenu() {
+    this.menu.style.display = 'none';
     this.menuVisible = false;
+  }
+
+  private showMenu() {
+    this.menu.style.display = 'block';
+    this.menuVisible = true;
   }
 
 }
