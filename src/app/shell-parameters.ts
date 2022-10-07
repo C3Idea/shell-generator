@@ -11,25 +11,27 @@ export class ShellParameters {
     omega: number;
     phi: number;
     theta: number;
+
+    ShellParameters = ShellParameters;
     
-    AMin: number = 5;
-    AMax: number = 13;
-    alphaMin: number = 80;
-    alphaMax: number = 90;
-    betaMin: number = 0;
-    betaMax: number = 85;
-    aMin: number = 1;
-    aMax: number = 6;
-    bMin: number = 1;
-    bMax: number = 6;
-    muMin: number = 0;
-    muMax: number = 45;
-    omegaMin: number = -10;
-    omegaMax: number = 10;
-    phiMin: number = 20;
-    phiMax: number = 80;
-    thetaMin: number = 2;
-    thetaMax: number = 16;
+    static AMin: number = 5;
+    static AMax: number = 13;
+    static alphaMin: number = 80;
+    static alphaMax: number = 90;
+    static betaMin: number = 0;
+    static betaMax: number = 85;
+    static aMin: number = 1;
+    static aMax: number = 6;
+    static bMin: number = 1;
+    static bMax: number = 6;
+    static muMin: number = 0;
+    static muMax: number = 45;
+    static omegaMin: number = -10;
+    static omegaMax: number = 10;
+    static phiMin: number = 20;
+    static phiMax: number = 80;
+    static thetaMin: number = 2;
+    static thetaMax: number = 16;
 
     static Shell1(): ShellParameters {
         let p = new ShellParameters();
@@ -90,28 +92,29 @@ export class ShellParameters {
     static randomParameters(): ShellParameters {
         let p = new ShellParameters();
         p.d = 1;
-        p.A = random(p.AMin, p.AMax);
-        p.alpha = random(p.alphaMin, p.alphaMax);
-        p.beta = random(p.betaMin, p.betaMax);
-        p.a = random(p.aMin, p.aMax);
-        p.b = random(p.bMin, p.bMax);
-        p.mu = random(p.muMin, p.muMax);
-        p.omega = random(p.omegaMin, p.omegaMax);
-        p.phi = random(p.phiMin, p.phiMax);
+        p.A = random(ShellParameters.AMin, ShellParameters.AMax);
+        p.alpha = random(ShellParameters.alphaMin, ShellParameters.alphaMax);
+        p.beta = random(ShellParameters.betaMin, ShellParameters.betaMax);
+        p.a = random(ShellParameters.aMin, ShellParameters.aMax);
+        p.b = random(ShellParameters.bMin, ShellParameters.bMax);
+        p.mu = random(ShellParameters.muMin, ShellParameters.muMax);
+        p.omega = random(ShellParameters.omegaMin, ShellParameters.omegaMax);
+        p.phi = random(ShellParameters.phiMin, ShellParameters.phiMax);
+        p.theta = random(ShellParameters.thetaMin, ShellParameters.thetaMax);
         return p;
     }
 
 
     constructor() {
         this.d = 1;
-        this.A = 0;
-        this.alpha = 0;
-        this.beta = 0;
-        this.a = 0;
-        this.b = 0;
-        this.mu = 0;
-        this.omega = 0;
-        this.phi = 0;
-        this.theta = 6;
+        this.A = ShellParameters.AMin;
+        this.alpha = ShellParameters.alphaMin;
+        this.beta = ShellParameters.betaMin;
+        this.a = ShellParameters.aMin;
+        this.b = ShellParameters.bMin;
+        this.mu = ShellParameters.muMin;
+        this.omega = ShellParameters.omegaMin;
+        this.phi = ShellParameters.phiMin;
+        this.theta = ShellParameters.thetaMin;
     }
 }

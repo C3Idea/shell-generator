@@ -4,10 +4,10 @@
   <div id="toolbar">
     <button class="toolbar-button" (click)="this.menuButtonClick($event)" >
       <label>Menu</label>
-      </button>
-      <input type="checkbox" id="toggle-checkbox" [(ngModel)]="this.targetVisible"
-        (ngModelChange)="this.setShellVisibility($event)"/>
-      <label for="toggle-checkbox" id="toggle-label">Target</label>
+    </button>
+    <button class="toolbar-button" (click)="this.clickExportImage($event)">
+      <label>Save</label>
+    </button>
   </div>
   <div #menu id="parameters-menu">
     <div class="grid-container">
@@ -15,52 +15,58 @@
       <div class="slider-container">
         <input class="slider" type=range [(ngModel)]="this.parameters.A"
           (change)="this.parameterUpdateEvent($event)"
-          min="{{this.parameters.AMin}}"
-          max="{{this.parameters.AMax}}"
-        />
+          min="{{ShellParametersRef.AMin}}"
+          max="{{ShellParametersRef.AMax}}"
+          step="any" />
       </div>
       <label>alpha</label>
       <div class="slider-container">
         <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
           (change)="this.parameterUpdateEvent($event)"
-          min="{{this.parameters.alphaMin}}"
-          max="{{this.parameters.alphaMax}}"/>
+          min="{{ShellParametersRef.alphaMin}}"
+          max="{{ShellParametersRef.alphaMax}}"
+          step="any" />
       </div>
       <label>beta</label>
       <div class="slider-container">
         <input class="slider" type=range [(ngModel)]="this.parameters.beta"
           (change)="this.parameterUpdateEvent($event)"
-          min="{{this.parameters.betaMin}}"
-          max="{{this.parameters.betaMax}}"/>
+          min="{{ShellParametersRef.betaMin}}"
+          max="{{ShellParametersRef.betaMax}}"
+          step="any" />
       </div>
       <label>a</label>
       <div class="slider-container">
         <input class="slider" type=range [(ngModel)]="this.parameters.a"
           (change)="this.parameterUpdateEvent($event)"
-          min="{{this.parameters.aMin}}"
-          max="{{this.parameters.aMax}}"/>
+          min="{{ShellParametersRef.aMin}}"
+          max="{{ShellParametersRef.aMax}}"
+          step="any" />
       </div>
       <label>b</label>
       <div class="slider-container">
         <input class="slider" type=range [(ngModel)]="this.parameters.b"
           (change)="this.parameterUpdateEvent($event)"
-          min="{{this.parameters.bMin}}"
-          max="{{this.parameters.bMax}}"/>
+          min="{{ShellParametersRef.bMin}}"
+          max="{{ShellParametersRef.bMax}}" 
+          step="any" />
       </div>
-    </div>
-    <div class="grid-container">
-      <label>theta-max</label>
+      <label>theta</label>
       <div class="slider-container">
         <input class="slider" type=range [(ngModel)]="this.parameters.theta"
           (change)="this.parameterUpdateEvent($event)"
-          min=0 max=16 />
-      </div>
-      <label>resolution</label>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.helper.divisions"
-          (change)="this.parameterUpdateEvent($event)"
-          min=50 max=200 />
+          min={{ShellParametersRef.thetaMin}}
+          max={{ShellParametersRef.thetaMax}}
+          step="any" />
       </div>
     </div>
+    <div id="result-container">
+      <div #resultBox id="result-box"></div>
+    </div>
   </div>
+  <label id="shell-switch" class="switch">
+    <input type="checkbox" [(ngModel)]="this.targetVisible"
+      (ngModelChange)="this.setShellVisibility($event)"/>
+    <span class="switch-slider"></span>
+  </label>
 </div>

@@ -20,6 +20,9 @@ export class GameComponent implements AfterViewInit {
   @ViewChild('targetCanvas')
   private targetCanvasRef!: ElementRef;
 
+  @ViewChild('resultBox')
+  private resultBoxRef!: ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
@@ -42,28 +45,31 @@ export class GameComponent implements AfterViewInit {
   private get targetCanvas(): HTMLCanvasElement {
     return this.targetCanvasRef.nativeElement;
   }
+  private get resultBox(): HTMLDivElement {
+    return this.resultBoxRef.nativeElement;
+  }
 
+  ShellParametersRef = ShellParameters;
 
   // Visual parameters
   menuVisible: boolean = false;
   targetVisible: boolean = false;
 
   // Surface parameters
-  parameters: ShellParameters = ShellParameters.Shell1();
+  parameters: ShellParameters = ShellParameters.randomParameters();
   helper: ShellViewerHelper   = new ShellViewerHelper();
-  targetParameters: ShellParameters = ShellParameters.randomParameters();
+  targetParameters: ShellParameters = new ShellParameters();
   targetHelper: ShellViewerHelper = new ShellViewerHelper();
 
-
   ngAfterViewInit(): void {
+    this.parameters.mu  = this.targetParameters.mu;
+    this.parameters.phi = this.targetParameters.phi;
+    this.parameters.omega = this.targetParameters.omega; 
     this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
     this.helper.createGraph(this.parameters);
     this.targetHelper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.targetCanvas);
     this.targetHelper.createGraph(this.targetParameters);
-  }
-
-  public wireframeCheckboxChanged(event: Event): void {
-    this.helper.setWireframeVisibility();
+    this.checkGameIsOver();
   }
 
   clickExportImage(event: Event): void {
@@ -83,18 +89,6 @@ export class GameComponent implements AfterViewInit {
     link.click();
   }
 
-  randomShellEvent(event: Event): void {
-    this.parameters = ShellParameters.randomParameters();
-    this.helper.createGraph(this.parameters);
-  }
-
-  surfaceColorChanged(event: Event): void {
-    this.helper.changeSurfaceColor();
-  }
-
-  wireframeColorChanged(event: Event): void {
-    this.helper.changeWireframeColor();
-  }
 
   menuButtonClick(event: Event): void {
     if (this.menuVisible) {
@@ -107,21 +101,7 @@ export class GameComponent implements AfterViewInit {
 
   parameterUpdateEvent(event: Event): void {
     this.helper.createGraph(this.parameters)
-  }
-
-  shellASelectEvent(event: Event): void {
-    this.parameters = ShellParameters.Shell1();
-    this.helper.createGraph(this.parameters);
-  }
-
-  shellBSelectEvent(event: Event): void {
-    this.parameters = ShellParameters.Shell2();
-    this.helper.createGraph(this.parameters);
-  }
-
-  shellCSelectEvent(event: Event): void {
-    this.parameters = ShellParameters.Shell3();
-    this.helper.createGraph(this.parameters);
+    this.checkGameIsOver();
   }
 
   canvasClickEvent(event: Event): void {
@@ -159,4 +139,50 @@ export class GameComponent implements AfterViewInit {
       this.targetCanvas.style.display = 'none';
     }
   }
+
+  checkGameIsOver(): boolean {
+    const result = this.checkParametersAreSimilar();
+    this.setResultBoxColor(result);
+    return result;
+  }
+
+  setResultBoxColor(result: boolean) {
+    if (result) {
+      this.resultBox.style.backgroundColor = "#00FF00";
+    }
+    else {
+      this.resultBox.style.backgroundColor = "#FF0000";
+    }
+  }
+
+  checkParametersAreSimilar(): boolean {
+    let temp;
+    temp = Math.abs(this.parameters.A - this.targetParameters.A);
+    const threshold = 3;
+    if (temp > threshold) {
+      return false;
+    }
+    temp = Math.abs(this.parameters.alpha - this.targetParameters.alpha);
+    if (temp > threshold) {
+      return false;
+    }
+    temp = Math.abs(this.parameters.beta - this.targetParameters.beta);
+    if (temp > threshold) {
+      return false;
+    }
+    temp = Math.abs(this.parameters.a - this.targetParameters.a);
+    if (temp > threshold) {
+      return false;
+    }
+    temp = Math.abs(this.parameters.b - this.targetParameters.b);
+    if (temp > threshold) {
+      return false;
+    }
+    temp = Math.abs(this.parameters.theta - this.targetParameters.theta);
+    if (temp > 0.25) {
+      return false;
+    }
+    return true;
+  }
+
 }

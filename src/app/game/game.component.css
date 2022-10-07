@@ -19,7 +19,6 @@ label {
     height: 100%;
     outline: none;
     position: relative;
-    background-color: red;
 }
 
 #toolbar {
@@ -48,13 +47,22 @@ label {
     position: absolute;
     top: 30px;
     left: 5px;
+    text-align: center;
     display: none;
 }
 
-.shell-button {
-    margin: 10px;
-    height: 25px;
+#result-container {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#result-box {
     width: 50px;
+    height: 50px;
+    background-color: red;
 }
 
 .grid-container {
@@ -73,6 +81,66 @@ label {
 
 #toggle-label {
     color: white;
+}
+
+#shell-switch {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+ /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 25px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 23px;
+    width:  28px;
+    left: 1px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .switch-slider {
+    background-color: grey;
+}
+
+input:focus + .switch-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .switch-slider:before {
+    -webkit-transform: translateX(30px);
+    -ms-transform: translateX(30px);
+    transform: translateX(30px);
 }
 
 @media only screen and (max-width: 380px) {

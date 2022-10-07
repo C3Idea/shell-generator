@@ -40,6 +40,8 @@ export class SandboxComponent implements AfterViewInit {
   // Visual parameters
   menuVisible: boolean = false;
 
+  ShellParametersRef = ShellParameters;
+
   // Surface parameters
   parameters: ShellParameters = ShellParameters.Shell1();
   helper: ShellViewerHelper   = new ShellViewerHelper();
