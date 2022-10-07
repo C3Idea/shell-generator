@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { SurfaceComponent } from './surface/surface.component';
+import { SandboxComponent } from './sandbox/sandbox.component';
+import { GameComponent } from './game/game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SurfaceComponent
+    SandboxComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,

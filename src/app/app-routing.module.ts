@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SurfaceComponent } from './surface/surface.component';
+import { GameComponent } from './game/game.component';
+import { SandboxComponent } from './sandbox/sandbox.component';
 
 const routes: Routes = [
   {
     path: "",
-    component: SurfaceComponent
+    component: SandboxComponent
+  },
+  {
+    path: "game",
+    component: GameComponent
   }
 ];
 

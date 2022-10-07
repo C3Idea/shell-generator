@@ -1,0 +1,66 @@
+<div id="main-container">
+  <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
+  <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
+  <div id="toolbar">
+    <button class="toolbar-button" (click)="this.menuButtonClick($event)" >
+      <label>Menu</label>
+      </button>
+      <input type="checkbox" id="toggle-checkbox" [(ngModel)]="this.targetVisible"
+        (ngModelChange)="this.setShellVisibility($event)"/>
+      <label for="toggle-checkbox" id="toggle-label">Target</label>
+  </div>
+  <div #menu id="parameters-menu">
+    <div class="grid-container">
+      <label>A</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.parameters.A"
+          (change)="this.parameterUpdateEvent($event)"
+          min="{{this.parameters.AMin}}"
+          max="{{this.parameters.AMax}}"
+        />
+      </div>
+      <label>alpha</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
+          (change)="this.parameterUpdateEvent($event)"
+          min="{{this.parameters.alphaMin}}"
+          max="{{this.parameters.alphaMax}}"/>
+      </div>
+      <label>beta</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.parameters.beta"
+          (change)="this.parameterUpdateEvent($event)"
+          min="{{this.parameters.betaMin}}"
+          max="{{this.parameters.betaMax}}"/>
+      </div>
+      <label>a</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.parameters.a"
+          (change)="this.parameterUpdateEvent($event)"
+          min="{{this.parameters.aMin}}"
+          max="{{this.parameters.aMax}}"/>
+      </div>
+      <label>b</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.parameters.b"
+          (change)="this.parameterUpdateEvent($event)"
+          min="{{this.parameters.bMin}}"
+          max="{{this.parameters.bMax}}"/>
+      </div>
+    </div>
+    <div class="grid-container">
+      <label>theta-max</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.parameters.theta"
+          (change)="this.parameterUpdateEvent($event)"
+          min=0 max=16 />
+      </div>
+      <label>resolution</label>
+      <div class="slider-container">
+        <input class="slider" type=range [(ngModel)]="this.helper.divisions"
+          (change)="this.parameterUpdateEvent($event)"
+          min=50 max=200 />
+      </div>
+    </div>
+  </div>
+</div>

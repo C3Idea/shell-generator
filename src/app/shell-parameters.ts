@@ -1,6 +1,6 @@
 import { random } from "src/util";
 
-export class SurfaceParameters {
+export class ShellParameters {
     d: number;
     A: number;
     alpha: number;
@@ -10,6 +10,7 @@ export class SurfaceParameters {
     mu: number;
     omega: number;
     phi: number;
+    theta: number;
     
     AMin: number = 5;
     AMax: number = 13;
@@ -26,10 +27,12 @@ export class SurfaceParameters {
     omegaMin: number = -10;
     omegaMax: number = 10;
     phiMin: number = 20;
-    phiMax: number = 80; 
+    phiMax: number = 80;
+    thetaMin: number = 2;
+    thetaMax: number = 16;
 
-    static Shell1(): SurfaceParameters {
-        let p = new SurfaceParameters();
+    static Shell1(): ShellParameters {
+        let p = new ShellParameters();
         p.d = 1;
         p.A = 12.2;
         p.alpha = 87.9;
@@ -42,8 +45,8 @@ export class SurfaceParameters {
         return p;
     }
 
-    static Shell2(): SurfaceParameters {
-        let p = new SurfaceParameters();
+    static Shell2(): ShellParameters {
+        let p = new ShellParameters();
         p.d = 1;
         p.A = 7.0;
         p.alpha = 88;
@@ -56,8 +59,8 @@ export class SurfaceParameters {
         return p;
     }
 
-    static Shell3(): SurfaceParameters {
-        let p = new SurfaceParameters();
+    static Shell3(): ShellParameters {
+        let p = new ShellParameters();
         p.d = 1;
         p.A = 5.0;
         p.alpha = 84;
@@ -70,8 +73,8 @@ export class SurfaceParameters {
         return p;
     }
 
-    static Shell4(): SurfaceParameters {
-        let p = new SurfaceParameters();
+    static Shell4(): ShellParameters {
+        let p = new ShellParameters();
         p.d = 1;
         p.A = 4.5;
         p.alpha = 5;
@@ -84,8 +87,8 @@ export class SurfaceParameters {
         return p;
     }
 
-    static randomParameters(): SurfaceParameters {
-        let p = new SurfaceParameters();
+    static randomParameters(): ShellParameters {
+        let p = new ShellParameters();
         p.d = 1;
         p.A = random(p.AMin, p.AMax);
         p.alpha = random(p.alphaMin, p.alphaMax);
@@ -109,5 +112,6 @@ export class SurfaceParameters {
         this.mu = 0;
         this.omega = 0;
         this.phi = 0;
+        this.theta = 6;
     }
 }

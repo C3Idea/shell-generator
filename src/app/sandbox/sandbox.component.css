@@ -12,6 +12,7 @@ label {
     height: 100%;
     outline: none;
     position: relative;
+    display: block;
 }
 
 #toolbar {
