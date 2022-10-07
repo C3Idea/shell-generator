@@ -56,9 +56,9 @@ export class GameComponent implements AfterViewInit {
   targetVisible: boolean = false;
 
   // Surface parameters
-  parameters: ShellParameters = ShellParameters.randomParameters();
+  parameters: ShellParameters = new ShellParameters();
   helper: ShellViewerHelper   = new ShellViewerHelper();
-  targetParameters: ShellParameters = new ShellParameters();
+  targetParameters: ShellParameters = ShellParameters.randomParameters();
   targetHelper: ShellViewerHelper = new ShellViewerHelper();
 
   ngAfterViewInit(): void {
