@@ -54,6 +54,7 @@ export class GameComponent implements AfterViewInit {
   // Visual parameters
   menuVisible: boolean = false;
   targetVisible: boolean = false;
+  switchText: string = "user";
 
   // Surface parameters
   parameters: ShellParameters = new ShellParameters();
@@ -62,6 +63,7 @@ export class GameComponent implements AfterViewInit {
   targetHelper: ShellViewerHelper = new ShellViewerHelper();
 
   ngAfterViewInit(): void {
+    this.setShellVisibility();
     this.parameters.mu  = this.targetParameters.mu;
     this.parameters.phi = this.targetParameters.phi;
     this.parameters.omega = this.targetParameters.omega; 
@@ -104,7 +106,7 @@ export class GameComponent implements AfterViewInit {
     this.checkGameIsOver();
   }
 
-  canvasClickEvent(event: Event): void {
+  canvasMouseDownEvent(event: MouseEvent): void {
     if (this.menuVisible) {
       this.hideMenu();
     }
@@ -129,15 +131,25 @@ export class GameComponent implements AfterViewInit {
     this.menuVisible = true;
   }
 
-  setShellVisibility(event: Event) {
+  private setShellVisibility() {
     if (this.targetVisible) {
-      this.canvas.style.display = 'none';
-      this.targetCanvas.style.display = 'block';
+      this.switchText = "target";
+      this.canvas.style.opacity = "1";
+      this.canvas.style.zIndex  = "-1";
+      this.targetCanvas.style.opacity = "0.85";
+      this.targetCanvas.style.zIndex  = "0";
     }
     else {
-      this.canvas.style.display = 'block';
-      this.targetCanvas.style.display = 'none';
+      this.switchText = "user";
+      this.canvas.style.opacity = "0.85";
+      this.canvas.style.zIndex  = "0";
+      this.targetCanvas.style.opacity = "1";
+      this.targetCanvas.style.zIndex  = "-1";
     }
+  }
+
+  switchButtonClick(event: Event) {
+    this.setShellVisibility(); 
   }
 
   checkGameIsOver(): boolean {

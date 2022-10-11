@@ -1,6 +1,6 @@
 <div id="main-container">
-  <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
-  <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
+  <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
+  <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
   <div id="toolbar">
     <button class="toolbar-button" (click)="this.menuButtonClick($event)" >
       <label>Menu</label>
@@ -8,6 +8,13 @@
     <button class="toolbar-button" (click)="this.clickExportImage($event)">
       <label>Save</label>
     </button>
+    <label class="switch-label" style="text-align: right;">user</label>
+    <label id="shell-switch" class="switch">
+      <input type="checkbox" [(ngModel)]="this.targetVisible"
+        (ngModelChange)="this.switchButtonClick($event)"/>
+      <span class="switch-slider"></span>
+    </label>
+    <label class="switch-label" style="text-align: left;">target</label>
   </div>
   <div #menu id="parameters-menu">
     <div class="grid-container">
@@ -64,9 +71,4 @@
       <div #resultBox id="result-box"></div>
     </div>
   </div>
-  <label id="shell-switch" class="switch">
-    <input type="checkbox" [(ngModel)]="this.targetVisible"
-      (ngModelChange)="this.setShellVisibility($event)"/>
-    <span class="switch-slider"></span>
-  </label>
 </div>
