@@ -66,7 +66,9 @@ export class GameComponent implements AfterViewInit {
     this.setShellVisibility();
     this.parameters.mu  = this.targetParameters.mu;
     this.parameters.phi = this.targetParameters.phi;
-    this.parameters.omega = this.targetParameters.omega; 
+    this.parameters.omega = this.targetParameters.omega;
+    this.parameters.b     = this.targetParameters.b; 
+    this.parameters.theta = this.targetParameters.theta;
     this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
     this.helper.createGraph(this.parameters);
     this.targetHelper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.targetCanvas);

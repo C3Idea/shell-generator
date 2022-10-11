@@ -50,22 +50,6 @@
           max="{{ShellParametersRef.aMax}}"
           step="any" />
       </div>
-      <label>b</label>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.b"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.bMin}}"
-          max="{{ShellParametersRef.bMax}}" 
-          step="any" />
-      </div>
-      <label>theta</label>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.theta"
-          (change)="this.parameterUpdateEvent($event)"
-          min={{ShellParametersRef.thetaMin}}
-          max={{ShellParametersRef.thetaMax}}
-          step="any" />
-      </div>
     </div>
     <div id="result-container">
       <div #resultBox id="result-box"></div>
