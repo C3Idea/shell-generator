@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import { ShellParameters } from "./shell-parameters";
 
-export class ShellViewerHelper {
+export class ShellViewer {
   private scene!:  THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private light!:  THREE.PointLight;
@@ -24,7 +24,7 @@ export class ShellViewerHelper {
   surfaceColor:   string = "#F0F0F0";
   wireframeColor: string = "#000000";
 
-  divisions: number = 50;
+  divisions: number = 100;
 
   constructor() {
   }
@@ -49,7 +49,7 @@ export class ShellViewerHelper {
   }
 
   private startRenderingLoop() {
-    let viewer: ShellViewerHelper = this;
+    let viewer: ShellViewer = this;
     (function render() {
       requestAnimationFrame(render);
       viewer.controls.update();
@@ -248,12 +248,12 @@ export class ShellViewerHelper {
     this.renderer.render(this.scene, this.camera);
   }
 
-  changeSurfaceColor() {
+  updateSurfaceColor() {
     this.createSurfaceMaterial();
     this.createSurfaceMesh();
   }
 
-  changeWireframeColor() {
+  updateWireframeColor() {
     this.createWireframeMaterial();
     this.createWireframeLines();
   }

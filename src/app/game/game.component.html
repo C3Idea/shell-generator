@@ -8,13 +8,16 @@
     <button class="toolbar-button" (click)="this.clickExportImage($event)">
       <label>Save</label>
     </button>
-    <label class="switch-label" style="text-align: right;">user</label>
+    <button class="toolbar-button" (click)="this.sandboxButtonClick($event)">
+      <label>Home</label>
+    </button>
+    <label class="switch-label">user</label>
     <label id="shell-switch" class="switch">
       <input type="checkbox" [(ngModel)]="this.targetVisible"
         (ngModelChange)="this.switchButtonClick($event)"/>
-      <span class="switch-slider"></span>
+      <span class="switch-slider round"></span>
     </label>
-    <label class="switch-label" style="text-align: left;">target</label>
+    <label class="switch-label">target</label>
   </div>
   <div #menu id="parameters-menu">
     <div class="grid-container">
@@ -53,6 +56,19 @@
     </div>
     <div id="result-container">
       <div #resultBox id="result-box"></div>
+    </div>
+  </div>
+  <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
+    <div class="modal-content">
+      <label class="modal-title">Success!</label>
+      <div class="modal-button-bar">
+        <button class="modal-button" (click)="this.newGameButtonClick($event)">
+          <label>Play again</label>
+        </button>
+        <button class="modal-button" (click)="this.sandboxButtonClick($event)">
+          <label>Go home</label>
+        </button>
+      </div>
     </div>
   </div>
 </div>

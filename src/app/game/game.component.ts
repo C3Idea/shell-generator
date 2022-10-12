@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
-import { ShellViewerHelper } from '../shell-viewer-helper';
+import { ShellViewer } from '../shell-viewer';
 
 @Component({
   selector: 'app-surface',
@@ -23,12 +24,15 @@ export class GameComponent implements AfterViewInit {
   @ViewChild('resultBox')
   private resultBoxRef!: ElementRef;
 
+  @ViewChild('modalWindow')
+  private modalWindowRef!: ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    this.helper.resize(width, height);
-    this.targetHelper.resize(width, height);
+    this.viewer.resize(width, height);
+    this.targetViewer.resize(width, height);
   }
 
   // Stage properties
@@ -48,6 +52,9 @@ export class GameComponent implements AfterViewInit {
   private get resultBox(): HTMLDivElement {
     return this.resultBoxRef.nativeElement;
   }
+  private get modalWindow(): HTMLDivElement {
+    return this.modalWindowRef.nativeElement;
+  }
 
   ShellParametersRef = ShellParameters;
 
@@ -58,22 +65,47 @@ export class GameComponent implements AfterViewInit {
 
   // Surface parameters
   parameters: ShellParameters = new ShellParameters();
-  helper: ShellViewerHelper   = new ShellViewerHelper();
-  targetParameters: ShellParameters = ShellParameters.randomParameters();
-  targetHelper: ShellViewerHelper = new ShellViewerHelper();
+  viewer!: ShellViewer;
+  targetParameters!: ShellParameters;
+  targetViewer!: ShellViewer;
+
+  private userShellColor   = "#F0F0F0";
+  private targetShellColor = "#D2B478";
+
+  constructor(private router: Router) {
+  }
 
   ngAfterViewInit(): void {
+    this.setupGame();
+    this.setupShellViewers();
     this.setShellVisibility();
+    this.createShellGraphs();
+    this.checkGameIsOver();
+  }
+
+  private setupGame() {
+    this.parameters       = new ShellParameters();
+    this.targetParameters = ShellParameters.randomParameters();
+    // We fix some parameters
     this.parameters.mu  = this.targetParameters.mu;
     this.parameters.phi = this.targetParameters.phi;
     this.parameters.omega = this.targetParameters.omega;
     this.parameters.b     = this.targetParameters.b; 
     this.parameters.theta = this.targetParameters.theta;
-    this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
-    this.helper.createGraph(this.parameters);
-    this.targetHelper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.targetCanvas);
-    this.targetHelper.createGraph(this.targetParameters);
-    this.checkGameIsOver();
+  }
+
+  private createShellGraphs() {
+    this.viewer.createGraph(this.parameters);
+    this.targetViewer.createGraph(this.targetParameters);
+  }
+
+  private setupShellViewers() {
+    this.viewer = new ShellViewer();
+    this.viewer.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
+    this.viewer.surfaceColor = this.userShellColor;
+    this.targetViewer = new ShellViewer();
+    this.targetViewer.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.targetCanvas);
+    this.targetViewer.surfaceColor = this.targetShellColor;
   }
 
   clickExportImage(event: Event): void {
@@ -93,7 +125,6 @@ export class GameComponent implements AfterViewInit {
     link.click();
   }
 
-
   menuButtonClick(event: Event): void {
     if (this.menuVisible) {
       this.hideMenu();
@@ -104,7 +135,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   parameterUpdateEvent(event: Event): void {
-    this.helper.createGraph(this.parameters)
+    this.viewer.createGraph(this.parameters)
     this.checkGameIsOver();
   }
 
@@ -154,10 +185,12 @@ export class GameComponent implements AfterViewInit {
     this.setShellVisibility(); 
   }
 
-  checkGameIsOver(): boolean {
+  checkGameIsOver(): void {
     const result = this.checkParametersAreSimilar();
     this.setResultBoxColor(result);
-    return result;
+    if (result) {
+      this.modalWindow.style.display = 'block';
+    }
   }
 
   setResultBoxColor(result: boolean) {
@@ -197,6 +230,33 @@ export class GameComponent implements AfterViewInit {
       return false;
     }
     return true;
+  }
+
+  private closeModalWindow() {
+    this.modalWindow.style.display = 'none';
+  }
+
+  private newGame() {
+    this.ngAfterViewInit();
+  }
+
+  newGameButtonClick(event: Event) {
+    this.closeModalWindow();
+    this.newGame();
+  }
+
+  private navigateToSandbox() {
+    this.router.navigate(['']);
+  }
+
+  sandboxButtonClick(event: Event) {
+    this.navigateToSandbox();
+  }
+
+  modalMouseDown(event: Event) {
+    if (event.target == this.modalWindow) {
+      this.closeModalWindow();
+    }
   }
 
 }

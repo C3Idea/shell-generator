@@ -7,6 +7,9 @@
       <button class="toolbar-button" (click)="this.clickExportImage($event)">
         <label>Save</label>
       </button>
+      <button class="toolbar-button" (click)="this.gameButtonClick($event)">
+        <label>Game</label>
+      </button>
   </div>
   <div #menu id="parameters-menu">
     <div class="grid-container">
@@ -79,7 +82,7 @@
         <input class="slider" type=range [(ngModel)]="this.helper.divisions"
           (change)="this.parameterUpdateEvent($event)"
           min=50
-          max=200
+          max=250
           step="1"  />
       </div>
       <input id="wireframeVisibleInput" type="checkbox" [(ngModel)]="this.helper.showWireframe"

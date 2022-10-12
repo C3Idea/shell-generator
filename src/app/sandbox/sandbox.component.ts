@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
-import { ShellViewerHelper } from '../shell-viewer-helper';
+import { ShellViewer } from '../shell-viewer';
 
 @Component({
   selector: 'app-surface',
@@ -44,8 +45,10 @@ export class SandboxComponent implements AfterViewInit {
 
   // Surface parameters
   parameters: ShellParameters = ShellParameters.Shell1();
-  helper: ShellViewerHelper   = new ShellViewerHelper();
+  helper: ShellViewer   = new ShellViewer();
 
+  constructor(private router: Router) {
+  }
 
   ngAfterViewInit(): void {
     this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
@@ -79,11 +82,11 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   surfaceColorChanged(event: Event): void {
-    this.helper.changeSurfaceColor();
+    this.helper.updateSurfaceColor();
   }
 
   wireframeColorChanged(event: Event): void {
-    this.helper.changeWireframeColor();
+    this.helper.updateWireframeColor();
   }
 
   menuButtonClick(event: Event): void {
@@ -137,6 +140,14 @@ export class SandboxComponent implements AfterViewInit {
   private showMenu() {
     this.menu.style.display = 'block';
     this.menuVisible = true;
+  }
+
+  gameButtonClick(event: Event) {
+    this.navigateToGame();
+  }
+
+  private navigateToGame() {
+    this.router.navigate(['game']);
   }
 
 }

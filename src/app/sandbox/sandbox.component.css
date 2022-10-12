@@ -16,21 +16,17 @@ label {
 }
 
 #toolbar {
-    width: 100px;
+    display: inline;
     position: absolute;
     top: 5px;
     left: 5px;
+    height: 35px;
     z-index: 1;
 }
 
 .toolbar-button {
     width: 50px;
-    height: 25px;
-}
-
-.button-bar {
-    width: 100%;
-    text-align: center;
+    height: 100%;
 }
 
 #parameters-menu {
@@ -40,7 +36,7 @@ label {
     opacity: 0.8;
     z-index: 1;
     position: absolute;
-    top: 30px;
+    top: 40px;
     left: 5px;
     text-align: center;
     display: none;
