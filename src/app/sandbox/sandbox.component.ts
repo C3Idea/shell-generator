@@ -18,6 +18,12 @@ export class SandboxComponent implements AfterViewInit {
   @ViewChild('menu')
   private menuRef!: ElementRef;
 
+  @ViewChild('modalHelpWindow')
+  private modalHelpWindowRef!: ElementRef;
+
+  @ViewChild('modalIntroWindow')
+  private modalIntroWindowRef!: ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
@@ -36,7 +42,15 @@ export class SandboxComponent implements AfterViewInit {
   private get menu(): HTMLFormElement {
     return this.menuRef.nativeElement;
   }
+  private get modalHelpWindow(): HTMLDivElement {
+    return this.modalHelpWindowRef.nativeElement;
+  }
+  private get modalIntroWindow(): HTMLDivElement {
+    return this.modalIntroWindowRef.nativeElement
+  }
 
+  helpContent: string = "";
+  introContent: string = "";
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -148,6 +162,62 @@ export class SandboxComponent implements AfterViewInit {
 
   private navigateToGame() {
     this.router.navigate(['game']);
+  }
+
+  modalMouseDown(event: Event) {
+    if (event.target == this.modalIntroWindow) {
+      this.closeModalIntroWindow();
+    }
+    else if (event.target == this.modalHelpWindow) {
+      this.closeModalHelpWindow();
+    }
+  }
+
+  private closeModalHelpWindow() {
+    this.modalHelpWindow.style.display = 'none';
+  }
+
+  private closeModalIntroWindow() {
+    this.modalIntroWindow.style.display = 'none';
+  }
+
+  parameterHelpAButtonClick(event: Event) {
+    this.helpContent = "Parameter A help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpAlphaButtonClick(event: Event) {
+    this.helpContent = "Parameter alpha help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpBetaButtonClick(event: Event) {
+    this.helpContent = "Parameter beta help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpA1ButtonClick(event: Event) {
+    this.helpContent = "Parameter a (lowercase) help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpBButtonClick(event: Event) {
+    this.helpContent = "Parameter b help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpThetaButtonClick(event: Event) {
+    this.helpContent = "Parameter theta help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpQualButtonClick(event: Event) {
+    this.helpContent = "Parameter quality help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  introButtonClick(event: Event) {
+    this.modalIntroWindow.style.display = 'block';
   }
 
 }

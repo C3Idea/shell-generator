@@ -27,6 +27,12 @@ export class GameComponent implements AfterViewInit {
   @ViewChild('modalWindow')
   private modalWindowRef!: ElementRef;
 
+  @ViewChild('modalHelpWindow')
+  private modalHelpWindowRef!: ElementRef;
+
+  @ViewChild('modalHowToWindow')
+  private modalHowToWindowRef!: ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
@@ -43,7 +49,7 @@ export class GameComponent implements AfterViewInit {
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
-  private get menu(): HTMLDivElement {
+  private get menu(): HTMLFormElement {
     return this.menuRef.nativeElement;
   }
   private get targetCanvas(): HTMLCanvasElement {
@@ -54,6 +60,12 @@ export class GameComponent implements AfterViewInit {
   }
   private get modalWindow(): HTMLDivElement {
     return this.modalWindowRef.nativeElement;
+  }
+  private get modalHelpWindow(): HTMLDivElement {
+    return this.modalHelpWindowRef.nativeElement;
+  }
+  private get modalHowToWindow(): HTMLDivElement {
+    return this.modalHowToWindowRef.nativeElement;
   }
 
   ShellParametersRef = ShellParameters;
@@ -71,6 +83,9 @@ export class GameComponent implements AfterViewInit {
 
   private userShellColor   = "#F0F0F0";
   private targetShellColor = "#D2B478";
+
+  helpContent: string = "";
+  howToContent: string = "How to play:"
 
   constructor(private router: Router) {
   }
@@ -240,6 +255,14 @@ export class GameComponent implements AfterViewInit {
     this.modalWindow.style.display = 'none';
   }
 
+  private closeModalHelpWindow() {
+    this.modalHelpWindow.style.display = 'none';
+  }
+
+  private closeModalHowToWindow() {
+    this.modalHowToWindow.style.display = 'none';
+  }
+
   private newGame() {
     this.ngAfterViewInit();
   }
@@ -261,6 +284,36 @@ export class GameComponent implements AfterViewInit {
     if (event.target == this.modalWindow) {
       this.closeModalWindow();
     }
+    else if (event.target == this.modalHelpWindow) {
+      this.closeModalHelpWindow();
+    }
+    else if (event.target == this.modalHowToWindow) {
+      this.closeModalHowToWindow();
+    }
+  }
+
+  parameterHelpAButtonClick(event: Event) {
+    this.helpContent = "Parameter A help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpAlphaButtonClick(event: Event) {
+    this.helpContent = "Parameter alpha help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpBetaButtonClick(event: Event) {
+    this.helpContent = "Parameter beta help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  parameterHelpA1ButtonClick(event: Event) {
+    this.helpContent = "Parameter a (lowercase) help message.";
+    this.modalHelpWindow.style.display = 'block';
+  }
+
+  howToButtonClick(event: Event) {
+    this.modalHowToWindow.style.display = 'block';
   }
 
 }

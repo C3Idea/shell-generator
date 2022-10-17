@@ -10,11 +10,16 @@
       <button class="toolbar-button" (click)="this.gameButtonClick($event)">
         <label>Game</label>
       </button>
+      <button class="toolbar-button" (click)="this.introButtonClick($event)">
+        <label>Intro</label>
+      </button>
   </div>
   <form #menu id="parameters-menu">
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <button class="parameter-help-button">
+      <button class="parameter-help-button"
+        id="A-help-button"
+        (click)="this.parameterHelpAButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -27,7 +32,9 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <button class="parameter-help-button">
+      <button class="parameter-help-button"
+        id="alpha-help-button"
+        (click)="this.parameterHelpAlphaButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -40,7 +47,9 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <button class="parameter-help-button">
+      <button class="parameter-help-button"
+        id="beta-help-button"
+        (click)="this.parameterHelpBetaButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -53,7 +62,9 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <button class="parameter-help-button">
+      <button class="parameter-help-button"
+        id="a-help-button"
+        (click)="this.parameterHelpA1ButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -66,7 +77,9 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
-      <button class="parameter-help-button">
+      <button class="parameter-help-button"
+        id="b-help-button"
+        (click)="this.parameterHelpBButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -78,10 +91,10 @@
         step="any" />
     </li>
     <li class="form-row">
-      <div>
-        <label class="parameter-label">theta</label>
-      </div>
-      <button class="parameter-help-button">
+      <img class="parameter-icon" src="./assets/icons/icon_theta.svg"/>
+      <button class="parameter-help-button"
+        id="theta-help-button"
+        (click)="this.parameterHelpThetaButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -110,7 +123,9 @@
       <div>
         <label class="parameter-label">qual</label>
       </div>
-      <button class="parameter-help-button">
+      <button class="parameter-help-button"
+        id="qual-help-button"
+        (click)="this.parameterHelpQualButtonClick($event)">
         <label>?</label>
       </button>
       <input class="slider" type=range
@@ -141,4 +156,14 @@
       </div>
     </div>
   </form>
+  <div #modalIntroWindow class="modal" (mousedown)="this.modalMouseDown($event)">
+    <div class="modal-intro-content">
+      <label class="modal-intro-label">{{this.introContent}}</label>
+    </div>
+  </div>
+  <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
+    <div class="modal-help-content">
+      <label class="help-content-label">{{this.helpContent}}</label>
+    </div>
+  </div>
 </div>

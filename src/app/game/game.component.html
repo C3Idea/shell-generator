@@ -3,13 +3,16 @@
   <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
   <div id="toolbar">
     <button class="toolbar-button" (click)="this.menuButtonClick($event)" >
-      <label>Controles</label>
+      <label>Menu</label>
     </button>
     <button class="toolbar-button" (click)="this.clickExportImage($event)">
       <label>Save</label>
     </button>
     <button class="toolbar-button" (click)="this.sandboxButtonClick($event)">
       <label>Home</label>
+    </button>
+    <button class="toolbar-button" (click)="this.howToButtonClick($event)">
+      <label>Help</label>
     </button>
     <label class="switch-label">user</label>
     <label id="shell-switch" class="switch">
@@ -19,45 +22,74 @@
     </label>
     <label class="switch-label">target</label>
   </div>
-  <div #menu id="parameters-menu">
-    <div class="grid-container">
+  <form #menu id="parameters-menu">
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.A"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.AMin}}"
-          max="{{ShellParametersRef.AMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button"
+        id="A-help-button"
+        (click)="this.parameterHelpAButtonClick($event)">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.A"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.AMin}}"
+        max="{{ShellParametersRef.AMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.alphaMin}}"
-          max="{{ShellParametersRef.alphaMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button"
+        id="alpha-help-button"
+        (click)="this.parameterHelpAlphaButtonClick($event)">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.alpha"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.alphaMin}}"
+        max="{{ShellParametersRef.alphaMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.beta"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.betaMin}}"
-          max="{{ShellParametersRef.betaMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button"
+        (click)="this.parameterHelpBetaButtonClick($event)">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.beta"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.betaMin}}"
+        max="{{ShellParametersRef.betaMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.a"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.aMin}}"
-          max="{{ShellParametersRef.aMax}}"
-          step="any" />
+      <button class="parameter-help-button"
+        (click)="this.parameterHelpA1ButtonClick($event)">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.a"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.aMin}}"
+        max="{{ShellParametersRef.aMax}}"
+        step="any" />
+    </li>
+    <div>
+      <div id="result-container">
+        <div #resultBox id="result-box"></div>
       </div>
+      <button id="new-game-button" (click)="newGameButtonClick($event)">
+        <label>New game</label>
+      </button>
     </div>
-    <div id="result-container">
-      <div #resultBox id="result-box"></div>
-    </div>
-  </div>
+  </form>
   <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-content">
       <label class="modal-title">Success!</label>
@@ -69,6 +101,16 @@
           <label>Go home</label>
         </button>
       </div>
+    </div>
+  </div>
+  <div #modalHowToWindow class="modal" (mousedown)="this.modalMouseDown($event)">
+    <div class="modal-howto-content">
+      <label class="howto-content-label">{{this.howToContent}}</label>
+    </div>
+  </div>
+  <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
+    <div class="modal-help-content">
+      <label class="help-content-label">{{this.helpContent}}</label>
     </div>
   </div>
 </div>
