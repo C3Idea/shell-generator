@@ -31,7 +31,7 @@ export class ShellViewer {
 
   init(fov: number, near: number, far: number, canvas: HTMLCanvasElement) {
     this.scene  = new THREE.Scene();
-    this.scene.background = new THREE.Color("#0F0F0F");
+    this.scene.background = new THREE.Color("#031926");
     const aspectRatio = canvas.clientWidth / canvas.clientHeight;
     this.camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far);
     this.light = new THREE.PointLight("#FFFFFF")

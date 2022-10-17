@@ -169,12 +169,12 @@ export class GameComponent implements AfterViewInit {
       this.switchText = "target";
       this.canvas.style.opacity = "1";
       this.canvas.style.zIndex  = "-1";
-      this.targetCanvas.style.opacity = "0.85";
+      this.targetCanvas.style.opacity = "0.9";
       this.targetCanvas.style.zIndex  = "0";
     }
     else {
       this.switchText = "user";
-      this.canvas.style.opacity = "0.85";
+      this.canvas.style.opacity = "0.9";
       this.canvas.style.zIndex  = "0";
       this.targetCanvas.style.opacity = "1";
       this.targetCanvas.style.zIndex  = "-1";
@@ -205,24 +205,28 @@ export class GameComponent implements AfterViewInit {
   checkParametersAreSimilar(): boolean {
     let temp;
     temp = Math.abs(this.parameters.A - this.targetParameters.A);
-    const threshold = 3;
-    if (temp > threshold) {
+    const AThreshold = 1.5;
+    if (temp > AThreshold) {
       return false;
     }
     temp = Math.abs(this.parameters.alpha - this.targetParameters.alpha);
-    if (temp > threshold) {
+    const alphaThreshold =1.5;
+    if (temp > alphaThreshold) {
       return false;
     }
     temp = Math.abs(this.parameters.beta - this.targetParameters.beta);
-    if (temp > threshold) {
+    const betaThreshold = 8;
+    if (temp > betaThreshold) {
       return false;
     }
     temp = Math.abs(this.parameters.a - this.targetParameters.a);
-    if (temp > threshold) {
+    const aThreshold = 1;
+    if (temp > aThreshold) {
       return false;
     }
     temp = Math.abs(this.parameters.b - this.targetParameters.b);
-    if (temp > threshold) {
+    const bThreshold = 3;
+    if (temp > bThreshold) {
       return false;
     }
     temp = Math.abs(this.parameters.theta - this.targetParameters.theta);
