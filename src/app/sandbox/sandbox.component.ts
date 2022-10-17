@@ -33,7 +33,7 @@ export class SandboxComponent implements AfterViewInit {
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
-  private get menu(): HTMLDivElement {
+  private get menu(): HTMLFormElement {
     return this.menuRef.nativeElement;
   }
 

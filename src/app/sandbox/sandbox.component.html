@@ -11,49 +11,87 @@
         <label>Game</label>
       </button>
   </div>
-  <div #menu id="parameters-menu">
-    <div class="grid-container">
+  <form #menu id="parameters-menu">
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.A"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.AMin}}"
-          max="{{ShellParametersRef.AMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.A"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.AMin}}"
+        max="{{ShellParametersRef.AMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.alpha"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.alphaMin}}"
-          max="{{ShellParametersRef.alphaMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.alpha"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.alphaMin}}"
+        max="{{ShellParametersRef.alphaMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.beta"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.betaMin}}"
-          max="{{ShellParametersRef.betaMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.beta"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.betaMin}}"
+        max="{{ShellParametersRef.betaMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.a"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.aMin}}"
-          max="{{ShellParametersRef.aMax}}"
-          step="any" />
-      </div>
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.a"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.aMin}}"
+        max="{{ShellParametersRef.aMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.b"
-          (change)="this.parameterUpdateEvent($event)"
-          min="{{ShellParametersRef.bMin}}"
-          max="{{ShellParametersRef.bMax}}"
-          step="any" />
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.b"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.bMin}}"
+        max="{{ShellParametersRef.bMax}}"
+        step="any" />
+    </li>
+    <li class="form-row">
+      <div>
+        <label class="parameter-label">theta</label>
       </div>
-    </div>
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.theta"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min={{ShellParametersRef.thetaMin}}
+        max={{ShellParametersRef.thetaMax}} 
+        step="any" />
+    </li>
     <div class="button-bar">
       <button class="shell-button" id="shell-a-button" (click)="this.shellASelectEvent($event)">
         <label>A</label>
@@ -68,32 +106,39 @@
         <label>?</label>
       </button>
     </div>
-    <div class="grid-container">
-      <label>theta</label>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.parameters.theta"
-          (change)="this.parameterUpdateEvent($event)"
-          min={{ShellParametersRef.thetaMin}}
-          max={{ShellParametersRef.thetaMax}} 
-          step="any" />
+    <li class="form-row">
+      <div>
+        <label class="parameter-label">qual</label>
       </div>
-      <label>resolution</label>
-      <div class="slider-container">
-        <input class="slider" type=range [(ngModel)]="this.helper.divisions"
-          (change)="this.parameterUpdateEvent($event)"
-          min=50
-          max=250
-          step="1"  />
-      </div>
-      <input id="wireframeVisibleInput" type="checkbox" [(ngModel)]="this.helper.showWireframe"
-                (ngModelChange)="this.wireframeCheckboxChanged($event)"/>
+      <button class="parameter-help-button">
+        <label>?</label>
+      </button>
+      <input class="slider" type=range
+        [(ngModel)]="this.helper.divisions"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min=50
+        max=250
+        step="1"  />
+    </li>
+    <div class="visualization-options-container">
+      <input id="wireframeVisibleInput" type="checkbox" 
+        [(ngModel)]="this.helper.showWireframe"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.wireframeCheckboxChanged($event)"/>
       <label for="wireframeVisibleInput">show wireframe</label>
-      <label for="surfaceColorInput">surface color</label>
-      <input id="surfaceColorInput" type="color" [(ngModel)]="this.helper.surfaceColor"
-        (ngModelChange)="this.surfaceColorChanged($event)"/>
-      <label for="wireframeColorInput">wireframe color</label>
-      <input id="wireframeColorInput" type="color" [(ngModel)]="this.helper.wireframeColor"
-        (ngModelChange)="this.wireframeColorChanged($event)"/>
+      <div class="color-selector">
+        <label class="color-selector-label">surface</label>
+        <input class="color-selector-input" id="surfaceColorInput" type="color"
+          [(ngModel)]="this.helper.surfaceColor"
+          [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="this.surfaceColorChanged($event)"/>
+        <label class="color-selector-label">wireframe</label>
+        <input class="color-selector-input" id="wireframeColorInput" type="color"
+          [(ngModel)]="this.helper.wireframeColor"
+          [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="this.wireframeColorChanged($event)"/>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
