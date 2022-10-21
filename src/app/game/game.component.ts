@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
@@ -10,8 +10,7 @@ import { ShellViewer } from '../shell-viewer';
 })
 
 
-
-export class GameComponent implements AfterViewInit {
+export class GameComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
 
@@ -20,9 +19,6 @@ export class GameComponent implements AfterViewInit {
 
   @ViewChild('targetCanvas')
   private targetCanvasRef!: ElementRef;
-
-  @ViewChild('resultBox')
-  private resultBoxRef!: ElementRef;
 
   @ViewChild('modalWindow')
   private modalWindowRef!: ElementRef;
@@ -33,6 +29,9 @@ export class GameComponent implements AfterViewInit {
   @ViewChild('modalHowToWindow')
   private modalHowToWindowRef!: ElementRef;
 
+  @ViewChild('distanceRange')
+  private distanceRangeRef!: ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
@@ -40,11 +39,6 @@ export class GameComponent implements AfterViewInit {
     this.viewer.resize(width, height);
     this.targetViewer.resize(width, height);
   }
-
-  // Stage properties
-  @Input() public fieldOfView: number = 1;
-  @Input() public nearClippingPlane: number = 1;
-  @Input() public farClippingPlane: number = 10000;
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -55,9 +49,6 @@ export class GameComponent implements AfterViewInit {
   private get targetCanvas(): HTMLCanvasElement {
     return this.targetCanvasRef.nativeElement;
   }
-  private get resultBox(): HTMLDivElement {
-    return this.resultBoxRef.nativeElement;
-  }
   private get modalWindow(): HTMLDivElement {
     return this.modalWindowRef.nativeElement;
   }
@@ -67,6 +58,14 @@ export class GameComponent implements AfterViewInit {
   private get modalHowToWindow(): HTMLDivElement {
     return this.modalHowToWindowRef.nativeElement;
   }
+  private get distanceRange(): HTMLInputElement {
+    return this.distanceRangeRef.nativeElement;
+  }
+
+    // Stage properties
+  private fieldOfView: number = 1;
+  private nearClippingPlane: number = 1;
+  private farClippingPlane: number = 10000;
 
   ShellParametersRef = ShellParameters;
 
@@ -76,9 +75,9 @@ export class GameComponent implements AfterViewInit {
   switchText: string = "user";
 
   // Surface parameters
-  parameters: ShellParameters = new ShellParameters();
+  parameters: ShellParameters;
   viewer!: ShellViewer;
-  targetParameters!: ShellParameters;
+  targetParameters: ShellParameters;
   targetViewer!: ShellViewer;
 
   private userShellColor   = "#F0F0F0";
@@ -87,20 +86,27 @@ export class GameComponent implements AfterViewInit {
   helpContent: string = "";
   howToContent: string = "How to play:"
 
+  distance: number;
+
   constructor(private router: Router) {
+    this.parameters = new ShellParameters();
+    this.targetParameters = ShellParameters.randomParameters();
+    this.setupGame();
+    this.distance = this.parameters.distance(this.targetParameters);
   }
 
+  ngOnInit(): void {
+  }
+  
   ngAfterViewInit(): void {
-    this.setupGame();
     this.setupShellViewers();
     this.setShellVisibility();
     this.createShellGraphs();
+    this.showHowToWindow();
     this.checkGameIsOver();
   }
 
   private setupGame() {
-    this.parameters       = new ShellParameters();
-    this.targetParameters = ShellParameters.randomParameters();
     // We fix some parameters
     this.parameters.mu  = this.targetParameters.mu;
     this.parameters.phi = this.targetParameters.phi;
@@ -151,6 +157,7 @@ export class GameComponent implements AfterViewInit {
 
   parameterUpdateEvent(event: Event): void {
     this.viewer.createGraph(this.parameters)
+    this.distance = this.parameters.distance(this.targetParameters);
     this.checkGameIsOver();
   }
 
@@ -202,18 +209,8 @@ export class GameComponent implements AfterViewInit {
 
   checkGameIsOver(): void {
     const result = this.checkParametersAreSimilar();
-    this.setResultBoxColor(result);
     if (result) {
       this.modalWindow.style.display = 'block';
-    }
-  }
-
-  setResultBoxColor(result: boolean) {
-    if (result) {
-      this.resultBox.style.backgroundColor = "#00FF00";
-    }
-    else {
-      this.resultBox.style.backgroundColor = "#FF0000";
     }
   }
 
@@ -264,7 +261,14 @@ export class GameComponent implements AfterViewInit {
   }
 
   private newGame() {
-    this.ngAfterViewInit();
+    this.parameters       = new ShellParameters();
+    this.targetParameters = ShellParameters.randomParameters();
+    this.setupGame();
+    this.distance         = this.parameters.distance(this.targetParameters);
+    this.setupShellViewers();
+    this.setShellVisibility();
+    this.createShellGraphs();
+    this.checkGameIsOver();
   }
 
   newGameButtonClick(event: Event) {
@@ -313,6 +317,10 @@ export class GameComponent implements AfterViewInit {
   }
 
   howToButtonClick(event: Event) {
+    this.showHowToWindow();
+  }
+
+  private showHowToWindow() {
     this.modalHowToWindow.style.display = 'block';
   }
 

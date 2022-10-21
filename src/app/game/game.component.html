@@ -25,11 +25,6 @@
   <form #menu id="parameters-menu">
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <button class="parameter-help-button"
-        id="A-help-button"
-        (click)="this.parameterHelpAButtonClick($event)">
-        <label>?</label>
-      </button>
       <input class="slider" type=range
         [(ngModel)]="this.parameters.A"
         [ngModelOptions]="{standalone: true}"
@@ -37,14 +32,14 @@
         min="{{ShellParametersRef.AMin}}"
         max="{{ShellParametersRef.AMax}}"
         step="any" />
+      <button class="parameter-help-button"
+        id="A-help-button"
+        (click)="this.parameterHelpAButtonClick($event)">
+        <label>?</label>
+      </button>
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <button class="parameter-help-button"
-        id="alpha-help-button"
-        (click)="this.parameterHelpAlphaButtonClick($event)">
-        <label>?</label>
-      </button>
       <input class="slider" type=range
         [(ngModel)]="this.parameters.alpha"
         [ngModelOptions]="{standalone: true}"
@@ -52,13 +47,14 @@
         min="{{ShellParametersRef.alphaMin}}"
         max="{{ShellParametersRef.alphaMax}}"
         step="any" />
+      <button class="parameter-help-button"
+        id="alpha-help-button"
+        (click)="this.parameterHelpAlphaButtonClick($event)">
+        <label>?</label>
+      </button>
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <button class="parameter-help-button"
-        (click)="this.parameterHelpBetaButtonClick($event)">
-        <label>?</label>
-      </button>
       <input class="slider" type=range
         [(ngModel)]="this.parameters.beta"
         [ngModelOptions]="{standalone: true}"
@@ -66,13 +62,13 @@
         min="{{ShellParametersRef.betaMin}}"
         max="{{ShellParametersRef.betaMax}}"
         step="any" />
+      <button class="parameter-help-button"
+        (click)="this.parameterHelpBetaButtonClick($event)">
+        <label>?</label>
+      </button>
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <button class="parameter-help-button"
-        (click)="this.parameterHelpA1ButtonClick($event)">
-        <label>?</label>
-      </button>
       <input class="slider" type=range
         [(ngModel)]="this.parameters.a"
         [ngModelOptions]="{standalone: true}"
@@ -80,11 +76,18 @@
         min="{{ShellParametersRef.aMin}}"
         max="{{ShellParametersRef.aMax}}"
         step="any" />
+      <button class="parameter-help-button"
+        (click)="this.parameterHelpA1ButtonClick($event)">
+        <label>?</label>
+      </button>
     </li>
     <div>
-      <div id="result-container">
-        <div #resultBox id="result-box"></div>
-      </div>
+      <input #distanceRange id="distance-range" class="heat-range" type="range" disabled
+        [(ngModel)]="this.distance"
+        [ngModelOptions]="{standalone: true}"
+        min="{{ShellParametersRef.distMin}}"
+        max="{{ShellParametersRef.distMax}}" />
+      <br>
       <button id="new-game-button" (click)="newGameButtonClick($event)">
         <label>New game</label>
       </button>

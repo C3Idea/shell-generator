@@ -15,96 +15,6 @@
       </button>
   </div>
   <form #menu id="parameters-menu">
-    <li class="form-row">
-      <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <button class="parameter-help-button"
-        id="A-help-button"
-        (click)="this.parameterHelpAButtonClick($event)">
-        <label>?</label>
-      </button>
-      <input class="slider" type=range
-        [(ngModel)]="this.parameters.A"
-        [ngModelOptions]="{standalone: true}"
-        (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.AMin}}"
-        max="{{ShellParametersRef.AMax}}"
-        step="any" />
-    </li>
-    <li class="form-row">
-      <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <button class="parameter-help-button"
-        id="alpha-help-button"
-        (click)="this.parameterHelpAlphaButtonClick($event)">
-        <label>?</label>
-      </button>
-      <input class="slider" type=range
-        [(ngModel)]="this.parameters.alpha"
-        [ngModelOptions]="{standalone: true}"
-        (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.alphaMin}}"
-        max="{{ShellParametersRef.alphaMax}}"
-        step="any" />
-    </li>
-    <li class="form-row">
-      <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <button class="parameter-help-button"
-        id="beta-help-button"
-        (click)="this.parameterHelpBetaButtonClick($event)">
-        <label>?</label>
-      </button>
-      <input class="slider" type=range
-        [(ngModel)]="this.parameters.beta"
-        [ngModelOptions]="{standalone: true}"
-        (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.betaMin}}"
-        max="{{ShellParametersRef.betaMax}}"
-        step="any" />
-    </li>
-    <li class="form-row">
-      <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <button class="parameter-help-button"
-        id="a-help-button"
-        (click)="this.parameterHelpA1ButtonClick($event)">
-        <label>?</label>
-      </button>
-      <input class="slider" type=range
-        [(ngModel)]="this.parameters.a"
-        [ngModelOptions]="{standalone: true}"
-        (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.aMin}}"
-        max="{{ShellParametersRef.aMax}}"
-        step="any" />
-    </li>
-    <li class="form-row">
-      <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
-      <button class="parameter-help-button"
-        id="b-help-button"
-        (click)="this.parameterHelpBButtonClick($event)">
-        <label>?</label>
-      </button>
-      <input class="slider" type=range
-        [(ngModel)]="this.parameters.b"
-        [ngModelOptions]="{standalone: true}"
-        (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.bMin}}"
-        max="{{ShellParametersRef.bMax}}"
-        step="any" />
-    </li>
-    <li class="form-row">
-      <img class="parameter-icon" src="./assets/icons/icon_theta.svg"/>
-      <button class="parameter-help-button"
-        id="theta-help-button"
-        (click)="this.parameterHelpThetaButtonClick($event)">
-        <label>?</label>
-      </button>
-      <input class="slider" type=range
-        [(ngModel)]="this.parameters.theta"
-        [ngModelOptions]="{standalone: true}"
-        (change)="this.parameterUpdateEvent($event)"
-        min={{ShellParametersRef.thetaMin}}
-        max={{ShellParametersRef.thetaMax}} 
-        step="any" />
-    </li>
     <div class="button-bar">
       <button class="shell-button" id="shell-a-button" (click)="this.shellASelectEvent($event)">
         <label>A</label>
@@ -120,14 +30,104 @@
       </button>
     </div>
     <li class="form-row">
+      <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.A"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.AMin}}"
+        max="{{ShellParametersRef.AMax}}"
+        step="any" />
+      <button class="parameter-help-button"
+        id="A-help-button"
+        (click)="this.parameterHelpAButtonClick($event)">
+        <label>?</label>
+      </button>
+    </li>
+    <li class="form-row">
+      <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.alpha"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.alphaMin}}"
+        max="{{ShellParametersRef.alphaMax}}"
+        step="any" />
+      <button class="parameter-help-button"
+        id="alpha-help-button"
+        (click)="this.parameterHelpAlphaButtonClick($event)">
+        <label>?</label>
+      </button>
+    </li>
+    <li class="form-row">
+      <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.beta"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.betaMin}}"
+        max="{{ShellParametersRef.betaMax}}"
+        step="any" />
+      <button class="parameter-help-button"
+        id="beta-help-button"
+        (click)="this.parameterHelpBetaButtonClick($event)">
+        <label>?</label>
+      </button>
+    </li>
+    <li class="form-row">
+      <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.a"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.aMin}}"
+        max="{{ShellParametersRef.aMax}}"
+        step="any" />
+      <button class="parameter-help-button"
+        id="a-help-button"
+        (click)="this.parameterHelpA1ButtonClick($event)">
+        <label>?</label>
+      </button>
+    </li>
+    <li class="form-row">
+      <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.b"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min="{{ShellParametersRef.bMin}}"
+        max="{{ShellParametersRef.bMax}}"
+        step="any" />
+      <button class="parameter-help-button"
+        id="b-help-button"
+        (click)="this.parameterHelpBButtonClick($event)">
+        <label>?</label>
+      </button>
+    </li>
+    <li class="form-row">
+      <img class="parameter-icon" src="./assets/icons/icon_theta.svg"/>
+      <input class="slider" type=range
+        [(ngModel)]="this.parameters.theta"
+        [ngModelOptions]="{standalone: true}"
+        (change)="this.parameterUpdateEvent($event)"
+        min={{ShellParametersRef.thetaMin}}
+        max={{ShellParametersRef.thetaMax}} 
+        step="any" />
+      <button class="parameter-help-button"
+        id="theta-help-button"
+        (click)="this.parameterHelpThetaButtonClick($event)">
+        <label>?</label>
+      </button>
+    </li>
+  </form>
+  <button id="visualization-button" (click)="this.visualizationMenuButtonClick($event)">
+    <label>Config</label>
+  </button>
+  <form #visualizationMenu id="visualization-menu">
+    <li class="form-row">
       <div>
         <label class="parameter-label">qual</label>
       </div>
-      <button class="parameter-help-button"
-        id="qual-help-button"
-        (click)="this.parameterHelpQualButtonClick($event)">
-        <label>?</label>
-      </button>
       <input class="slider" type=range
         [(ngModel)]="this.helper.divisions"
         [ngModelOptions]="{standalone: true}"
@@ -135,25 +135,28 @@
         min=50
         max=250
         step="1"  />
+      <button class="parameter-help-button"
+        id="qual-help-button"
+        (click)="this.parameterHelpQualButtonClick($event)">
+        <label>?</label>
+      </button>
     </li>
-    <div class="visualization-options-container">
-      <input id="wireframeVisibleInput" type="checkbox" 
-        [(ngModel)]="this.helper.showWireframe"
+    <input id="wireframeVisibleInput" type="checkbox" 
+      [(ngModel)]="this.helper.showWireframe"
+      [ngModelOptions]="{standalone: true}"
+      (ngModelChange)="this.wireframeCheckboxChanged($event)"/>
+    <label for="wireframeVisibleInput">show wireframe</label>
+    <div class="color-selector">
+      <label class="color-selector-label">surface</label>
+      <input class="color-selector-input" id="surfaceColorInput" type="color"
+        [(ngModel)]="this.helper.surfaceColor"
         [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="this.wireframeCheckboxChanged($event)"/>
-      <label for="wireframeVisibleInput">show wireframe</label>
-      <div class="color-selector">
-        <label class="color-selector-label">surface</label>
-        <input class="color-selector-input" id="surfaceColorInput" type="color"
-          [(ngModel)]="this.helper.surfaceColor"
-          [ngModelOptions]="{standalone: true}"
-          (ngModelChange)="this.surfaceColorChanged($event)"/>
-        <label class="color-selector-label">wireframe</label>
-        <input class="color-selector-input" id="wireframeColorInput" type="color"
-          [(ngModel)]="this.helper.wireframeColor"
-          [ngModelOptions]="{standalone: true}"
-          (ngModelChange)="this.wireframeColorChanged($event)"/>
-      </div>
+        (ngModelChange)="this.surfaceColorChanged($event)"/>
+      <label class="color-selector-label">wireframe</label>
+      <input class="color-selector-input" id="wireframeColorInput" type="color"
+        [(ngModel)]="this.helper.wireframeColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.wireframeColorChanged($event)"/>
     </div>
   </form>
   <div #modalIntroWindow class="modal" (mousedown)="this.modalMouseDown($event)">

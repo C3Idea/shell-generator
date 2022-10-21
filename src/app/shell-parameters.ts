@@ -12,8 +12,6 @@ export class ShellParameters {
     phi: number;
     theta: number;
 
-    ShellParameters = ShellParameters;
-    
     static AMin: number = 5;
     static AMax: number = 13;
     static alphaMin: number = 80;
@@ -32,6 +30,8 @@ export class ShellParameters {
     static phiMax: number = 80;
     static thetaMin: number = 2;
     static thetaMax: number = 16;
+    static distMin: number = 0;
+    static distMax: number = 100;
 
     static Shell1(): ShellParameters {
         let p = new ShellParameters();
@@ -116,5 +116,19 @@ export class ShellParameters {
         this.omega = ShellParameters.omegaMin;
         this.phi = ShellParameters.phiMin;
         this.theta = ShellParameters.thetaMin;
+    }
+
+    distance(other: ShellParameters): number {
+        const d2A = (this.A - other.A) ** 2;
+        const d2alpha = (this.alpha - other.alpha) ** 2;
+        const d2beta  = (this.beta - other.beta) ** 2;
+        const d2a = (this.a - other.a) ** 2;
+        const d2b = (this.b - other.b) ** 2;
+        const d2mu = (this.mu - other.mu) ** 2;
+        const d2omega = (this.omega - other.omega) ** 2;
+        const d2phi   = (this.phi - other.phi) ** 2;
+        const d2theta = (this.theta - other.theta) ** 2; 
+        const d2 = d2A + d2alpha + d2beta + d2a + d2b + d2mu + d2omega + d2phi + d2theta;
+        return Math.sqrt(d2);
     }
 }

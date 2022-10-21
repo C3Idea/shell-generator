@@ -18,6 +18,9 @@ export class SandboxComponent implements AfterViewInit {
   @ViewChild('menu')
   private menuRef!: ElementRef;
 
+  @ViewChild('visualizationMenu')
+  private visualizationMenuRef!: ElementRef;
+
   @ViewChild('modalHelpWindow')
   private modalHelpWindowRef!: ElementRef;
 
@@ -32,15 +35,18 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   // Stage properties
-  @Input() public fieldOfView: number = 1;
-  @Input() public nearClippingPlane: number = 1;
-  @Input() public farClippingPlane: number = 10000;
+  private fieldOfView: number = 1;
+  private nearClippingPlane: number = 1;
+  private farClippingPlane: number = 10000;
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
   private get menu(): HTMLFormElement {
     return this.menuRef.nativeElement;
+  }
+  private get visualizationMenu(): HTMLFormElement {
+    return this.visualizationMenuRef.nativeElement;
   }
   private get modalHelpWindow(): HTMLDivElement {
     return this.modalHelpWindowRef.nativeElement;
@@ -50,10 +56,11 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   helpContent: string = "";
-  introContent: string = "";
+  introContent: string = "WELCOME";
 
   // Visual parameters
   menuVisible: boolean = false;
+  visualizationMenuVisible: boolean = false;
 
   ShellParametersRef = ShellParameters;
 
@@ -67,6 +74,7 @@ export class SandboxComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
     this.helper.createGraph(this.parameters);
+    this.showIntroWindow();
   }
 
   public wireframeCheckboxChanged(event: Event): void {
@@ -112,6 +120,13 @@ export class SandboxComponent implements AfterViewInit {
     }
   }
 
+  visualizationMenuButtonClick(event: Event): void {
+    if (this.menuVisible) {
+      this.hideMenu();
+    }
+    this.showVisualizationMenu();
+  }
+
   parameterUpdateEvent(event: Event): void {
     this.helper.createGraph(this.parameters)
   }
@@ -134,7 +149,10 @@ export class SandboxComponent implements AfterViewInit {
   canvasClickEvent(event: Event): void {
     if (this.menuVisible) {
       this.hideMenu();
-    } 
+    }
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
   }
 
   setMenuVisibility(): void {
@@ -154,6 +172,16 @@ export class SandboxComponent implements AfterViewInit {
   private showMenu() {
     this.menu.style.display = 'block';
     this.menuVisible = true;
+  }
+
+  private showVisualizationMenu() {
+    this.visualizationMenu.style.display = 'block';
+    this.visualizationMenuVisible = true;
+  }
+
+  private hideVisualizationMenu() {
+    this.visualizationMenu.style.display = 'none';
+    this.visualizationMenuVisible = false;
   }
 
   gameButtonClick(event: Event) {
@@ -217,6 +245,10 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   introButtonClick(event: Event) {
+    this.showIntroWindow();
+  }
+
+  private showIntroWindow() {
     this.modalIntroWindow.style.display = 'block';
   }
 

@@ -17,11 +17,10 @@ label {
 
 #toolbar {
     display: inline;
-    position: absolute;
+    position: fixed;
     top: 5px;
     left: 5px;
     height: 35px;
-    z-index: 1;
 }
 
 .toolbar-button {
@@ -34,26 +33,48 @@ label {
     height: auto;
     background-color: #9DBEBB;
     opacity: 0.8;
-    z-index: 1;
-    position: absolute;
+    position: fixed;
     top: 40px;
     left: 5px;
     text-align: center;
     display: none;
     list-style-type: none;
     padding: 2px;
+    border-radius: 5px;
+}
+
+#visualization-button {
+    width:  60px;
+    height: 60px;
+    position: fixed;
+    bottom: 5px;
+    left:   5px;
+}
+
+#visualization-menu {
+    width: 300px;
+    height: auto;
+    background-color: #9DBEBB;
+    z-index: 1;
+    position: fixed;
+    bottom: 5px;
+    left:   5px;
+    display: none;
+    border-radius: 5px;
+    padding: 2px;
+    list-style-type: none;
 }
 
 .shell-button {
-    margin: 10px;
-    height: 25px;
-    width: 50px;
+    margin: 5px;
+    height: 50px;
+    width:  50px;
 }
 
 .form-row {
     display: flex;
     justify-content: flex-end;
-    height: auto;
+    height: 64px;
     padding: 2px;
 }
 
@@ -63,7 +84,7 @@ label {
 
 .parameter-icon {
     width:  auto;
-    height: 50px;
+    height: 64px;
 }
 
 .parameter-label {
@@ -72,11 +93,6 @@ label {
     width: 50px;
     line-height: 50px;
     text-align: center;
-}
-
-.visualization-options-container {
-    text-align: left;
-    padding: 2px;
 }
 
 .color-selector {
@@ -99,9 +115,9 @@ label {
 }
 
 .parameter-help-button {
-    width:  40px;
-    height: 40px;
-    margin: 5px;
+    width:  30px;
+    height: 30px;
+    margin-top: 16px;
 }
 
 /* The Modal (background) */
