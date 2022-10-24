@@ -1,33 +1,30 @@
 <div id="main-container">
   <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
   <div id="toolbar">
-    <button class="toolbar-button" (click)="this.menuButtonClick($event)" >
-      <label>Menu</label>
-      </button>
-      <button class="toolbar-button" (click)="this.clickExportImage($event)">
-        <label>Save</label>
-      </button>
-      <button class="toolbar-button" (click)="this.gameButtonClick($event)">
-        <label>Game</label>
-      </button>
-      <button class="toolbar-button" (click)="this.introButtonClick($event)">
-        <label>Intro</label>
-      </button>
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)"
+      src="./assets/icons/icon_engrane_menu.svg" />
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)"
+      src="./assets/icons/icon_save_photo.svg" />
+    <button class="toolbar-button" title={{Strings.BUTTON_GAME_TITLE}} (click)="this.gameButtonClick($event)">
+      <label>Game</label>
+    </button>
+    <button class="toolbar-button" title={{Strings.BUTTON_INTRO_TITLE}} (click)="this.introButtonClick($event)">
+      <label>Intro</label>
+    </button>
   </div>
   <form #menu id="parameters-menu">
     <div class="button-bar">
-      <button class="shell-button" id="shell-a-button" (click)="this.shellASelectEvent($event)">
+      <button class="shell-button" id="shell-a-button" title={{Strings.BUTTON_SHELL_A_TITLE}} (click)="this.shellASelectEvent($event)">
         <label>A</label>
       </button>
-      <button class="shell-button" id="shell-b-button" (click)="this.shellBSelectEvent($event)">
+      <button class="shell-button" id="shell-b-button" title={{Strings.BUTTON_SHELL_B_TITLE}} (click)="this.shellBSelectEvent($event)">
         <label>B</label>
       </button>
-      <button class="shell-button" id="shell-c-button" (click)="this.shellCSelectEvent($event)">
+      <button class="shell-button" id="shell-c-button" title={{Strings.BUTTON_SHELL_C_TITLE}} (click)="this.shellCSelectEvent($event)">
         <label>C</label>
       </button>
-      <button class="shell-button" id="shell-random-button" (click)="this.randomShellEvent($event)">
-        <label>?</label>
-      </button>
+      <input type="image" class="shell-button" id="shell-random-button" title={{Strings.BUTTON_SHELL_RANDOM_TITLE}} (click)="this.randomShellEvent($event)"
+        src="./assets/icons/icon_random_dado.svg" />
     </div>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
@@ -35,14 +32,14 @@
         [(ngModel)]="this.parameters.A"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.AMin}}"
-        max="{{ShellParametersRef.AMax}}"
+        min="{{ShellParameters.AMin}}"
+        max="{{ShellParameters.AMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="A-help-button"
-        (click)="this.parameterHelpAButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_A_TITLE}}
+        (click)="this.parameterHelpAButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
@@ -50,14 +47,14 @@
         [(ngModel)]="this.parameters.alpha"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.alphaMin}}"
-        max="{{ShellParametersRef.alphaMax}}"
+        min="{{ShellParameters.alphaMin}}"
+        max="{{ShellParameters.alphaMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="alpha-help-button"
-        (click)="this.parameterHelpAlphaButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_ALPHA_TITLE}}
+        (click)="this.parameterHelpAlphaButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
@@ -65,14 +62,14 @@
         [(ngModel)]="this.parameters.beta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.betaMin}}"
-        max="{{ShellParametersRef.betaMax}}"
+        min="{{ShellParameters.betaMin}}"
+        max="{{ShellParameters.betaMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="beta-help-button"
-        (click)="this.parameterHelpBetaButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_BETA_TITLE}}
+        (click)="this.parameterHelpBetaButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
@@ -80,14 +77,14 @@
         [(ngModel)]="this.parameters.a"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.aMin}}"
-        max="{{ShellParametersRef.aMax}}"
+        min="{{ShellParameters.aMin}}"
+        max="{{ShellParameters.aMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="a-help-button"
-        (click)="this.parameterHelpA1ButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_A1_TITLE}}
+        (click)="this.parameterHelpA1ButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
@@ -95,14 +92,14 @@
         [(ngModel)]="this.parameters.b"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.bMin}}"
-        max="{{ShellParametersRef.bMax}}"
+        min="{{ShellParameters.bMin}}"
+        max="{{ShellParameters.bMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="b-help-button"
-        (click)="this.parameterHelpBButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_B_TITLE}}
+        (click)="this.parameterHelpBButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_theta.svg"/>
@@ -110,23 +107,22 @@
         [(ngModel)]="this.parameters.theta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min={{ShellParametersRef.thetaMin}}
-        max={{ShellParametersRef.thetaMax}} 
+        min={{ShellParameters.thetaMin}}
+        max={{ShellParameters.thetaMax}} 
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="theta-help-button"
-        (click)="this.parameterHelpThetaButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_THETA_TITLE}}
+        (click)="this.parameterHelpThetaButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
   </form>
-  <button id="visualization-button" (click)="this.visualizationMenuButtonClick($event)">
-    <label>Config</label>
-  </button>
+  <input type="image" id="visualization-button" title={{Strings.VISUALIZATION_MENU_BUTTON_HELP_TEXT}} (click)="this.visualizationMenuButtonClick($event)"
+    src="./assets/icons/icon_pen_config.svg" />
   <form #visualizationMenu id="visualization-menu">
     <li class="form-row">
       <div>
-        <label class="parameter-label">qual</label>
+        <label class="parameter-label">{{Strings.QUAL_TEXT}}</label>
       </div>
       <input class="slider" type=range
         [(ngModel)]="this.helper.divisions"
@@ -135,28 +131,30 @@
         min=50
         max=250
         step="1"  />
-      <button class="parameter-help-button"
+      <input class="parameter-help-button"
         id="qual-help-button"
-        (click)="this.parameterHelpQualButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.PARAMETER_QUAL_BUTTON_HELP_TEXT}}
+        (click)="this.parameterHelpQualButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <input id="wireframeVisibleInput" type="checkbox" 
       [(ngModel)]="this.helper.showWireframe"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="this.wireframeCheckboxChanged($event)"/>
-    <label for="wireframeVisibleInput">show wireframe</label>
+    <label for="wireframeVisibleInput">{{Strings.SHOW_WIREFRAME_TEXT}}</label>
     <div class="color-selector">
-      <label class="color-selector-label">surface</label>
+      <label class="color-selector-label">{{Strings.SURFACE_TEXT}}</label>
       <input class="color-selector-input" id="surfaceColorInput" type="color"
         [(ngModel)]="this.helper.surfaceColor"
         [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="this.surfaceColorChanged($event)"/>
-      <label class="color-selector-label">wireframe</label>
+        (ngModelChange)="this.surfaceColorChanged($event)"
+        title="{{Strings.SURFACE_COLOR_INPUT_HELP_TEXT}}" />
+      <label class="color-selector-label">{{Strings.WIREFRAME_TEXT}}</label>
       <input class="color-selector-input" id="wireframeColorInput" type="color"
         [(ngModel)]="this.helper.wireframeColor"
         [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="this.wireframeColorChanged($event)"/>
+        (ngModelChange)="this.wireframeColorChanged($event)"
+        title="{{Strings.WIREFRAME_COLOR_INPUT_HELP_TEXT}}"/>
     </div>
   </form>
   <div #modalIntroWindow class="modal" (mousedown)="this.modalMouseDown($event)">

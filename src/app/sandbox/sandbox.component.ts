@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } 
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
+import { Strings } from '../strings';
 
 @Component({
   selector: 'app-surface',
@@ -62,7 +63,8 @@ export class SandboxComponent implements AfterViewInit {
   menuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
 
-  ShellParametersRef = ShellParameters;
+  ShellParameters = ShellParameters;
+  Strings = Strings;
 
   // Surface parameters
   parameters: ShellParameters = ShellParameters.Shell1();

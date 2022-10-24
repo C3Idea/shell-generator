@@ -20,12 +20,14 @@ label {
     position: fixed;
     top: 5px;
     left: 5px;
-    height: 35px;
+    height: auto;
 }
 
 .toolbar-button {
-    min-width: 50px;
-    height: 100%;
+    width:  64px;
+    height: 64px;
+    margin: 2px;
+    vertical-align: middle;
 }
 
 #parameters-menu {
@@ -34,7 +36,7 @@ label {
     background-color: #9DBEBB;
     opacity: 0.8;
     position: fixed;
-    top: 40px;
+    top: 75px;
     left: 5px;
     text-align: center;
     display: none;
@@ -44,11 +46,12 @@ label {
 }
 
 #visualization-button {
-    width:  60px;
-    height: 60px;
+    width:  64px;
+    height: 64px;
     position: fixed;
     bottom: 5px;
     left:   5px;
+    margin: 2px;
 }
 
 #visualization-menu {
@@ -69,6 +72,7 @@ label {
     margin: 5px;
     height: 50px;
     width:  50px;
+    vertical-align: middle;
 }
 
 .form-row {
@@ -89,9 +93,9 @@ label {
 
 .parameter-label {
     display: inline-block;
-    height: 50px;
+    height: 64px;
     width: 50px;
-    line-height: 50px;
+    line-height: 64px;
     text-align: center;
 }
 
@@ -115,9 +119,10 @@ label {
 }
 
 .parameter-help-button {
-    width:  30px;
-    height: 30px;
-    margin-top: 16px;
+    width:  24px;
+    height: 24px;
+    margin-top: 20px;
+    margin-left: 2px;
 }
 
 /* The Modal (background) */

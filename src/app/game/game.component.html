@@ -2,16 +2,14 @@
   <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
   <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
   <div id="toolbar">
-    <button class="toolbar-button" (click)="this.menuButtonClick($event)" >
-      <label>Menu</label>
-    </button>
-    <button class="toolbar-button" (click)="this.clickExportImage($event)">
-      <label>Save</label>
-    </button>
-    <button class="toolbar-button" (click)="this.sandboxButtonClick($event)">
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)"
+      src="./assets/icons/icon_engrane_menu.svg" />
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)"
+      src="./assets/icons/icon_save_photo.svg" />
+    <button class="toolbar-button" title={{Strings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)">
       <label>Home</label>
     </button>
-    <button class="toolbar-button" (click)="this.howToButtonClick($event)">
+    <button class="toolbar-button" title={{Strings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)">
       <label>Help</label>
     </button>
     <label class="switch-label">user</label>
@@ -29,14 +27,14 @@
         [(ngModel)]="this.parameters.A"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.AMin}}"
-        max="{{ShellParametersRef.AMax}}"
+        min="{{ShellParameters.AMin}}"
+        max="{{ShellParameters.AMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="A-help-button"
-        (click)="this.parameterHelpAButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_A_TITLE}}
+        (click)="this.parameterHelpAButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
@@ -44,14 +42,14 @@
         [(ngModel)]="this.parameters.alpha"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.alphaMin}}"
-        max="{{ShellParametersRef.alphaMax}}"
+        min="{{ShellParameters.alphaMin}}"
+        max="{{ShellParameters.alphaMax}}"
         step="any" />
-      <button class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="alpha-help-button"
-        (click)="this.parameterHelpAlphaButtonClick($event)">
-        <label>?</label>
-      </button>
+        title={{Strings.BUTTON_PARAM_ALPHA_TITLE}}
+        (click)="this.parameterHelpAlphaButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
@@ -59,13 +57,14 @@
         [(ngModel)]="this.parameters.beta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.betaMin}}"
-        max="{{ShellParametersRef.betaMax}}"
+        min="{{ShellParameters.betaMin}}"
+        max="{{ShellParameters.betaMax}}"
         step="any" />
-      <button class="parameter-help-button"
-        (click)="this.parameterHelpBetaButtonClick($event)">
-        <label>?</label>
-      </button>
+      <input type="image" class="parameter-help-button"
+        id="beta-help-button"
+        title={{Strings.BUTTON_PARAM_BETA_TITLE}}
+        (click)="this.parameterHelpBetaButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
@@ -73,25 +72,27 @@
         [(ngModel)]="this.parameters.a"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
-        min="{{ShellParametersRef.aMin}}"
-        max="{{ShellParametersRef.aMax}}"
+        min="{{ShellParameters.aMin}}"
+        max="{{ShellParameters.aMax}}"
         step="any" />
-      <button class="parameter-help-button"
-        (click)="this.parameterHelpA1ButtonClick($event)">
-        <label>?</label>
-      </button>
+      <input type="image" class="parameter-help-button"
+        id="a-help-button"
+        title={{Strings.BUTTON_PARAM_A1_TITLE}}
+        (click)="this.parameterHelpA1ButtonClick($event)"
+        src="./assets/icons/icon_info_i.svg" />
     </li>
-    <div>
+    <div id="result-container">
+      <img class="result-image" src="./assets/icons/icon_cross_tache.svg" />
       <input #distanceRange id="distance-range" class="heat-range" type="range" disabled
         [(ngModel)]="this.distance"
         [ngModelOptions]="{standalone: true}"
-        min="{{ShellParametersRef.distMin}}"
-        max="{{ShellParametersRef.distMax}}" />
-      <br>
-      <button id="new-game-button" (click)="newGameButtonClick($event)">
-        <label>New game</label>
-      </button>
+        min="{{ShellParameters.distMin}}"
+        max="{{ShellParameters.distMax}}" />
+      <img class="result-image" src="./assets/icons/icon_check_correcto.svg" />
     </div>
+    <button id="new-game-button" title={{Strings.BUTTON_NEW_GAME_TITLE}} (click)="newGameButtonClick($event)">
+      <label>{{Strings.LABEL_NEW_GAME}}</label>
+    </button>
   </form>
   <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-content">

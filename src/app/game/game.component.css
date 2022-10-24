@@ -27,16 +27,17 @@ label {
 
 #toolbar {
   display: inline;
-  position: absolute;
+  position: fixed;
   top: 5px;
   left: 5px;
-  height: 35px;
-  z-index: 1;
-}
+  height: auto;
+} 
 
 .toolbar-button {
-  width: 50px;
-  height: 100%;
+  width:  64px;
+  height: 64px;
+  margin: 2px;
+  vertical-align: middle;
 }
 
 #parameters-menu {
@@ -44,27 +45,14 @@ label {
   height: auto;
   background-color: #9DBEBB;
   opacity: 0.8;
-  z-index: 1;
-  position: absolute;
-  top: 40px;
+  position: fixed;
+  top: 75px;
   left: 5px;
   text-align: center;
   display: none;
   list-style-type: none;
   padding: 2px;
-}
-
-#result-container {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#result-box {
-  width: 50px;
-  height: 50px;
+  border-radius: 5px;
 }
 
 .form-row {
@@ -101,12 +89,23 @@ label {
   text-align: center;
 }
 
+#result-container {
+  vertical-align: middle;
+  height: 36px;
+}
+
+.result-image {
+  width:  20px;
+  height: 20px;
+  margin: 2px;
+}
+
  /* The switch - the box around the slider */
 .switch {
   position: relative;
   display: inline-block;
   width: 80px;
-  height: 100%;
+  height: 40px;
   align-items: center;
   vertical-align: middle;
 }
@@ -218,9 +217,10 @@ input:checked + .switch-slider:before {
 }
 
 .parameter-help-button {
-  width:  30px;
-  height: 30px;
-  margin-top: 16px;
+  width:  24px;
+  height: 24px;
+  margin-top: 20px;
+  margin-left: 2px;
 }
 
 #new-game-button {
@@ -250,7 +250,7 @@ input:checked + .switch-slider:before {
   background: -ms-linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   background: linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bade3 ', endColorstr='#ff357f ', GradientType=1 );
-  height: 20px;
+  height: 24px;
 }
 
 .heat-range:focus {
@@ -267,7 +267,7 @@ input:checked + .switch-slider:before {
   background: -ms-linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   background: linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bade3 ', endColorstr='#ff357f ', GradientType=1 );
-  height: 20px;
+  height: 24px;
 }
 
 .heat-range::-webkit-slider-thumb {

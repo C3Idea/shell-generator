@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
+import { Strings } from '../strings';
 
 @Component({
   selector: 'app-surface',
@@ -67,7 +68,8 @@ export class GameComponent implements OnInit, AfterViewInit {
   private nearClippingPlane: number = 1;
   private farClippingPlane: number = 10000;
 
-  ShellParametersRef = ShellParameters;
+  ShellParameters = ShellParameters;
+  Strings = Strings;
 
   // Visual parameters
   menuVisible: boolean = false;
