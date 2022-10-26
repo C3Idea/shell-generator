@@ -5,12 +5,10 @@
       src="./assets/icons/icon_engrane_menu.svg" />
     <input type="image" class="toolbar-button" title={{Strings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)"
       src="./assets/icons/icon_save_photo.svg" />
-    <button class="toolbar-button" title={{Strings.BUTTON_GAME_TITLE}} (click)="this.gameButtonClick($event)">
-      <label>Game</label>
-    </button>
-    <button class="toolbar-button" title={{Strings.BUTTON_INTRO_TITLE}} (click)="this.introButtonClick($event)">
-      <label>Intro</label>
-    </button>
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_GAME_TITLE}} (click)="this.gameButtonClick($event)"
+      src="./assets/icons/icon_game_control.svg" />
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_INTRO_TITLE}} (click)="this.introButtonClick($event)"
+      src="./assets/icons/icon_book_info.svg" />
   </div>
   <form #menu id="parameters-menu">
     <div class="button-bar">
@@ -131,7 +129,7 @@
         min=50
         max=250
         step="1"  />
-      <input class="parameter-help-button"
+      <input type="image" class="parameter-help-button"
         id="qual-help-button"
         title={{Strings.PARAMETER_QUAL_BUTTON_HELP_TEXT}}
         (click)="this.parameterHelpQualButtonClick($event)"

@@ -6,12 +6,10 @@
       src="./assets/icons/icon_engrane_menu.svg" />
     <input type="image" class="toolbar-button" title={{Strings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)"
       src="./assets/icons/icon_save_photo.svg" />
-    <button class="toolbar-button" title={{Strings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)">
-      <label>Home</label>
-    </button>
-    <button class="toolbar-button" title={{Strings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)">
-      <label>Help</label>
-    </button>
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)"
+      src="./assets/icons/icon_home_sandbox.svg" />
+    <input type="image" class="toolbar-button" title={{Strings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)"
+      src="./assets/icons/icon_book_info.svg" />
     <label class="switch-label">user</label>
     <label id="shell-switch" class="switch">
       <input type="checkbox" [(ngModel)]="this.targetVisible"
