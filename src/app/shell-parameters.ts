@@ -44,6 +44,7 @@ export class ShellParameters {
         p.mu = 1;
         p.omega = -2;
         p.phi = 55;
+        p.theta = 8;
         return p;
     }
 
@@ -58,6 +59,7 @@ export class ShellParameters {
         p.mu = 0;
         p.omega = 0;
         p.phi = 78;
+        p.theta = 8;
         return p;
     }
 
@@ -72,6 +74,7 @@ export class ShellParameters {
         p.mu = 1;
         p.omega = 5;
         p.phi = 20;
+        p.theta = 8;
         return p;
     }
 

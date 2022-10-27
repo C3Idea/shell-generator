@@ -37,7 +37,30 @@ label {
   width:  64px;
   height: 64px;
   margin: 2px;
-  vertical-align: middle;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.svg-content {
+  /*fill: #e6e6e6;*/
+  fill: aqua;
+}
+
+.svg-border {
+  fill: none;
+  /*stroke: #e6e6e6;*/
+  stroke: yellow;
+  stroke-miterlimit: 10;
+  stroke-width: 3px;
+}
+
+.toolbar-button:hover .svg-content {
+  fill: red;
+}
+
+.toolbar-button:hover .svg-border {
+    stroke: blue;
 }
 
 #parameters-menu {
