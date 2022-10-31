@@ -101,6 +101,14 @@ label {
   cursor: pointer;
 }
 
+.shell-button:hover .svg-content {
+  fill: #e2c16e;
+}
+
+.shell-button:hover .svg-border {
+    stroke: #468189;
+}
+
 .form-row {
   display: flex;
   justify-content: flex-end;
