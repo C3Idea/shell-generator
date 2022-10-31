@@ -2,7 +2,7 @@
   <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
   <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
   <div id="toolbar">
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -13,7 +13,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -25,7 +25,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -33,7 +33,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -76,7 +76,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="A-help-button"
-        title={{Strings.BUTTON_PARAM_A_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_A_TITLE}}
         (click)="this.parameterHelpAButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -91,7 +91,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="alpha-help-button"
-        title={{Strings.BUTTON_PARAM_ALPHA_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_ALPHA_TITLE}}
         (click)="this.parameterHelpAlphaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -106,7 +106,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="beta-help-button"
-        title={{Strings.BUTTON_PARAM_BETA_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_BETA_TITLE}}
         (click)="this.parameterHelpBetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -121,7 +121,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="a-help-button"
-        title={{Strings.BUTTON_PARAM_A1_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_A1_TITLE}}
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -134,8 +134,8 @@
         max="{{ShellParameters.distMax}}" />
       <img class="result-image" src="./assets/icons/icon_check_correcto.svg" />
     </div>
-    <button id="new-game-button" title={{Strings.BUTTON_NEW_GAME_TITLE}} (click)="newGameButtonClick($event)">
-      <label>{{Strings.LABEL_NEW_GAME}}</label>
+    <button id="new-game-button" title={{AppStrings.BUTTON_NEW_GAME_TITLE}} (click)="newGameButtonClick($event)">
+      <label>{{AppStrings.LABEL_NEW_GAME}}</label>
     </button>
   </form>
   <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
@@ -153,12 +153,17 @@
   </div>
   <div #modalHowToWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-howto-content">
-      <label class="howto-content-label">{{this.howToContent}}</label>
+      <label id="label-howto-title">{{AppStrings.LABEL_HOWTO_WINDOW_TITLE}}</label>
+      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE1}}</label>
+      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE2}}</label>
+      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE3}}</label>
+      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE4}}</label>
     </div>
   </div>
   <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-help-content">
-      <label class="help-content-label">{{this.helpContent}}</label>
+      <label id="label-help-title">{{this.helpTitle}}</label>
+      <label id="label-help-content">{{this.helpContent}}</label>
     </div>
   </div>
 </div>

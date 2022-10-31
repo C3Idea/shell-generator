@@ -1,7 +1,7 @@
 <div id="main-container">
   <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
   <div id="toolbar">
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -12,7 +12,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -24,7 +24,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_GAME_TITLE}} (click)="this.gameButtonClick($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_GAME_TITLE}} (click)="this.gameButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -43,7 +43,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{Strings.BUTTON_INTRO_TITLE}} (click)="this.introButtonClick($event)">
+    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_INTRO_TITLE}} (click)="this.introButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -69,7 +69,7 @@
   </div>
   <form #menu id="parameters-menu">
     <div class="button-bar">
-      <button type="button" class="shell-button" id="shell-a-button" title={{Strings.BUTTON_SHELL_A_TITLE}} (click)="this.shellASelectEvent($event)">
+      <button type="button" class="shell-button" id="shell-a-button" title={{AppStrings.BUTTON_SHELL_A_TITLE}} (click)="this.shellASelectEvent($event)">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
           <g>
             <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -77,7 +77,7 @@
           </g>
         </svg>
       </button>
-      <button type="button" class="shell-button" id="shell-b-button" title={{Strings.BUTTON_SHELL_B_TITLE}} (click)="this.shellBSelectEvent($event)">
+      <button type="button" class="shell-button" id="shell-b-button" title={{AppStrings.BUTTON_SHELL_B_TITLE}} (click)="this.shellBSelectEvent($event)">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
           <g>
             <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -85,7 +85,7 @@
           </g>
         </svg>
       </button>
-      <button type="button" class="shell-button" id="shell-c-button" title={{Strings.BUTTON_SHELL_C_TITLE}} (click)="this.shellCSelectEvent($event)">
+      <button type="button" class="shell-button" id="shell-c-button" title={{AppStrings.BUTTON_SHELL_C_TITLE}} (click)="this.shellCSelectEvent($event)">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
           <g>
             <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -93,7 +93,7 @@
           </g>
         </svg>
       </button>
-      <button type="button" class="shell-button" id="shell-random-button" title={{Strings.BUTTON_SHELL_RANDOM_TITLE}} (click)="this.randomShellEvent($event)">
+      <button type="button" class="shell-button" id="shell-random-button" title={{AppStrings.BUTTON_SHELL_RANDOM_TITLE}} (click)="this.randomShellEvent($event)">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
           <g>
             <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -117,7 +117,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="A-help-button"
-        title={{Strings.BUTTON_PARAM_A_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_A_TITLE}}
         (click)="this.parameterHelpAButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -132,7 +132,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="alpha-help-button"
-        title={{Strings.BUTTON_PARAM_ALPHA_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_ALPHA_TITLE}}
         (click)="this.parameterHelpAlphaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -147,7 +147,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="beta-help-button"
-        title={{Strings.BUTTON_PARAM_BETA_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_BETA_TITLE}}
         (click)="this.parameterHelpBetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -162,7 +162,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="a-help-button"
-        title={{Strings.BUTTON_PARAM_A1_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_A1_TITLE}}
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -177,7 +177,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="b-help-button"
-        title={{Strings.BUTTON_PARAM_B_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_B_TITLE}}
         (click)="this.parameterHelpBButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -192,12 +192,12 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="theta-help-button"
-        title={{Strings.BUTTON_PARAM_THETA_TITLE}}
+        title={{AppStrings.BUTTON_PARAM_THETA_TITLE}}
         (click)="this.parameterHelpThetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
   </form>
-  <button type="button" class="toolbar-button" id="visualization-button" title={{Strings.VISUALIZATION_MENU_BUTTON_HELP_TEXT}} (click)="this.visualizationMenuButtonClick($event)">
+  <button type="button" class="toolbar-button" id="visualization-button" title={{AppStrings.VISUALIZATION_MENU_BUTTON_HELP_TEXT}} (click)="this.visualizationMenuButtonClick($event)">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
       <g>
         <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -211,7 +211,7 @@
   <form #visualizationMenu id="visualization-menu">
     <li class="form-row">
       <div>
-        <label class="parameter-label">{{Strings.QUAL_TEXT}}</label>
+        <label class="parameter-label">{{AppStrings.QUAL_TEXT}}</label>
       </div>
       <input class="slider" type=range
         [(ngModel)]="this.helper.divisions"
@@ -222,7 +222,7 @@
         step="1"  />
       <input type="image" class="parameter-help-button"
         id="qual-help-button"
-        title={{Strings.PARAMETER_QUAL_BUTTON_HELP_TEXT}}
+        title={{AppStrings.PARAMETER_QUAL_BUTTON_HELP_TEXT}}
         (click)="this.parameterHelpQualButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
@@ -230,30 +230,36 @@
       [(ngModel)]="this.helper.showWireframe"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="this.wireframeCheckboxChanged($event)"/>
-    <label for="wireframeVisibleInput">{{Strings.SHOW_WIREFRAME_TEXT}}</label>
+    <label for="wireframeVisibleInput">{{AppStrings.SHOW_WIREFRAME_TEXT}}</label>
     <div class="color-selector">
-      <label class="color-selector-label">{{Strings.SURFACE_TEXT}}</label>
+      <label class="color-selector-label">{{AppStrings.SURFACE_TEXT}}</label>
       <input class="color-selector-input" id="surfaceColorInput" type="color"
         [(ngModel)]="this.helper.surfaceColor"
         [ngModelOptions]="{standalone: true}"
         (ngModelChange)="this.surfaceColorChanged($event)"
-        title="{{Strings.SURFACE_COLOR_INPUT_HELP_TEXT}}" />
-      <label class="color-selector-label">{{Strings.WIREFRAME_TEXT}}</label>
+        title="{{AppStrings.SURFACE_COLOR_INPUT_HELP_TEXT}}" />
+      <label class="color-selector-label">{{AppStrings.WIREFRAME_TEXT}}</label>
       <input class="color-selector-input" id="wireframeColorInput" type="color"
         [(ngModel)]="this.helper.wireframeColor"
         [ngModelOptions]="{standalone: true}"
         (ngModelChange)="this.wireframeColorChanged($event)"
-        title="{{Strings.WIREFRAME_COLOR_INPUT_HELP_TEXT}}"/>
+        title="{{AppStrings.WIREFRAME_COLOR_INPUT_HELP_TEXT}}"/>
     </div>
   </form>
   <div #modalIntroWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-intro-content">
-      <label class="modal-intro-label">{{this.introContent}}</label>
+      <label id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</label>
+      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</label>
+      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE2}}</label>
+      <img id="img-intro-equation" />
+      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</label>
+      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</label>
     </div>
   </div>
   <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-help-content">
-      <label class="help-content-label">{{this.helpContent}}</label>
+      <label id="label-help-title">{{this.helpTitle}}</label>
+      <label id="label-help-content">{{this.helpContent}}</label>
     </div>
   </div>
 </div>

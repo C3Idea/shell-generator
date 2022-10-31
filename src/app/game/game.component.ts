@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
-import { Strings } from '../strings';
+import { AppStrings } from '../app-strings';
 
 @Component({
   selector: 'app-surface',
@@ -69,7 +69,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   private farClippingPlane: number = 10000;
 
   ShellParameters = ShellParameters;
-  Strings = Strings;
+  AppStrings = AppStrings;
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -85,8 +85,8 @@ export class GameComponent implements OnInit, AfterViewInit {
   private userShellColor   = "#F0F0F0";
   private targetShellColor = "#D2B478";
 
+  helpTitle:   string = "";
   helpContent: string = "";
-  howToContent: string = "How to play:"
 
   distance: number;
 
@@ -299,22 +299,26 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.helpContent = "Parameter A help message.";
+    this.helpTitle   = AppStrings.LABEL_PARAM_A_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_A_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.helpContent = "Parameter alpha help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.helpContent = "Parameter beta help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_BETA_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_BETA_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.helpContent = "Parameter a (lowercase) help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_A1_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_A1_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 

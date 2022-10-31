@@ -201,17 +201,50 @@ input:checked + .switch-slider:before {
 }
 
 .modal-help-content {
-  background-color: #fdf6f3;
+  background-color: white;
   margin: 15% auto;
-  width: 350px;
-  height: 100px;
+  width: 50%;
+  height: auto;
+  border-radius: 10px;
+}
+
+#label-help-title {
+  display: inline-block;
+  margin: 5px;
+  font-size: 1.1em;
+  width: 100%;
+  line-height: 50px;
+}
+
+#label-help-content {
+  display: inline-block;
+  width: calc(100% - 10px);
+  line-height: 100px;
+  text-align: justify;
+  margin: 5px;
 }
 
 .modal-howto-content {
   background-color: white;
   margin: 15% auto;
-  width: 350px;
-  height: 200px;
+  width: 50%;
+  height: auto;
+  border-radius: 10px;
+}
+
+#label-howto-title {
+  display: inline-block;
+  font-size: 1.5em;
+  width: 100%;
+  line-height: 50px;
+  text-align: center;
+}
+
+.label-howto-line {
+  display: inline-block;
+  width: calc(100% - 10px);
+  text-align: justify;
+  margin: 5px;
 }
 
 /* Modal Content/Box */

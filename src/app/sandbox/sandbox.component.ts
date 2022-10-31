@@ -2,7 +2,8 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } 
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
-import { Strings } from '../strings';
+import { AppStrings } from '../app-strings';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-surface',
@@ -56,15 +57,15 @@ export class SandboxComponent implements AfterViewInit {
     return this.modalIntroWindowRef.nativeElement
   }
 
+  helpTitle:   string = "";
   helpContent: string = "";
-  introContent: string = "WELCOME";
 
   // Visual parameters
   menuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
 
   ShellParameters = ShellParameters;
-  Strings = Strings;
+  AppStrings = AppStrings;
 
   // Surface parameters
   parameters: ShellParameters = ShellParameters.Shell1();
@@ -114,6 +115,9 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   menuButtonClick(event: Event): void {
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
     if (this.menuVisible) {
       this.hideMenu();
     }
@@ -212,37 +216,44 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.helpContent = "Parameter A help message.";
+    this.helpTitle   = AppStrings.LABEL_PARAM_A_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_A_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.helpContent = "Parameter alpha help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.helpContent = "Parameter beta help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_BETA_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_BETA_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.helpContent = "Parameter a (lowercase) help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_A1_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_A1_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpBButtonClick(event: Event) {
-    this.helpContent = "Parameter b help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_B_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_B_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpThetaButtonClick(event: Event) {
-    this.helpContent = "Parameter theta help message.";
+    this.helpTitle = AppStrings.LABEL_PARAM_THETA_HELP_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_THETA_HELP_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
   parameterHelpQualButtonClick(event: Event) {
-    this.helpContent = "Parameter quality help message.";
+    this.helpTitle   = AppStrings.LABEL_PARAM_QUAL_TITLE;
+    this.helpContent = AppStrings.LABEL_PARAM_QUAL_CONTENT;
     this.modalHelpWindow.style.display = 'block';
   }
 
