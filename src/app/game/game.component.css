@@ -44,23 +44,23 @@ label {
 
 .svg-content {
   /*fill: #e6e6e6;*/
-  fill: aqua;
+  fill: #f4e9cd;
 }
 
 .svg-border {
   fill: none;
   /*stroke: #e6e6e6;*/
-  stroke: yellow;
+  stroke: #77aca2 ;
   stroke-miterlimit: 10;
   stroke-width: 3px;
 }
 
 .toolbar-button:hover .svg-content {
-  fill: red;
+  fill: #e2c16e;
 }
 
 .toolbar-button:hover .svg-border {
-    stroke: blue;
+    stroke: #468189;
 }
 
 #parameters-menu {
@@ -87,7 +87,7 @@ label {
 
 .switch-label {
   display: inline-block;
-  color: #F0F0F0;
+  color: #f4e9cd /* #F0F0F0*/;
   width: 50px;
   height: auto;
   position: relative;
@@ -158,17 +158,17 @@ label {
   content: "";
   height: 100%;
   width: 50%;
-  background-color: white;
+  background-color: #77aca2;
   -webkit-transition: .4s;
   transition: .4s;
  }
   
 input:checked + .switch-slider {
-  background-color: #D2B478;
+  background-color: #e2c16e;
 }
   
 input:focus + .switch-slider {
-  box-shadow: 0 0 0 #D2B478;
+  box-shadow: 0 0 0 #e2c16e;
 }
   
 input:checked + .switch-slider:before {
@@ -201,7 +201,7 @@ input:checked + .switch-slider:before {
 }
 
 .modal-help-content {
-  background-color: white;
+  background-color: #fdf6f3;
   margin: 15% auto;
   width: 350px;
   height: 100px;

@@ -34,23 +34,23 @@ label {
 
 .svg-content {
   /*fill: #e6e6e6;*/
-  fill: aqua;
+  fill: #f4e9cd;
 }
 
 .svg-border {
   fill: none;
   /*stroke: #e6e6e6;*/
-  stroke: yellow;
+  stroke: #77aca2;
   stroke-miterlimit: 10;
   stroke-width: 3px;
 }
 
 .toolbar-button:hover .svg-content {
-  fill: red;
+  fill: #e2c16e;
 }
 
 .toolbar-button:hover .svg-border {
-    stroke: blue;
+    stroke: #468189;
 }
 
 #parameters-menu {
