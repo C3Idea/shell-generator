@@ -14,12 +14,12 @@ export class AppStrings {
   static BUTTON_PARAM_B_TITLE       = "b";
   static BUTTON_PARAM_THETA_TITLE   = "theta";
   static SHOW_WIREFRAME_TEXT = "Mostrar esqueleto";
-  static SURFACE_TEXT        = "caracol";
+  static SURFACE_TEXT        = "Caracol";
   static SURFACE_COLOR_INPUT_HELP_TEXT   = "Cambiar color de caracol";
   static WIREFRAME_COLOR_INPUT_HELP_TEXT = "Cambiar color de esqueleto";
-  static WIREFRAME_TEXT      = "esqueleto";
+  static WIREFRAME_TEXT      = "Esqueleto";
   static VISUALIZATION_MENU_BUTTON_HELP_TEXT = "Editar parámetros de visualización";
-  static QUAL_TEXT           = "qual";
+  static QUAL_TEXT           = "Resolución";
   static PARAMETER_QUAL_BUTTON_HELP_TEXT = "Calidad";
   static BUTTON_SANDBOX_TITLE = "Ir al sandbox";
   static BUTTON_HOW_TO_TITLE  = "Abrir instrucciones del juego";
@@ -30,7 +30,7 @@ export class AppStrings {
   static LABEL_INTRO_LINE2 = "Los investigadores se han preguntado esto durante años. Con ayuda de las matemáticas se construyó un modelo que permite generar muchisimos caracoles en la naturaleza tomando en cuenta las leyes de la fisica que participan en su construcción.";
   static LABEL_INTRO_LINE3 = "/* Mostrar ecuación */";
   static LABEL_INTRO_LINE4 = "¡Te invitamos a ver esta ecuación en acción!";
-  static LABEL_INTRO_LINE5 = "Reta a tu creatividad y dale vida todos los caracoles que imagines";
+  static LABEL_INTRO_LINE5 = "Reta a tu creatividad y dale vida a todos los caracoles que puedas imaginar";
   static LABEL_PARAM_A_HELP_TITLE = "Parámetro A (amplitud inicial del espiral)";
   static LABEL_PARAM_A_HELP_CONTENT = "Este parámetro controla la apertura inicial del espiral que guía el crecimiento del caracol.";
   static LABEL_PARAM_ALPHA_HELP_TITLE = "Parámetro alpha (ángulo del espiral)";
@@ -46,8 +46,8 @@ export class AppStrings {
   static LABEL_PARAM_QUAL_TITLE   = "Resolución";
   static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superfice del caracol.";
   static LABEL_HOWTO_WINDOW_TITLE = "¡Bienvenido al juego!";
-  static LABEL_HOWTO_WINDOW_LINE1 = "Te retamos a que veas cuanto dominas los parámetros del modelo. Para ello, te propones un caracol objetivo y te invitamos a que lo reproduzcas tan parecido como puedas. ¿Te animas?";
-  static LABEL_HOWTO_WINDOW_LINE2 = "En la parte superior encontrar como cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que se parezca al objetivo.";
+  static LABEL_HOWTO_WINDOW_LINE1 = "Te retamos a que veas cuánto dominas los parámetros del modelo. Para ello, te proponemos un caracol objetivo y te invitamos a que lo reproduzcas tan parecido como puedas. ¿Te animas?";
+  static LABEL_HOWTO_WINDOW_LINE2 = "En la parte superior puedes encontrar cómo cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que sea idéntico al objetivo.";
   static LABEL_HOWTO_WINDOW_LINE3 = "Debajo de los controles de los parámetros encontraras una barra de calor que te indica que tan cerca estás de lograrlo!";
   static LABEL_HOWTO_WINDOW_LINE4 = "¡Suerte y diviértete!";
 
