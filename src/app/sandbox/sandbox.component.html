@@ -254,12 +254,22 @@
       <img id="img-intro-equation" />
       <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</label>
       <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</label>
+      <div class="modal-button-bar">
+        <button class="modal-close-button" (click)="this.introCloseButtonClick($event)">
+          <label>{{AppStrings.LABEL_CLOSE}}</label>
+        </button>
+      </div>
     </div>
   </div>
   <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-help-content">
       <label id="label-help-title">{{this.helpTitle}}</label>
       <label id="label-help-content">{{this.helpContent}}</label>
+      <div class="modal-button-bar">
+        <button class="modal-close-button" (click)="this.helpCloseButtonClick($event)">
+          <label>{{AppStrings.LABEL_CLOSE}}</label>
+        </button>
+      </div>
     </div>
   </div>
 </div>

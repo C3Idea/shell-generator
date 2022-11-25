@@ -50,5 +50,10 @@ export class AppStrings {
   static LABEL_HOWTO_WINDOW_LINE2 = "En la parte superior puedes encontrar cómo cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que sea idéntico al objetivo.";
   static LABEL_HOWTO_WINDOW_LINE3 = "Debajo de los controles de los parámetros encontraras una barra de calor que te indica que tan cerca estás de lograrlo!";
   static LABEL_HOWTO_WINDOW_LINE4 = "¡Suerte y diviértete!";
-
+  static LABEL_CLOSE = "Cerrar";
+  static LABEL_USER  = "Usuario";
+  static LABEL_TARGET = "Objetivo";
+  static LABEL_SUCCESS = "¡Victoria!";
+  static LABEL_GO_HOME = "Sandbox";
+  static LABEL_PLAY_AGAIN = "Jugar";
 }

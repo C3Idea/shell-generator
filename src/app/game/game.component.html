@@ -56,13 +56,15 @@
         </g>
       </svg>
     </button>
-    <label class="switch-label">user</label>
-    <label id="shell-switch" class="switch">
-      <input type="checkbox" [(ngModel)]="this.targetVisible"
-        (ngModelChange)="this.switchButtonClick($event)"/>
-      <span class="switch-slider round"></span>
-    </label>
-    <label class="switch-label">target</label>
+    <div id="toggle-switch">
+      <label class="switch-label">{{AppStrings.LABEL_USER}}</label>
+      <label id="shell-switch" class="switch">
+        <input type="checkbox" [(ngModel)]="this.targetVisible"
+          (ngModelChange)="this.switchButtonClick($event)"/>
+        <span class="switch-slider round"></span>
+      </label>
+      <label class="switch-label">{{AppStrings.LABEL_TARGET}}</label>
+    </div>
   </div>
   <form #menu id="parameters-menu">
     <li class="form-row">
@@ -140,13 +142,13 @@
   </form>
   <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-content">
-      <label class="modal-title">Success!</label>
+      <label class="modal-title">{{AppStrings.LABEL_SUCCESS}}</label>
       <div class="modal-button-bar">
         <button class="modal-button" (click)="this.newGameButtonClick($event)">
-          <label>Play again</label>
+          <label>{{AppStrings.LABEL_PLAY_AGAIN}}</label>
         </button>
         <button class="modal-button" (click)="this.sandboxButtonClick($event)">
-          <label>Go home</label>
+          <label>{{AppStrings.LABEL_GO_HOME}}</label>
         </button>
       </div>
     </div>
@@ -158,12 +160,22 @@
       <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE2}}</label>
       <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE3}}</label>
       <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE4}}</label>
+      <div class="modal-button-bar">
+        <button class="modal-close-button" (click)="this.howToCloseButtonClick($event)">
+          <label>{{AppStrings.LABEL_CLOSE}}</label>
+        </button>
+      </div>
     </div>
   </div>
   <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-help-content">
       <label id="label-help-title">{{this.helpTitle}}</label>
       <label id="label-help-content">{{this.helpContent}}</label>
+      <div class="modal-button-bar">
+        <button class="modal-close-button" (click)="this.helpCloseButtonClick($event)">
+          <label>{{AppStrings.LABEL_CLOSE}}</label>
+        </button>
+      </div>
     </div>
   </div>
 </div>

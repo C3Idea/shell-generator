@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-surface',
@@ -263,6 +262,14 @@ export class SandboxComponent implements AfterViewInit {
 
   private showIntroWindow() {
     this.modalIntroWindow.style.display = 'block';
+  }
+
+  introCloseButtonClick(event: Event) {
+    this.closeModalIntroWindow();
+  }
+
+  helpCloseButtonClick(event: Event) {
+    this.closeModalHelpWindow();
   }
 
 }

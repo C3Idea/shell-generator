@@ -330,4 +330,12 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.modalHowToWindow.style.display = 'block';
   }
 
+  howToCloseButtonClick(event: Event) {
+    this.closeModalHowToWindow();
+  }
+
+  helpCloseButtonClick(event: Event) {
+    this.closeModalHelpWindow();
+  }
+
 }
