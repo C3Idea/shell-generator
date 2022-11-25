@@ -47,7 +47,7 @@ export class AppStrings {
   static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superfice del caracol.";
   static LABEL_HOWTO_WINDOW_TITLE = "¡Bienvenido al juego!";
   static LABEL_HOWTO_WINDOW_LINE1 = "Te retamos a que veas cuánto dominas los parámetros del modelo. Para ello, te proponemos un caracol objetivo y te invitamos a que lo reproduzcas tan parecido como puedas. ¿Te animas?";
-  static LABEL_HOWTO_WINDOW_LINE2 = "En la parte superior puedes encontrar cómo cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que sea idéntico al objetivo.";
+  static LABEL_HOWTO_WINDOW_LINE2 = "En la parte inferior puedes encontrar cómo cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que sea idéntico al objetivo.";
   static LABEL_HOWTO_WINDOW_LINE3 = "Debajo de los controles de los parámetros encontraras una barra de calor que te indica que tan cerca estás de lograrlo!";
   static LABEL_HOWTO_WINDOW_LINE4 = "¡Suerte y diviértete!";
   static LABEL_CLOSE = "Cerrar";
