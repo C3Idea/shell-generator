@@ -21,6 +21,7 @@
     "@angular/router": "^17.3.4",
     "@angular/service-worker": "^17.3.4",
     "@types/three": "^0.143.0",
+    "@types/webxr": "^0.5.15",
     "engine.io": "^6.4.2",
     "loader-utils": "^2.0.4",
     "rxjs": "~7.5.0",
