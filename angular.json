@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": ".",
             "outputPath": "dist/shell-generator",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -26,8 +27,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-            ],
+            "scripts": [],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
           },
@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "shell-generator:build:production"
+              "buildTarget": "shell-generator:build:production"
             },
             "development": {
-              "browserTarget": "shell-generator:build:development"
+              "buildTarget": "shell-generator:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "shell-generator:build"
+            "buildTarget": "shell-generator:build"
           }
         },
         "test": {
@@ -97,8 +97,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-            ]
+            "scripts": []
           }
         },
         "lint": {
@@ -118,5 +117,13 @@
     "schematicCollections": [
       "@angular-eslint/schematics"
     ]
+  },
+  "schematics": {
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    }
   }
 }
