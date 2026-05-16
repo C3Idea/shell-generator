@@ -89,6 +89,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   helpContent: string = "";
 
   distance: number;
+  gameId: string = "";
 
   constructor(private router: Router) {
     this.parameters = new ShellParameters();
@@ -262,9 +263,9 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.modalHowToWindow.style.display = 'none';
   }
 
-  private newGame() {
+  private newGame(seed?: string) {
     this.parameters       = new ShellParameters();
-    this.targetParameters = ShellParameters.randomParameters();
+    this.targetParameters = ShellParameters.randomParameters(seed);
     this.setupGame();
     this.distance         = this.parameters.distance(this.targetParameters);
     this.setupShellViewers();
@@ -274,8 +275,14 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   newGameButtonClick(event: Event) {
+    event.preventDefault();
+    const gameId = window.prompt("Clave de juego", this.gameId);
+    if (gameId === null) {
+      return;
+    }
+    this.gameId = gameId;
     this.closeModalWindow();
-    this.newGame();
+    this.newGame(gameId);
   }
 
   private navigateToSandbox() {

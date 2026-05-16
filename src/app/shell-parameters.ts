@@ -1,4 +1,4 @@
-import { random } from "src/util";
+import { createSeededGenerator, hashStringToSeed, randomWithGenerator } from "src/util";
 
 export class ShellParameters {
     d: number;
@@ -92,18 +92,21 @@ export class ShellParameters {
         return p;
     }
 
-    static randomParameters(): ShellParameters {
+    static randomParameters(seed?: string): ShellParameters {
         let p = new ShellParameters();
+        const generator = seed === undefined
+            ? Math.random
+            : createSeededGenerator(hashStringToSeed(seed));
         p.d = 1;
-        p.A = random(ShellParameters.AMin, ShellParameters.AMax);
-        p.alpha = random(ShellParameters.alphaMin, ShellParameters.alphaMax);
-        p.beta = random(ShellParameters.betaMin, ShellParameters.betaMax);
-        p.a = random(ShellParameters.aMin, ShellParameters.aMax);
-        p.b = random(ShellParameters.bMin, ShellParameters.bMax);
-        p.mu = random(ShellParameters.muMin, ShellParameters.muMax);
-        p.omega = random(ShellParameters.omegaMin, ShellParameters.omegaMax);
-        p.phi = random(ShellParameters.phiMin, ShellParameters.phiMax);
-        p.theta = random(ShellParameters.thetaMin, ShellParameters.thetaMax);
+        p.A = randomWithGenerator(ShellParameters.AMin, ShellParameters.AMax, generator);
+        p.alpha = randomWithGenerator(ShellParameters.alphaMin, ShellParameters.alphaMax, generator);
+        p.beta = randomWithGenerator(ShellParameters.betaMin, ShellParameters.betaMax, generator);
+        p.a = randomWithGenerator(ShellParameters.aMin, ShellParameters.aMax, generator);
+        p.b = randomWithGenerator(ShellParameters.bMin, ShellParameters.bMax, generator);
+        p.mu = randomWithGenerator(ShellParameters.muMin, ShellParameters.muMax, generator);
+        p.omega = randomWithGenerator(ShellParameters.omegaMin, ShellParameters.omegaMax, generator);
+        p.phi = randomWithGenerator(ShellParameters.phiMin, ShellParameters.phiMax, generator);
+        p.theta = randomWithGenerator(ShellParameters.thetaMin, ShellParameters.thetaMax, generator);
         return p;
     }
 
