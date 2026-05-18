@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
@@ -12,6 +12,12 @@ import { AppStrings } from '../app-strings';
 
 
 export class GameComponent implements OnInit, AfterViewInit {
+  private static readonly targetParameterKeys: ReadonlyArray<
+    'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta'
+  > = [
+    'd', 'A', 'alpha', 'beta', 'a', 'b', 'mu', 'omega', 'phi', 'theta'
+  ];
+
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
 
@@ -91,9 +97,9 @@ export class GameComponent implements OnInit, AfterViewInit {
   distance: number;
   gameId: string = "";
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     this.parameters = new ShellParameters();
-    this.targetParameters = ShellParameters.randomParameters();
+    this.targetParameters = this.targetParametersFromRoute() ?? ShellParameters.randomParameters();
     this.setupGame();
     this.distance = this.parameters.distance(this.targetParameters);
   }
@@ -283,6 +289,68 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.gameId = gameId;
     this.closeModalWindow();
     this.newGame(gameId);
+  }
+
+  async generateTargetLinkButtonClick(event: Event): Promise<void> {
+    event.preventDefault();
+    const link = this.getShareableGameLink();
+    const copied = await this.copyTextToClipboard(link);
+    if (!copied) {
+      window.prompt(AppStrings.LABEL_LINK_PROMPT, link);
+      return;
+    }
+    window.alert(AppStrings.LABEL_LINK_COPIED);
+  }
+
+  private getShareableGameLink(): string {
+    const target = this.encodeTargetParameters(this.parameters);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/game'], { queryParams: { target } })
+    );
+    return `${window.location.origin}${url}`;
+  }
+
+  private async copyTextToClipboard(text: string): Promise<boolean> {
+    if (!navigator.clipboard?.writeText) {
+      return false;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    catch {
+      return false;
+    }
+  }
+
+  private targetParametersFromRoute(): ShellParameters | null {
+    const encodedTarget = this.route.snapshot.queryParamMap.get('target');
+    if (encodedTarget === null || encodedTarget.trim() === '') {
+      return null;
+    }
+    return this.decodeTargetParameters(encodedTarget);
+  }
+
+  private encodeTargetParameters(parameters: ShellParameters): string {
+    return GameComponent.targetParameterKeys
+      .map(key => +parameters[key].toFixed(2))
+      .join(',');
+  }
+
+  private decodeTargetParameters(encodedParameters: string): ShellParameters | null {
+    const parts = encodedParameters.split(',');
+    if (parts.length !== GameComponent.targetParameterKeys.length) {
+      return null;
+    }
+    const parameters = new ShellParameters();
+    for (let i = 0; i < GameComponent.targetParameterKeys.length; i++) {
+      const value = parseFloat(parts[i]);
+      if (Number.isNaN(value)) {
+        return null;
+      }
+      parameters[GameComponent.targetParameterKeys[i]] = value;
+    }
+    return parameters;
   }
 
   private navigateToSandbox() {

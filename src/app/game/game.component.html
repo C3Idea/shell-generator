@@ -136,9 +136,14 @@
         max="{{ShellParameters.distMax}}" />
       <img class="result-image" src="./assets/icons/icon_check_correcto.svg" />
     </div>
-    <button id="new-game-button" title={{AppStrings.BUTTON_NEW_GAME_TITLE}} (click)="newGameButtonClick($event)">
-      <label>{{AppStrings.LABEL_NEW_GAME}}</label>
-    </button>
+    <div id="menu-button-row">
+      <button class="menu-action-button" title={{AppStrings.BUTTON_NEW_GAME_TITLE}} (click)="newGameButtonClick($event)">
+        <label>{{AppStrings.LABEL_NEW_GAME}}</label>
+      </button>
+      <button class="menu-action-button" title={{AppStrings.BUTTON_SHARE_GAME_TITLE}} (click)="generateTargetLinkButtonClick($event)">
+        <label>{{AppStrings.LABEL_SHARE_GAME}}</label>
+      </button>
+    </div>
   </form>
   <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-content">

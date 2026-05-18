@@ -24,7 +24,11 @@ export class AppStrings {
   static BUTTON_SANDBOX_TITLE = "Ir al sandbox";
   static BUTTON_HOW_TO_TITLE  = "Abrir instrucciones del juego";
   static BUTTON_NEW_GAME_TITLE = "Iniciar juego nuevo";
+  static BUTTON_SHARE_GAME_TITLE = "Copiar enlace del objetivo";
   static LABEL_NEW_GAME = "Nuevo juego";
+  static LABEL_SHARE_GAME = "Link";
+  static LABEL_LINK_COPIED = "Enlace copiado al portapapeles.";
+  static LABEL_LINK_PROMPT = "Comparte este enlace";
   static LABEL_INTRO_WELCOME_TEXT = "¡Bienvenido!";
   static LABEL_INTRO_LINE1 = "Los moluscos construyen sus casas con una precisión única. ¿Sabías que todos ellos utilizan el mismo sistema y las mismas reglas? ¿Cómo es que existe la inmensa variedad de caracoles y conchas?";
   static LABEL_INTRO_LINE2 = "Los investigadores se han preguntado esto durante años. Con ayuda de las matemáticas se construyó un modelo que permite generar muchisimos caracoles en la naturaleza tomando en cuenta las leyes de la fisica que participan en su construcción.";

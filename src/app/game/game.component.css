@@ -299,7 +299,14 @@ input:checked + .switch-slider:before {
   margin-left: 2px;
 }
 
-#new-game-button {
+#menu-button-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px;
+}
+
+.menu-action-button {
   width:  75px;
   height: 50px;
   margin: 2px;
