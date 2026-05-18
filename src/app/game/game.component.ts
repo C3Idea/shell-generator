@@ -304,10 +304,12 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   private getShareableGameLink(): string {
     const target = this.encodeTargetParameters(this.parameters);
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/game'], { queryParams: { target } })
-    );
-    return `${window.location.origin}${url}`;
+    const pathname = window.location.pathname.replace(/\/$/, '');
+    const deploymentPath = pathname.endsWith('/game')
+      ? pathname.slice(0, -'/game'.length)
+      : pathname;
+    const encodedTarget = encodeURIComponent(target);
+    return `${window.location.origin}${deploymentPath}/#/game?target=${encodedTarget}`;
   }
 
   private async copyTextToClipboard(text: string): Promise<boolean> {
