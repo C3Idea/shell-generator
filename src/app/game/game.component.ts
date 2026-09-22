@@ -21,7 +21,7 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   // Slider ranges. 'd' (coiling direction) has no slider and is always 1 in the
   // game, so a link can't change it.
-  private static readonly parameterRanges: Readonly<Partial<Record<TargetParameterKey, readonly [number, number]>>> = {
+  private static readonly parameterRanges: Readonly<Record<TargetParameterKey, readonly [number, number]>> = {
     d:     [1, 1],
     A:     [ShellParameters.AMin, ShellParameters.AMax],
     alpha: [ShellParameters.alphaMin, ShellParameters.alphaMax],
@@ -155,7 +155,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   private randomizePlayerStart() {
     for (let attempt = 0; attempt < GameComponent.maxStartAttempts; attempt++) {
       for (const key of GameComponent.playerParameterKeys) {
-        const [min, max] = GameComponent.parameterRanges[key]!;
+        const [min, max] = GameComponent.parameterRanges[key];
         this.parameters[key] = random(min, max);
       }
       if (!this.checkParametersAreSimilar()) {
@@ -164,7 +164,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
     // Fallback: the slider end farther from the target is always outside the win margin.
     for (const key of GameComponent.playerParameterKeys) {
-      const [min, max] = GameComponent.parameterRanges[key]!;
+      const [min, max] = GameComponent.parameterRanges[key];
       const target = this.targetParameters[key];
       this.parameters[key] = target - min > max - target ? min : max;
     }
@@ -413,7 +413,7 @@ export class GameComponent implements OnInit, AfterViewInit {
       const key = GameComponent.targetParameterKeys[i];
       const range = GameComponent.parameterRanges[key];
       // Clamp so an edited link can't set a target the sliders can't reach.
-      parameters[key] = range ? Math.min(Math.max(value, range[0]), range[1]) : value;
+      parameters[key] = Math.min(Math.max(value, range[0]), range[1]);
     }
     return parameters;
   }
