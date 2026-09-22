@@ -4,7 +4,7 @@
 # Tasks: Shared challenge link can start the game already won
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T16:12:12-06:00
+**Generated**: 2026-09-22T16:14:46-06:00
 
 ---
 
@@ -43,19 +43,19 @@
 
 **Purpose**: Build and manual verification against the Verification Matrix
 
-- [ ] T005 [W3] Run ng build and verify VM-001..VM-005 manually in the browser
+- [x] T005 [W3] Run ng build and verify VM-001..VM-005 manually in the browser
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 5
-- **Completed**: 4
+- **Completed**: 5
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 80%
+- **Progress**: 100%
 
 ---
 

@@ -18,15 +18,16 @@
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "totalTasks": 5,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "blockedTasks": 0,
     "lastCheckpoint": "2026-09-22T21:59:31Z",
     "contextHint": "Lite bug fix, single file (src/app/game/game.component.ts). Unit tests out of scope; verify manually against VM-001..005.",
     "skippedTasks": 0,
-    "lastUpdated": "2026-09-22T16:12:12-06:00"
+    "lastUpdated": "2026-09-22T16:14:46-06:00"
   },
   "waves": [
     {
@@ -67,7 +68,8 @@
       "tasks": [
         "T005"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T16:14:46-06:00"
     }
   ],
   "tasks": {
@@ -150,7 +152,7 @@
       "id": "T005",
       "wave": 3,
       "description": "Run ng build and verify VM-001..VM-005 manually in the browser",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -159,7 +161,15 @@
         "T001",
         "T003",
         "T004"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-22T16:14:46-06:00",
+        "commitSha": "fac171470657807ec753b390f56e150114bf7da2",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts"
+        ]
+      }
     }
   }
 }
