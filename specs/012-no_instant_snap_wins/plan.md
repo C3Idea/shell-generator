@@ -7,7 +7,7 @@
 ### Technical Context
 
 - **Language/Framework**: TypeScript, Angular (standalone `GameComponent`).
-- **Files in play**: `src/app/game/game.component.ts` (all changes), `src/app/shell-parameters.ts` (read static ranges + `randomWithGenerator`), `src/util.ts` (existing `randomWithGenerator`).
+- **Files in play**: `src/app/game/game.component.ts` (all changes), `src/app/shell-parameters.ts` (read static ranges), `src/util.ts` (existing `random(min, max)`).
 - **Routing**: hash routing; `Router` and `ActivatedRoute` already injected into `GameComponent`.
 - **Win logic**: `checkParametersAreSimilar()` compares A, α, β, a, b, θ against fixed per-key thresholds; `setupGame()` copies μ, φ, ω, b, θ from target into the player shell (so those always match). A/α/β/a are the only player-controlled dimensions.
 - **Testing**: manual (unit tests out of scope by user choice).
@@ -15,10 +15,10 @@
 ### Research Findings
 
 - **Decision — where "link vs no-link" is known**: the constructor already computes `this.targetParametersFromRoute() ?? ShellParameters.randomParameters()`. `targetParametersFromRoute()` returns non-null only for a valid `?target=` link. Thread a boolean (`fromLink`) from there into `setupGame()` so the random-start branch runs only for link games. *Alternative rejected*: re-reading the query param inside `setupGame()` duplicates parsing.
-- **Decision — random helper**: reuse `randomWithGenerator(min, max, Math.random)` (already imported path via `ShellParameters`) for per-key randomization; no seeding needed for the recipient's start. *Alternative rejected*: a seeded generator — the recipient start is intentionally non-deterministic.
+- **Decision — random helper**: reuse `random(min, max)` from `src/util.ts` (plain `Math.random`) for per-key randomization; no seeding needed for the recipient's start. *Alternative rejected*: a seeded generator — the recipient start is intentionally non-deterministic.
 - **Decision — attempt cap**: fixed constant (e.g. `MAX_START_ATTEMPTS = 20`). With four independent uniform dimensions and margins far smaller than the ranges, the odds of 20 consecutive wins are negligible; the deterministic fallback guarantees termination regardless.
 - **Decision — clamp location**: clamp in `decodeTargetParameters()` after `parseFloat`/NaN check, before assignment. Keeps malformed-link behavior (null → random game) intact.
-- **Decision — clear `?target`**: use `router.navigate([], { relativeTo: route, queryParams: {} })` (or replace-state dropping the param) inside `newGame()`. Preserves the hash route, only drops the query.
+- **Decision — clear `?target`**: `clearTargetFromUrl()`, called from `newGame()`, runs `router.navigate([], { relativeTo: route, queryParams: { target: null }, queryParamsHandling: 'merge', replaceUrl: true })`. It drops only `target`, keeps the `/game` hash route, and replaces the history entry, so reloading (or Back) doesn't restore the challenge. It's a no-op when there's no `?target`.
 
 ### Data Model
 
