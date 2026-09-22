@@ -14,17 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1
     ],
     "totalTasks": 5,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "lastCheckpoint": "2026-09-22T21:59:31Z",
     "contextHint": "Lite bug fix, single file (src/app/game/game.component.ts). Unit tests out of scope; verify manually against VM-001..005.",
     "skippedTasks": 0,
-    "lastUpdated": "2026-09-22T16:08:32-06:00"
+    "lastUpdated": "2026-09-22T16:09:10-06:00"
   },
   "waves": [
     {
@@ -45,7 +46,8 @@
         "T002",
         "T003"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T16:09:10-06:00"
     },
     {
       "number": 2,
@@ -107,14 +109,22 @@
       "id": "T003",
       "wave": 1,
       "description": "Pass fromLink from the constructor (true only when targetParametersFromRoute() returned a target) and false from newGame() in src/app/game/game.component.ts",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
       "filePath": "src/app/game/game.component.ts",
       "dependencies": [
         "T002"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-22T16:09:10-06:00",
+        "commitSha": "86ffcec0ac28d0fc55d547469dc30290a12678b6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts"
+        ]
+      }
     },
     "T004": {
       "id": "T004",

@@ -4,7 +4,7 @@
 # Tasks: Shared challenge link can start the game already won
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T16:08:32-06:00
+**Generated**: 2026-09-22T16:09:10-06:00
 
 ---
 
@@ -23,9 +23,9 @@
 **Purpose**: Link games start A/alpha/beta/a at a random, non-winning position
 
 - [x] T002 [W1] Add fromLink parameter to setupGame() in src/app/game/game.component.ts: randomize A/alpha/beta/a within slider ranges, re-roll while checkParametersAreSimilar() is true (capped at MAX_START_ATTEMPTS), then fall back to the slider end farther from the target
-- [ ] T003 [W1] Pass fromLink from the constructor (true only when targetParametersFromRoute() returned a target) and false from newGame() in src/app/game/game.component.ts
+- [x] T003 [W1] Pass fromLink from the constructor (true only when targetParametersFromRoute() returned a target) and false from newGame() in src/app/game/game.component.ts
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -52,10 +52,10 @@
 ## Summary
 
 - **Total Tasks**: 5
-- **Completed**: 2
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 40%
+- **Progress**: 60%
 
 ---
 

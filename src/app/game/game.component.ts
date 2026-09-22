@@ -314,6 +314,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   private newGame(seed?: string) {
+    this.clearTargetFromUrl();
     this.parameters       = new ShellParameters();
     this.targetParameters = ShellParameters.randomParameters(seed);
     this.setupGame();
@@ -367,6 +368,19 @@ export class GameComponent implements OnInit, AfterViewInit {
     catch {
       return false;
     }
+  }
+
+  // Drop ?target so reloading after New Game doesn't bring the shared challenge back.
+  private clearTargetFromUrl() {
+    if (!this.route.snapshot.queryParamMap.has('target')) {
+      return;
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { target: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   private targetParametersFromRoute(): ShellParameters | null {
