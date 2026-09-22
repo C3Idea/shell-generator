@@ -19,8 +19,10 @@ export class GameComponent implements OnInit, AfterViewInit {
     'd', 'A', 'alpha', 'beta', 'a', 'b', 'mu', 'omega', 'phi', 'theta'
   ];
 
-  // Slider ranges; 'd' has no slider and is not clamped.
+  // Slider ranges. 'd' (coiling direction) has no slider and is always 1 in the
+  // game, so a link can't change it.
   private static readonly parameterRanges: Readonly<Partial<Record<TargetParameterKey, readonly [number, number]>>> = {
+    d:     [1, 1],
     A:     [ShellParameters.AMin, ShellParameters.AMax],
     alpha: [ShellParameters.alphaMin, ShellParameters.alphaMax],
     beta:  [ShellParameters.betaMin, ShellParameters.betaMax],
