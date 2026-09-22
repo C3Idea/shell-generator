@@ -1,0 +1,6 @@
+vt.idd:task: T004
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)->reviewer
+vt.idd:files: src/app/game/game.component.ts
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-22T16:12:12-06:00
