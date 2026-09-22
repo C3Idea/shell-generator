@@ -8,24 +8,130 @@
     "specHash": "0c54c65be0555ea45569e477353a1b49",
     "planHash": "f3e8f31da8583fd71a7ca495b4c8df8a"
   },
-  "config": { "tddMode": "pragmatic", "requireReview": true, "maxTasksPerWave": 8 },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
   "state": {
-    "currentWave": 0, "completedWaves": [], "totalTasks": 5, "completedTasks": 0,
-    "blockedTasks": 0, "lastCheckpoint": "2026-09-22T21:59:31Z",
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
+    "totalTasks": 5,
+    "completedTasks": 1,
+    "blockedTasks": 0,
+    "lastCheckpoint": "2026-09-22T21:59:31Z",
     "contextHint": "Lite bug fix, single file (src/app/game/game.component.ts). Unit tests out of scope; verify manually against VM-001..005.",
-    "skippedTasks": 0
+    "skippedTasks": 0,
+    "lastUpdated": "2026-09-22T16:01:26-06:00"
   },
   "waves": [
-    { "number": 0, "name": "Clamp link values", "description": "Clamp decoded ?target values to the ShellParameters slider ranges", "tasks": ["T001"], "gateStatus": "pending" },
-    { "number": 1, "name": "Random start for link games", "description": "Link games start A/alpha/beta/a at a random, non-winning position", "tasks": ["T002", "T003"], "gateStatus": "pending" },
-    { "number": 2, "name": "Clear ?target on New Game", "description": "New Game drops the shared challenge from the URL", "tasks": ["T004"], "gateStatus": "pending" },
-    { "number": 3, "name": "Verify", "description": "Build and manual verification against the Verification Matrix", "tasks": ["T005"], "gateStatus": "pending" }
+    {
+      "number": 0,
+      "name": "Clamp link values",
+      "description": "Clamp decoded ?target values to the ShellParameters slider ranges",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T16:01:26-06:00"
+    },
+    {
+      "number": 1,
+      "name": "Random start for link games",
+      "description": "Link games start A/alpha/beta/a at a random, non-winning position",
+      "tasks": [
+        "T002",
+        "T003"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 2,
+      "name": "Clear ?target on New Game",
+      "description": "New Game drops the shared challenge from the URL",
+      "tasks": [
+        "T004"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 3,
+      "name": "Verify",
+      "description": "Build and manual verification against the Verification Matrix",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "pending"
+    }
   ],
   "tasks": {
-    "T001": { "id": "T001", "wave": 0, "description": "Clamp each decoded value to its ShellParameters min/max in decodeTargetParameters() in src/app/game/game.component.ts; malformed links still return null", "status": "pending", "tdd": false, "parallel": false, "domain": "frontend", "filePath": "src/app/game/game.component.ts" },
-    "T002": { "id": "T002", "wave": 1, "description": "Add fromLink parameter to setupGame() in src/app/game/game.component.ts: randomize A/alpha/beta/a within slider ranges, re-roll while checkParametersAreSimilar() is true (capped at MAX_START_ATTEMPTS), then fall back to the slider end farther from the target", "status": "pending", "tdd": false, "parallel": false, "domain": "frontend", "filePath": "src/app/game/game.component.ts" },
-    "T003": { "id": "T003", "wave": 1, "description": "Pass fromLink from the constructor (true only when targetParametersFromRoute() returned a target) and false from newGame() in src/app/game/game.component.ts", "status": "pending", "tdd": false, "parallel": false, "domain": "frontend", "filePath": "src/app/game/game.component.ts", "dependencies": ["T002"] },
-    "T004": { "id": "T004", "wave": 2, "description": "Remove the ?target query param from the URL in newGame() in src/app/game/game.component.ts via the injected Router, keeping the /game hash route", "status": "pending", "tdd": false, "parallel": false, "domain": "frontend", "filePath": "src/app/game/game.component.ts" },
-    "T005": { "id": "T005", "wave": 3, "description": "Run ng build and verify VM-001..VM-005 manually in the browser", "status": "pending", "tdd": false, "parallel": false, "domain": "frontend", "filePath": "src/app/game/game.component.ts", "dependencies": ["T001", "T003", "T004"] }
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Clamp each decoded value to its ShellParameters min/max in decodeTargetParameters() in src/app/game/game.component.ts; malformed links still return null",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "completion": {
+        "timestamp": "2026-09-22T16:01:26-06:00",
+        "commitSha": "fb88ff0a2f1e730184ab9cfc171318cd7468daf6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts"
+        ]
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Add fromLink parameter to setupGame() in src/app/game/game.component.ts: randomize A/alpha/beta/a within slider ranges, re-roll while checkParametersAreSimilar() is true (capped at MAX_START_ATTEMPTS), then fall back to the slider end farther from the target",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts"
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 1,
+      "description": "Pass fromLink from the constructor (true only when targetParametersFromRoute() returned a target) and false from newGame() in src/app/game/game.component.ts",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "dependencies": [
+        "T002"
+      ]
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 2,
+      "description": "Remove the ?target query param from the URL in newGame() in src/app/game/game.component.ts via the injected Router, keeping the /game hash route",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts"
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 3,
+      "description": "Run ng build and verify VM-001..VM-005 manually in the browser",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "dependencies": [
+        "T001",
+        "T003",
+        "T004"
+      ]
+    }
   }
 }

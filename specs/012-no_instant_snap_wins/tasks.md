@@ -4,7 +4,7 @@
 # Tasks: Shared challenge link can start the game already won
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T15:59:31-06:00
+**Generated**: 2026-09-22T16:01:26-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Clamp decoded ?target values to the ShellParameters slider ranges
 
-- [ ] T001 [W0] Clamp each decoded value to its ShellParameters min/max in decodeTargetParameters() in src/app/game/game.component.ts; malformed links still return null
+- [x] T001 [W0] Clamp each decoded value to its ShellParameters min/max in decodeTargetParameters() in src/app/game/game.component.ts; malformed links still return null
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -52,10 +52,10 @@
 ## Summary
 
 - **Total Tasks**: 5
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 20%
 
 ---
 

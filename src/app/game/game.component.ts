@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
+import { random } from 'src/util';
 
 type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
 
@@ -30,6 +31,12 @@ export class GameComponent implements OnInit, AfterViewInit {
     phi:   [ShellParameters.phiMin, ShellParameters.phiMax],
     theta: [ShellParameters.thetaMin, ShellParameters.thetaMax],
   };
+
+  // Parameters the player controls with the sliders.
+  private static readonly playerParameterKeys: ReadonlyArray<'A' | 'alpha' | 'beta' | 'a'> = [
+    'A', 'alpha', 'beta', 'a'
+  ];
+  private static readonly maxStartAttempts = 20;
 
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
@@ -128,13 +135,36 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.checkGameIsOver();
   }
 
-  private setupGame() {
+  private setupGame(fromLink: boolean = false) {
     // We fix some parameters
     this.parameters.mu  = this.targetParameters.mu;
     this.parameters.phi = this.targetParameters.phi;
     this.parameters.omega = this.targetParameters.omega;
-    this.parameters.b     = this.targetParameters.b; 
+    this.parameters.b     = this.targetParameters.b;
     this.parameters.theta = this.targetParameters.theta;
+    if (fromLink) {
+      this.randomizePlayerStart();
+    }
+  }
+
+  // A shared link may target the sliders' minimums, so link games start at a
+  // random position that doesn't already win.
+  private randomizePlayerStart() {
+    for (let attempt = 0; attempt < GameComponent.maxStartAttempts; attempt++) {
+      for (const key of GameComponent.playerParameterKeys) {
+        const [min, max] = GameComponent.parameterRanges[key]!;
+        this.parameters[key] = random(min, max);
+      }
+      if (!this.checkParametersAreSimilar()) {
+        return;
+      }
+    }
+    // Fallback: the slider end farther from the target is always outside the win margin.
+    for (const key of GameComponent.playerParameterKeys) {
+      const [min, max] = GameComponent.parameterRanges[key]!;
+      const target = this.targetParameters[key];
+      this.parameters[key] = target - min > max - target ? min : max;
+    }
   }
 
   private createShellGraphs() {
