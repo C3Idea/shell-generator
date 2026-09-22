@@ -1,0 +1,17 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 12,
+    "title": "[Game] Shared challenge link can start the game already won",
+    "url": "https://github.com/C3Idea/shell-generator/issues/12",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5784683539",
+  "spec_comment_id": "5784668003",
+  "pr": {
+    "number": null,
+    "url": null
+  },
+  "deployed_at": "2026-09-22T21:58:35Z",
+  "cached_from": "github"
+}
