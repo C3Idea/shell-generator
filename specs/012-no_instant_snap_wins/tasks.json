@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 5,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "lastCheckpoint": "2026-09-22T21:59:31Z",
     "contextHint": "Lite bug fix, single file (src/app/game/game.component.ts). Unit tests out of scope; verify manually against VM-001..005.",
     "skippedTasks": 0,
-    "lastUpdated": "2026-09-22T16:09:10-06:00"
+    "lastUpdated": "2026-09-22T16:12:12-06:00"
   },
   "waves": [
     {
@@ -56,7 +57,8 @@
       "tasks": [
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T16:12:12-06:00"
     },
     {
       "number": 3,
@@ -130,11 +132,19 @@
       "id": "T004",
       "wave": 2,
       "description": "Remove the ?target query param from the URL in newGame() in src/app/game/game.component.ts via the injected Router, keeping the /game hash route",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
-      "filePath": "src/app/game/game.component.ts"
+      "filePath": "src/app/game/game.component.ts",
+      "completion": {
+        "timestamp": "2026-09-22T16:12:12-06:00",
+        "commitSha": "814a25589b58d028d3c1f5b3fbacb62fa57c18ab",
+        "agents": "claude(inline)->reviewer",
+        "files": [
+          "src/app/game/game.component.ts"
+        ]
+      }
     },
     "T005": {
       "id": "T005",

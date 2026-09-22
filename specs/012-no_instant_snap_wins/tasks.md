@@ -4,7 +4,7 @@
 # Tasks: Shared challenge link can start the game already won
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T16:09:10-06:00
+**Generated**: 2026-09-22T16:12:12-06:00
 
 ---
 
@@ -33,9 +33,9 @@
 
 **Purpose**: New Game drops the shared challenge from the URL
 
-- [ ] T004 [W2] Remove the ?target query param from the URL in newGame() in src/app/game/game.component.ts via the injected Router, keeping the /game hash route
+- [x] T004 [W2] Remove the ?target query param from the URL in newGame() in src/app/game/game.component.ts via the injected Router, keeping the /game hash route
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -52,10 +52,10 @@
 ## Summary
 
 - **Total Tasks**: 5
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 60%
+- **Progress**: 80%
 
 ---
 
