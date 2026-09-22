@@ -4,6 +4,8 @@ import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
 
+type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
+
 @Component({
   selector: 'app-surface',
   templateUrl: './game.component.html',
@@ -12,11 +14,22 @@ import { AppStrings } from '../app-strings';
 
 
 export class GameComponent implements OnInit, AfterViewInit {
-  private static readonly targetParameterKeys: ReadonlyArray<
-    'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta'
-  > = [
+  private static readonly targetParameterKeys: ReadonlyArray<TargetParameterKey> = [
     'd', 'A', 'alpha', 'beta', 'a', 'b', 'mu', 'omega', 'phi', 'theta'
   ];
+
+  // Slider ranges; 'd' has no slider and is not clamped.
+  private static readonly parameterRanges: Readonly<Partial<Record<TargetParameterKey, readonly [number, number]>>> = {
+    A:     [ShellParameters.AMin, ShellParameters.AMax],
+    alpha: [ShellParameters.alphaMin, ShellParameters.alphaMax],
+    beta:  [ShellParameters.betaMin, ShellParameters.betaMax],
+    a:     [ShellParameters.aMin, ShellParameters.aMax],
+    b:     [ShellParameters.bMin, ShellParameters.bMax],
+    mu:    [ShellParameters.muMin, ShellParameters.muMax],
+    omega: [ShellParameters.omegaMin, ShellParameters.omegaMax],
+    phi:   [ShellParameters.phiMin, ShellParameters.phiMax],
+    theta: [ShellParameters.thetaMin, ShellParameters.thetaMax],
+  };
 
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
@@ -350,7 +363,10 @@ export class GameComponent implements OnInit, AfterViewInit {
       if (Number.isNaN(value)) {
         return null;
       }
-      parameters[GameComponent.targetParameterKeys[i]] = value;
+      const key = GameComponent.targetParameterKeys[i];
+      const range = GameComponent.parameterRanges[key];
+      // Clamp so an edited link can't set a target the sliders can't reach.
+      parameters[key] = range ? Math.min(Math.max(value, range[0]), range[1]) : value;
     }
     return parameters;
   }
