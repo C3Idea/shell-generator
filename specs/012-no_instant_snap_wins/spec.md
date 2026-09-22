@@ -36,7 +36,7 @@ Three changes, all in `game.component.ts` (no changes to `getShareableGameLink()
 
 1. **Random start for link games.** When the game opens from a `?target=` link, initialize the recipient's A, α, β, a at random values within the slider ranges (using the existing `randomWithGenerator`/`Math.random` helper). Re-roll if the start already satisfies `checkParametersAreSimilar()`. Cap the attempts; if they run out, fall back to placing each of A/α/β/a at whichever slider end is farther from the target, so the loop always terminates. Continue copying μ, φ, ω, b, θ from the target as `setupGame()` does today. Non-link games keep sliders at their minimums.
 
-2. **Clamp link values.** In `decodeTargetParameters()`, clamp each decoded value to its `ShellParameters` min/max. Malformed links (wrong count or non-numbers) keep today's behavior: ignored, and a random (non-link) game starts.
+2. **Clamp link values.** In `decodeTargetParameters()`, clamp each decoded value to its `ShellParameters` min/max. `d` (coiling direction) has no slider and is always 1 in the game, so it's pinned to 1: an edited link with `d=-1` would otherwise mirror the target, which no slider can reproduce, while the win check (which ignores `d`) still accepts it. Malformed links (wrong count or non-numbers) keep today's behavior: ignored, and a random (non-link) game starts.
 
 3. **Clear `?target` on New Game.** In `newGame()` (or its caller), remove `?target=…` from the URL so a reload doesn't restore the shared challenge.
 
@@ -72,3 +72,4 @@ Three changes, all in `game.component.ts` (no changes to `getShareableGameLink()
 | SC-001 | No shared link opens the game in a won state. | [pending] | Pending |
 | SC-002 | Every shared link yields a solvable game whose target matches the sharer's shell. | [pending] | Pending |
 | SC-003 | New Game durably clears the shared challenge from the URL. | [pending] | Pending |
+
