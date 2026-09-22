@@ -119,8 +119,9 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.parameters = new ShellParameters();
-    this.targetParameters = this.targetParametersFromRoute() ?? ShellParameters.randomParameters();
-    this.setupGame();
+    const linkTarget = this.targetParametersFromRoute();
+    this.targetParameters = linkTarget ?? ShellParameters.randomParameters();
+    this.setupGame(linkTarget !== null);
     this.distance = this.parameters.distance(this.targetParameters);
   }
 

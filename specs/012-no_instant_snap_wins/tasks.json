@@ -19,12 +19,12 @@
       0
     ],
     "totalTasks": 5,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "lastCheckpoint": "2026-09-22T21:59:31Z",
     "contextHint": "Lite bug fix, single file (src/app/game/game.component.ts). Unit tests out of scope; verify manually against VM-001..005.",
     "skippedTasks": 0,
-    "lastUpdated": "2026-09-22T16:01:26-06:00"
+    "lastUpdated": "2026-09-22T16:08:32-06:00"
   },
   "waves": [
     {
@@ -89,11 +89,19 @@
       "id": "T002",
       "wave": 1,
       "description": "Add fromLink parameter to setupGame() in src/app/game/game.component.ts: randomize A/alpha/beta/a within slider ranges, re-roll while checkParametersAreSimilar() is true (capped at MAX_START_ATTEMPTS), then fall back to the slider end farther from the target",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
-      "filePath": "src/app/game/game.component.ts"
+      "filePath": "src/app/game/game.component.ts",
+      "completion": {
+        "timestamp": "2026-09-22T16:08:32-06:00",
+        "commitSha": "c9dae5d0309e201d1daf13e1fda081505779b797",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts"
+        ]
+      }
     },
     "T003": {
       "id": "T003",
