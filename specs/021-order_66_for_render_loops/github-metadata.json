@@ -9,8 +9,10 @@
   "plan_comment_id": "5789847682",
   "spec_comment_id": "5789829007",
   "pr": {
-    "number": null,
-    "url": null
+    "number": 22,
+    "url": "https://github.com/C3Idea/shell-generator/pull/22",
+    "status": "draft",
+    "createdAt": "2026-09-23T06:07:06Z"
   },
   "deployed_at": "2026-09-23T06:06:31Z",
   "cached_from": "github"
