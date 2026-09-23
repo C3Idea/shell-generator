@@ -18,7 +18,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `npm test` to execute the unit tests once in headless Chrome via [Karma](https://karma-runner.github.io). It exits when the run finishes, with a non-zero code if any spec fails, so scripts and CI can call it.
 
-Run `npm run test:watch` to keep Karma running while you work: it opens Chrome and re-runs the specs on every change.
+Run `npm run test:watch` to keep Karma running while you work: it opens Chrome (plus a headless Chrome, both listed in `karma.conf.js`) and re-runs the specs on every change.
 
 ## Running end-to-end tests
 
