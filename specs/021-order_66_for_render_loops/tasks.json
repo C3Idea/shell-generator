@@ -19,15 +19,16 @@
       0,
       1,
       2,
-      3
+      3,
+      4
     ],
     "totalTasks": 6,
-    "completedTasks": 5,
+    "completedTasks": 6,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "contextHint": "Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). No rendering-output changes. forceContextLoss() only in dispose()/ngOnDestroy, never on New Game. ngOnDestroy must tolerate undefined viewers (#12 specs never render).",
-    "lastUpdated": "2026-09-23T00:18:32-06:00",
-    "lastCheckpoint": "2026-09-23T00:18:56-06:00"
+    "lastUpdated": "2026-09-23T00:39:51-06:00",
+    "lastCheckpoint": "2026-09-23T00:40:15-06:00"
   },
   "waves": [
     {
@@ -81,7 +82,8 @@
       "tasks": [
         "T006"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T00:39:51-06:00"
     }
   ],
   "tasks": {
@@ -226,14 +228,24 @@
       "id": "T006",
       "wave": 4,
       "description": "Verify the #21 acceptance criteria with the out-of-repo harness (2 cores): draw calls per frame stay at 4 after N New Games (VM-001); game <-> sandbox x20 logs no 'Too many active WebGL contexts' (VM-005); destroyed components render 0 frames (VM-004); npm run test:watch re-runs with 0 disconnects and CPU returns to idle (VM-007); new specs fail on dev's code and pass on the branch; ng build succeeds (FR-009).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
       "filePath": "specs/021-order_66_for_render_loops/tasks.md",
       "dependencies": [
         "T005"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T00:39:51-06:00",
+        "commitSha": "9a74a95d6af13951af75891f31b11c878b41ccfc",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/021-order_66_for_render_loops/tasks.json",
+          "specs/021-order_66_for_render_loops/tasks.md"
+        ],
+        "satisfaction": "full"
+      }
     }
   }
 }

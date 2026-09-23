@@ -4,7 +4,7 @@
 # Tasks: 3D render loops never stop
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T00:18:32-06:00
+**Generated**: 2026-09-23T00:39:51-06:00
 
 ---
 
@@ -53,19 +53,19 @@
 
 **Purpose**: Harness measurements, revert check, build
 
-- [ ] T006 [W4] Verify the #21 acceptance criteria with the out-of-repo harness (2 cores): draw calls per frame stay at 4 after N New Games (VM-001); game <-> sandbox x20 logs no 'Too many active WebGL contexts' (VM-005); destroyed components render 0 frames (VM-004); npm run test:watch re-runs with 0 disconnects and CPU returns to idle (VM-007); new specs fail on dev's code and pass on the branch; ng build succeeds (FR-009).
+- [x] T006 [W4] Verify the #21 acceptance criteria with the out-of-repo harness (2 cores): draw calls per frame stay at 4 after N New Games (VM-001); game <-> sandbox x20 logs no 'Too many active WebGL contexts' (VM-005); destroyed components render 0 frames (VM-004); npm run test:watch re-runs with 0 disconnects and CPU returns to idle (VM-007); new specs fail on dev's code and pass on the branch; ng build succeeds (FR-009).
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 5
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 83%
+- **Progress**: 100%
 
 ---
 
