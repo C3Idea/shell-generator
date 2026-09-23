@@ -4,7 +4,7 @@
 # Tasks: 3D render loops never stop
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T00:07:53-06:00
+**Generated**: 2026-09-23T00:18:32-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Frame id, dispose(), resetCamera() in ShellViewer
 
-- [ ] T001 [W0] [TDD] ShellViewer lifecycle (FR-001..FR-004): store the requestAnimationFrame id in startRenderingLoop(); add dispose() — cancelAnimationFrame(id), dispose OrbitControls, graph geometry/materials and WebGLRenderer, then renderer.forceContextLoss(); idempotent and safe before init(); add public resetCamera() returning to the default view. RED first in src/app/shell-viewer.spec.ts with a manual rAF pump: after dispose() 0 further frames scheduled/rendered and cancelAnimationFrame got the id; dispose() before init() and twice don't throw; resetCamera() restores the default camera position.
+- [x] T001 [W0] [TDD] ShellViewer lifecycle (FR-001..FR-004): store the requestAnimationFrame id in startRenderingLoop(); add dispose() — cancelAnimationFrame(id), dispose OrbitControls, graph geometry/materials and WebGLRenderer, then renderer.forceContextLoss(); idempotent and safe before init(); add public resetCamera() returning to the default view. RED first in src/app/shell-viewer.spec.ts with a manual rAF pump: after dispose() 0 further frames scheduled/rendered and cancelAnimationFrame got the id; dispose() before init() and twice don't throw; resetCamera() restores the default camera position.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -22,9 +22,9 @@
 
 **Purpose**: newGame() reuses the two viewers and resets their cameras
 
-- [ ] T002 [W1] [TDD] [US1] New Game reuses viewers (FR-005; VM-001, VM-002, VM-003): newGame() stops calling setupShellViewers(); it rebuilds the graphs on the existing viewer/targetViewer and calls resetCamera() on both. RED first in src/app/game/game.component.spec.ts: after N New Games the component still holds the same 2 ShellViewer instances, only 2 viewers render per pumped frame, and both cameras are at the default view.
+- [x] T002 [W1] [TDD] [US1] New Game reuses viewers (FR-005; VM-001, VM-002, VM-003): newGame() stops calling setupShellViewers(); it rebuilds the graphs on the existing viewer/targetViewer and calls resetCamera() on both. RED first in src/app/game/game.component.spec.ts: after N New Games the component still holds the same 2 ShellViewer instances, only 2 viewers render per pumped frame, and both cameras are at the default view.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -32,10 +32,10 @@
 
 **Purpose**: ngOnDestroy in GameComponent and SandboxComponent
 
-- [ ] T003 [P] [W2] [TDD] [US2] GameComponent implements OnDestroy (FR-006; VM-004): ngOnDestroy() disposes viewer and targetViewer, tolerating viewers that were never created (component never rendered, as in the #12 specs). RED first in game.component.spec.ts: destroying a rendered GameComponent leaves 0 frames rendered by its viewers; destroying one that never rendered doesn't throw.
-- [ ] T004 [P] [W2] [TDD] [US2] SandboxComponent implements OnDestroy (FR-007; VM-004): ngOnDestroy() disposes helper, tolerating a helper that was never init()ed. RED first in src/app/sandbox/sandbox.component.spec.ts: destroying a rendered SandboxComponent stops its viewer (0 further frames); destroying one that never rendered doesn't throw.
+- [x] T003 [P] [W2] [TDD] [US2] GameComponent implements OnDestroy (FR-006; VM-004): ngOnDestroy() disposes viewer and targetViewer, tolerating viewers that were never created (component never rendered, as in the #12 specs). RED first in game.component.spec.ts: destroying a rendered GameComponent leaves 0 frames rendered by its viewers; destroying one that never rendered doesn't throw.
+- [x] T004 [P] [W2] [TDD] [US2] SandboxComponent implements OnDestroy (FR-007; VM-004): ngOnDestroy() disposes helper, tolerating a helper that was never init()ed. RED first in src/app/sandbox/sandbox.component.spec.ts: destroying a rendered SandboxComponent stops its viewer (0 further frames); destroying one that never rendered doesn't throw.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -43,9 +43,9 @@
 
 **Purpose**: Remove the #18 M1 stubs; suite green without them
 
-- [ ] T005 [W3] [US3] Remove the #18 M1 requestAnimationFrame stubs from game.component.spec.ts and sandbox.component.spec.ts and their #21 comment (FR-008; VM-006). Fixture teardown via ngOnDestroy now stops the loops. npm test green (headless, exits on its own); ng lint shows no new problems vs dev.
+- [x] T005 [W3] [US3] Remove the #18 M1 requestAnimationFrame stubs from game.component.spec.ts and sandbox.component.spec.ts and their #21 comment (FR-008; VM-006). Fixture teardown via ngOnDestroy now stops the loops. npm test green (headless, exits on its own); ng lint shows no new problems vs dev.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -62,10 +62,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 0
+- **Completed**: 5
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 83%
 
 ---
 
