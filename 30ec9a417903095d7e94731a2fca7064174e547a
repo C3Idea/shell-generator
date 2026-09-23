@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.html,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=1 FAILED: #game-actions still shown with the menu open (3 behaviour specs already green: handlers reused in T001), green=game spec 44/44 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-23T12:45:50-06:00
