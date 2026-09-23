@@ -5,3 +5,11 @@ vt.idd:files: src/app/game/game.component.css
 vt.idd:satisfies: partial (Layout verified at 390/1280 px (layout.mjs 28/28); screenshots await approval on #11)
 vt.idd:wave: 3
 vt.idd:timestamp: 2026-09-23T12:51:01-06:00
+
+vt.idd:task: T005
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.spec.ts
+vt.idd:satisfies: partial (Harness green @cd80462 (CI 62/62, revert guard 7 #11 specs fail on dev, e2e + layout 28/28 at 390/1280); screenshots + tooltip approval on #11 pending)
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-23T14:29:16-06:00
