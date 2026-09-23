@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.html,src/app/game/game.component.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=5 of 7 FAILED: key field never shown/focused; key, trim/case, empty-key and Enter paths not wired, green=game spec 30/30 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-23T10:59:55-06:00
