@@ -1,0 +1,8 @@
+vt.idd:task: T005
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.spec.ts
+vt.idd:tdd: red=No RED on the branch: T001-T004 already satisfy US4. Mutations (open hides ¡Victoria! / start keeps it) fail 2 and 1 specs; on dev's code Jugar calls window.prompt (revert guard)., green=game spec 38/38 SUCCESS
+vt.idd:satisfies: full (No origin flag needed: ¡Victoria! is independent of the New Game pop-up)
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-23T11:04:29-06:00
