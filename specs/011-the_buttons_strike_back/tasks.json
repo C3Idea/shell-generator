@@ -1,0 +1,164 @@
+{
+  "meta": {
+    "feature": "011-the-buttons-strike-back",
+    "featureName": "Move New Game and share-link buttons out of the gear menu",
+    "version": "2.0",
+    "createdAt": "2026-09-23T18:41:40Z",
+    "lastUpdated": "2026-09-23T18:41:40Z",
+    "specHash": "45bf6200cfc2acd7e800730047b142d0",
+    "planHash": "4199315ac25882d0466d14134f2d5988"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 0,
+    "completedWaves": [],
+    "totalTasks": 5,
+    "completedTasks": 0,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "contextHint": "Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Layout/copy only: reuse newGameButtonClick and generateTargetLinkButtonClick unchanged. The #23 describe stubs window.prompt; share specs must stub navigator.clipboard and window.alert (native dialogs hang headless Chrome)."
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Foundational: the buttons leave the gear menu",
+      "description": "#game-actions outside #parameters-menu; #menu-button-row removed",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 1,
+      "name": "US1: Find New Game and share without the menu",
+      "story": "US1",
+      "description": "Same handlers from the new place; hidden while the menu is open",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 2,
+      "name": "US2: Understand the share button",
+      "story": "US2",
+      "description": "\"Compartir\" + accurate tooltip",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 3,
+      "name": "Polish: layout and verification",
+      "description": "CSS at 390/1280, screenshots, harness",
+      "tasks": [
+        "T004",
+        "T005"
+      ],
+      "gateStatus": "pending"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Move the buttons (FR-001, FR-002 markup, FR-009): remove #menu-button-row from #parameters-menu and add a #game-actions group (outside the menu, in #main-container) holding <button type=\"button\"> Nuevo juego (newGameButtonClick) and Compartir (generateTargetLinkButtonClick) with their BUTTON_*_TITLE tooltips. RED first in game.component.spec.ts: with the view rendered, both buttons exist outside #parameters-menu; #parameters-menu contains no New Game/share button and still renders its 4 sliders and the heat bar.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.html",
+      "satisfies": [
+        "FR-001",
+        "FR-009"
+      ]
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "US1 behaviour + hide-with-menu (FR-004, FR-005, FR-010): the #game-actions group is rendered only while the gear menu is closed (*ngIf=\"!menuVisible\"). RED: clicking the new Nuevo juego opens the #23 pop-up and leaves the menu closed; clicking Compartir runs the share path (navigator.clipboard.writeText spied, called with the #12 link); after menuButtonClick opens the menu the group is absent, and it returns when the menu closes.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US1",
+      "dependencies": [
+        "T001"
+      ],
+      "satisfies": [
+        "FR-004",
+        "FR-005",
+        "FR-010",
+        "VM-003",
+        "VM-004"
+      ]
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "US2 copy (FR-006): LABEL_SHARE_GAME \"Link\" → \"Compartir\"; BUTTON_SHARE_GAME_TITLE → a tooltip about sharing the player's own shell as a challenge (proposed \"Copiar enlace para retar con tu caracol\"; final wording approved on #11). RED: the share button's text equals AppStrings.LABEL_SHARE_GAME === 'Compartir' and its title doesn't contain 'objetivo'.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/app-strings.ts",
+      "story": "US2",
+      "dependencies": [
+        "T001"
+      ],
+      "satisfies": [
+        "FR-006",
+        "VM-005"
+      ]
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 3,
+      "description": "Polish: style #game-actions (FR-002, FR-003, FR-007, FR-008): position fixed bottom 5px right 5px, flex row, toolbar palette (teal #77aca2 border, cream #f4e9cd text, hover #e2c16e/#468189); remove #menu-button-row/.menu-action-button rules; at 390 px the group sits on its own row above #toggle-switch; .modal backdrops cover it. Check with Playwright at 390 and 1280 px: visible with the menu closed, no overlap with the switch/toolbar/each other, >= 5 px from edges, labels fit, covered by an open pop-up; screenshots for #11.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.css",
+      "dependencies": [
+        "T002",
+        "T003"
+      ],
+      "satisfies": [
+        "FR-002",
+        "FR-003",
+        "FR-007",
+        "FR-008",
+        "VM-001",
+        "VM-002"
+      ]
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 3,
+      "description": "Verify acceptance criteria (SC-001..SC-006): npm test green; ng lint no new problems vs dev; tsc clean; npm run build OK; validation harness in ~/00_C3_code/validaciones/shell_generator/11/ (local CI vs dev, revert guard: the new specs fail on dev's code, e2e/visual: visible menu-closed at both widths, hidden menu-open, handlers fire, backdrop covers them, Tab reachable; 2 cores) plus a manual-validation guide.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "dependencies": [
+        "T004"
+      ],
+      "satisfies": [
+        "SC-001",
+        "SC-002",
+        "SC-003",
+        "SC-004",
+        "SC-005",
+        "SC-006"
+      ]
+    }
+  }
+}
