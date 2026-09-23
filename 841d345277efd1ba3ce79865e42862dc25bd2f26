@@ -1,0 +1,7 @@
+vt.idd:task: T006
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.css
+vt.idd:satisfies: partial (Fit verified at 390/1280 px; screenshots in validaciones/shell_generator/23/capturas await approval on #23 (SC-007))
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-23T11:06:43-06:00
