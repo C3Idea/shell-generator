@@ -4,7 +4,7 @@
 # Tasks: Replace Angular favicon and unify app icons
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T17:05:06-06:00
+**Generated**: 2026-09-23T17:05:23-06:00
 
 ---
 
@@ -33,9 +33,9 @@
 **Purpose**: apple-touch-icon + maskable icons, manifest purposes split
 
 - [x] T003 [W2] [US2] Generate src/assets/icons/apple-touch-icon.png (180x180) and icon-maskable-{192x192,512x512}.png (navy background, shell at about 70% of the canvas, cropped so no straight cut edge shows).
-- [ ] T004 [W2] [US2] Wire the icons: add <link rel="apple-touch-icon"> in src/index.html; in src/manifest.webmanifest set the existing icons to "purpose": "any" and add separate "maskable" entries for the 192/512 maskable icons.
+- [x] T004 [W2] [US2] Wire the icons: add <link rel="apple-touch-icon"> in src/index.html; in src/manifest.webmanifest set the existing icons to "purpose": "any" and add separate "maskable" entries for the 192/512 maskable icons.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -62,10 +62,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 50%
+- **Progress**: 66%
 
 ---
 

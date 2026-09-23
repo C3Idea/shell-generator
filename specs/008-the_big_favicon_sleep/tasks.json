@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 6,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-23T17:04:54-06:00",
+    "lastCheckpoint": "2026-09-23T17:06:02-06:00",
     "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged.",
-    "lastUpdated": "2026-09-23T17:05:06-06:00"
+    "lastUpdated": "2026-09-23T17:05:23-06:00"
   },
   "waves": [
     {
@@ -58,7 +59,8 @@
         "T003",
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T17:05:23-06:00"
     },
     {
       "number": 3,
@@ -163,7 +165,7 @@
       "id": "T004",
       "wave": 2,
       "description": "Wire the icons: add <link rel=\"apple-touch-icon\"> in src/index.html; in src/manifest.webmanifest set the existing icons to \"purpose\": \"any\" and add separate \"maskable\" entries for the 192/512 maskable icons.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -176,7 +178,17 @@
       ],
       "dependencies": [
         "T003"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T17:05:23-06:00",
+        "commitSha": "8379698d3a07ae72614de2da2f4664e491ef9089",
+        "agents": "claude(inline)",
+        "files": [
+          "src/index.html",
+          "src/manifest.webmanifest"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T005": {
       "id": "T005",
