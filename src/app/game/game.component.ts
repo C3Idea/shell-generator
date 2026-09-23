@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
+import { random } from 'src/util';
+
+type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
 
 @Component({
   selector: 'app-surface',
@@ -12,11 +15,30 @@ import { AppStrings } from '../app-strings';
 
 
 export class GameComponent implements OnInit, AfterViewInit {
-  private static readonly targetParameterKeys: ReadonlyArray<
-    'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta'
-  > = [
+  private static readonly targetParameterKeys: ReadonlyArray<TargetParameterKey> = [
     'd', 'A', 'alpha', 'beta', 'a', 'b', 'mu', 'omega', 'phi', 'theta'
   ];
+
+  // Slider ranges. 'd' (coiling direction) has no slider and is always 1 in the
+  // game, so a link can't change it.
+  private static readonly parameterRanges: Readonly<Record<TargetParameterKey, readonly [number, number]>> = {
+    d:     [1, 1],
+    A:     [ShellParameters.AMin, ShellParameters.AMax],
+    alpha: [ShellParameters.alphaMin, ShellParameters.alphaMax],
+    beta:  [ShellParameters.betaMin, ShellParameters.betaMax],
+    a:     [ShellParameters.aMin, ShellParameters.aMax],
+    b:     [ShellParameters.bMin, ShellParameters.bMax],
+    mu:    [ShellParameters.muMin, ShellParameters.muMax],
+    omega: [ShellParameters.omegaMin, ShellParameters.omegaMax],
+    phi:   [ShellParameters.phiMin, ShellParameters.phiMax],
+    theta: [ShellParameters.thetaMin, ShellParameters.thetaMax],
+  };
+
+  // Parameters the player controls with the sliders.
+  private static readonly playerParameterKeys: ReadonlyArray<'A' | 'alpha' | 'beta' | 'a'> = [
+    'A', 'alpha', 'beta', 'a'
+  ];
+  private static readonly maxStartAttempts = 20;
 
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
@@ -99,8 +121,9 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.parameters = new ShellParameters();
-    this.targetParameters = this.targetParametersFromRoute() ?? ShellParameters.randomParameters();
-    this.setupGame();
+    const linkTarget = this.targetParametersFromRoute();
+    this.targetParameters = linkTarget ?? ShellParameters.randomParameters();
+    this.setupGame(linkTarget !== null);
     this.distance = this.parameters.distance(this.targetParameters);
   }
 
@@ -115,13 +138,36 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.checkGameIsOver();
   }
 
-  private setupGame() {
+  private setupGame(fromLink: boolean = false) {
     // We fix some parameters
     this.parameters.mu  = this.targetParameters.mu;
     this.parameters.phi = this.targetParameters.phi;
     this.parameters.omega = this.targetParameters.omega;
-    this.parameters.b     = this.targetParameters.b; 
+    this.parameters.b     = this.targetParameters.b;
     this.parameters.theta = this.targetParameters.theta;
+    if (fromLink) {
+      this.randomizePlayerStart();
+    }
+  }
+
+  // A shared link may target the sliders' minimums, so link games start at a
+  // random position that doesn't already win.
+  private randomizePlayerStart() {
+    for (let attempt = 0; attempt < GameComponent.maxStartAttempts; attempt++) {
+      for (const key of GameComponent.playerParameterKeys) {
+        const [min, max] = GameComponent.parameterRanges[key];
+        this.parameters[key] = random(min, max);
+      }
+      if (!this.checkParametersAreSimilar()) {
+        return;
+      }
+    }
+    // Fallback: the slider end farther from the target is always outside the win margin.
+    for (const key of GameComponent.playerParameterKeys) {
+      const [min, max] = GameComponent.parameterRanges[key];
+      const target = this.targetParameters[key];
+      this.parameters[key] = target - min > max - target ? min : max;
+    }
   }
 
   private createShellGraphs() {
@@ -270,6 +316,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   private newGame(seed?: string) {
+    this.clearTargetFromUrl();
     this.parameters       = new ShellParameters();
     this.targetParameters = ShellParameters.randomParameters(seed);
     this.setupGame();
@@ -325,6 +372,19 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // Drop ?target so reloading after New Game doesn't bring the shared challenge back.
+  private clearTargetFromUrl() {
+    if (!this.route.snapshot.queryParamMap.has('target')) {
+      return;
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { target: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
   private targetParametersFromRoute(): ShellParameters | null {
     const encodedTarget = this.route.snapshot.queryParamMap.get('target');
     if (encodedTarget === null || encodedTarget.trim() === '') {
@@ -350,7 +410,10 @@ export class GameComponent implements OnInit, AfterViewInit {
       if (Number.isNaN(value)) {
         return null;
       }
-      parameters[GameComponent.targetParameterKeys[i]] = value;
+      const key = GameComponent.targetParameterKeys[i];
+      const range = GameComponent.parameterRanges[key];
+      // Clamp so an edited link can't set a target the sliders can't reach.
+      parameters[key] = Math.min(Math.max(value, range[0]), range[1]);
     }
     return parameters;
   }

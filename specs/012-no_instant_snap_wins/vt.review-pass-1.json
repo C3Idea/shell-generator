@@ -1,0 +1,85 @@
+{
+  "pass": 1,
+  "pr_number": 16,
+  "pr_title": "fix: shared challenge link can start the game already won (#12)",
+  "copilot_review_summary": "Skipped by config/flag: review.copilot_integration is not set (no vt.config.yaml in this repo).",
+  "findings": [
+    {
+      "id": "M1", "severity": "Major", "fix_group": "FG-1", "source": "quality reviewer",
+      "title": "parameterRanges typed Partial, forcing ! assertions and a dead no-clamp branch",
+      "file": "src/app/game/game.component.ts", "lines": "L24-L36, L158, L167, L416",
+      "description": "`parameterRanges` is declared `Readonly<Partial<Record<TargetParameterKey, …>>>` although the literal has all 10 keys. That forces `parameterRanges[key]!` in `randomizePlayerStart()` and a `range ? clamp : value` ternary in `decodeTargetParameters()` whose unclamped branch is unreachable today. If a key is ever added without a range, the compiler stays silent: the random start would produce `NaN` sliders and decoding would stop clamping that key, quietly reopening the hole #12 closes.",
+      "recommended": "A",
+      "options": {
+        "A": {"approach": "Type it as `Readonly<Record<TargetParameterKey, readonly [number, number]>>`; drop both `!` and the ternary so the clamp always runs.", "rationale": "The compiler then requires a range for every key; no runtime change today."},
+        "B": {"approach": "Keep `Partial` but throw when a range is missing instead of falling back to the unclamped value.", "rationale": "Fails loudly at runtime, but later than A and keeps the `!` pattern."},
+        "C": {"approach": "Leave as is.", "rationale": "Correct today; relies on whoever adds a parameter remembering the range."}
+      }
+    },
+    {
+      "id": "m1", "severity": "Minor", "fix_group": "FG-1", "source": "quality reviewer",
+      "title": "Parameter key lists overlap across three static structures",
+      "file": "src/app/game/game.component.ts", "lines": "L18, L24, L38",
+      "description": "`targetParameterKeys`, `parameterRanges` and `playerParameterKeys` each enumerate overlapping key sets, so adding or removing a parameter touches up to three places.",
+      "recommended": "C",
+      "options": {
+        "A": {"approach": "Derive one list from another (e.g. `targetParameterKeys` from `Object.keys(parameterRanges)`).", "rationale": "Single source of truth, but ties the link's wire order to object key order."},
+        "B": {"approach": "Add a comment above each list pointing at the others.", "rationale": "Documents the coupling; relies on discipline."},
+        "C": {"approach": "No change: with M1-A, a key missing from `parameterRanges` is a compile error, and `targetParameterKeys` must stay an explicit ordered list because its order is the shared link format.", "rationale": "M1-A removes the drift risk the finding describes; deriving would make the link format depend on object key order."}
+      }
+    },
+    {
+      "id": "m2", "severity": "Minor", "fix_group": "FG-1", "source": "quality reviewer",
+      "title": "`src/util` import differs from the file's relative imports",
+      "file": "src/app/game/game.component.ts", "lines": "L6",
+      "description": "`import { random } from 'src/util'` is baseUrl-rooted while the other imports in this file are relative.",
+      "recommended": "B",
+      "options": {
+        "A": {"approach": "Use `'../../util'`.", "rationale": "Consistent inside this file."},
+        "B": {"approach": "Keep `'src/util'`.", "rationale": "Every existing importer of util (`shell-parameters.ts`, `shell-viewer.ts`) uses `\"src/util\"`, so this matches the codebase convention for that module."},
+        "C": {"approach": "Switch all three util imports to relative paths.", "rationale": "Uniform, but touches files outside this PR's scope."}
+      }
+    },
+    {
+      "id": "D1", "severity": "Documentation", "fix_group": "FG-2", "source": "documentation reviewer",
+      "title": "Plan names `randomWithGenerator`; the code uses `random`",
+      "file": "specs/012-no_instant_snap_wins/plan.md", "lines": "Technical Context, Research Findings",
+      "description": "plan.md says the random start reuses `randomWithGenerator(min, max, Math.random)`; `game.component.ts` imports `random` from `src/util` and calls `random(min, max)`. A reader tracing plan to code won't find the named call.",
+      "recommended": "A",
+      "options": {
+        "A": {"approach": "Update both mentions to `random(min, max)` from `src/util.ts`, on the issue's plan comment and the cached plan.md.", "rationale": "Restores plan-to-code traceability; the issue comment is authoritative, so both change together."},
+        "B": {"approach": "Leave it as a point-in-time design record.", "rationale": "Plans may diverge, but this archive is presented as the technical record."},
+        "C": {"approach": "Add a short \"as implemented\" note under Research Findings.", "rationale": "Keeps the original text and records the delta."}
+      }
+    },
+    {
+      "id": "D2", "severity": "Documentation", "fix_group": "FG-2", "source": "documentation reviewer",
+      "title": "Plan's `?target` clearing call doesn't match the implementation",
+      "file": "specs/012-no_instant_snap_wins/plan.md", "lines": "Research Findings",
+      "description": "plan.md describes `router.navigate([], { relativeTo: route, queryParams: {} })`, which would drop every query param and says nothing about history. The code uses `queryParams: { target: null }`, `queryParamsHandling: 'merge'` and `replaceUrl: true`; the last one is why Back and reload don't restore the challenge.",
+      "recommended": "A",
+      "options": {
+        "A": {"approach": "Rewrite the bullet to describe `{ target: null }` + `merge` + `replaceUrl: true`, on the issue's plan comment and the cached plan.md.", "rationale": "Matches what ships, including the detail that makes the fix reload-proof."},
+        "B": {"approach": "Leave the original text.", "rationale": "Point-in-time record; misleads a reviewer checking the approach."},
+        "C": {"approach": "Add a one-line \"refined during implementation\" note.", "rationale": "Minimal; keeps the original rationale."}
+      }
+    },
+    {
+      "id": "D3", "severity": "Documentation", "fix_group": "FG-3", "source": "documentation reviewer",
+      "title": "Spec's \"Clamp link values\" omits pinning `d` to 1 (commit 354bb6e)",
+      "file": "specs/012-no_instant_snap_wins/spec.md", "lines": "Proposed Fix, item 2",
+      "description": "Commit 354bb6e pins `d` (coiling direction, no slider) to 1 when decoding, so an edited link can't mirror the target. The spec's Proposed Fix doesn't mention `d`, while the PR description does.",
+      "recommended": "A",
+      "options": {
+        "A": {"approach": "Add a sentence to \"Clamp link values\" that `d` is pinned to 1, on the issue's spec comment and the cached spec.md.", "rationale": "Keeps the authoritative spec complete and in line with the code and PR description."},
+        "B": {"approach": "Leave it; the pinning came after the spec was written.", "rationale": "Expected staleness, but the spec is the acceptance record."},
+        "C": {"approach": "Add an addendum at the end of the spec referencing 354bb6e.", "rationale": "Records the delta without editing the original section."}
+      }
+    }
+  ],
+  "fix_groups": [
+    {"id": "FG-1", "primary_files": "`src/app/game/game.component.ts`", "finding_ids": "M1, m1, m2", "boundary": "Hard (no file overlap with FG-2/FG-3)", "advisory": "Only M1 changes code; m1 and m2 recommend no change.", "recommended_disposition": "Fix"},
+    {"id": "FG-2", "primary_files": "`specs/012-no_instant_snap_wins/plan.md` + issue #12 plan comment", "finding_ids": "D1, D2", "boundary": "Hard", "advisory": "The issue comment is authoritative; the local file is re-cached from it.", "recommended_disposition": "Fix"},
+    {"id": "FG-3", "primary_files": "`specs/012-no_instant_snap_wins/spec.md` + issue #12 spec comment", "finding_ids": "D3", "boundary": "Hard", "advisory": "The issue comment is authoritative; the local file is re-cached from it.", "recommended_disposition": "Fix"}
+  ]
+}
