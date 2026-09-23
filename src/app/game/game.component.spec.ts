@@ -92,4 +92,73 @@ describe('GameComponent shared challenge link (#12)', () => {
       });
     }
   });
+
+  describe('the player\'s start', () => {
+    // The issue's repro: a sharer who never moved A/α/β/a shares the minimums.
+    const REPRO = '1,5,80,0,1,2.5,10,0,50,8';
+
+    it('never starts a link game already won', () => {
+      configure(REPRO);
+      for (let i = 0; i < 25; i++) {
+        const game = create();
+        expect(game.checkParametersAreSimilar()).withContext(`start #${i}`).toBeFalse();
+        const p = game.parameters;
+        expect(p.A).toBeGreaterThanOrEqual(P.AMin); expect(p.A).toBeLessThanOrEqual(P.AMax);
+        expect(p.alpha).toBeGreaterThanOrEqual(P.alphaMin); expect(p.alpha).toBeLessThanOrEqual(P.alphaMax);
+        expect(p.beta).toBeGreaterThanOrEqual(P.betaMin); expect(p.beta).toBeLessThanOrEqual(P.betaMax);
+        expect(p.a).toBeGreaterThanOrEqual(P.aMin); expect(p.a).toBeLessThanOrEqual(P.aMax);
+      }
+    });
+
+    it('still copies μ, φ, ω, b and θ from the target', () => {
+      configure(REPRO);
+      const game = create();
+      const p = game.parameters, t = game.targetParameters;
+      expect([p.mu, p.phi, p.omega, p.b, p.theta]).toEqual([t.mu, t.phi, t.omega, t.b, t.theta]);
+    });
+
+    it('falls back to the far slider ends when every roll lands on a target at the minimums', () => {
+      configure(REPRO);
+      spyOn(Math, 'random').and.returnValue(0); // random(min, max) === min === the target
+      const game = create();
+      const p = game.parameters;
+      expect([p.A, p.alpha, p.beta, p.a]).toEqual([P.AMax, P.alphaMax, P.betaMax, P.aMax]);
+      expect(game.checkParametersAreSimilar()).toBeFalse();
+    });
+
+    it('falls back to the near-minimum ends when every roll lands on a target near the maximums', () => {
+      configure('1,12,89,80,5.5,2.5,10,0,50,8');
+      // One fraction per player slider (A, α, β, a), repeated for every attempt,
+      // so each roll lands exactly on the target.
+      const fractions = [(12 - P.AMin) / (P.AMax - P.AMin), (89 - P.alphaMin) / (P.alphaMax - P.alphaMin),
+                         (80 - P.betaMin) / (P.betaMax - P.betaMin), (5.5 - P.aMin) / (P.aMax - P.aMin)];
+      let call = 0;
+      spyOn(Math, 'random').and.callFake(() => fractions[call++ % fractions.length]);
+      const game = create();
+      const p = game.parameters;
+      expect([p.A, p.alpha, p.beta, p.a]).toEqual([P.AMin, P.alphaMin, P.betaMin, P.aMin]);
+      expect(game.checkParametersAreSimilar()).toBeFalse();
+    });
+
+    it('starts a game without a link at the slider minimums', () => {
+      configure(null);
+      const p = create().parameters;
+      expect([p.A, p.alpha, p.beta, p.a]).toEqual([P.AMin, P.alphaMin, P.betaMin, P.aMin]);
+    });
+  });
+
+  describe('sharing', () => {
+    it('encodes the player\'s current shell to 2 decimals, not the target', () => {
+      configure(null);
+      const game = create();
+      Object.assign(game.parameters, { A: 11.237, alpha: 84.519, beta: 33.333, a: 2.468 });
+      const link: string = (game as any)['getShareableGameLink']();
+      expect(link).toContain('#/game?target=');
+      const values = decodeURIComponent(link.split('target=')[1]).split(',').map(Number);
+      const p = game.parameters;
+      expect(values).toEqual([p.d, 11.24, 84.52, 33.33, 2.47, p.b, p.mu, p.omega, p.phi, p.theta]
+        .map(v => +v.toFixed(2)));
+      expect(values[1]).not.toBe(+game.targetParameters.A.toFixed(2));
+    });
+  });
 });
