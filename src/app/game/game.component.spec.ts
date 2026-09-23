@@ -414,5 +414,36 @@ describe('GameComponent New Game pop-up (#23)', () => {
       expect(shown(howTo)).toBeTrue();
     });
   });
+
+  describe('from ¡Victoria!', () => {
+    const victory = () => el.querySelector('.modal-content')!.parentElement as HTMLDivElement;
+    const jugar = () => Array.from(victory().querySelectorAll('button'))
+      .find(b => b.textContent?.trim() === AppStrings.LABEL_PLAY_AGAIN) as HTMLButtonElement;
+
+    beforeEach(() => {
+      victory().style.display = 'block';
+    });
+
+    it('Jugar opens the New Game pop-up over ¡Victoria!', () => {
+      jugar().click();
+      expect(prompt).not.toHaveBeenCalled();
+      expect(shown(popup())).toBeTrue();
+      expect(shown(victory())).toBeTrue();
+    });
+
+    it('closing the pop-up goes back to ¡Victoria!', () => {
+      jugar().click();
+      button(AppStrings.LABEL_CLOSE).click();
+      expect(shown(popup())).toBeFalse();
+      expect(shown(victory())).toBeTrue();
+    });
+
+    it('starting a game closes both', () => {
+      jugar().click();
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      expect(shown(popup())).toBeFalse();
+      expect(shown(victory())).toBeFalse();
+    });
+  });
 });
 
