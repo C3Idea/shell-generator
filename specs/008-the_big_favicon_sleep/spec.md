@@ -110,22 +110,22 @@ No unit tests (static assets). Verification is: `ng build` success + `dist/` con
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US-1: fresh context tab shows the shell, not Angular logo | [pending] | Pending |
-| VM-002 | US-1: 16px favicon still reads as a shell | [pending] | Pending |
-| VM-003 | US-2: Android maskable preview shows no straight cut edge in the safe zone | [pending] | Pending |
-| VM-004 | US-2: iOS add-to-home shows the shell via apple-touch-icon | [pending] | Pending |
-| VM-005 | US-3: index.html has exactly one manifest link and one theme-color meta | [pending] | Pending |
+| VM-001 | US-1: fresh context tab shows the shell, not Angular logo | Real Chrome tab-strip capture, fresh profile, production build: [approval comment](https://github.com/C3Idea/shell-generator/issues/8#issuecomment-5804536714) | Pass |
+| VM-002 | US-1: 16px favicon still reads as a shell | 16 px favicon approved by the requester as recognizable: [approval comment](https://github.com/C3Idea/shell-generator/issues/8#issuecomment-5804536714) | Pass |
+| VM-003 | US-2: Android maskable preview shows no straight cut edge in the safe zone | Circle and rounded-square mask previews in [approval comment](https://github.com/C3Idea/shell-generator/issues/8#issuecomment-5804536714); shell pixels touch only the canvas bottom row (`af464cd`). The DevTools preview itself wasn't scripted | Pass |
+| VM-004 | US-2: iOS add-to-home shows the shell via apple-touch-icon | `src/index.html:9` link; the 180×180 icon decodes in Chrome and is opaque RGB (`5b4ec53`). Not tried on an iOS device | Partial |
+| VM-005 | US-3: index.html has exactly one manifest link and one theme-color meta | `src/index.html:10-11`; Chrome DOM check found 1 of each ([approval comment](https://github.com/C3Idea/shell-generator/issues/8#issuecomment-5804536714)) | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | Browser tab shows the shell in a fresh context | [pending] | Pending |
-| SC-002 | `file src/favicon.ico` reports a real ICO with 16/32/48px images | [pending] | Pending |
-| SC-003 | Manifest has no `"maskable any"` entries; each icon is `any` or `maskable` | [pending] | Pending |
-| SC-004 | `ng build` succeeds and `dist/` contains favicon.ico, apple-touch-icon.png, and both maskable icons | [pending] | Pending |
-| SC-005 | `ng test` passes | [pending] | Pending |
-| SC-006 | `shell_icon512.png` is not added to the repo | [pending] | Pending |
+| SC-001 | Browser tab shows the shell in a fresh context | [approval comment](https://github.com/C3Idea/shell-generator/issues/8#issuecomment-5804536714) | Pass |
+| SC-002 | `file src/favicon.ico` reports a real ICO with 16/32/48px images | `file src/favicon.ico` → "MS Windows icon resource - 3 icons" (16/32/48 PNG payloads; `09e193e`) | Pass |
+| SC-003 | Manifest has no `"maskable any"` entries; each icon is `any` or `maskable` | Chrome `Page.getAppManifest`: 0 errors, 8 `any` + 2 `maskable` (`8379698`) | Pass |
+| SC-004 | `ng build` succeeds and `dist/` contains favicon.ico, apple-touch-icon.png, and both maskable icons | `ng build` OK after the review fixes; `dist/shell-generator/` holds all four files (PR #27 fix summary) | Pass |
+| SC-005 | `ng test` passes | `ng test`: 62/62 SUCCESS after the review fixes (PR #27 fix summary) | Pass |
+| SC-006 | `shell_icon512.png` is not added to the repo | `git ls-files` has no `shell_icon512.png`; the untracked root copy was deleted (T006) | Pass |
 
 ## Complexity Considerations
 
