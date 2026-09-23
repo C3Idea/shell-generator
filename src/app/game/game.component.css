@@ -267,6 +267,65 @@ input:checked + .switch-slider:before {
   margin: 20px;
 }
 
+/* New Game pop-up (#23): same box as the help/how-to pop-ups, sized to fit
+   a 390 px phone. */
+.modal-new-game-content {
+  background-color: white;
+  margin: 15% auto;
+  width: min(90%, 420px);
+  box-sizing: border-box;
+  padding: 10px 16px 0 16px;
+  border-radius: 10px;
+}
+
+#label-new-game-title {
+  display: block;
+  font-size: 1.5em;
+  line-height: 50px;
+  text-align: center;
+}
+
+.new-game-choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.new-game-button {
+  min-width: 140px;
+  height: 40px;
+  padding: 0 12px;
+}
+
+.key-entry-row {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.key-entry-row label {
+  flex-basis: 100%;
+  text-align: center;
+}
+
+.key-entry-row input {
+  flex: 1 1 160px;
+  min-width: 0;
+  height: 34px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  font-size: 1em;
+}
+
+.key-entry-row .new-game-button {
+  min-width: 80px;
+}
+
 /* Modal Content/Box */
 .modal-content {
   background-color: white;
