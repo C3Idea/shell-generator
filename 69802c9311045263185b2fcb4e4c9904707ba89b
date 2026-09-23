@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.html,src/app/game/game.component.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=2 FAILED: Aleatorio not wired (newGame not called; target unchanged), green=game spec 23/23 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-23T10:58:04-06:00
