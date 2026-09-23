@@ -140,10 +140,10 @@
   <!-- #11: New Game and share live on the game screen, not in the gear menu.
        Hidden while the menu is open: on a phone it covers most of the screen. -->
   <div id="game-actions" *ngIf="!this.menuVisible">
-    <button type="button" class="game-action-button" title="{{AppStrings.BUTTON_NEW_GAME_TITLE}}" (click)="this.newGameButtonClick($event)">
+    <button type="button" class="game-action-button" title={{AppStrings.BUTTON_NEW_GAME_TITLE}} (click)="this.newGameButtonClick($event)">
       {{AppStrings.LABEL_NEW_GAME}}
     </button>
-    <button type="button" class="game-action-button" title="{{AppStrings.BUTTON_SHARE_GAME_TITLE}}" (click)="this.generateTargetLinkButtonClick($event)">
+    <button type="button" class="game-action-button" title={{AppStrings.BUTTON_SHARE_GAME_TITLE}} (click)="this.generateTargetLinkButtonClick($event)">
       {{AppStrings.LABEL_SHARE_GAME}}
     </button>
   </div>
