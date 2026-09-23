@@ -1,0 +1,7 @@
+vt.idd:task: T006
+vt.idd:domain: documentation
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/021-order_66_for_render_loops/tasks.json,specs/021-order_66_for_render_loops/tasks.md
+vt.idd:satisfies: full
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-23T00:39:51-06:00
