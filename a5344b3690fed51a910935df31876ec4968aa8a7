@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.html,src/app/game/game.component.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=3 FAILED: close button, Esc and backdrop click didn't close the pop-up, green=game spec 35/35 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-23T11:01:47-06:00
