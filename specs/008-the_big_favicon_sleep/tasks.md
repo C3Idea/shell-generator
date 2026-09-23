@@ -4,7 +4,7 @@
 # Tasks: Replace Angular favicon and unify app icons
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T17:01:17-06:00
+**Generated**: 2026-09-23T17:03:18-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Scratchpad script; no new dependency
 
-- [ ] T001 [W0] Write a one-off icon generator in the session scratchpad (never committed): npx sharp crops and resizes src/assets/icons/icon-512x512.png, and a minimal Node ICO writer packs PNG payloads. No package.json change.
+- [x] T001 [W0] Write a one-off icon generator in the session scratchpad (never committed): npx sharp crops and resizes src/assets/icons/icon-512x512.png, and a minimal Node ICO writer packs PNG payloads. No package.json change.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -62,10 +62,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 16%
 
 ---
 

@@ -14,14 +14,17 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
     "totalTasks": 6,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-23T23:01:17Z",
-    "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged."
+    "lastCheckpoint": "2026-09-23T17:04:01-06:00",
+    "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged.",
+    "lastUpdated": "2026-09-23T17:03:18-06:00"
   },
   "waves": [
     {
@@ -31,7 +34,8 @@
       "tasks": [
         "T001"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T17:03:18-06:00"
     },
     {
       "number": 1,
@@ -79,14 +83,23 @@
       "id": "T001",
       "wave": 0,
       "description": "Write a one-off icon generator in the session scratchpad (never committed): npx sharp crops and resizes src/assets/icons/icon-512x512.png, and a minimal Node ICO writer packs PNG payloads. No package.json change.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "config",
       "filePath": "src/assets/icons/icon-512x512.png",
       "satisfies": [
         "FR-007"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T17:03:18-06:00",
+        "commitSha": "13d19ac95815aec149e336de59c2fe2d09d25344",
+        "agents": "claude(inline)",
+        "files": [
+          "scratchpad/icongen/gen-icons.mjs (not committed)"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T002": {
       "id": "T002",
