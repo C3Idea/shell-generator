@@ -11,7 +11,7 @@ Angular 17 (NgModule app), three.js, Karma + Jasmine, no backend. Pure layout + 
 
 ### Research Findings
 
-- **Decision:** anchor a new group `bottom: 5px; right: 5px` (mirror of `#toggle-switch`). **Rationale:** the switch is fixed bottom-left, so a bottom-right group never collides horizontally at wide widths and stacks just above the switch at narrow widths.
+- **Decision:** anchor a new group `right: 5px; bottom: 7px` (mirror of `#toggle-switch`, whose visible edge is at 7 px: `bottom: 5px` + `margin: 2px`). **Rationale:** the switch is fixed bottom-left, so a bottom-right group never collides horizontally at wide widths and stacks just above the switch at narrow widths.
 - **Decision:** hide the group with `*ngIf="!menuVisible"` (or `[hidden]`). **Rationale:** FR-010; `menuVisible` already tracks the gear menu, and at phone width the open menu is ~96% of the screen. `newGameButtonClick` calls `hideMenu()`, so the group reappears when a new game starts from it.
 - **Decision:** keep the existing handlers verbatim. **Rationale:** #23's pop-up (`newGameButtonClick` → `openNewGamePopup`) and #12's share (`generateTargetLinkButtonClick`) are unchanged; only the buttons' DOM location and the share label/tooltip move.
 - **Decision:** style as toolbar-palette text buttons (teal border, cream text, hover `#e2c16e`/`#468189`), distinct from `.menu-action-button` and `.new-game-button`. **Rationale:** FR-007; they sit on the 3D canvas, not on a white pop-up.
@@ -48,7 +48,7 @@ flowchart TD
 ### Project Structure
 
 - **Modify** `src/app/game/game.component.html` — remove `#menu-button-row` (and its two buttons) from inside `#parameters-menu`; add `#game-actions` before `</div>` of `#main-container`, holding the two buttons with the same handlers, `*ngIf="!menuVisible"`, `BUTTON_*_TITLE` tooltips.
-- **Modify** `src/app/game/game.component.css` — remove `#menu-button-row` / `.menu-action-button` rules; add `#game-actions` (`position: fixed; bottom: 5px; right: 5px; display: flex; gap`) and its buttons in the toolbar palette; ensure it sits below `.modal` (default stacking is fine — `.modal` is later/fixed) and wraps above the switch at narrow width (the switch is anchored bottom-left, so no explicit media query is needed unless they'd collide — verify at 390 px and add a `max-width` rule only if they touch).
+- **Modify** `src/app/game/game.component.css` — remove `#menu-button-row` / `.menu-action-button` rules; add `#game-actions` (`position: fixed; bottom: 7px; right: 5px; display: flex; gap; z-index: 0`) and its buttons in the toolbar palette; `z-index: 0` keeps it below `.modal` (`z-index: 1`) by rule; a `max-width: 560px` media query moves it to a row above the switch (breakpoint measured, see the spec's decision).
 - **Modify** `src/app/app-strings.ts` — `LABEL_SHARE_GAME`, `BUTTON_SHARE_GAME_TITLE`.
 - **Modify** `src/app/game/game.component.spec.ts` — specs in a new `#11` describe block.
 

@@ -30,7 +30,7 @@ As a player, I want the share button to say what it does, so I know I'm sharing 
 ### Functional Requirements
 
 - **FR-001** The **Nuevo juego** and share buttons MUST be removed from `#menu-button-row` inside `#parameters-menu`, and `#menu-button-row` MUST be removed from the gear menu. The menu's sliders, colour inputs and heat bar MUST be unchanged.
-- **FR-002** Both buttons MUST be rendered on the game screen, visible when the gear menu is closed, anchored to the **bottom-right**. At ≥ ~700 px they share the bottom row with the Usuario / Objetivo switch (switch left, buttons right); at narrow widths (≤ ~700 px, covering 390 px) they wrap to their own row directly **above** the switch.
+- **FR-002** Both buttons MUST be rendered on the game screen, visible when the gear menu is closed, anchored to the **bottom-right**. Above 560 px they share the bottom row with the Usuario / Objetivo switch (switch left, buttons right); at 560 px and below (covering 390 px) they move to their own row directly **above** the switch.
 - **FR-003** Neither button MUST overlap the switch, the top toolbar, or the other button, and neither MUST touch the viewport edge (≥ 5 px margin, matching the toolbar and switch), at 390 px and 1280 px. Both labels MUST fit fully inside their buttons.
 - **FR-004** **Nuevo juego** MUST open the "Nuevo juego" pop-up (#23) via the existing `newGameButtonClick`, and MUST still hide the gear menu if it is open. Its label and tooltip are unchanged.
 - **FR-005** The share button MUST call the existing `generateTargetLinkButtonClick` (copy the link, show "Enlace copiado…", or fall back to the prompt), unchanged. Only its label and tooltip change.
@@ -82,7 +82,7 @@ Angular 17 (NgModule app), three.js. The game screen is a fixed viewport with `p
 
 ### Applicable Conventions
 
-- Existing fixed-chrome pattern: `#toolbar` / `#toggle-switch` are `position: fixed` with a 5 px edge margin; the new group follows it (`bottom: 5px; right: 5px`).
+- Existing fixed-chrome pattern: `#toolbar` / `#toggle-switch` are `position: fixed` with a 5 px edge margin; the new group follows it (`right: 5px`; `bottom: 7px`, which lines up with the switch's visible edge: `bottom: 5px` + `margin: 2px`).
 - Toolbar palette (teal `#77aca2` / cream `#f4e9cd` / hover `#e2c16e` `#468189`) for game controls.
 - All user-facing copy in `AppStrings`; English issues, Spanish UI.
 - Test convention (#18/#21/#23): components built via `TestBed`; query the rendered DOM and call handlers directly.
@@ -94,7 +94,7 @@ Angular 17 (NgModule app), three.js. The game screen is a fixed viewport with `p
 - **Share button copy: "Compartir" + corrected tooltip vs. keep "Link".** Options: (a) rename to "Compartir" and fix the tooltip; (b) keep "Link", fix only the tooltip; (c) no copy change. **Selected: (a).** Rationale: "Link" doesn't say what the button does, and the tooltip is factually wrong since #12. Final wording is approved on the issue before merge.
 - **Native share alert/prompt: keep vs. replace now.** Options: (a) leave the native `alert`/`prompt`; (b) replace with in-app feedback in this issue. **Selected: (a).** Rationale: keeps #11 to the move; in-app feedback is tracked in #25.
 - **Buttons while the gear menu is open (CLARIFY).** Options: (a) hide the bottom-right group whenever the gear menu is open, and show it when closed; (b) keep it shown and rely on z-order. **Selected: (a).** Rationale: at ≤ a small width the open gear menu is `width/height: 96%` and would sit over the bottom-right corner; hiding the group avoids the overlap and matches the issue's framing ("visible with the gear menu closed"). Opening **Nuevo juego** already closes the menu, so the group reappears then.
-- **Narrow-width breakpoint.** Options: (a) wrap the buttons above the switch below ~700 px; (b) a fixed 390/1280 media query. **Selected: (a).** Rationale: a content-based wrap (flex-wrap, or a `min-width` media query near where the switch + two labels stop fitting) is robust across widths, not just the two tested points. The exact px is an implementation detail verified at 390 and 1280.
+- **Narrow-width breakpoint.** Options: (a) a `max-width` media query set from measured widths, with headroom; (b) a shared flex row with `flex-wrap`; (c) a fixed 390/1280 split. **Selected: (a), at 560 px.** Rationale: measured on the branch, the switch ends at 237 px and the button group is 236 px wide, so one row needs ~491 px. A first cut at 480 px left only 3 px between them at 481 px (review finding M2). At 560 px the one-row gap is ≥ 80 px, room for longer labels or a wider font. (b) would mean restructuring `#toolbar`, which holds the switch.
 
 ## Risk Assessments
 
@@ -108,7 +108,7 @@ Angular 17 (NgModule app), three.js. The game screen is a fixed viewport with `p
 
 | Risk | Severity | Affected Systems | Mitigation |
 |------|----------|------------------|------------|
-| Buttons overlap the switch or the shell at some width | Medium | Game layout / mobile | FR-002/FR-003 + specs and manual checks at 390 px and 1280 px; content-based wrap, not a single breakpoint. |
+| Buttons overlap the switch or the shell at some width | Medium | Game layout / mobile | FR-002/FR-003 + specs and manual checks at 390 px and 1280 px; the 560 px breakpoint leaves ≥ 80 px on one row (measured 320–1280 px). |
 | Buttons clickable through a pop-up backdrop | Medium | Game UX | FR-008: the `.modal` backdrop is full-screen fixed above the buttons; a spec/manual check that a click on the backdrop area over the buttons doesn't trigger them. |
 | Handlers wired to the wrong element after the move | High | New Game / share | FR-004/FR-005 + specs assert `newGameButtonClick` opens the pop-up and `generateTargetLinkButtonClick` runs from the new buttons. |
 | Removing `#menu-button-row` disturbs the menu layout | Low | Gear menu | FR-001 + a spec that the menu still renders its sliders and heat bar; manual look at the menu. |
