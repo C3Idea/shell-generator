@@ -1,0 +1,17 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 8,
+    "title": "[App] Replace Angular favicon and unify app icons from shell_icon512.png",
+    "url": "https://github.com/C3Idea/shell-generator/issues/8",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5804331232",
+  "spec_comment_id": "5804314908",
+  "pr": {
+    "number": null,
+    "url": null
+  },
+  "deployed_at": "2026-09-23T23:00:12Z",
+  "cached_from": "github"
+}
