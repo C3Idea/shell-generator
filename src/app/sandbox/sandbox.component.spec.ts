@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 
 import { SandboxComponent } from './sandbox.component';
+import { FramePump, installFramePump } from '../../testing/frame-pump';
 
 describe('SandboxComponent', () => {
   let component: SandboxComponent;
@@ -30,26 +31,15 @@ describe('SandboxComponent', () => {
 // requestAnimationFrame is replaced by a manual frame pump, so pending frames
 // = viewers still rendering.
 describe('SandboxComponent render loop (#21)', () => {
-  let frames: Map<number, FrameRequestCallback>;
-  let nextFrameId: number;
+  let frames: FramePump;
 
   function renderingViewers(): number {
-    const callbacks = [...frames.values()];
-    frames.clear();
-    callbacks.forEach(callback => callback(performance.now()));
-    return frames.size;
+    frames.pump();
+    return frames.pending();
   }
 
   beforeEach(async () => {
-    frames = new Map();
-    nextFrameId = 1;
-    spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback) => {
-      frames.set(nextFrameId, callback);
-      return nextFrameId++;
-    });
-    spyOn(window, 'cancelAnimationFrame').and.callFake((id: number) => {
-      frames.delete(id);
-    });
+    frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
       declarations: [ SandboxComponent ],

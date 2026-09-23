@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 
 import { ShellParameters } from '../shell-parameters';
 import { GameComponent } from './game.component';
+import { FramePump, installFramePump } from '../../testing/frame-pump';
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -167,32 +168,17 @@ describe('GameComponent shared challenge link (#12)', () => {
 // replaced by a manual frame pump: every live render loop schedules exactly
 // one frame per pumped frame, so pending frames = viewers still rendering.
 describe('GameComponent render loops (#21)', () => {
-  let frames: Map<number, FrameRequestCallback>;
-  let nextFrameId: number;
+  let frames: FramePump;
   let fixture: ComponentFixture<GameComponent>;
   let component: GameComponent;
 
-  function pumpFrame(): void {
-    const callbacks = [...frames.values()];
-    frames.clear();
-    callbacks.forEach(callback => callback(performance.now()));
-  }
-
   function renderingViewers(): number {
-    pumpFrame();
-    return frames.size;
+    frames.pump();
+    return frames.pending();
   }
 
   beforeEach(async () => {
-    frames = new Map();
-    nextFrameId = 1;
-    spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback) => {
-      frames.set(nextFrameId, callback);
-      return nextFrameId++;
-    });
-    spyOn(window, 'cancelAnimationFrame').and.callFake((id: number) => {
-      frames.delete(id);
-    });
+    frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
       declarations: [ GameComponent ],

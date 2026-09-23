@@ -1,5 +1,6 @@
 import { ShellParameters } from './shell-parameters';
 import { ShellViewer } from './shell-viewer';
+import { FramePump, installFramePump } from '../testing/frame-pump';
 
 describe('ThreeJSHelper', () => {
   it('should create an instance', () => {
@@ -11,17 +12,8 @@ describe('ThreeJSHelper', () => {
 // long as the page is open. requestAnimationFrame is replaced by a manual
 // frame pump, so each test decides exactly when frames run.
 describe('ShellViewer lifecycle (#21)', () => {
-  let frames: Map<number, FrameRequestCallback>;
-  let nextFrameId: number;
+  let frames: FramePump;
   let canvas: HTMLCanvasElement;
-
-  function pumpFrames(count: number): void {
-    for (let i = 0; i < count; i++) {
-      const callbacks = [...frames.values()];
-      frames.clear();
-      callbacks.forEach(callback => callback(performance.now()));
-    }
-  }
 
   function createViewer(): ShellViewer {
     const viewer = new ShellViewer();
@@ -31,15 +23,7 @@ describe('ShellViewer lifecycle (#21)', () => {
   }
 
   beforeEach(() => {
-    frames = new Map();
-    nextFrameId = 1;
-    spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback) => {
-      frames.set(nextFrameId, callback);
-      return nextFrameId++;
-    });
-    spyOn(window, 'cancelAnimationFrame').and.callFake((id: number) => {
-      frames.delete(id);
-    });
+    frames = installFramePump();
     canvas = document.createElement('canvas');
     canvas.style.width = '200px';
     canvas.style.height = '200px';
@@ -53,7 +37,7 @@ describe('ShellViewer lifecycle (#21)', () => {
   it('renders once per frame while it runs', () => {
     const viewer = createViewer();
     const render = spyOn((viewer as any)['renderer'], 'render').and.callThrough();
-    pumpFrames(3);
+    frames.pump(3);
     expect(render).toHaveBeenCalledTimes(3);
     viewer.dispose();
   });
@@ -61,12 +45,12 @@ describe('ShellViewer lifecycle (#21)', () => {
   it('dispose() cancels its pending frame and renders no more frames', () => {
     const viewer = createViewer();
     const render = spyOn((viewer as any)['renderer'], 'render').and.callThrough();
-    const pendingId = [...frames.keys()][0];
+    const pendingId = frames.pendingIds()[0];
     viewer.dispose();
     expect(window.cancelAnimationFrame).toHaveBeenCalledWith(pendingId);
-    pumpFrames(3);
+    frames.pump(3);
     expect(render).not.toHaveBeenCalled();
-    expect(frames.size).toBe(0);
+    expect(frames.pending()).toBe(0);
   });
 
   it('dispose() releases the controls, the renderer and its WebGL context', () => {
