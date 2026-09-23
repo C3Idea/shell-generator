@@ -380,5 +380,39 @@ describe('GameComponent New Game pop-up (#23)', () => {
       expect(keyInput().value).toBe('');
     });
   });
+
+  describe('closing without starting a game', () => {
+    const closeWays: Record<string, () => void> = {
+      'the close button': () => button(AppStrings.LABEL_CLOSE).click(),
+      'Esc': () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })),
+      'a click on the backdrop': () => popup().dispatchEvent(new MouseEvent('mousedown', { bubbles: true })),
+    };
+
+    for (const [way, close] of Object.entries(closeWays)) {
+      it(`${way} leaves the current game unchanged`, () => {
+        const before = { target: target(), player: values(component.parameters), gameId: component.gameId };
+        const newGame = spyOn(component as any, 'newGame').and.callThrough();
+        component.newGameButtonClick(new Event('click'));
+        close();
+        expect(shown(popup())).toBeFalse();
+        expect(newGame).not.toHaveBeenCalled();
+        expect({ target: target(), player: values(component.parameters), gameId: component.gameId }).toEqual(before);
+        expect(component.menuVisible).toBeFalse();
+      });
+    }
+
+    it('a click inside the box does not close it', () => {
+      component.newGameButtonClick(new Event('click'));
+      popup().querySelector('[role="dialog"]')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      expect(shown(popup())).toBeTrue();
+    });
+
+    it('Esc with the pop-up closed leaves the other pop-ups alone', () => {
+      const howTo = el.querySelector('.modal-howto-content')!.parentElement as HTMLDivElement;
+      expect(shown(howTo)).withContext('how-to shown at start').toBeTrue();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(shown(howTo)).toBeTrue();
+    });
+  });
 });
 

@@ -78,6 +78,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.targetViewer.resize(width, height);
   }
 
+  // Esc closes only the New Game pop-up (#23); the other pop-ups have no Esc.
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.modalNewGame.style.display === 'block') {
+      this.closeNewGamePopup();
+    }
+  }
+
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
@@ -387,6 +395,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startNewGameFromPopup(key === '' ? undefined : key);
   }
 
+  newGameCloseButtonClick(event: Event) {
+    event.preventDefault();
+    this.closeNewGamePopup();
+  }
+
   randomGameButtonClick(event: Event) {
     event.preventDefault();
     this.startNewGameFromPopup(undefined);
@@ -498,6 +511,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     else if (event.target == this.modalHowToWindow) {
       this.closeModalHowToWindow();
+    }
+    else if (event.target == this.modalNewGame) {
+      this.closeNewGamePopup();
     }
   }
 
