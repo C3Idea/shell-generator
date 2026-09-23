@@ -129,23 +129,23 @@ Angular 17 (standalone-free NgModule app), three.js `^0.143.0` with `OrbitContro
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | New Game any number of times → rendering viewers stay at 2, draw calls/frame stay at 4. | [pending] | Pending |
-| VM-002 | After New Game → camera is at the default view. | [pending] | Pending |
-| VM-003 | After New Game → dragging rotates only the current viewer. | [pending] | Pending |
-| VM-004 | Navigate game → sandbox → game → the destroyed game's viewers render 0 frames. | [pending] | Pending |
-| VM-005 | Navigate game ↔ sandbox 20+ times → no "Too many active WebGL contexts" warning. | [pending] | Pending |
-| VM-006 | Each component spec fixture destroyed → its render loop stops, none survive into later specs. | [pending] | Pending |
-| VM-007 | `npm run test:watch` idle after a run → headless Chrome CPU returns to idle. | [pending] | Pending |
+| VM-001 | New Game any number of times → rendering viewers stay at 2, draw calls/frame stay at 4. | e2e (harness): 4 draws / 2 loops per frame after 3× Nuevo juego (dev 16/8); unit `New Game keeps the same two viewers instead of creating more` | Pass |
+| VM-002 | After New Game → camera is at the default view. | unit `New Game puts both cameras back at the default view`; e2e: camera back at default after a real drag + New Game; manual pass 2026-09-23 | Pass |
+| VM-003 | After New Game → dragging rotates only the current viewer. | unit `New Game keeps the same two viewers…` (viewer identity, no hidden controls); e2e: original 2 viewers after 3 New Games; manual pass 2026-09-23 | Pass |
+| VM-004 | Navigate game → sandbox → game → the destroyed game's viewers render 0 frames. | e2e: 4 draws / 2 loops back in the game after game → sandbox → game (dev 22/11); unit `destroying the game stops both render loops` | Pass |
+| VM-005 | Navigate game ↔ sandbox 20+ times → no "Too many active WebGL contexts" warning. | e2e: 20 round trips, 0 "Too many active WebGL contexts" warnings (dev 49); manual pass 2026-09-23 | Pass |
+| VM-006 | Each component spec fixture destroyed → its render loop stops, none survive into later specs. | unit `destroying the game stops both render loops`, `destroying the initial screen stops its render loop`; `npm test` 35/35, no disconnects @ `8a482ab` | Pass |
+| VM-007 | `npm run test:watch` idle after a run → headless Chrome CPU returns to idle. | watch layer: Karma CPU 4% of a core after a run (dev without #18 stubs 199%), 4 green runs, 0 disconnects | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | On the game page, WebGL draw calls per frame are constant across any number of New Games (4 with the current scene). | [pending] | Pending |
-| SC-002 | Destroyed components (navigation away) render 0 frames and release their WebGL context; 20+ navigations produce no context-limit warning. | [pending] | Pending |
-| SC-003 | `ShellViewer.dispose()` cancels the animation frame, releases the renderer and context, and is safe before `init()` and when called twice. | [pending] | Pending |
-| SC-004 | New specs fail on current code and pass with the fix; the #18 M1 stubs are removed and `npm test` passes headless. | [pending] | Pending |
-| SC-005 | `npm run test:watch` re-runs after edits with no browser disconnects and returns CPU to idle between runs. | [pending] | Pending |
+| SC-001 | On the game page, WebGL draw calls per frame are constant across any number of New Games (4 with the current scene). | see VM-001: 4 draws/frame after any number of New Games (e2e), same-viewer unit spec | Pass |
+| SC-002 | Destroyed components (navigation away) render 0 frames and release their WebGL context; 20+ navigations produce no context-limit warning. | see VM-004/VM-005: destroyed pages render 0 frames; 0 context warnings in 20 round trips (dev 49) | Pass |
+| SC-003 | `ShellViewer.dispose()` cancels the animation frame, releases the renderer and context, and is safe before `init()` and when called twice. | `src/app/shell-viewer.spec.ts` `ShellViewer lifecycle (#21)`: dispose cancels frame, releases controls/renderer/context, safe before init() and twice | Pass |
+| SC-004 | New specs fail on current code and pass with the fix; the #18 M1 stubs are removed and `npm test` passes headless. | revert guard @ `8a482ab`: 4 #21 component specs fail and the viewer spec doesn't compile on dev's code, 28/28 pass on the PR; stubs removed in `8eeddb2`; `npm test` 35/35 | Pass |
+| SC-005 | `npm run test:watch` re-runs after edits with no browser disconnects and returns CPU to idle between runs. | watch layer: 4 green runs (3 edit-triggered), 0 disconnects, CPU back to 4% idle | Pass |
 
 ## Complexity Considerations
 
