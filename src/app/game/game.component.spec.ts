@@ -234,4 +234,15 @@ describe('GameComponent render loops (#21)', () => {
       expect((v as any)['camera'].position.distanceTo(defaults[i])).toBeLessThan(1e-6);
     });
   });
+
+  it('destroying the game stops both render loops', () => {
+    expect(renderingViewers()).toBe(2);
+    fixture.destroy();
+    expect(renderingViewers()).withContext('viewers rendering after destroy').toBe(0);
+  });
+
+  it('destroying a game that never rendered does not throw', () => {
+    const unrendered = TestBed.createComponent(GameComponent);
+    expect(() => unrendered.destroy()).not.toThrow();
+  });
 });

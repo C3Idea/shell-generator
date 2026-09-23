@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
@@ -14,7 +14,7 @@ type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'ome
 })
 
 
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   private static readonly targetParameterKeys: ReadonlyArray<TargetParameterKey> = [
     'd', 'A', 'alpha', 'beta', 'a', 'b', 'mu', 'omega', 'phi', 'theta'
   ];
@@ -136,6 +136,13 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.createShellGraphs();
     this.showHowToWindow();
     this.checkGameIsOver();
+  }
+
+  // Stop the render loops when leaving the game (#21). The viewers only exist
+  // once the view rendered, so a game destroyed before that has none.
+  ngOnDestroy(): void {
+    this.viewer?.dispose();
+    this.targetViewer?.dispose();
   }
 
   private setupGame(fromLink: boolean = false) {
