@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=1 FAILED, 2 SUCCESS: viewer kept rendering after destroy (1, expected 0), green=sandbox spec 3 of 3 SUCCESS; full npm test 35 of 35 SUCCESS, exit 0
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-23T00:16:55-06:00
