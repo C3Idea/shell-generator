@@ -9,12 +9,12 @@
 - **Stack**: Angular 17.3 PWA (`@angular/service-worker`), Node 20.
 - **Assets**: `angular.json` copies `src/favicon.ico`, `src/assets`, `src/manifest.webmanifest` into `dist/`. `ngsw-config.json` prefetches `/favicon.ico` and lazy-caches `/assets/**` + image globs.
 - **Source image**: `src/assets/icons/icon-512x512.png` (512×512 RGBA, navy bg, slight bottom clip). Byte-identical to the untracked root `shell_icon512.png` (same md5 `56ce68b9…`).
-- **Tooling**: no ImageMagick/Pillow/pip installed. `npx sharp` resolves (0.35.x). `sharp` cannot emit ICO → a small Node script assembles the ICO container from 16/32/48 PNGs. Nothing added to `package.json`.
+- **Tooling**: no ImageMagick/Pillow/pip installed. `sharp` 0.35 is installed in a scratchpad folder outside the repo. `sharp` cannot emit ICO → a small Node script assembles the ICO container from 16/32/48 PNGs. Nothing added to `package.json`.
 
 ### Research Findings
 
 - **ICO format**: `favicon.ico` is currently a 28×30 PNG mislabeled `.ico`. A valid ICO is an `ICONDIR` header + one `ICONDIRENTRY` per size + PNG (or BMP) payloads. PNG-in-ICO is supported by all current browsers, so the writer embeds three PNG blobs (16/32/48) — no BMP encoding needed. `file` must report "MS Windows icon resource - 3 icons".
-- **Maskable safe zone**: Android keeps the central ~80% (min-safe circle radius 40% of canvas). Shell at ~70% of canvas sits inside it; cropping so the flat bottom lands on the crop boundary means no straight edge floats inside the frame.
+- **Maskable safe zone**: Android keeps the central ~80% (min-safe circle radius 40% of canvas). A shell centered at ~70% would sit inside it, but the source's flat bottom cut would then float inside the icon. As shipped, the shell is 70% of the canvas width, centered horizontally, with its cut row flush with the canvas bottom: no straight edge inside, but 21% of the shell's pixels fall outside the minimum safe circle, so a circular mask trims the bottom along a curve (apex and sides stay inside). Approved on #8.
 - **Favicon cache**: browsers and the service worker cache favicons aggressively. Verification must use a fresh/private context or a hard reload after unregistering the SW, else a stale Angular logo masquerades as failure.
 - **manifest `purpose`**: `"maskable any"` on one asset is discouraged (a maskable-padded image looks shrunken as a normal icon, and vice-versa). Split into distinct `any` and `maskable` entries.
 
@@ -25,9 +25,9 @@ No application data model. Asset inventory (state transition = generated from so
 | Asset | Size(s) | Crop | Purpose |
 |-------|---------|------|---------|
 | favicon.ico | 16,32,48 | tight | tab |
-| apple-touch-icon.png | 180 | full/source framing | iOS home |
+| apple-touch-icon.png | 180 | full source framing, flattened onto navy (opaque) | iOS home |
 | icon-{72..512}.png (existing) | 72–512 | source | manifest `any` |
-| icon-maskable-{192,512}.png | 192,512 | ~70% padded, cut on edge | manifest `maskable` |
+| icon-maskable-{192,512}.png | 192,512 | 70% width, centered, cut row flush with canvas bottom | manifest `maskable` |
 
 ### API Contracts
 
@@ -37,7 +37,7 @@ None — no endpoints, no runtime code paths change.
 
 ```mermaid
 flowchart LR
-  src[icon-512x512.png<br/>committed source] --> gen[one-off Node script<br/>npx sharp]
+  src[icon-512x512.png<br/>committed source] --> gen[one-off Node script<br/>sharp 0.35 in scratchpad]
   gen --> p16[16/32/48 PNG] --> icow[ICO writer] --> favicon[src/favicon.ico]
   gen --> apple[apple-touch-icon.png 180]
   gen --> mask[icon-maskable-192/512.png]
@@ -77,7 +77,7 @@ flowchart LR
 ### Implementation Waves
 
 **Wave 1 — Generate assets** (scratchpad script)
-1. Write one-off `gen-icons.mjs` in scratchpad: reads the committed source, uses `npx sharp` for the tight-crop favicon PNGs (16/32/48), the 180 apple-touch, and the ~70%-padded maskable 192/512 with the bottom cut on the crop edge.
+1. Write one-off `gen-icons.mjs` in scratchpad: reads the committed source, uses `sharp` (installed in the scratchpad) for the tight-crop favicon PNGs (16/32/48), the 180 apple-touch, and the maskable 192/512 (70% width, cut row flush with the canvas bottom).
 2. Assemble `favicon.ico` from the three PNGs via the ICO container writer.
 
 **Wave 2 — Wire into the app**
