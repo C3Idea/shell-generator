@@ -4,7 +4,7 @@
 # Tasks: Unit test suite never runs
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T19:12:19-06:00
+**Generated**: 2026-09-22T19:13:09-06:00
 
 ---
 
@@ -24,9 +24,9 @@
 **Purpose**: GameComponent specs guarding the shared-link fix
 
 - [x] T003 [W1] game.component.spec.ts: decoding specs (clamp incl. Infinity/negatives, d pinned to 1, malformed links -> no-link game) via a fake ActivatedRoute
-- [ ] T004 [W1] game.component.spec.ts: random start never wins (incl. Math.random forced onto the target -> farther-end fallback), no-link start at minimums, getShareableGameLink encodes the player's shell
+- [x] T004 [W1] game.component.spec.ts: random start never wins (incl. Math.random forced onto the target -> farther-end fallback), no-link start at minimums, getShareableGameLink encodes the player's shell
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -44,10 +44,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 50%
+- **Progress**: 66%
 
 ---
 
