@@ -4,7 +4,7 @@
 # Tasks: Replace Angular favicon and unify app icons
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T17:05:23-06:00
+**Generated**: 2026-09-23T17:08:16-06:00
 
 ---
 
@@ -43,9 +43,9 @@
 
 **Purpose**: One manifest link and one theme-color meta
 
-- [ ] T005 [W3] [US3] Remove the duplicate <link rel="manifest"> and <meta name="theme-color"> from src/index.html (exactly one of each remains; theme_color and names unchanged).
+- [x] T005 [W3] [US3] Remove the duplicate <link rel="manifest"> and <meta name="theme-color"> from src/index.html (exactly one of each remains; theme_color and names unchanged).
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -53,19 +53,19 @@
 
 **Purpose**: Root copy deleted, build/test, maskable preview, approval screenshot
 
-- [ ] T006 [W4] Delete the untracked root shell_icon512.png; run ng build (check dist/ holds favicon.ico, apple-touch-icon.png, both maskable icons) and ng test; check the DevTools maskable preview; post a fresh-context 16px tab screenshot on #8 for approval.
+- [x] T006 [W4] Delete the untracked root shell_icon512.png; run ng build (check dist/ holds favicon.ico, apple-touch-icon.png, both maskable icons) and ng test; check the DevTools maskable preview; post a fresh-context 16px tab screenshot on #8 for approval.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 4
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 66%
+- **Progress**: 100%
 
 ---
 

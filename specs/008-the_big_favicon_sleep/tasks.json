@@ -14,19 +14,21 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 3,
+    "currentWave": 4,
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3,
+      4
     ],
     "totalTasks": 6,
-    "completedTasks": 4,
+    "completedTasks": 6,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-23T17:06:02-06:00",
+    "lastCheckpoint": "2026-09-23T17:08:48-06:00",
     "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged.",
-    "lastUpdated": "2026-09-23T17:05:23-06:00"
+    "lastUpdated": "2026-09-23T17:08:16-06:00"
   },
   "waves": [
     {
@@ -70,7 +72,8 @@
       "tasks": [
         "T005"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T17:06:14-06:00"
     },
     {
       "number": 4,
@@ -79,7 +82,8 @@
       "tasks": [
         "T006"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T17:08:16-06:00"
     }
   ],
   "tasks": {
@@ -194,7 +198,7 @@
       "id": "T005",
       "wave": 3,
       "description": "Remove the duplicate <link rel=\"manifest\"> and <meta name=\"theme-color\"> from src/index.html (exactly one of each remains; theme_color and names unchanged).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -206,13 +210,22 @@
       ],
       "dependencies": [
         "T004"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T17:06:14-06:00",
+        "commitSha": "5caec24c2e2ff3ba5056439b624d33a19c099be5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/index.html"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T006": {
       "id": "T006",
       "wave": 4,
       "description": "Delete the untracked root shell_icon512.png; run ng build (check dist/ holds favicon.ico, apple-touch-icon.png, both maskable icons) and ng test; check the DevTools maskable preview; post a fresh-context 16px tab screenshot on #8 for approval.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -223,7 +236,17 @@
       "dependencies": [
         "T002",
         "T005"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T17:08:16-06:00",
+        "commitSha": "5caec24c2e2ff3ba5056439b624d33a19c099be5",
+        "agents": "claude(inline)",
+        "files": [
+          "shell_icon512.png (untracked",
+          "deleted)"
+        ],
+        "satisfaction": "full"
+      }
     }
   }
 }
