@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=2 FAILED, 14 SUCCESS: New Game created new ShellViewer instances; camera of the on-screen viewer not reset, green=game spec 16 of 16 SUCCESS; full npm test 31 of 31 SUCCESS, exit 0
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-23T00:13:21-06:00
