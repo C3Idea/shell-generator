@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "feature": "008-the-big-favicon-sleep",
+    "featureName": "Replace Angular favicon and unify app icons",
+    "version": "2.0",
+    "createdAt": "2026-09-23T23:01:17Z",
+    "lastUpdated": "2026-09-23T23:01:17Z",
+    "specHash": "83a0aa7c4f7754e6468e10dbb6a9ca98",
+    "planHash": "8cf6ff5e9e547fe17a7c10a0a2a50050"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 0,
+    "completedWaves": [],
+    "totalTasks": 6,
+    "completedTasks": 0,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-23T23:01:17Z",
+    "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged."
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Setup: one-off icon generator",
+      "description": "Scratchpad script; no new dependency",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 1,
+      "name": "US1: Recognizable browser tab",
+      "story": "US1",
+      "description": "Real multi-size favicon.ico from the tight crop",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 2,
+      "name": "US2: Coherent installed icon",
+      "story": "US2",
+      "description": "apple-touch-icon + maskable icons, manifest purposes split",
+      "tasks": [
+        "T003",
+        "T004"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 3,
+      "name": "US3: Clean HTML head",
+      "story": "US3",
+      "description": "One manifest link and one theme-color meta",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 4,
+      "name": "Polish: cleanup and verification",
+      "description": "Root copy deleted, build/test, maskable preview, approval screenshot",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "pending"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Write a one-off icon generator in the session scratchpad (never committed): npx sharp crops and resizes src/assets/icons/icon-512x512.png, and a minimal Node ICO writer packs PNG payloads. No package.json change.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "src/assets/icons/icon-512x512.png",
+      "satisfies": [
+        "FR-007"
+      ]
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Generate src/favicon.ico as a real ICO with 16/32/48px PNG images, tightly cropped so the shell fills the frame and the bottom cut sits on the image edge; `file` must report 3 icons.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "story": "US1",
+      "filePath": "src/favicon.ico",
+      "satisfies": [
+        "FR-001"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "Generate src/assets/icons/apple-touch-icon.png (180x180) and icon-maskable-{192x192,512x512}.png (navy background, shell at about 70% of the canvas, cropped so no straight cut edge shows).",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "story": "US2",
+      "filePath": "src/assets/icons/icon-maskable-512x512.png",
+      "satisfies": [
+        "FR-002",
+        "FR-004"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 2,
+      "description": "Wire the icons: add <link rel=\"apple-touch-icon\"> in src/index.html; in src/manifest.webmanifest set the existing icons to \"purpose\": \"any\" and add separate \"maskable\" entries for the 192/512 maskable icons.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "story": "US2",
+      "filePath": "src/manifest.webmanifest",
+      "satisfies": [
+        "FR-002",
+        "FR-003",
+        "FR-004"
+      ],
+      "dependencies": [
+        "T003"
+      ]
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 3,
+      "description": "Remove the duplicate <link rel=\"manifest\"> and <meta name=\"theme-color\"> from src/index.html (exactly one of each remains; theme_color and names unchanged).",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "story": "US3",
+      "filePath": "src/index.html",
+      "satisfies": [
+        "FR-005",
+        "FR-008"
+      ],
+      "dependencies": [
+        "T004"
+      ]
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 4,
+      "description": "Delete the untracked root shell_icon512.png; run ng build (check dist/ holds favicon.ico, apple-touch-icon.png, both maskable icons) and ng test; check the DevTools maskable preview; post a fresh-context 16px tab screenshot on #8 for approval.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/favicon.ico",
+      "satisfies": [
+        "FR-006"
+      ],
+      "dependencies": [
+        "T002",
+        "T005"
+      ]
+    }
+  }
+}
