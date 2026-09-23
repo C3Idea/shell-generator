@@ -493,4 +493,40 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
       expect(menu().querySelector('#distance-range')).not.toBeNull();
     });
   });
+
+  describe('behaviour', () => {
+    it('Nuevo juego opens the New Game pop-up (#23)', () => {
+      actionButton(AppStrings.LABEL_NEW_GAME)!.click();
+      const popup = el.querySelector('#modal-new-game') as HTMLDivElement;
+      expect(popup.style.display).toBe('block');
+      expect(window.prompt).not.toHaveBeenCalled();
+    });
+
+    it('the share button copies the challenge link and says so (#12)', async () => {
+      const write = spyOn(navigator.clipboard, 'writeText').and.resolveTo();
+      actionButton(AppStrings.LABEL_SHARE_GAME)!.click();
+      await fixture.whenStable();
+      expect(write).toHaveBeenCalledTimes(1);
+      expect(write.calls.mostRecent().args[0]).toContain('#/game?target=');
+      expect(window.alert).toHaveBeenCalledWith(AppStrings.LABEL_LINK_COPIED);
+    });
+
+    it('the share button falls back to the prompt when copying fails', async () => {
+      spyOn(navigator.clipboard, 'writeText').and.rejectWith(new Error('denied'));
+      actionButton(AppStrings.LABEL_SHARE_GAME)!.click();
+      await fixture.whenStable();
+      expect(window.prompt).toHaveBeenCalledWith(AppStrings.LABEL_LINK_PROMPT, jasmine.stringContaining('#/game?target='));
+      expect(window.alert).not.toHaveBeenCalled();
+    });
+
+    it('is hidden while the gear menu is open', () => {
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      expect(actions()).withContext('menu open').toBeNull();
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      expect(actions()).withContext('menu closed').not.toBeNull();
+    });
+  });
 });
+
