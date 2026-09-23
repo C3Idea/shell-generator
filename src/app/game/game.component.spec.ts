@@ -7,21 +7,27 @@ import { GameComponent } from './game.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
+// Configures TestBed and renders a GameComponent: the setup shared by every
+// describe that needs the view. The #12 specs construct without rendering and
+// keep their own configure().
+async function renderGame(): Promise<ComponentFixture<GameComponent>> {
+  await TestBed.configureTestingModule({
+    imports: [ FormsModule ],
+    declarations: [ GameComponent ],
+    providers: [ provideRouter([]) ]
+  }).compileComponents();
+  const fixture = TestBed.createComponent(GameComponent);
+  fixture.detectChanges();
+  return fixture;
+}
+
 describe('GameComponent', () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -180,14 +186,8 @@ describe('GameComponent render loops (#21)', () => {
 
   beforeEach(async () => {
     frames = installFramePump();
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('starts with two viewers rendering (player + target)', () => {
@@ -254,15 +254,9 @@ describe('GameComponent New Game pop-up (#23)', () => {
     installFramePump();
     // A real window.prompt would block the headless browser.
     prompt = spyOn(window, 'prompt').and.returnValue(null);
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
     el = fixture.nativeElement;
-    fixture.detectChanges();
   });
 
   describe('opening', () => {
@@ -443,6 +437,92 @@ describe('GameComponent New Game pop-up (#23)', () => {
       button(AppStrings.LABEL_RANDOM_GAME).click();
       expect(shown(popup())).toBeFalse();
       expect(shown(victory())).toBeFalse();
+    });
+  });
+});
+
+
+// #11: New Game and share live on the game screen (bottom-right), not inside
+// the gear menu. Native dialogs are stubbed: they would block headless Chrome.
+describe('GameComponent action buttons outside the gear menu (#11)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
+  const actions = () => el.querySelector('#game-actions') as HTMLDivElement | null;
+  const actionButton = (text: string) => Array.from(el.querySelectorAll('#game-actions button'))
+    .find(b => b.textContent?.trim() === text) as HTMLButtonElement | undefined;
+
+  beforeEach(async () => {
+    installFramePump();
+    spyOn(window, 'prompt').and.returnValue(null);
+    spyOn(window, 'alert');
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+  });
+
+  describe('placement', () => {
+    it('shows Nuevo juego and the share button outside the gear menu', () => {
+      expect(actions()).withContext('#game-actions').not.toBeNull();
+      expect(menu().contains(actions())).toBeFalse();
+      expect(actionButton(AppStrings.LABEL_NEW_GAME)).withContext('Nuevo juego').toBeDefined();
+      expect(actionButton(AppStrings.LABEL_SHARE_GAME)).withContext('share').toBeDefined();
+      for (const b of Array.from(el.querySelectorAll('#game-actions button'))) {
+        expect(b.getAttribute('type')).toBe('button');
+      }
+    });
+
+    it('leaves the gear menu with its sliders and heat bar but no action buttons', () => {
+      expect(menu().querySelector('#menu-button-row')).toBeNull();
+      expect(menu().querySelectorAll('button').length).toBe(0);
+      expect(menu().querySelectorAll('input.slider').length).toBe(4);
+      expect(menu().querySelector('#distance-range')).not.toBeNull();
+    });
+  });
+
+  describe('behaviour', () => {
+    it('Nuevo juego opens the New Game pop-up (#23)', () => {
+      actionButton(AppStrings.LABEL_NEW_GAME)!.click();
+      const popup = el.querySelector('#modal-new-game') as HTMLDivElement;
+      expect(popup.style.display).toBe('block');
+      expect(window.prompt).not.toHaveBeenCalled();
+    });
+
+    it('the share button copies the challenge link and says so (#12)', async () => {
+      const write = spyOn(navigator.clipboard, 'writeText').and.resolveTo();
+      actionButton(AppStrings.LABEL_SHARE_GAME)!.click();
+      await fixture.whenStable();
+      expect(write).toHaveBeenCalledTimes(1);
+      expect(write.calls.mostRecent().args[0]).toContain('#/game?target=');
+      expect(window.alert).toHaveBeenCalledWith(AppStrings.LABEL_LINK_COPIED);
+    });
+
+    it('the share button falls back to the prompt when copying fails', async () => {
+      spyOn(navigator.clipboard, 'writeText').and.rejectWith(new Error('denied'));
+      actionButton(AppStrings.LABEL_SHARE_GAME)!.click();
+      await fixture.whenStable();
+      expect(window.prompt).toHaveBeenCalledWith(AppStrings.LABEL_LINK_PROMPT, jasmine.stringContaining('#/game?target='));
+      expect(window.alert).not.toHaveBeenCalled();
+    });
+
+    it('is hidden while the gear menu is open', () => {
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      expect(actions()).withContext('menu open').toBeNull();
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      expect(actions()).withContext('menu closed').not.toBeNull();
+    });
+  });
+
+  describe('share button copy', () => {
+    it('is labelled "Compartir" with a tooltip about sharing your own shell', () => {
+      const share = actionButton(AppStrings.LABEL_SHARE_GAME)!;
+      expect(share.textContent?.trim()).toBe('Compartir');
+      expect(share.title).toBe(AppStrings.BUTTON_SHARE_GAME_TITLE);
+      expect(share.title.toLowerCase()).not.toContain('objetivo');
     });
   });
 });

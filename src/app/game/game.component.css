@@ -358,17 +358,44 @@ input:checked + .switch-slider:before {
   margin-left: 2px;
 }
 
-#menu-button-row {
+/* #11: New Game and share, bottom-right across from the Usuario/Objetivo
+   switch, in the toolbar's palette. A dark fill keeps the text readable
+   over a white shell. */
+#game-actions {
+  position: fixed;
+  bottom: 7px;  /* lines up with the switch's visible edge: bottom 5px + margin 2px */
+  right: 5px;
   display: flex;
-  justify-content: center;
-  gap: 4px;
-  padding: 2px;
+  gap: 8px;
+  z-index: 0;   /* the pop-ups (.modal, z-index 1) must stay above these buttons */
 }
 
-.menu-action-button {
-  width:  75px;
-  height: 50px;
-  margin: 2px;
+.game-action-button {
+  height: 40px;
+  padding: 0 14px;
+  border: 3px solid #77aca2;
+  border-radius: 8px;
+  background-color: rgba(0, 20, 30, 0.6);
+  color: #f4e9cd;
+  font-size: 1em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.game-action-button:hover,
+.game-action-button:focus-visible {
+  border-color: #468189;
+  color: #e2c16e;
+}
+
+/* Measured: the switch ends at 237 px and the button group is 236 px wide, so
+   one row needs ~491 px and leaves only 3 px at 481 px. Up to 560 px the
+   buttons get their own row just above the switch; from 561 px the one-row
+   gap is >= 80 px, room for longer labels or a wider font. */
+@media only screen and (max-width: 560px) {
+  #game-actions {
+    bottom: 56px;
+  }
 }
 
 #distance-range {

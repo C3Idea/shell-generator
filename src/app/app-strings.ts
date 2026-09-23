@@ -24,9 +24,9 @@ export class AppStrings {
   static BUTTON_SANDBOX_TITLE = "Ir al sandbox";
   static BUTTON_HOW_TO_TITLE  = "Abrir instrucciones del juego";
   static BUTTON_NEW_GAME_TITLE = "Iniciar juego nuevo";
-  static BUTTON_SHARE_GAME_TITLE = "Copiar enlace del objetivo";
+  static BUTTON_SHARE_GAME_TITLE = "Copiar enlace para retar con tu caracol";
   static LABEL_NEW_GAME = "Nuevo juego";
-  static LABEL_SHARE_GAME = "Link";
+  static LABEL_SHARE_GAME = "Compartir";
   static LABEL_LINK_COPIED = "Enlace copiado al portapapeles.";
   static LABEL_LINK_PROMPT = "Comparte este enlace";
   static LABEL_INTRO_WELCOME_TEXT = "¡Bienvenido!";
