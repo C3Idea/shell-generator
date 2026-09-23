@@ -1,0 +1,14 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 18,
+    "title": "[App] Unit test suite never runs (require.context on Angular 17; npm test never exits)",
+    "url": "https://github.com/C3Idea/shell-generator/issues/18",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5786966126",
+  "spec_comment_id": "5786951199",
+  "pr": { "number": null, "url": null },
+  "deployed_at": "2026-09-23T01:07:03Z",
+  "cached_from": "github"
+}
