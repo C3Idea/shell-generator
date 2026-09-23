@@ -10,6 +10,8 @@ export class ShellViewer {
   private light!:  THREE.PointLight;
   private renderer!: THREE.WebGLRenderer;
   private controls!: OrbitControls;
+  private frameId: number | undefined;
+  private disposed: boolean = false;
 
   private surfaceGeometry!: ParametricGeometry;
   private surfaceMaterial!: THREE.MeshStandardMaterial;
@@ -30,6 +32,7 @@ export class ShellViewer {
   }
 
   init(fov: number, near: number, far: number, canvas: HTMLCanvasElement) {
+    this.disposed = false;
     this.scene  = new THREE.Scene();
     this.scene.background = new THREE.Color("#031926");
     const aspectRatio = canvas.clientWidth / canvas.clientHeight;
@@ -46,15 +49,41 @@ export class ShellViewer {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.startRenderingLoop();
     this.setCamera();
+    this.controls.saveState();
   }
 
   private startRenderingLoop() {
     let viewer: ShellViewer = this;
     (function render() {
-      requestAnimationFrame(render);
+      viewer.frameId = requestAnimationFrame(render);
       viewer.controls.update();
       viewer.renderer.render(viewer.scene, viewer.camera);
     }());
+  }
+
+  // Stops the render loop for good and releases the WebGL context. Only for a
+  // viewer whose canvas is going away: a new renderer on the same canvas would
+  // get the lost context. Safe before init() and when called twice.
+  dispose(): void {
+    if (this.disposed) {
+      return;
+    }
+    this.disposed = true;
+    if (this.frameId !== undefined) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = undefined;
+    }
+    if (this.renderer) {
+      this.disposeGraphElements();
+      this.controls.dispose();
+      this.renderer.dispose();
+      this.renderer.forceContextLoss();
+    }
+  }
+
+  // Back to the view set by init(): position, target and zoom.
+  resetCamera(): void {
+    this.controls?.reset();
   }
 
   createGraph(parameters: ShellParameters) {
