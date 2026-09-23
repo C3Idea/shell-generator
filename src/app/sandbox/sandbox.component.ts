@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
@@ -12,7 +12,7 @@ import { AppStrings } from '../app-strings';
 
 
 
-export class SandboxComponent implements AfterViewInit {
+export class SandboxComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
 
@@ -77,6 +77,11 @@ export class SandboxComponent implements AfterViewInit {
     this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
     this.helper.createGraph(this.parameters);
     this.showIntroWindow();
+  }
+
+  // Stop the render loop when leaving the initial screen (#21).
+  ngOnDestroy(): void {
+    this.helper.dispose();
   }
 
   public wireframeCheckboxChanged(event: Event): void {

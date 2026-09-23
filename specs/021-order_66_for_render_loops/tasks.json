@@ -1,0 +1,251 @@
+{
+  "meta": {
+    "feature": "021-order-66-for-render-loops",
+    "featureName": "3D render loops never stop",
+    "version": "2.0",
+    "createdAt": "2026-09-23T06:07:53Z",
+    "lastUpdated": "2026-09-23T06:07:53Z",
+    "specHash": "f40721afdcc3203b2ce29783939be94a",
+    "planHash": "fcc026bff13568dc32d105b275afc583"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 4,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "totalTasks": 6,
+    "completedTasks": 6,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "contextHint": "Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). No rendering-output changes. forceContextLoss() only in dispose()/ngOnDestroy, never on New Game. ngOnDestroy must tolerate undefined viewers (#12 specs never render).",
+    "lastUpdated": "2026-09-23T00:39:51-06:00",
+    "lastCheckpoint": "2026-09-23T00:40:15-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Foundational: ShellViewer can stop",
+      "description": "Frame id, dispose(), resetCamera() in ShellViewer",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T00:11:20-06:00"
+    },
+    {
+      "number": 1,
+      "name": "US1: New Game stays responsive",
+      "story": "US1",
+      "description": "newGame() reuses the two viewers and resets their cameras",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T00:13:21-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US2: Leaving a screen releases its resources",
+      "story": "US2",
+      "description": "ngOnDestroy in GameComponent and SandboxComponent",
+      "tasks": [
+        "T003",
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T00:16:55-06:00"
+    },
+    {
+      "number": 3,
+      "name": "US3: Unit suite stable and idle-clean",
+      "story": "US3",
+      "description": "Remove the #18 M1 stubs; suite green without them",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T00:18:32-06:00"
+    },
+    {
+      "number": 4,
+      "name": "Polish: verify acceptance criteria",
+      "description": "Harness measurements, revert check, build",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T00:39:51-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "ShellViewer lifecycle (FR-001..FR-004): store the requestAnimationFrame id in startRenderingLoop(); add dispose() — cancelAnimationFrame(id), dispose OrbitControls, graph geometry/materials and WebGLRenderer, then renderer.forceContextLoss(); idempotent and safe before init(); add public resetCamera() returning to the default view. RED first in src/app/shell-viewer.spec.ts with a manual rAF pump: after dispose() 0 further frames scheduled/rendered and cancelAnimationFrame got the id; dispose() before init() and twice don't throw; resetCamera() restores the default camera position.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/shell-viewer.ts",
+      "completion": {
+        "timestamp": "2026-09-23T00:11:20-06:00",
+        "commitSha": "7c1a01ccb065f7e4ca96125d213dcc0151328d55",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/shell-viewer.ts",
+          "src/app/shell-viewer.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/shell-viewer.spec.ts",
+          "redResult": "4 of 7 FAILED against empty dispose()/resetCamera() stubs: frame not cancelled, render still called, controls/renderer/forceContextLoss not called, camera not reset",
+          "greenResult": "7 of 7 SUCCESS; full npm test 28 of 28 SUCCESS, exit 0"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "New Game reuses viewers (FR-005; VM-001, VM-002, VM-003): newGame() stops calling setupShellViewers(); it rebuilds the graphs on the existing viewer/targetViewer and calls resetCamera() on both. RED first in src/app/game/game.component.spec.ts: after N New Games the component still holds the same 2 ShellViewer instances, only 2 viewers render per pumped frame, and both cameras are at the default view.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US1",
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T00:13:21-06:00",
+        "commitSha": "87891b7c1cc3dfebd9b168d5c34fc85479d51564",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "2 FAILED, 14 SUCCESS: New Game created new ShellViewer instances; camera of the on-screen viewer not reset",
+          "greenResult": "game spec 16 of 16 SUCCESS; full npm test 31 of 31 SUCCESS, exit 0"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "GameComponent implements OnDestroy (FR-006; VM-004): ngOnDestroy() disposes viewer and targetViewer, tolerating viewers that were never created (component never rendered, as in the #12 specs). RED first in game.component.spec.ts: destroying a rendered GameComponent leaves 0 frames rendered by its viewers; destroying one that never rendered doesn't throw.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US2",
+      "dependencies": [
+        "T002"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T00:15:38-06:00",
+        "commitSha": "cea8cd4c09289fb81a28d7e09e03d3df4e55ce2c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "1 FAILED, 17 SUCCESS: 2 loops kept rendering after destroy; naive unguarded ngOnDestroy also broke the never-rendered spec + #12 specs (TypeError)",
+          "greenResult": "game spec 18 of 18 SUCCESS; full npm test 33 of 33 SUCCESS, exit 0"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 2,
+      "description": "SandboxComponent implements OnDestroy (FR-007; VM-004): ngOnDestroy() disposes helper, tolerating a helper that was never init()ed. RED first in src/app/sandbox/sandbox.component.spec.ts: destroying a rendered SandboxComponent stops its viewer (0 further frames); destroying one that never rendered doesn't throw.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "story": "US2",
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T00:16:55-06:00",
+        "commitSha": "b59fd00d6b8aa2bcc9e309e5ef882c73cd3b9d63",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "1 FAILED, 2 SUCCESS: viewer kept rendering after destroy (1, expected 0)",
+          "greenResult": "sandbox spec 3 of 3 SUCCESS; full npm test 35 of 35 SUCCESS, exit 0"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 3,
+      "description": "Remove the #18 M1 requestAnimationFrame stubs from game.component.spec.ts and sandbox.component.spec.ts and their #21 comment (FR-008; VM-006). Fixture teardown via ngOnDestroy now stops the loops. npm test green (headless, exits on its own); ng lint shows no new problems vs dev.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "story": "US3",
+      "dependencies": [
+        "T003",
+        "T004"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T00:18:32-06:00",
+        "commitSha": "8eeddb216d46da3db4429a912dad109300ad4a00",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 4,
+      "description": "Verify the #21 acceptance criteria with the out-of-repo harness (2 cores): draw calls per frame stay at 4 after N New Games (VM-001); game <-> sandbox x20 logs no 'Too many active WebGL contexts' (VM-005); destroyed components render 0 frames (VM-004); npm run test:watch re-runs with 0 disconnects and CPU returns to idle (VM-007); new specs fail on dev's code and pass on the branch; ng build succeeds (FR-009).",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/021-order_66_for_render_loops/tasks.md",
+      "dependencies": [
+        "T005"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T00:39:51-06:00",
+        "commitSha": "9a74a95d6af13951af75891f31b11c878b41ccfc",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/021-order_66_for_render_loops/tasks.json",
+          "specs/021-order_66_for_render_loops/tasks.md"
+        ],
+        "satisfaction": "full"
+      }
+    }
+  }
+}
