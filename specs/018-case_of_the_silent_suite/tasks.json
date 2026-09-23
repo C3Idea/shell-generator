@@ -20,12 +20,12 @@
       1
     ],
     "totalTasks": 6,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "blockedTasks": 0,
     "lastCheckpoint": "2026-09-22T19:13:41-06:00",
     "contextHint": "Test tooling only. Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). No production code changes.",
     "skippedTasks": 0,
-    "lastUpdated": "2026-09-22T19:13:09-06:00"
+    "lastUpdated": "2026-09-22T19:13:58-06:00"
   },
   "waves": [
     {
@@ -149,11 +149,19 @@
       "id": "T005",
       "wave": 2,
       "description": "README: document npm test (single headless run) and npm run test:watch",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
-      "filePath": "README.md"
+      "filePath": "README.md",
+      "completion": {
+        "timestamp": "2026-09-22T19:13:58-06:00",
+        "commitSha": "503847ed96f25cbe7ada2163677509203074c445",
+        "agents": "claude(inline)",
+        "files": [
+          "README.md"
+        ]
+      }
     },
     "T006": {
       "id": "T006",
