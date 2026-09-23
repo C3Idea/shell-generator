@@ -447,3 +447,50 @@ describe('GameComponent New Game pop-up (#23)', () => {
   });
 });
 
+
+// #11: New Game and share live on the game screen (bottom-right), not inside
+// the gear menu. Native dialogs are stubbed: they would block headless Chrome.
+describe('GameComponent action buttons outside the gear menu (#11)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
+  const actions = () => el.querySelector('#game-actions') as HTMLDivElement | null;
+  const actionButton = (text: string) => Array.from(el.querySelectorAll('#game-actions button'))
+    .find(b => b.textContent?.trim() === text) as HTMLButtonElement | undefined;
+
+  beforeEach(async () => {
+    installFramePump();
+    spyOn(window, 'prompt').and.returnValue(null);
+    spyOn(window, 'alert');
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ GameComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(GameComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    fixture.detectChanges();
+  });
+
+  describe('placement', () => {
+    it('shows Nuevo juego and the share button outside the gear menu', () => {
+      expect(actions()).withContext('#game-actions').not.toBeNull();
+      expect(menu().contains(actions())).toBeFalse();
+      expect(actionButton(AppStrings.LABEL_NEW_GAME)).withContext('Nuevo juego').toBeDefined();
+      expect(actionButton(AppStrings.LABEL_SHARE_GAME)).withContext('share').toBeDefined();
+      for (const b of Array.from(el.querySelectorAll('#game-actions button'))) {
+        expect(b.getAttribute('type')).toBe('button');
+      }
+    });
+
+    it('leaves the gear menu with its sliders and heat bar but no action buttons', () => {
+      expect(menu().querySelector('#menu-button-row')).toBeNull();
+      expect(menu().querySelectorAll('button').length).toBe(0);
+      expect(menu().querySelectorAll('input.slider').length).toBe(4);
+      expect(menu().querySelector('#distance-range')).not.toBeNull();
+    });
+  });
+});
