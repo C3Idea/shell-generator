@@ -4,7 +4,7 @@
 # Tasks: Unit test suite never runs
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T19:08:45-06:00
+**Generated**: 2026-09-22T19:10:28-06:00
 
 ---
 
@@ -13,9 +13,9 @@
 **Purpose**: Spec discovery on Angular 17, single-run npm test, stale specs fixed
 
 - [x] T001 [W0] Delete src/test.ts; in angular.json test target remove main and set polyfills to [zone.js, zone.js/testing]; drop src/test.ts from tsconfig.spec.json files; package.json test -> ng test --watch=false --browsers=ChromeHeadless, add test:watch -> ng test
-- [ ] T002 [W0] Fix stale specs: FormsModule + router in game.component.spec.ts, FormsModule in sandbox.component.spec.ts, real assertion for AppComponent should render title
+- [x] T002 [W0] Fix stale specs: FormsModule + router in game.component.spec.ts, FormsModule in sandbox.component.spec.ts, real assertion for AppComponent should render title
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -44,10 +44,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 1
+- **Completed**: 2
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 16%
+- **Progress**: 33%
 
 ---
 

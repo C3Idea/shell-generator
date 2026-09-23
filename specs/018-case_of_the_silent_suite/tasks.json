@@ -14,15 +14,17 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
     "totalTasks": 6,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
-    "lastCheckpoint": "2026-09-23T01:07:33Z",
+    "lastCheckpoint": "2026-09-22T19:11:01-06:00",
     "contextHint": "Test tooling only. Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). No production code changes.",
     "skippedTasks": 0,
-    "lastUpdated": "2026-09-22T19:08:45-06:00"
+    "lastUpdated": "2026-09-22T19:10:28-06:00"
   },
   "waves": [
     {
@@ -33,7 +35,8 @@
         "T001",
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T19:10:28-06:00"
     },
     {
       "number": 1,
@@ -82,14 +85,24 @@
       "id": "T002",
       "wave": 0,
       "description": "Fix stale specs: FormsModule + router in game.component.spec.ts, FormsModule in sandbox.component.spec.ts, real assertion for AppComponent should render title",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
       "filePath": "src/app/game/game.component.spec.ts",
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-22T19:10:28-06:00",
+        "commitSha": "d258e751a8c6fd23cae8b7e116cfc22a2ab117d1",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app.component.spec.ts",
+          "src/app/game/game.component.spec.ts",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ]
+      }
     },
     "T003": {
       "id": "T003",
