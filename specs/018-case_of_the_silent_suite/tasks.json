@@ -1,0 +1,191 @@
+{
+  "meta": {
+    "feature": "018-case-of-the-silent-suite",
+    "featureName": "Unit test suite never runs",
+    "version": "2.0",
+    "createdAt": "2026-09-23T01:07:33Z",
+    "lastUpdated": "2026-09-23T01:07:33Z",
+    "specHash": "25959d2f8f18959572fe80d72ceba3e2",
+    "planHash": "cc88e85b14917e8e13bac0bda7954ccc"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 2,
+    "completedWaves": [
+      0,
+      1,
+      2
+    ],
+    "totalTasks": 6,
+    "completedTasks": 6,
+    "blockedTasks": 0,
+    "lastCheckpoint": "2026-09-22T19:21:40-06:00",
+    "contextHint": "Test tooling only. Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). No production code changes.",
+    "skippedTasks": 0,
+    "lastUpdated": "2026-09-22T19:21:15-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Suite runs green",
+      "description": "Spec discovery on Angular 17, single-run npm test, stale specs fixed",
+      "tasks": [
+        "T001",
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T19:10:28-06:00"
+    },
+    {
+      "number": 1,
+      "name": "#12 regression specs",
+      "description": "GameComponent specs guarding the shared-link fix",
+      "tasks": [
+        "T003",
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T19:13:09-06:00"
+    },
+    {
+      "number": 2,
+      "name": "Docs and verification",
+      "description": "README, revert guard, lint comparison",
+      "tasks": [
+        "T005",
+        "T006"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-22T19:21:15-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Delete src/test.ts; in angular.json test target remove main and set polyfills to [zone.js, zone.js/testing]; drop src/test.ts from tsconfig.spec.json files; package.json test -> ng test --watch=false --browsers=ChromeHeadless, add test:watch -> ng test",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "angular.json",
+      "completion": {
+        "timestamp": "2026-09-22T19:08:45-06:00",
+        "commitSha": "80a458772781b6b122b7fabfc37110df86449f46",
+        "agents": "claude(inline)",
+        "files": [
+          "src/test.ts",
+          "angular.json",
+          "tsconfig.spec.json",
+          "package.json"
+        ]
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 0,
+      "description": "Fix stale specs: FormsModule + router in game.component.spec.ts, FormsModule in sandbox.component.spec.ts, real assertion for AppComponent should render title",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-22T19:10:28-06:00",
+        "commitSha": "d258e751a8c6fd23cae8b7e116cfc22a2ab117d1",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app.component.spec.ts",
+          "src/app/game/game.component.spec.ts",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ]
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 1,
+      "description": "game.component.spec.ts: decoding specs (clamp incl. Infinity/negatives, d pinned to 1, malformed links -> no-link game) via a fake ActivatedRoute",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "completion": {
+        "timestamp": "2026-09-22T19:12:19-06:00",
+        "commitSha": "d71214f09229610294d990281f3dbb0072a5c584",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ]
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 1,
+      "description": "game.component.spec.ts: random start never wins (incl. Math.random forced onto the target -> farther-end fallback), no-link start at minimums, getShareableGameLink encodes the player's shell",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "dependencies": [
+        "T003"
+      ],
+      "completion": {
+        "timestamp": "2026-09-22T19:13:09-06:00",
+        "commitSha": "bdc58e4caf2d3422f69d27cc17fce4c0f2fdddb2",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ]
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 2,
+      "description": "README: document npm test (single headless run) and npm run test:watch",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "README.md",
+      "completion": {
+        "timestamp": "2026-09-22T19:13:58-06:00",
+        "commitSha": "503847ed96f25cbe7ada2163677509203074c445",
+        "agents": "claude(inline)",
+        "files": [
+          "README.md"
+        ]
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 2,
+      "description": "Verify: #12 specs fail on a temp git revert -m 1 6fb91ce and pass without it; ng lint shows no new problems vs dev; test:watch starts watch mode",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "dependencies": [
+        "T004",
+        "T005"
+      ],
+      "completion": {
+        "timestamp": "2026-09-22T19:21:15-06:00",
+        "commitSha": "c6cb72960e67a23a4f6388d5900207222553ea07",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ]
+      }
+    }
+  }
+}
