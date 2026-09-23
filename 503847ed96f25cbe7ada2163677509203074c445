@@ -1,0 +1,6 @@
+vt.idd:task: T005
+vt.idd:domain: documentation
+vt.idd:agents: claude(inline)
+vt.idd:files: README.md
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-22T19:13:58-06:00
