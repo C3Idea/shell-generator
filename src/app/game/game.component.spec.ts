@@ -7,21 +7,27 @@ import { GameComponent } from './game.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
+// Configures TestBed and renders a GameComponent: the setup shared by every
+// describe that needs the view. The #12 specs construct without rendering and
+// keep their own configure().
+async function renderGame(): Promise<ComponentFixture<GameComponent>> {
+  await TestBed.configureTestingModule({
+    imports: [ FormsModule ],
+    declarations: [ GameComponent ],
+    providers: [ provideRouter([]) ]
+  }).compileComponents();
+  const fixture = TestBed.createComponent(GameComponent);
+  fixture.detectChanges();
+  return fixture;
+}
+
 describe('GameComponent', () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -180,14 +186,8 @@ describe('GameComponent render loops (#21)', () => {
 
   beforeEach(async () => {
     frames = installFramePump();
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('starts with two viewers rendering (player + target)', () => {
@@ -254,15 +254,9 @@ describe('GameComponent New Game pop-up (#23)', () => {
     installFramePump();
     // A real window.prompt would block the headless browser.
     prompt = spyOn(window, 'prompt').and.returnValue(null);
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
     el = fixture.nativeElement;
-    fixture.detectChanges();
   });
 
   describe('opening', () => {
@@ -464,15 +458,9 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
     installFramePump();
     spyOn(window, 'prompt').and.returnValue(null);
     spyOn(window, 'alert');
-    await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ GameComponent ],
-      providers: [ provideRouter([]) ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = await renderGame();
     component = fixture.componentInstance;
     el = fixture.nativeElement;
-    fixture.detectChanges();
   });
 
   describe('placement', () => {
