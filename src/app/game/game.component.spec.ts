@@ -528,5 +528,14 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
       expect(actions()).withContext('menu closed').not.toBeNull();
     });
   });
+
+  describe('share button copy', () => {
+    it('is labelled "Compartir" with a tooltip about sharing your own shell', () => {
+      const share = actionButton(AppStrings.LABEL_SHARE_GAME)!;
+      expect(share.textContent?.trim()).toBe('Compartir');
+      expect(share.title).toBe(AppStrings.BUTTON_SHARE_GAME_TITLE);
+      expect(share.title.toLowerCase()).not.toContain('objetivo');
+    });
+  });
 });
 
