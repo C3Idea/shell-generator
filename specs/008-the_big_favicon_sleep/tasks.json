@@ -14,17 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1
     ],
     "totalTasks": 6,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-23T17:04:01-06:00",
+    "lastCheckpoint": "2026-09-23T17:04:54-06:00",
     "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged.",
-    "lastUpdated": "2026-09-23T17:03:18-06:00"
+    "lastUpdated": "2026-09-23T17:04:19-06:00"
   },
   "waves": [
     {
@@ -45,7 +46,8 @@
       "tasks": [
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T17:04:19-06:00"
     },
     {
       "number": 2,
@@ -105,7 +107,7 @@
       "id": "T002",
       "wave": 1,
       "description": "Generate src/favicon.ico as a real ICO with 16/32/48px PNG images, tightly cropped so the shell fills the frame and the bottom cut sits on the image edge; `file` must report 3 icons.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -116,7 +118,16 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T17:04:19-06:00",
+        "commitSha": "09e193e9c096396b449f65cb01ad52004a1bf9e6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/favicon.ico"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",
