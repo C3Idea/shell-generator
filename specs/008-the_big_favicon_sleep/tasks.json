@@ -20,12 +20,12 @@
       1
     ],
     "totalTasks": 6,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-23T17:04:54-06:00",
     "contextHint": "Static assets only. Source = committed src/assets/icons/icon-512x512.png. Generator script lives in the scratchpad and is never committed; nothing added to package.json. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Colors and app names stay unchanged.",
-    "lastUpdated": "2026-09-23T17:04:19-06:00"
+    "lastUpdated": "2026-09-23T17:05:06-06:00"
   },
   "waves": [
     {
@@ -133,7 +133,7 @@
       "id": "T003",
       "wave": 2,
       "description": "Generate src/assets/icons/apple-touch-icon.png (180x180) and icon-maskable-{192x192,512x512}.png (navy background, shell at about 70% of the canvas, cropped so no straight cut edge shows).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -145,7 +145,19 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T17:05:06-06:00",
+        "commitSha": "af464cdfa0050e90669ebde33e6931a92aedeeac",
+        "agents": "claude(inline)",
+        "files": [
+          "src/assets/icons/apple-touch-icon.png",
+          "src/assets/icons/icon-maskable-192x192.png",
+          "src/assets/icons/icon-maskable-512x512.png"
+        ],
+        "satisfaction": "partial",
+        "notes": "FR-004 says the shell fits the ~80% safe zone; with the cut flush to the bottom edge, a circular mask trims the shell's lower edge along a curve (apex and sides stay inside)."
+      }
     },
     "T004": {
       "id": "T004",
