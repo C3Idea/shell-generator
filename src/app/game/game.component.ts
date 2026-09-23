@@ -368,6 +368,24 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalNewGame.style.display = 'block';
   }
 
+  private closeNewGamePopup() {
+    this.modalNewGame.style.display = 'none';
+  }
+
+  randomGameButtonClick(event: Event) {
+    event.preventDefault();
+    this.startNewGameFromPopup(undefined);
+  }
+
+  // No seed means a random game: newGame(undefined) reaches Math.random, while
+  // any string, even '', is hashed into a fixed seed.
+  private startNewGameFromPopup(seed: string | undefined) {
+    this.gameId = seed ?? '';
+    this.closeNewGamePopup();
+    this.closeModalWindow();
+    this.newGame(seed);
+  }
+
   async generateTargetLinkButtonClick(event: Event): Promise<void> {
     event.preventDefault();
     const link = this.getShareableGameLink();

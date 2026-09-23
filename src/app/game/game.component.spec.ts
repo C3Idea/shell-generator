@@ -242,6 +242,12 @@ describe('GameComponent New Game pop-up (#23)', () => {
   const popup = () => el.querySelector('#modal-new-game') as HTMLDivElement;
   const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
   const shown = (e: HTMLElement) => e.style.display === 'block';
+  const button = (text: string) => Array.from(popup().querySelectorAll('button'))
+    .find(b => b.textContent?.trim() === text) as HTMLButtonElement;
+  // A target's ten values to 2 decimals, the precision the issue compares at.
+  const values = (p: ShellParameters) =>
+    [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
+  const target = () => values(component.targetParameters);
   let prompt: jasmine.Spy;
 
   beforeEach(async () => {
@@ -283,6 +289,28 @@ describe('GameComponent New Game pop-up (#23)', () => {
       const input = popup().querySelector('input[type="text"]') as HTMLInputElement;
       const label = popup().querySelector(`label[for="${input.id}"]`);
       expect(label?.textContent?.trim()).toBe(AppStrings.LABEL_GAME_KEY);
+    });
+  });
+
+  describe('Aleatorio', () => {
+    it('starts an unseeded game and closes the pop-up', () => {
+      const newGame = spyOn(component as any, 'newGame').and.callThrough();
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      expect(newGame).toHaveBeenCalledTimes(1);
+      expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
+      expect(component.gameId).toBe('');
+      expect(shown(popup())).toBeFalse();
+      expect(component.menuVisible).toBeFalse();
+    });
+
+    it('gives a different target each time', () => {
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      const first = target();
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      expect(target()).not.toEqual(first);
     });
   });
 });

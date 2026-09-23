@@ -162,7 +162,7 @@
     <div class="modal-new-game-content" role="dialog" aria-modal="true" aria-labelledby="label-new-game-title">
       <label id="label-new-game-title">{{AppStrings.LABEL_NEW_GAME_POPUP_TITLE}}</label>
       <div class="new-game-choices">
-        <button type="button" class="new-game-button">
+        <button type="button" class="new-game-button" (click)="this.randomGameButtonClick($event)">
           {{AppStrings.LABEL_RANDOM_GAME}}
         </button>
         <button type="button" class="new-game-button">
