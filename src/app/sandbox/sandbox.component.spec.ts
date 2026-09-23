@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { provideRouter } from '@angular/router';
 
 import { SandboxComponent } from './sandbox.component';
 
@@ -8,7 +10,9 @@ describe('SandboxComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SandboxComponent ]
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent ],
+      providers: [ provideRouter([]) ]
     })
     .compileComponents();
 
