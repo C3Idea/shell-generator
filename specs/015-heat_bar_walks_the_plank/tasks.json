@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "feature": "015-heat-bar-walks-the-plank",
+    "featureName": "Move the heat bar out of the gear menu",
+    "version": "2.0",
+    "createdAt": "2026-09-23T23:59:43Z",
+    "lastUpdated": "2026-09-23T23:59:43Z",
+    "specHash": "b39c305e8da369eaba7d8ca33d5b1d71",
+    "planHash": "d4f172a22d89c2cc81f409e462f47470"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 0,
+    "completedWaves": [],
+    "totalTasks": 6,
+    "completedTasks": 0,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-23T23:59:43Z",
+    "contextHint": "Layout/CSS move only: keep [(ngModel)]=\"this.distance\"; don't touch the win check or distance scale (#28). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Measuring with headless Chrome under software WebGL: open the gear with element.click() via evaluate and wait ~2.5 s; the /game route shows the welcome pop-up on load. Share specs must stub navigator.clipboard and window.alert/prompt (native dialogs hang headless Chrome)."
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Foundational: the heat bar leaves the gear menu",
+      "description": "#result-container becomes a sibling of the menu, fixed bottom-center",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 1,
+      "name": "US1/US2: visible and updating, menu open or closed, both views",
+      "story": "US1",
+      "description": "No menuVisible coupling; same update event",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 2,
+      "name": "US3: no layout collisions",
+      "story": "US3",
+      "description": "Breakpoint row; checked at 390/768/1280 px",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 3,
+      "name": "US4 + cleanup",
+      "story": "US4",
+      "description": "New help line, aria-label, dead CSS/TS removed",
+      "tasks": [
+        "T004",
+        "T005"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 4,
+      "name": "Polish: tests and verification",
+      "description": "#11 spec rewritten, new specs, build/test, screenshots",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "pending"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Move #result-container out of <form #parameters-menu> to a top-level sibling in src/app/game/game.component.html, and give it a base fixed bottom-center position in game.component.css that doesn't depend on the menu.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.html",
+      "satisfies": [
+        "FR-001"
+      ]
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Keep the bar visible with the gear menu closed and in place while it's open (no menuVisible coupling); confirm it updates on a parameter slider change and shows in the Objetivo view.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.css",
+      "story": "US1",
+      "satisfies": [
+        "FR-002",
+        "FR-003",
+        "FR-007"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "Responsive layout in game.component.css: one row between the switch and the #11 buttons on wide screens, its own row above the buttons below a measured breakpoint (~760 px). No overlap or clipping at 390/768/1280 px, clear of the top-right #13 corner, .modal stays above. Record the breakpoint and bar width on #15.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.css",
+      "story": "US3",
+      "satisfies": [
+        "FR-004",
+        "FR-005",
+        "FR-006"
+      ],
+      "dependencies": [
+        "T002"
+      ]
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 3,
+      "description": "Replace AppStrings.LABEL_HOWTO_WINDOW_LINE3 in src/app/app-strings.ts with the approved text; add aria-label=\"Qué tan cerca estás del objetivo\" to #distance-range.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/app-strings.ts",
+      "story": "US4",
+      "satisfies": [
+        "FR-008",
+        "FR-009"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 3,
+      "description": "Delete the unused .heat-range.blue / .heat-range.read thumb styles (game.component.css) and the unused distanceRange getter and its @ViewChild (game.component.ts).",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-010",
+        "FR-011"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 4,
+      "description": "Tests in src/app/game/game.component.spec.ts: rewrite the #11 spec that expected the bar inside the menu; add specs for the bar outside the menu, visible with the menu closed and open, value updating on a slider change, LINE3 text and aria-label. Run ng build and ng test on 2 cores; take before/after screenshots at 390/768/1280 px (menu open and closed) for approval on #15.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-003",
+        "FR-007",
+        "FR-008",
+        "FR-009"
+      ],
+      "dependencies": [
+        "T003",
+        "T004",
+        "T005"
+      ]
+    }
+  }
+}
