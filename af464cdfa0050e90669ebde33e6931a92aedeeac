@@ -1,0 +1,7 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/assets/icons/apple-touch-icon.png,src/assets/icons/icon-maskable-192x192.png,src/assets/icons/icon-maskable-512x512.png
+vt.idd:satisfies: partial (FR-004 says the shell fits the ~80% safe zone; with the cut flush to the bottom edge, a circular mask trims the shell's lower edge along a curve (apex and sides stay inside).)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-23T17:05:06-06:00
