@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/app-strings.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=1 FAILED: Expected 'Link' to be 'Compartir', green=game spec 45/45 SUCCESS
+vt.idd:satisfies: partial (Tooltip wording awaits approval on #11)
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-23T12:47:43-06:00
