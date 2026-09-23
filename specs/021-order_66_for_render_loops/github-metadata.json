@@ -1,0 +1,17 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 21,
+    "title": "[Game] 3D render loops never stop: each New Game and page visit adds more (CPU grows, tests starve)",
+    "url": "https://github.com/C3Idea/shell-generator/issues/21",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5789847682",
+  "spec_comment_id": "5789829007",
+  "pr": {
+    "number": null,
+    "url": null
+  },
+  "deployed_at": "2026-09-23T06:06:31Z",
+  "cached_from": "github"
+}
