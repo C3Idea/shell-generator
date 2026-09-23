@@ -58,6 +58,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('modalHowToWindow')
   private modalHowToWindowRef!: ElementRef;
 
+  @ViewChild('modalNewGame')
+  private modalNewGameRef!: ElementRef;
+
+  @ViewChild('keyEntryRow')
+  private keyEntryRowRef!: ElementRef;
+
+  @ViewChild('gameKeyInput')
+  private gameKeyInputRef!: ElementRef;
+
   @ViewChild('distanceRange')
   private distanceRangeRef!: ElementRef;
 
@@ -86,6 +95,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   private get modalHowToWindow(): HTMLDivElement {
     return this.modalHowToWindowRef.nativeElement;
+  }
+  private get modalNewGame(): HTMLDivElement {
+    return this.modalNewGameRef.nativeElement;
+  }
+  private get keyEntryRow(): HTMLDivElement {
+    return this.keyEntryRowRef.nativeElement;
+  }
+  private get gameKeyInput(): HTMLInputElement {
+    return this.gameKeyInputRef.nativeElement;
   }
   private get distanceRange(): HTMLInputElement {
     return this.distanceRangeRef.nativeElement;
@@ -338,13 +356,16 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   newGameButtonClick(event: Event) {
     event.preventDefault();
-    const gameId = window.prompt("Clave de juego", this.gameId);
-    if (gameId === null) {
-      return;
-    }
-    this.gameId = gameId;
-    this.closeModalWindow();
-    this.newGame(gameId);
+    this.hideMenu();
+    this.openNewGamePopup();
+  }
+
+  // #23: the pop-up always opens on its two choices, with the key field
+  // hidden and empty.
+  private openNewGamePopup() {
+    this.gameKeyInput.value = '';
+    this.keyEntryRow.style.display = 'none';
+    this.modalNewGame.style.display = 'block';
   }
 
   async generateTargetLinkButtonClick(event: Event): Promise<void> {

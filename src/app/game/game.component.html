@@ -158,6 +158,32 @@
       </div>
     </div>
   </div>
+  <div #modalNewGame id="modal-new-game" class="modal" (mousedown)="this.modalMouseDown($event)">
+    <div class="modal-new-game-content" role="dialog" aria-modal="true" aria-labelledby="label-new-game-title">
+      <label id="label-new-game-title">{{AppStrings.LABEL_NEW_GAME_POPUP_TITLE}}</label>
+      <div class="new-game-choices">
+        <button type="button" class="new-game-button">
+          {{AppStrings.LABEL_RANDOM_GAME}}
+        </button>
+        <button type="button" class="new-game-button">
+          {{AppStrings.LABEL_ENTER_KEY}}
+        </button>
+      </div>
+      <div #keyEntryRow class="key-entry-row">
+        <label for="game-key-input">{{AppStrings.LABEL_GAME_KEY}}</label>
+        <input #gameKeyInput id="game-key-input" type="text" autocomplete="off"
+          placeholder="{{AppStrings.PLACEHOLDER_GAME_KEY}}" />
+        <button type="button" class="new-game-button">
+          {{AppStrings.LABEL_START_KEYED_GAME}}
+        </button>
+      </div>
+      <div class="modal-button-bar">
+        <button type="button" class="modal-close-button">
+          <label>{{AppStrings.LABEL_CLOSE}}</label>
+        </button>
+      </div>
+    </div>
+  </div>
   <div #modalHowToWindow class="modal" (mousedown)="this.modalMouseDown($event)">
     <div class="modal-howto-content">
       <label id="label-howto-title">{{AppStrings.LABEL_HOWTO_WINDOW_TITLE}}</label>

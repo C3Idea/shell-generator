@@ -60,4 +60,10 @@ export class AppStrings {
   static LABEL_SUCCESS = "¡Victoria!";
   static LABEL_GO_HOME = "Sandbox";
   static LABEL_PLAY_AGAIN = "Jugar";
+  static LABEL_NEW_GAME_POPUP_TITLE = "Nuevo juego";
+  static LABEL_RANDOM_GAME = "Aleatorio";
+  static LABEL_ENTER_KEY   = "Introducir clave";
+  static LABEL_GAME_KEY    = "Clave de juego";
+  static LABEL_START_KEYED_GAME = "Jugar";
+  static PLACEHOLDER_GAME_KEY = "Escribe una clave";
 }

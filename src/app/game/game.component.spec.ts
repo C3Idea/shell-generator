@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 
 import { ShellParameters } from '../shell-parameters';
 import { GameComponent } from './game.component';
+import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
 describe('GameComponent', () => {
@@ -227,5 +228,61 @@ describe('GameComponent render loops (#21)', () => {
   it('destroying a game that never rendered does not throw', () => {
     const unrendered = TestBed.createComponent(GameComponent);
     expect(() => unrendered.destroy()).not.toThrow();
+  });
+});
+
+// #23: New Game opens an in-app pop-up ("Aleatorio" / "Introducir clave")
+// instead of window.prompt. The view is rendered, and the frame pump keeps the
+// render loops from running on their own.
+describe('GameComponent New Game pop-up (#23)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const popup = () => el.querySelector('#modal-new-game') as HTMLDivElement;
+  const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
+  const shown = (e: HTMLElement) => e.style.display === 'block';
+  let prompt: jasmine.Spy;
+
+  beforeEach(async () => {
+    installFramePump();
+    // A real window.prompt would block the headless browser.
+    prompt = spyOn(window, 'prompt').and.returnValue(null);
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ GameComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(GameComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    fixture.detectChanges();
+  });
+
+  describe('opening', () => {
+    it('Nuevo juego opens the pop-up instead of window.prompt', () => {
+      component.newGameButtonClick(new Event('click'));
+      expect(prompt).not.toHaveBeenCalled();
+      expect(shown(popup())).toBeTrue();
+    });
+
+    it('opening from the gear menu hides the menu', () => {
+      component.menuButtonClick(new Event('click'));
+      expect(component.menuVisible).toBeTrue();
+      component.newGameButtonClick(new Event('click'));
+      expect(component.menuVisible).toBeFalse();
+      expect(menu().style.display).toBe('none');
+    });
+
+    it('is an accessible dialog with a labelled key field', () => {
+      const dialog = popup().querySelector('[role="dialog"]') as HTMLElement;
+      expect(dialog).withContext('role="dialog"').not.toBeNull();
+      expect(dialog.getAttribute('aria-modal')).toBe('true');
+      const title = el.querySelector('#' + dialog.getAttribute('aria-labelledby'));
+      expect(title?.textContent?.trim()).toBe(AppStrings.LABEL_NEW_GAME_POPUP_TITLE);
+      const input = popup().querySelector('input[type="text"]') as HTMLInputElement;
+      const label = popup().querySelector(`label[for="${input.id}"]`);
+      expect(label?.textContent?.trim()).toBe(AppStrings.LABEL_GAME_KEY);
+    });
   });
 });
