@@ -59,17 +59,18 @@ Three changes, all in `game.component.ts` (no changes to `getShareableGameLink()
 
 | ID | Scenario (Given/When/Then) | Evidence | Status |
 |----|----------------------------|----------|--------|
-| VM-001 | Given a link shared without moving sliders, When the recipient opens it, Then the game starts unsolved (no win pop-up). | [pending] | Pending |
-| VM-002 | Given any valid link, When opened, Then the target equals the sharer's shell to 2 decimals. | [pending] | Pending |
-| VM-003 | Given a hand-edited out-of-range link, When opened, Then values are clamped and the game is winnable. | [pending] | Pending |
-| VM-004 | Given a game opened from a link, When New Game is pressed and the page reloaded, Then the shared challenge does not return. | [pending] | Pending |
-| VM-005 | Given no link, When the game opens, Then A/α/β/a start at their minimums. | [pending] | Pending |
+| VM-001 | Given a link shared without moving sliders, When the recipient opens it, Then the game starts unsolved (no win pop-up). | ✅ [`randomizePlayerStart()`](https://github.com/C3Idea/shell-generator/blob/3985bf5/src/app/game/game.component.ts#L155) · e2e: 30/30 fresh loads never won, forced-fallback run, real Link-button journey · prod build 15/15 · control run on `dev` shows the bug · manual steps 1–2 · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+| VM-002 | Given any valid link, When opened, Then the target equals the sharer's shell to 2 decimals. | ✅ e2e: all 10 target values equal the sharer's shell to 2 dp, and the recipient can win · prod: the link carries the sharer's values · manual step 4 · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+| VM-003 | Given a hand-edited out-of-range link, When opened, Then values are clamped and the game is winnable. | ✅ [`decodeTargetParameters()`](https://github.com/C3Idea/shell-generator/blob/3985bf5/src/app/game/game.component.ts#L402) clamps (incl. `Infinity`) and pins `d`=1 · e2e + prod: winnable at the slider limits; malformed links ignored · manual step 5 (the `d` step 13b is still open) · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+| VM-004 | Given a game opened from a link, When New Game is pressed and the page reloaded, Then the shared challenge does not return. | ✅ [`clearTargetFromUrl()`](https://github.com/C3Idea/shell-generator/blob/3985bf5/src/app/game/game.component.ts#L376) · e2e: "Nuevo juego", "Jugar" and Cancel · prod: stays in the subfolder after reload · manual step 7 · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+| VM-005 | Given no link, When the game opens, Then A/α/β/a start at their minimums. | ✅ e2e + prod: A=5, α=80, β=0, a=1 without a link · manual step 8 · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | No shared link opens the game in a won state. | [pending] | Pending |
-| SC-002 | Every shared link yields a solvable game whose target matches the sharer's shell. | [pending] | Pending |
-| SC-003 | New Game durably clears the shared challenge from the URL. | [pending] | Pending |
+| SC-001 | No shared link opens the game in a won state. | ✅ VM-001 (e2e 30/30, prod 15/15, forced fallback) · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+| SC-002 | Every shared link yields a solvable game whose target matches the sharer's shell. | ✅ VM-002 + VM-003 (target matches the sharer; out-of-range links clamped and winnable) · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+| SC-003 | New Game durably clears the shared challenge from the URL. | ✅ VM-004 (URL cleared; reload doesn't restore the challenge, dev server and prod) · [spec verification](https://github.com/C3Idea/shell-generator/pull/16#issuecomment-5786748026) | Pass |
+
 
