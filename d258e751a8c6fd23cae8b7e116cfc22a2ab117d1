@@ -1,0 +1,6 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/app.component.spec.ts,src/app/game/game.component.spec.ts,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-09-22T19:10:28-06:00
