@@ -313,4 +313,72 @@ describe('GameComponent New Game pop-up (#23)', () => {
       expect(target()).not.toEqual(first);
     });
   });
+
+  describe('Introducir clave', () => {
+    const keyRow = () => el.querySelector('.key-entry-row') as HTMLDivElement;
+    const keyInput = () => el.querySelector('#game-key-input') as HTMLInputElement;
+
+    function playKey(key: string, confirm: 'button' | 'enter' = 'button'): number[] {
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_ENTER_KEY).click();
+      keyInput().value = key;
+      if (confirm === 'enter') {
+        keyInput().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      }
+      else {
+        button(AppStrings.LABEL_START_KEYED_GAME).click();
+      }
+      return target();
+    }
+
+    it('reveals an empty, focused key field', () => {
+      component.newGameButtonClick(new Event('click'));
+      expect(keyRow().style.display).toBe('none');
+      button(AppStrings.LABEL_ENTER_KEY).click();
+      expect(keyRow().style.display).not.toBe('none');
+      expect(keyInput().value).toBe('');
+      expect(document.activeElement).toBe(keyInput());
+    });
+
+    it('starts the game seeded with the key, like today\'s prompt', () => {
+      const newGame = spyOn(component as any, 'newGame').and.callThrough();
+      expect(playKey('reto1')).toEqual(values(ShellParameters.randomParameters('reto1')));
+      expect(newGame.calls.mostRecent().args[0]).toBe('reto1');
+      expect(component.gameId).toBe('reto1');
+      expect(shown(popup())).toBeFalse();
+    });
+
+    it('gives the same target for the same key', () => {
+      expect(playKey('reto2')).toEqual(playKey('reto2'));
+    });
+
+    it('trims the key but keeps its case', () => {
+      expect(playKey(' abc ')).toEqual(playKey('abc'));
+      expect(component.gameId).toBe('abc');
+      expect(playKey('abc')).not.toEqual(playKey('ABC'));
+    });
+
+    it('treats an empty or whitespace-only key as random', () => {
+      const newGame = spyOn(component as any, 'newGame').and.callThrough();
+      const first = playKey('');
+      expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
+      expect(component.gameId).toBe('');
+      const second = playKey('   ');
+      expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
+      expect(second).not.toEqual(first);
+    });
+
+    it('confirms with Enter', () => {
+      expect(playKey('reto1', 'enter')).toEqual(values(ShellParameters.randomParameters('reto1')));
+      expect(shown(popup())).toBeFalse();
+    });
+
+    it('opens empty and hidden again after a keyed game', () => {
+      playKey('reto1');
+      component.newGameButtonClick(new Event('click'));
+      expect(keyRow().style.display).toBe('none');
+      expect(keyInput().value).toBe('');
+    });
+  });
 });
+

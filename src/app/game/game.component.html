@@ -165,15 +165,16 @@
         <button type="button" class="new-game-button" (click)="this.randomGameButtonClick($event)">
           {{AppStrings.LABEL_RANDOM_GAME}}
         </button>
-        <button type="button" class="new-game-button">
+        <button type="button" class="new-game-button" (click)="this.enterKeyButtonClick($event)">
           {{AppStrings.LABEL_ENTER_KEY}}
         </button>
       </div>
       <div #keyEntryRow class="key-entry-row">
         <label for="game-key-input">{{AppStrings.LABEL_GAME_KEY}}</label>
         <input #gameKeyInput id="game-key-input" type="text" autocomplete="off"
-          placeholder="{{AppStrings.PLACEHOLDER_GAME_KEY}}" />
-        <button type="button" class="new-game-button">
+          placeholder="{{AppStrings.PLACEHOLDER_GAME_KEY}}"
+          (keydown.enter)="this.confirmKeyButtonClick($event)" />
+        <button type="button" class="new-game-button" (click)="this.confirmKeyButtonClick($event)">
           {{AppStrings.LABEL_START_KEYED_GAME}}
         </button>
       </div>

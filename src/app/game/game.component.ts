@@ -372,6 +372,21 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalNewGame.style.display = 'none';
   }
 
+  enterKeyButtonClick(event: Event) {
+    event.preventDefault();
+    this.keyEntryRow.style.display = 'flex';
+    this.gameKeyInput.focus();
+  }
+
+  // Keys are trimmed (phone keyboards add trailing spaces) but keep their
+  // case, so a key without surrounding spaces seeds exactly as before. A key
+  // that is empty after trimming means a random game.
+  confirmKeyButtonClick(event: Event) {
+    event.preventDefault();
+    const key = this.gameKeyInput.value.trim();
+    this.startNewGameFromPopup(key === '' ? undefined : key);
+  }
+
   randomGameButtonClick(event: Event) {
     event.preventDefault();
     this.startNewGameFromPopup(undefined);
