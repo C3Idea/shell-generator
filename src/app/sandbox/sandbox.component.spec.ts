@@ -18,6 +18,9 @@ describe('SandboxComponent', () => {
 
     fixture = TestBed.createComponent(SandboxComponent);
     component = fixture.componentInstance;
+    // ShellViewer's render loop reschedules itself forever (#21). Let it draw
+    // one frame, then stop, so loops don't pile up in a watch-mode browser.
+    spyOn(window, 'requestAnimationFrame').and.returnValue(0);
     fixture.detectChanges();
   });
 
