@@ -165,3 +165,73 @@ describe('GameComponent shared challenge link (#12)', () => {
     });
   });
 });
+
+// #21: the game's 3D viewers must not pile up. requestAnimationFrame is
+// replaced by a manual frame pump: every live render loop schedules exactly
+// one frame per pumped frame, so pending frames = viewers still rendering.
+describe('GameComponent render loops (#21)', () => {
+  let frames: Map<number, FrameRequestCallback>;
+  let nextFrameId: number;
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+
+  function pumpFrame(): void {
+    const callbacks = [...frames.values()];
+    frames.clear();
+    callbacks.forEach(callback => callback(performance.now()));
+  }
+
+  function renderingViewers(): number {
+    pumpFrame();
+    return frames.size;
+  }
+
+  beforeEach(async () => {
+    frames = new Map();
+    nextFrameId = 1;
+    spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback) => {
+      frames.set(nextFrameId, callback);
+      return nextFrameId++;
+    });
+    spyOn(window, 'cancelAnimationFrame').and.callFake((id: number) => {
+      frames.delete(id);
+    });
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ GameComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(GameComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('starts with two viewers rendering (player + target)', () => {
+    expect(renderingViewers()).toBe(2);
+  });
+
+  it('New Game keeps the same two viewers instead of creating more', () => {
+    const viewer = component.viewer;
+    const targetViewer = component.targetViewer;
+    for (let i = 0; i < 3; i++) {
+      (component as any)['newGame'](`key-${i}`);
+    }
+    expect(component.viewer).toBe(viewer);
+    expect(component.targetViewer).toBe(targetViewer);
+    expect(renderingViewers()).withContext('viewers rendering after 3 New Games').toBe(2);
+  });
+
+  it('New Game puts both cameras back at the default view', () => {
+    const viewers = [component.viewer, component.targetViewer];
+    const defaults = viewers.map(v => (v as any)['camera'].position.clone());
+    viewers.forEach(v => {
+      (v as any)['camera'].position.set(-30, 5, 70);
+      (v as any)['controls'].update();
+    });
+    (component as any)['newGame']('key');
+    viewers.forEach((v, i) => {
+      expect(component.viewer === v || component.targetViewer === v).withContext('same viewer after New Game').toBeTrue();
+      expect((v as any)['camera'].position.distanceTo(defaults[i])).toBeLessThan(1e-6);
+    });
+  });
+});

@@ -321,7 +321,9 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.targetParameters = ShellParameters.randomParameters(seed);
     this.setupGame();
     this.distance         = this.parameters.distance(this.targetParameters);
-    this.setupShellViewers();
+    // Reuse the viewers: new ones would pile up render loops (#21).
+    this.viewer.resetCamera();
+    this.targetViewer.resetCamera();
     this.setShellVisibility();
     this.createShellGraphs();
     this.checkGameIsOver();
