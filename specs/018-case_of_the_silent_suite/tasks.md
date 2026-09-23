@@ -4,7 +4,7 @@
 # Tasks: Unit test suite never runs
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-22T19:13:58-06:00
+**Generated**: 2026-09-22T19:21:15-06:00
 
 ---
 
@@ -35,19 +35,19 @@
 **Purpose**: README, revert guard, lint comparison
 
 - [x] T005 [W2] README: document npm test (single headless run) and npm run test:watch
-- [ ] T006 [W2] Verify: #12 specs fail on a temp git revert -m 1 6fb91ce and pass without it; ng lint shows no new problems vs dev; test:watch starts watch mode
+- [x] T006 [W2] Verify: #12 specs fail on a temp git revert -m 1 6fb91ce and pass without it; ng lint shows no new problems vs dev; test:watch starts watch mode
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 5
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 83%
+- **Progress**: 100%
 
 ---
 
