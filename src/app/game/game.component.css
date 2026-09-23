@@ -363,10 +363,11 @@ input:checked + .switch-slider:before {
    over a white shell. */
 #game-actions {
   position: fixed;
-  bottom: 7px;
+  bottom: 7px;  /* lines up with the switch's visible edge: bottom 5px + margin 2px */
   right: 5px;
   display: flex;
   gap: 8px;
+  z-index: 0;   /* the pop-ups (.modal, z-index 1) must stay above these buttons */
 }
 
 .game-action-button {
@@ -387,9 +388,11 @@ input:checked + .switch-slider:before {
   color: #e2c16e;
 }
 
-/* The switch (~237 px) and both buttons don't fit on one row below 480 px:
-   the buttons move to their own row just above the switch. */
-@media only screen and (max-width: 480px) {
+/* Measured: the switch ends at 237 px and the button group is 236 px wide, so
+   one row needs ~491 px and leaves only 3 px at 481 px. Up to 560 px the
+   buttons get their own row just above the switch; from 561 px the one-row
+   gap is >= 80 px, room for longer labels or a wider font. */
+@media only screen and (max-width: 560px) {
   #game-actions {
     bottom: 56px;
   }
