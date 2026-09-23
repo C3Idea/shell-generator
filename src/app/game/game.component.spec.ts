@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 
 import { ShellParameters } from '../shell-parameters';
 import { GameComponent } from './game.component';
+import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
 describe('GameComponent', () => {
@@ -229,3 +230,220 @@ describe('GameComponent render loops (#21)', () => {
     expect(() => unrendered.destroy()).not.toThrow();
   });
 });
+
+// #23: New Game opens an in-app pop-up ("Aleatorio" / "Introducir clave")
+// instead of window.prompt. The view is rendered, and the frame pump keeps the
+// render loops from running on their own.
+describe('GameComponent New Game pop-up (#23)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const popup = () => el.querySelector('#modal-new-game') as HTMLDivElement;
+  const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
+  const shown = (e: HTMLElement) => e.style.display === 'block';
+  const button = (text: string) => Array.from(popup().querySelectorAll('button'))
+    .find(b => b.textContent?.trim() === text) as HTMLButtonElement;
+  // A target's ten values to 2 decimals, the precision the issue compares at.
+  const values = (p: ShellParameters) =>
+    [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
+  const target = () => values(component.targetParameters);
+  let prompt: jasmine.Spy;
+
+  beforeEach(async () => {
+    installFramePump();
+    // A real window.prompt would block the headless browser.
+    prompt = spyOn(window, 'prompt').and.returnValue(null);
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ GameComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(GameComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    fixture.detectChanges();
+  });
+
+  describe('opening', () => {
+    it('Nuevo juego opens the pop-up instead of window.prompt', () => {
+      component.newGameButtonClick(new Event('click'));
+      expect(prompt).not.toHaveBeenCalled();
+      expect(shown(popup())).toBeTrue();
+    });
+
+    it('opening from the gear menu hides the menu', () => {
+      component.menuButtonClick(new Event('click'));
+      expect(component.menuVisible).toBeTrue();
+      component.newGameButtonClick(new Event('click'));
+      expect(component.menuVisible).toBeFalse();
+      expect(menu().style.display).toBe('none');
+    });
+
+    it('is an accessible dialog with a labelled key field', () => {
+      const dialog = popup().querySelector('[role="dialog"]') as HTMLElement;
+      expect(dialog).withContext('role="dialog"').not.toBeNull();
+      expect(dialog.getAttribute('aria-modal')).toBe('true');
+      const title = el.querySelector('#' + dialog.getAttribute('aria-labelledby'));
+      expect(title?.textContent?.trim()).toBe(AppStrings.LABEL_NEW_GAME_POPUP_TITLE);
+      const input = popup().querySelector('input[type="text"]') as HTMLInputElement;
+      const label = popup().querySelector(`label[for="${input.id}"]`);
+      expect(label?.textContent?.trim()).toBe(AppStrings.LABEL_GAME_KEY);
+    });
+  });
+
+  describe('Aleatorio', () => {
+    it('starts an unseeded game and closes the pop-up', () => {
+      const newGame = spyOn(component as any, 'newGame').and.callThrough();
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      expect(newGame).toHaveBeenCalledTimes(1);
+      expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
+      expect(component.gameId).toBe('');
+      expect(shown(popup())).toBeFalse();
+      expect(component.menuVisible).toBeFalse();
+    });
+
+    it('gives a different target each time', () => {
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      const first = target();
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      expect(target()).not.toEqual(first);
+    });
+  });
+
+  describe('Introducir clave', () => {
+    const keyRow = () => el.querySelector('.key-entry-row') as HTMLDivElement;
+    const keyInput = () => el.querySelector('#game-key-input') as HTMLInputElement;
+
+    function playKey(key: string, confirm: 'button' | 'enter' = 'button'): number[] {
+      component.newGameButtonClick(new Event('click'));
+      button(AppStrings.LABEL_ENTER_KEY).click();
+      keyInput().value = key;
+      if (confirm === 'enter') {
+        keyInput().dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      }
+      else {
+        button(AppStrings.LABEL_START_KEYED_GAME).click();
+      }
+      return target();
+    }
+
+    it('reveals an empty, focused key field', () => {
+      component.newGameButtonClick(new Event('click'));
+      expect(keyRow().style.display).toBe('none');
+      button(AppStrings.LABEL_ENTER_KEY).click();
+      expect(keyRow().style.display).not.toBe('none');
+      expect(keyInput().value).toBe('');
+      expect(document.activeElement).toBe(keyInput());
+    });
+
+    it('starts the game seeded with the key, like today\'s prompt', () => {
+      const newGame = spyOn(component as any, 'newGame').and.callThrough();
+      expect(playKey('reto1')).toEqual(values(ShellParameters.randomParameters('reto1')));
+      expect(newGame.calls.mostRecent().args[0]).toBe('reto1');
+      expect(component.gameId).toBe('reto1');
+      expect(shown(popup())).toBeFalse();
+    });
+
+    it('gives the same target for the same key', () => {
+      expect(playKey('reto2')).toEqual(playKey('reto2'));
+    });
+
+    it('trims the key but keeps its case', () => {
+      expect(playKey(' abc ')).toEqual(playKey('abc'));
+      expect(component.gameId).toBe('abc');
+      expect(playKey('abc')).not.toEqual(playKey('ABC'));
+    });
+
+    it('treats an empty or whitespace-only key as random', () => {
+      const newGame = spyOn(component as any, 'newGame').and.callThrough();
+      const first = playKey('');
+      expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
+      expect(component.gameId).toBe('');
+      const second = playKey('   ');
+      expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
+      expect(second).not.toEqual(first);
+    });
+
+    it('confirms with Enter', () => {
+      expect(playKey('reto1', 'enter')).toEqual(values(ShellParameters.randomParameters('reto1')));
+      expect(shown(popup())).toBeFalse();
+    });
+
+    it('opens empty and hidden again after a keyed game', () => {
+      playKey('reto1');
+      component.newGameButtonClick(new Event('click'));
+      expect(keyRow().style.display).toBe('none');
+      expect(keyInput().value).toBe('');
+    });
+  });
+
+  describe('closing without starting a game', () => {
+    const closeWays: Record<string, () => void> = {
+      'the close button': () => button(AppStrings.LABEL_CLOSE).click(),
+      'Esc': () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })),
+      'a click on the backdrop': () => popup().dispatchEvent(new MouseEvent('mousedown', { bubbles: true })),
+    };
+
+    for (const [way, close] of Object.entries(closeWays)) {
+      it(`${way} leaves the current game unchanged`, () => {
+        const before = { target: target(), player: values(component.parameters), gameId: component.gameId };
+        const newGame = spyOn(component as any, 'newGame').and.callThrough();
+        component.newGameButtonClick(new Event('click'));
+        close();
+        expect(shown(popup())).toBeFalse();
+        expect(newGame).not.toHaveBeenCalled();
+        expect({ target: target(), player: values(component.parameters), gameId: component.gameId }).toEqual(before);
+        expect(component.menuVisible).toBeFalse();
+      });
+    }
+
+    it('a click inside the box does not close it', () => {
+      component.newGameButtonClick(new Event('click'));
+      popup().querySelector('[role="dialog"]')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      expect(shown(popup())).toBeTrue();
+    });
+
+    it('Esc with the pop-up closed leaves the other pop-ups alone', () => {
+      const howTo = el.querySelector('.modal-howto-content')!.parentElement as HTMLDivElement;
+      expect(shown(howTo)).withContext('how-to shown at start').toBeTrue();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(shown(howTo)).toBeTrue();
+    });
+  });
+
+  describe('from ¡Victoria!', () => {
+    const victory = () => el.querySelector('.modal-content')!.parentElement as HTMLDivElement;
+    const jugar = () => Array.from(victory().querySelectorAll('button'))
+      .find(b => b.textContent?.trim() === AppStrings.LABEL_PLAY_AGAIN) as HTMLButtonElement;
+
+    beforeEach(() => {
+      victory().style.display = 'block';
+    });
+
+    it('Jugar opens the New Game pop-up over ¡Victoria!', () => {
+      jugar().click();
+      expect(prompt).not.toHaveBeenCalled();
+      expect(shown(popup())).toBeTrue();
+      expect(shown(victory())).toBeTrue();
+    });
+
+    it('closing the pop-up goes back to ¡Victoria!', () => {
+      jugar().click();
+      button(AppStrings.LABEL_CLOSE).click();
+      expect(shown(popup())).toBeFalse();
+      expect(shown(victory())).toBeTrue();
+    });
+
+    it('starting a game closes both', () => {
+      jugar().click();
+      button(AppStrings.LABEL_RANDOM_GAME).click();
+      expect(shown(popup())).toBeFalse();
+      expect(shown(victory())).toBeFalse();
+    });
+  });
+});
+

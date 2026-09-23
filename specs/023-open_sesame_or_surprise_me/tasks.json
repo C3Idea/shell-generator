@@ -1,0 +1,342 @@
+{
+  "meta": {
+    "feature": "023-open-sesame-or-surprise-me",
+    "featureName": "New Game pop-up: Aleatorio or Introducir clave",
+    "version": "2.0",
+    "createdAt": "2026-09-23T16:51:26Z",
+    "lastUpdated": "2026-09-23T16:51:26Z",
+    "specHash": "e1a4518e671b7a5ac596b5ae38c462bd",
+    "planHash": "d04a250896ad5a87fa238e8efd09d58f"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 5,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "totalTasks": 7,
+    "completedTasks": 7,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "contextHint": "Run everything pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Both actions go through the unchanged newGame(seed?); an empty key must reach it as undefined, never ''. Keys trimmed, case-sensitive. Keep #21's ngOnDestroy ?. guards; component specs use installFramePump from src/testing/frame-pump.ts.",
+    "lastUpdated": "2026-09-23T11:45:27-06:00",
+    "lastCheckpoint": "2026-09-23T11:46:03-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Foundational: the pop-up exists",
+      "description": "Strings, #modalNewGame markup + ARIA, opened instead of window.prompt",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T10:55:58-06:00"
+    },
+    {
+      "number": 1,
+      "name": "US1: Random game without a key",
+      "story": "US1",
+      "description": "Aleatorio starts an unseeded game",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T10:58:04-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US2: Keyed game to compete",
+      "story": "US2",
+      "description": "Key field, trim, case-sensitive, empty = random",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T10:59:55-06:00"
+    },
+    {
+      "number": 3,
+      "name": "US3: Cancel without disturbing the game",
+      "story": "US3",
+      "description": "Close button, Esc, backdrop",
+      "tasks": [
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T11:01:47-06:00"
+    },
+    {
+      "number": 4,
+      "name": "US4: Play again from ¡Victoria!",
+      "story": "US4",
+      "description": "Jugar opens the pop-up; cancel keeps Victoria",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T11:04:29-06:00"
+    },
+    {
+      "number": 5,
+      "name": "Polish: styling and verification",
+      "description": "CSS, 390/1280 fit, screenshots, harness",
+      "tasks": [
+        "T006",
+        "T007"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T11:45:27-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "New Game pop-up skeleton (FR-001, FR-002 opening, FR-009, FR-010): add AppStrings entries (title, Aleatorio, Introducir clave, confirm, key placeholder/label) and remove the \"Clave de juego\" literal; add #modalNewGame to game.component.html (.modal backdrop + rounded box, role=\"dialog\", aria-modal=\"true\", aria-labelledby → title; Aleatorio / Introducir clave buttons; hidden key row with a labelled input + confirm; close button); newGameButtonClick() opens it instead of window.prompt (origin 'menu' hides the gear menu). RED first in game.component.spec.ts: newGameButtonClick never calls window.prompt and shows #modalNewGame; the gear menu is hidden; the dialog ARIA attributes and the input label are present.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-009",
+        "FR-010"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T10:55:58-06:00",
+        "commitSha": "2e6ed1b2209372b1e3d82b3aff25368bc4e06a2a",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts",
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "3 FAILED: prompt called; menu still visible; no role=dialog (TypeError)",
+          "greenResult": "game spec 21/21 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "US1 Aleatorio (FR-003, FR-008): randomGameButtonClick → startNewGameFromPopup(undefined), which sets gameId='', closes #modalNewGame and Victoria, and calls newGame(undefined). RED: two Aleatorio in a row give different targets; newGame is called with undefined (never a string); pop-up closed, gear menu still hidden, ?target cleared, cameras at default.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US1",
+      "dependencies": [
+        "T001"
+      ],
+      "satisfies": [
+        "FR-003",
+        "FR-008",
+        "VM-001",
+        "VM-002"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T10:58:04-06:00",
+        "commitSha": "69802c9311045263185b2fcb4e4c9904707ba89b",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "2 FAILED: Aleatorio not wired (newGame not called; target unchanged)",
+          "greenResult": "game spec 23/23 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "US2 Introducir clave (FR-004..FR-006): enterKeyButtonClick reveals the key row and focuses the input; confirmKeyButtonClick (button or Enter) trims newGameKey → startNewGameFromPopup(key) or undefined when empty; gameId = trimmed key; newGameKey resets to '' and the key row hides on every open. RED: same key ⇒ same target to 2 decimals; 'reto1' target equals ShellParameters.randomParameters('reto1'); ' abc ' == 'abc'; 'abc' != 'ABC'; empty and whitespace-only keys ⇒ unseeded, two in a row differ; field empty on reopen; input focused after reveal; Enter confirms.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US2",
+      "dependencies": [
+        "T001"
+      ],
+      "satisfies": [
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "VM-003",
+        "VM-004",
+        "VM-005",
+        "VM-006",
+        "VM-007",
+        "VM-008"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T10:59:55-06:00",
+        "commitSha": "d19e72324b34b44a4405696dbbb2a8c57585cba6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "5 of 7 FAILED: key field never shown/focused; key, trim/case, empty-key and Enter paths not wired",
+          "greenResult": "game spec 30/30 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 3,
+      "description": "US3 Cancel (FR-007): close button, Esc (HostListener scoped to when #modalNewGame is open) and a backdrop click (modalMouseDown) close the pop-up without calling newGame; the gear menu stays hidden. RED: each of the three paths leaves targetParameters, parameters and gameId unchanged and newGame not called; Esc with the pop-up closed does nothing.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US3",
+      "dependencies": [
+        "T001"
+      ],
+      "satisfies": [
+        "FR-007",
+        "VM-009"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T11:01:47-06:00",
+        "commitSha": "a5344b3690fed51a910935df31876ec4968aa8a7",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "3 FAILED: close button, Esc and backdrop click didn't close the pop-up",
+          "greenResult": "game spec 35/35 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 4,
+      "description": "US4 Play again from ¡Victoria! (FR-002, FR-007): Jugar opens the pop-up with origin 'victory' and leaves #modalWindow shown; cancelling keeps #modalWindow shown; starting a game from it closes both. RED: Jugar shows #modalNewGame while #modalWindow stays displayed; close (all three paths) leaves #modalWindow displayed; Aleatorio/key start hides both.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "story": "US4",
+      "dependencies": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "satisfies": [
+        "FR-002",
+        "FR-007",
+        "VM-010",
+        "VM-011",
+        "VM-012"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T11:04:29-06:00",
+        "commitSha": "ada6893a033192f5e268df1e8449df091fa5d147",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "No RED on the branch: T001-T004 already satisfy US4. Mutations (open hides ¡Victoria! / start keeps it) fail 2 and 1 specs; on dev's code Jugar calls window.prompt (revert guard).",
+          "greenResult": "game spec 38/38 SUCCESS"
+        },
+        "satisfaction": "full",
+        "notes": "No origin flag needed: ¡Victoria! is independent of the New Game pop-up"
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 5,
+      "description": "Polish: style #modalNewGame in game.component.css reusing the game's modal look (rounded box, button bar, key row); check that both buttons and the key row fit with no overflow at 390 px and 1280 px; capture before/after screenshots for #23 approval (SC-002, SC-007). No behaviour change.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.css",
+      "dependencies": [
+        "T005"
+      ],
+      "satisfies": [
+        "SC-002",
+        "SC-007"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T11:06:43-06:00",
+        "commitSha": "841d345277efd1ba3ce79865e42862dc25bd2f26",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.css"
+        ],
+        "satisfaction": "partial",
+        "notes": "Fit verified at 390/1280 px; screenshots in validaciones/shell_generator/23/capturas await approval on #23 (SC-007)"
+      }
+    },
+    "T007": {
+      "id": "T007",
+      "wave": 5,
+      "description": "Verify acceptance criteria (SC-001..SC-007, FR-011): npm test green; ng lint no new problems vs dev; tsc app/spec clean; npm run build OK; grep -n 'window.prompt(\"Clave de juego\"' src/ is empty; validation harness in ~/00_C3_code/validaciones/shell_generator/23/ (local CI vs dev, revert guard: the new specs fail on dev's code, e2e: no window.prompt, Aleatorio twice differs, key parity; 2 cores) plus a manual-validation guide.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "dependencies": [
+        "T006"
+      ],
+      "satisfies": [
+        "SC-001",
+        "SC-003",
+        "SC-004",
+        "SC-005",
+        "SC-006",
+        "FR-011"
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T11:45:27-06:00",
+        "commitSha": "841d345277efd1ba3ce79865e42862dc25bd2f26",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "partial",
+        "notes": "SC-001..006 verified: harness green @841d345 (CI 55/55, revert guard 19 #23 specs fail on dev, e2e 23/23 incl. dev-prompt parity), manual pass signed off 2026-09-23. SC-007 (screenshots approved on #23) pending."
+      }
+    }
+  }
+}

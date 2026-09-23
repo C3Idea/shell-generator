@@ -58,6 +58,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('modalHowToWindow')
   private modalHowToWindowRef!: ElementRef;
 
+  @ViewChild('modalNewGame')
+  private modalNewGameRef!: ElementRef;
+
+  @ViewChild('keyEntryRow')
+  private keyEntryRowRef!: ElementRef;
+
+  @ViewChild('gameKeyInput')
+  private gameKeyInputRef!: ElementRef;
+
   @ViewChild('distanceRange')
   private distanceRangeRef!: ElementRef;
 
@@ -67,6 +76,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const height = window.innerHeight;
     this.viewer.resize(width, height);
     this.targetViewer.resize(width, height);
+  }
+
+  // Esc closes only the New Game pop-up (#23); the other pop-ups have no Esc.
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.modalNewGame.style.display === 'block') {
+      this.closeNewGamePopup();
+    }
   }
 
   private get canvas(): HTMLCanvasElement {
@@ -86,6 +103,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   private get modalHowToWindow(): HTMLDivElement {
     return this.modalHowToWindowRef.nativeElement;
+  }
+  private get modalNewGame(): HTMLDivElement {
+    return this.modalNewGameRef.nativeElement;
+  }
+  private get keyEntryRow(): HTMLDivElement {
+    return this.keyEntryRowRef.nativeElement;
+  }
+  private get gameKeyInput(): HTMLInputElement {
+    return this.gameKeyInputRef.nativeElement;
   }
   private get distanceRange(): HTMLInputElement {
     return this.distanceRangeRef.nativeElement;
@@ -338,13 +364,54 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   newGameButtonClick(event: Event) {
     event.preventDefault();
-    const gameId = window.prompt("Clave de juego", this.gameId);
-    if (gameId === null) {
-      return;
-    }
-    this.gameId = gameId;
+    this.hideMenu();
+    this.openNewGamePopup();
+  }
+
+  // #23: the pop-up always opens on its two choices, with the key field
+  // hidden and empty.
+  private openNewGamePopup() {
+    this.gameKeyInput.value = '';
+    this.keyEntryRow.style.display = 'none';
+    this.modalNewGame.style.display = 'block';
+  }
+
+  private closeNewGamePopup() {
+    this.modalNewGame.style.display = 'none';
+  }
+
+  enterKeyButtonClick(event: Event) {
+    event.preventDefault();
+    this.keyEntryRow.style.display = 'flex';
+    this.gameKeyInput.focus();
+  }
+
+  // Keys are trimmed (phone keyboards add trailing spaces) but keep their
+  // case, so a key without surrounding spaces seeds exactly as before. A key
+  // that is empty after trimming means a random game.
+  confirmKeyButtonClick(event: Event) {
+    event.preventDefault();
+    const key = this.gameKeyInput.value.trim();
+    this.startNewGameFromPopup(key === '' ? undefined : key);
+  }
+
+  newGameCloseButtonClick(event: Event) {
+    event.preventDefault();
+    this.closeNewGamePopup();
+  }
+
+  randomGameButtonClick(event: Event) {
+    event.preventDefault();
+    this.startNewGameFromPopup(undefined);
+  }
+
+  // No seed means a random game: newGame(undefined) reaches Math.random, while
+  // any string, even '', is hashed into a fixed seed.
+  private startNewGameFromPopup(seed: string | undefined) {
+    this.gameId = seed ?? '';
+    this.closeNewGamePopup();
     this.closeModalWindow();
-    this.newGame(gameId);
+    this.newGame(seed);
   }
 
   async generateTargetLinkButtonClick(event: Event): Promise<void> {
@@ -444,6 +511,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     else if (event.target == this.modalHowToWindow) {
       this.closeModalHowToWindow();
+    }
+    else if (event.target == this.modalNewGame) {
+      this.closeNewGamePopup();
     }
   }
 
