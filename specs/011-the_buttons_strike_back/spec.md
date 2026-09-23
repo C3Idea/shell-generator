@@ -124,22 +124,22 @@ Angular 17 (NgModule app), three.js. The game screen is a fixed viewport with `p
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | Menu closed at 1280 px → both buttons visible bottom-right; the gear menu holds neither. | [pending] | Pending |
-| VM-002 | Menu closed at 390 px → both buttons on a row above the switch, not clipped or overlapping. | [pending] | Pending |
-| VM-003 | Pressing **Nuevo juego** (new location) opens the "Nuevo juego" pop-up (#23). | [pending] | Pending |
-| VM-004 | Pressing **Compartir** copies the link and shows "Enlace copiado…" (prompt fallback on failure). | [pending] | Pending |
-| VM-005 | The share button is labelled "Compartir" and its tooltip doesn't say "del objetivo". | [pending] | Pending |
+| VM-001 | Menu closed at 1280 px → both buttons visible bottom-right; the gear menu holds neither. | layout check: both buttons bottom-right at 1280 px with the menu closed; unit `shows Nuevo juego and the share button outside the gear menu`, `leaves the gear menu … no action buttons`; manual pass 2026-09-23 | Pass |
+| VM-002 | Menu closed at 390 px → both buttons on a row above the switch, not clipped or overlapping. | layout check at 390 px: own row above the switch, no overlap, labels fit, ≥ 5 px; breakpoint re-measured 320–1280 px after M2 (`72642af`); manual pass | Pass |
+| VM-003 | Pressing **Nuevo juego** (new location) opens the "Nuevo juego" pop-up (#23). | unit `Nuevo juego opens the New Game pop-up (#23)`; e2e + layout `Enter on Nuevo juego opens the #23 pop-up`; manual pass | Pass |
+| VM-004 | Pressing **Compartir** copies the link and shows "Enlace copiado…" (prompt fallback on failure). | unit `copies the challenge link and says so (#12)` + `falls back to the prompt`; e2e: clipboard holds the `#/game?target=` link, alert shown; manual pass | Pass |
+| VM-005 | The share button is labelled "Compartir" and its tooltip doesn't say "del objetivo". | unit `is labelled "Compartir" with a tooltip about sharing your own shell`; CI source check; wording approved by the owner 2026-09-23 | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | With the gear menu closed, both buttons are visible on the game screen at 390 px and 1280 px, and neither is inside `#parameters-menu`; while the gear menu is open they are hidden. | [pending] | Pending |
-| SC-002 | Neither button overlaps the switch, the toolbar, or the other button, and neither touches the viewport edge (≥ 5 px), at 390 px and 1280 px; both labels fit. | [pending] | Pending |
-| SC-003 | The buttons behave exactly as before the move: New Game opens the #23 pop-up; share copies the #12 link with the same success/fallback messages. | [pending] | Pending |
-| SC-004 | When a game pop-up is open, its backdrop covers the buttons; they can't be clicked through it. | [pending] | Pending |
-| SC-005 | The share button reads "Compartir" with an accurate tooltip; the new strings live in `app-strings.ts`, and the wording is approved on the issue. | [pending] | Pending |
-| SC-006 | Both buttons are keyboard-reachable (`Tab`) and activate with `Enter`. | [pending] | Pending |
+| SC-001 | With the gear menu closed, both buttons are visible on the game screen at 390 px and 1280 px, and neither is inside `#parameters-menu`; while the gear menu is open they are hidden. | see VM-001/VM-002; hidden while the gear menu is open (unit + layout check) | Pass |
+| SC-002 | Neither button overlaps the switch, the toolbar, or the other button, and neither touches the viewport edge (≥ 5 px), at 390 px and 1280 px; both labels fit. | layout check 28/28 at 390/1280 px; M2 fix `72642af`: one-row gap ≥ 83 px from 561 px | Pass |
+| SC-003 | The buttons behave exactly as before the move: New Game opens the #23 pop-up; share copies the #12 link with the same success/fallback messages. | see VM-003/VM-004 (handlers unchanged; revert guard: 7 #11 specs fail on dev) | Pass |
+| SC-004 | When a game pop-up is open, its backdrop covers the buttons; they can't be clicked through it. | layout check: welcome and "Nuevo juego" backdrops cover the buttons; explicit `z-index: 0` (`72642af`) | Pass |
+| SC-005 | The share button reads "Compartir" with an accurate tooltip; the new strings live in `app-strings.ts`, and the wording is approved on the issue. | see VM-005; strings in `app-strings.ts`; wording approved 2026-09-23 (not yet posted on #11) | Pass |
+| SC-006 | Both buttons are keyboard-reachable (`Tab`) and activate with `Enter`. | layout check: Tab reaches both buttons, Enter activates; manual pass | Pass |
 
 ## Complexity Considerations
 
