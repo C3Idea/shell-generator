@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=1 FAILED, 17 SUCCESS: 2 loops kept rendering after destroy; naive unguarded ngOnDestroy also broke the never-rendered spec + #12 specs (TypeError), green=game spec 18 of 18 SUCCESS; full npm test 33 of 33 SUCCESS, exit 0
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-23T00:15:38-06:00
