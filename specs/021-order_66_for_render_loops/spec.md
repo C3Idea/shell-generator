@@ -86,7 +86,7 @@ Angular 17 (standalone-free NgModule app), three.js `^0.143.0` with `OrbitContro
 - Modified: `src/app/game/game.component.ts` (`ngOnDestroy`, `newGame()` reuse)
 - Modified: `src/app/sandbox/sandbox.component.ts` (`ngOnDestroy`)
 - Modified: `src/app/game/game.component.spec.ts`, `src/app/sandbox/sandbox.component.spec.ts` (remove M1 stubs; add teardown/reuse specs)
-- Added: `src/app/shell-viewer.spec.ts` cases for `dispose()` (file already exists with a smoke test)
+- Modified: `src/app/shell-viewer.spec.ts` (add `dispose()`/`resetCamera()` lifecycle specs next to the existing smoke test)
 
 ### Applicable Conventions
 
@@ -121,9 +121,9 @@ Angular 17 (standalone-free NgModule app), three.js `^0.143.0` with `OrbitContro
 
 ### Testing Strategy
 
-- **Unit (Karma/Jasmine):** `ShellViewer.dispose()` cancels the stored frame and is safe before `init()` / when doubled; a destroyed or replaced viewer schedules and renders 0 further frames (manual `requestAnimationFrame` pump counts `renderer.render` calls); New Game keeps the rendering-viewer count at two and resets the camera; destroying `GameComponent`/`SandboxComponent` stops their viewers; destroying a component that never rendered does not throw. All new specs MUST fail on current code and pass with the fix.
+- **Unit (Karma/Jasmine):** `ShellViewer.dispose()` cancels the stored frame and is safe before `init()` / when doubled; a destroyed or replaced viewer schedules and renders 0 further frames (manual `requestAnimationFrame` pump counts `renderer.render` calls); New Game keeps the same two `ShellViewer` instances (so no hidden old controls stay on the canvas, VM-003), keeps the rendering-viewer count at two and resets the camera; destroying `GameComponent`/`SandboxComponent` stops their viewers; destroying a component that never rendered does not throw. All new specs MUST fail on current code and pass with the fix.
 - **Static/CI:** `ng lint` shows no new problems vs `dev`; `ng build` succeeds; production bundle unchanged except the intended source edits.
-- **Manual/measured (out-of-repo harness, 2 cores):** draw calls per frame stay at 4 after N New Games; game↔sandbox ×20 logs no WebGL-context warning; watch-mode CPU returns to idle.
+- **Manual/measured (out-of-repo harness, 2 cores):** draw calls per frame stay at 4 after N New Games; after a real mouse drag and New Game, the camera is at the default view and the game still holds its original two viewers (VM-002, VM-003); game↔sandbox ×20 logs no WebGL-context warning; watch-mode CPU returns to idle.
 
 ## Verification Matrix
 
