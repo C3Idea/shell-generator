@@ -413,6 +413,23 @@ input:checked + .switch-slider:before {
   }
 }
 
+/* #15: the 260 px heat bar sits between the switch (ends at 237 px) and the
+   #11 buttons (236 px wide at right: 5px) with >= 16 px on each side from
+   774 px up; at 801 px the gaps are ~30 px. Up to 800 px it gets its own
+   row just above the buttons (same 9 px row gap as #11), one row higher
+   again where the buttons already sit above the switch. */
+@media only screen and (max-width: 800px) {
+  #result-container {
+    bottom: 56px;
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  #result-container {
+    bottom: 105px;
+  }
+}
+
 #distance-range {
   flex: 1;
   min-width: 0;
