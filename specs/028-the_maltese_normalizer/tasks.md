@@ -4,7 +4,7 @@
 # Tasks: Heat bar: normalize the distance so it spans ✗ to ✓ and every parameter counts equally
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-24T12:52:19-06:00
+**Generated**: 2026-09-24T12:54:04-06:00
 
 ---
 
@@ -42,19 +42,19 @@
 
 **Purpose**: Lint, test, build on 2 cores; win check/template/CSS unchanged
 
-- [ ] T004 [W3] Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless (repeat the new specs to rule out flakiness), ng build. Confirm the diff against dev leaves checkParametersAreSimilar(), the template and the CSS unchanged.
+- [x] T004 [W3] Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless (repeat the new specs to rule out flakiness), ng build. Confirm the diff against dev leaves checkParametersAreSimilar(), the template and the CSS unchanged.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 4
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 75%
+- **Progress**: 100%
 
 ---
 

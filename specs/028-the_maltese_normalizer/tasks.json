@@ -18,15 +18,16 @@
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "totalTasks": 4,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-24T12:53:11-06:00",
+    "lastCheckpoint": "2026-09-24T12:54:55-06:00",
     "contextHint": "Math-only change: distance() over A, α, β, a divided by range, √Σnᵢ²/2×100. Don't touch checkParametersAreSimilar(), the template or the CSS. Specs use explicit target/attempt values (no random targets). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
-    "lastUpdated": "2026-09-24T12:52:19-06:00"
+    "lastUpdated": "2026-09-24T12:54:04-06:00"
   },
   "waves": [
     {
@@ -68,7 +69,8 @@
       "tasks": [
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-24T12:54:04-06:00"
     }
   ],
   "tasks": {
@@ -165,7 +167,7 @@
       "id": "T004",
       "wave": 3,
       "description": "Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless (repeat the new specs to rule out flakiness), ng build. Confirm the diff against dev leaves checkParametersAreSimilar(), the template and the CSS unchanged.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -176,7 +178,16 @@
       ],
       "dependencies": [
         "T003"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-24T12:54:04-06:00",
+        "commitSha": "f4d43230c2d5b33fd32a1bfea17bafa6d4c57a0f",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/028-the_maltese_normalizer/tasks.json"
+        ],
+        "satisfaction": "full"
+      }
     }
   }
 }
