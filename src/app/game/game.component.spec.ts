@@ -588,7 +588,9 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       await fixture.whenStable();
       const before = component.distance;
       const beta = menu().querySelectorAll('input.slider')[2] as HTMLInputElement;
-      beta.value = component.targetParameters.beta > 42 ? '0' : '85';
+      // Move the player's β to the far end: the player starts at betaMin, so
+      // choosing by the target's β would sometimes leave it where it was.
+      beta.value = component.parameters.beta > 42 ? '0' : '85';
       beta.dispatchEvent(new Event('input'));
       beta.dispatchEvent(new Event('change'));
       fixture.detectChanges();
@@ -601,7 +603,10 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       component.targetVisible = true;
       component.switchButtonClick(new Event('change'));
       fixture.detectChanges();
-      expect(getComputedStyle(bar()).display).not.toBe('none');
+      // The bar's own display stays 'flex' inside a hidden menu, so check it
+      // takes up space and isn't in the menu.
+      expect(menu().contains(bar())).toBeFalse();
+      expect(bar().getBoundingClientRect().width).toBeGreaterThan(0);
     });
   });
 
