@@ -603,8 +603,8 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       component.targetVisible = true;
       component.switchButtonClick(new Event('change'));
       fixture.detectChanges();
-      // The bar's own display stays 'flex' inside a hidden menu, so check it
-      // takes up space and isn't in the menu.
+      // If the bar moved back into the (hidden) gear menu, its own display
+      // would still read 'flex', so check it has a size and isn't in the menu.
       expect(menu().contains(bar())).toBeFalse();
       expect(bar().getBoundingClientRect().width).toBeGreaterThan(0);
     });
