@@ -4,7 +4,7 @@
 # Tasks: Heat bar: normalize the distance so it spans ✗ to ✓ and every parameter counts equally
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-24T12:43:12-06:00
+**Generated**: 2026-09-24T12:47:37-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: PlayedParameterKey + ShellParameters.playedParameterKeys; GameComponent uses it
 
-- [ ] T001 [W0] In src/app/shell-parameters.ts add `export type PlayedParameterKey = 'A' | 'alpha' | 'beta' | 'a'` and `static readonly playedParameterKeys`. In src/app/game/game.component.ts delete `playerParameterKeys` and make randomizePlayerStart iterate ShellParameters.playedParameterKeys. The #12 link-start specs must still pass.
+- [x] T001 [W0] In src/app/shell-parameters.ts add `export type PlayedParameterKey = 'A' | 'alpha' | 'beta' | 'a'` and `static readonly playedParameterKeys`. In src/app/game/game.component.ts delete `playerParameterKeys` and make randomizePlayerStart iterate ShellParameters.playedParameterKeys. The #12 link-start specs must still pass.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -22,9 +22,9 @@
 
 **Purpose**: distance() over A, α, β, a divided by range, √Σnᵢ²/2×100, with explicit-value specs
 
-- [ ] T002 [W1] [TDD] [US1] TDD: add a distance() describe block to src/app/shell-parameters.spec.ts with explicit values: minimums vs maximums ≥ 95 (100); a match reads 0; each of A, α, β, a across its full range with the others matching reads 50 ± 1 and all four are within 1; changing b, μ, ω, φ or θ doesn't change the value. Then rewrite ShellParameters.distance() in src/app/shell-parameters.ts: nᵢ = |Δᵢ| / (maxᵢ − minᵢ) over playedParameterKeys, √Σnᵢ² / 2 × 100.
+- [x] T002 [W1] [TDD] [US1] TDD: add a distance() describe block to src/app/shell-parameters.spec.ts with explicit values: minimums vs maximums ≥ 95 (100); a match reads 0; each of A, α, β, a across its full range with the others matching reads 50 ± 1 and all four are within 1; changing b, μ, ω, φ or θ doesn't change the value. Then rewrite ShellParameters.distance() in src/app/shell-parameters.ts: nᵢ = |Δᵢ| / (maxᵢ − minᵢ) over playedParameterKeys, √Σnᵢ² / 2 × 100.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -51,10 +51,10 @@
 ## Summary
 
 - **Total Tasks**: 4
-- **Completed**: 0
+- **Completed**: 2
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 50%
 
 ---
 

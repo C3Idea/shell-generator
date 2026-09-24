@@ -14,14 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 2,
+    "completedWaves": [
+      0,
+      1
+    ],
     "totalTasks": 4,
-    "completedTasks": 0,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-24T18:43:12Z",
-    "contextHint": "Math-only change: distance() over A, α, β, a divided by range, √Σnᵢ²/2×100. Don't touch checkParametersAreSimilar(), the template or the CSS. Specs use explicit target/attempt values (no random targets). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2)."
+    "lastCheckpoint": "2026-09-24T12:48:22-06:00",
+    "contextHint": "Math-only change: distance() over A, α, β, a divided by range, √Σnᵢ²/2×100. Don't touch checkParametersAreSimilar(), the template or the CSS. Specs use explicit target/attempt values (no random targets). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
+    "lastUpdated": "2026-09-24T12:47:37-06:00"
   },
   "waves": [
     {
@@ -31,7 +35,8 @@
       "tasks": [
         "T001"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-24T12:45:00-06:00"
     },
     {
       "number": 1,
@@ -41,7 +46,8 @@
       "tasks": [
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-24T12:47:37-06:00"
     },
     {
       "number": 2,
@@ -68,7 +74,7 @@
       "id": "T001",
       "wave": 0,
       "description": "In src/app/shell-parameters.ts add `export type PlayedParameterKey = 'A' | 'alpha' | 'beta' | 'a'` and `static readonly playedParameterKeys`. In src/app/game/game.component.ts delete `playerParameterKeys` and make randomizePlayerStart iterate ShellParameters.playedParameterKeys. The #12 link-start specs must still pass.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -76,14 +82,24 @@
       "satisfies": [
         "FR-005"
       ],
-      "dependencies": []
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-24T12:45:00-06:00",
+        "commitSha": "5583354f09a598ccc4130ff3c195ca207e640f08",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/shell-parameters.ts",
+          "src/app/game/game.component.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T002": {
       "id": "T002",
       "wave": 1,
       "story": "US1",
       "description": "TDD: add a distance() describe block to src/app/shell-parameters.spec.ts with explicit values: minimums vs maximums ≥ 95 (100); a match reads 0; each of A, α, β, a across its full range with the others matching reads 50 ± 1 and all four are within 1; changing b, μ, ω, φ or θ doesn't change the value. Then rewrite ShellParameters.distance() in src/app/shell-parameters.ts: nᵢ = |Δᵢ| / (maxᵢ − minᵢ) over playedParameterKeys, √Σnᵢ² / 2 × 100.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -97,7 +113,22 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-24T12:47:37-06:00",
+        "commitSha": "2d824709bfe2d83fb0f86010a02da7856e97d682",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/shell-parameters.ts",
+          "src/app/shell-parameters.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/shell-parameters.spec.ts",
+          "redResult": "3 of 7 FAILED: per-parameter readings A 8, alpha 10, beta 85, a 5 (expected 50); min-vs-max below 95; copied params changed the value",
+          "greenResult": "7 of 7 SUCCESS (shell-parameters.spec.ts)"
+        },
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",
