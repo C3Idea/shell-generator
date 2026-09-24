@@ -1,5 +1,9 @@
 import { createSeededGenerator, hashStringToSeed, randomWithGenerator } from "src/util";
 
+// The parameters the player controls with sliders in the game; the others are
+// copied from the target (#28).
+export type PlayedParameterKey = 'A' | 'alpha' | 'beta' | 'a';
+
 export class ShellParameters {
     d: number;
     A: number;
@@ -32,6 +36,8 @@ export class ShellParameters {
     static thetaMax: number = 16;
     static distMin: number = 0;
     static distMax: number = 100;
+
+    static readonly playedParameterKeys: ReadonlyArray<PlayedParameterKey> = ['A', 'alpha', 'beta', 'a'];
 
     static Shell1(): ShellParameters {
         let p = new ShellParameters();

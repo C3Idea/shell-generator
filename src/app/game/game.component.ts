@@ -34,10 +34,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     theta: [ShellParameters.thetaMin, ShellParameters.thetaMax],
   };
 
-  // Parameters the player controls with the sliders.
-  private static readonly playerParameterKeys: ReadonlyArray<'A' | 'alpha' | 'beta' | 'a'> = [
-    'A', 'alpha', 'beta', 'a'
-  ];
   private static readonly maxStartAttempts = 20;
 
   @ViewChild('canvas')
@@ -181,7 +177,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // random position that doesn't already win.
   private randomizePlayerStart() {
     for (let attempt = 0; attempt < GameComponent.maxStartAttempts; attempt++) {
-      for (const key of GameComponent.playerParameterKeys) {
+      for (const key of ShellParameters.playedParameterKeys) {
         const [min, max] = GameComponent.parameterRanges[key];
         this.parameters[key] = random(min, max);
       }
@@ -190,7 +186,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     // Fallback: the slider end farther from the target is always outside the win margin.
-    for (const key of GameComponent.playerParameterKeys) {
+    for (const key of ShellParameters.playedParameterKeys) {
       const [min, max] = GameComponent.parameterRanges[key];
       const target = this.targetParameters[key];
       this.parameters[key] = target - min > max - target ? min : max;
