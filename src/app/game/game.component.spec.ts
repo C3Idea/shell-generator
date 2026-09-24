@@ -623,3 +623,96 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
     });
   });
 });
+
+// #28: the heat bar reads the normalized distance (0 = ✓, 100 = ✗); the win
+// check keeps its own per-parameter thresholds. Every spec sets the target and
+// the attempt explicitly.
+describe('GameComponent heat bar scale (#28)', () => {
+  const P = ShellParameters;
+  const shell = (values: Partial<Record<keyof ShellParameters, number>> = {}) =>
+    Object.assign(new ShellParameters(), values);
+
+  // Constructs without rendering (no view or WebGL), with no link, so the
+  // player starts at the slider minimums against the given target.
+  function createAgainst(target: ShellParameters): GameComponent {
+    TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ GameComponent ],
+      providers: [ provideRouter([]) ]
+    });
+    spyOn(ShellParameters, 'randomParameters').and.returnValue(target);
+    return TestBed.createComponent(GameComponent).componentInstance;
+  }
+
+  describe('a new game from the slider minimums', () => {
+    for (const [label, target, expected] of [
+      ['at the minimums', shell(), 0],
+      ['at the midpoints', shell({ A: 9, alpha: 85, beta: 42.5, a: 3.5 }), 50],
+      ['at the maximums', shell({ A: P.AMax, alpha: P.alphaMax, beta: P.betaMax, a: P.aMax }), 100],
+    ] as const) {
+      it(`reads between 0 and 100 for a target ${label}`, () => {
+        const game = createAgainst(target);
+        expect(game.distance).toBeGreaterThanOrEqual(P.distMin);
+        expect(game.distance).toBeLessThanOrEqual(P.distMax);
+        expect(game.distance).toBeCloseTo(expected, 6);
+      });
+    }
+  });
+
+  // Pins today's thresholds (A 1.5, α 1.5, β 8, a 1) so a change to the bar
+  // can't quietly change when the player wins.
+  describe('the win check', () => {
+    const target = shell({ A: 9, alpha: 85, beta: 40, a: 3.5, b: 3.5, theta: 9 });
+    const inside = { A: 1.4, alpha: 1.4, beta: 7.9, a: 0.9 };
+    const outside = { A: 1.6, alpha: 1.6, beta: 8.1, a: 1.1 };
+    const attempt = (offsets: Partial<Record<keyof typeof inside, number>>) => {
+      const game = createAgainst(target);
+      for (const key of P.playedParameterKeys) {
+        game.parameters[key] = target[key] + (offsets[key] ?? 0);
+      }
+      return game;
+    };
+
+    it('wins with every played parameter just inside its threshold', () => {
+      expect(attempt(inside).checkParametersAreSimilar()).toBeTrue();
+    });
+
+    for (const key of P.playedParameterKeys) {
+      it(`doesn't win with ${key} just outside its threshold`, () => {
+        expect(attempt({ ...inside, [key]: outside[key] }).checkParametersAreSimilar()).toBeFalse();
+      });
+    }
+  });
+
+  describe('on the game screen', () => {
+    let fixture: ComponentFixture<GameComponent>;
+    let component: GameComponent;
+    let el: HTMLElement;
+
+    beforeEach(async () => {
+      installFramePump();
+      fixture = await renderGame();
+      component = fixture.componentInstance;
+      el = fixture.nativeElement;
+    });
+
+    it('shows the rescaled value after a slider release', async () => {
+      // Target and player both at the minimums, so only β will differ.
+      component.targetParameters = shell();
+      component.parameters = shell();
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      const beta = el.querySelectorAll('#parameters-menu input.slider')[2] as HTMLInputElement;
+      beta.value = String(P.betaMax);
+      beta.dispatchEvent(new Event('input'));
+      beta.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      // β across its whole range is one of four parameters fully off: 50, not the raw 85.
+      expect(component.parameters.beta).toBe(P.betaMax);
+      expect(component.distance).toBeCloseTo(50, 6);
+      expect(Number((el.querySelector('#distance-range') as HTMLInputElement).value)).toBe(50);
+    });
+  });
+});

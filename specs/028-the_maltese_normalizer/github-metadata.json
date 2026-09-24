@@ -1,0 +1,21 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 28,
+    "title": "[Game] Heat bar: normalize the distance so it spans ✗ to ✓ and every parameter counts equally",
+    "url": "https://github.com/C3Idea/shell-generator/issues/28",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5820008919",
+  "spec_comment_id": "5819988941",
+  "pr": {
+    "number": 30,
+    "url": "https://github.com/C3Idea/shell-generator/pull/30",
+    "status": "ready",
+    "createdAt": "2026-09-24T18:42:37Z",
+    "readyAt": "2026-09-24T19:13:51Z"
+  },
+  "deployed_at": "2026-09-24T18:42:15Z",
+  "cached_from": "github",
+  "task_comment_id": "5820112375"
+}

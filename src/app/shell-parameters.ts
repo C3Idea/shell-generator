@@ -1,5 +1,9 @@
 import { createSeededGenerator, hashStringToSeed, randomWithGenerator } from "src/util";
 
+// The parameters the player controls with sliders in the game; the others are
+// copied from the target (#28).
+export type PlayedParameterKey = 'A' | 'alpha' | 'beta' | 'a';
+
 export class ShellParameters {
     d: number;
     A: number;
@@ -32,6 +36,14 @@ export class ShellParameters {
     static thetaMax: number = 16;
     static distMin: number = 0;
     static distMax: number = 100;
+
+    static readonly playedParameterKeys: ReadonlyArray<PlayedParameterKey> = ['A', 'alpha', 'beta', 'a'];
+    private static readonly playedParameterRanges: Readonly<Record<PlayedParameterKey, readonly [number, number]>> = {
+        A:     [ShellParameters.AMin, ShellParameters.AMax],
+        alpha: [ShellParameters.alphaMin, ShellParameters.alphaMax],
+        beta:  [ShellParameters.betaMin, ShellParameters.betaMax],
+        a:     [ShellParameters.aMin, ShellParameters.aMax],
+    };
 
     static Shell1(): ShellParameters {
         let p = new ShellParameters();
@@ -124,17 +136,16 @@ export class ShellParameters {
         this.theta = ShellParameters.thetaMin;
     }
 
+    // Heat-bar reading (#28): each played parameter's difference divided by
+    // its slider range, combined so a match reads 0 and all four at opposite
+    // ends read 100. The copied parameters always match, so they're left out.
     distance(other: ShellParameters): number {
-        const d2A = (this.A - other.A) ** 2;
-        const d2alpha = (this.alpha - other.alpha) ** 2;
-        const d2beta  = (this.beta - other.beta) ** 2;
-        const d2a = (this.a - other.a) ** 2;
-        const d2b = (this.b - other.b) ** 2;
-        const d2mu = (this.mu - other.mu) ** 2;
-        const d2omega = (this.omega - other.omega) ** 2;
-        const d2phi   = (this.phi - other.phi) ** 2;
-        const d2theta = (this.theta - other.theta) ** 2; 
-        const d2 = d2A + d2alpha + d2beta + d2a + d2b + d2mu + d2omega + d2phi + d2theta;
-        return Math.sqrt(d2);
+        let sum = 0;
+        for (const key of ShellParameters.playedParameterKeys) {
+            const [min, max] = ShellParameters.playedParameterRanges[key];
+            sum += ((this[key] - other[key]) / (max - min)) ** 2;
+        }
+        const reading = Math.sqrt(sum / ShellParameters.playedParameterKeys.length);
+        return ShellParameters.distMin + reading * (ShellParameters.distMax - ShellParameters.distMin);
     }
 }
