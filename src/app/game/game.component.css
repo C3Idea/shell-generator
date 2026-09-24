@@ -119,9 +119,24 @@ label {
   text-align: center;
 }
 
+/* #15: the heat bar, bottom-center on the game screen in the #11 buttons'
+   palette. It doesn't depend on the gear menu, so it stays in place when the
+   menu opens. */
 #result-container {
-  vertical-align: middle;
-  height: 36px;
+  position: fixed;
+  bottom: 7px;  /* same row as the switch and the #11 buttons */
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: 260px;
+  height: 40px;
+  padding: 0 6px 2px 6px;
+  display: flex;
+  align-items: flex-end;  /* the thumb dot rides above the track's top edge; keep it inside the box */
+  border: 3px solid #77aca2;
+  border-radius: 8px;
+  background-color: rgba(0, 20, 30, 0.6);
+  z-index: 0;   /* the pop-ups (.modal, z-index 1) must stay above the bar */
 }
 
 .result-image {
@@ -394,18 +409,36 @@ input:checked + .switch-slider:before {
    gap is >= 80 px, room for longer labels or a wider font. */
 @media only screen and (max-width: 560px) {
   #game-actions {
-    bottom: 56px;
+    bottom: 56px;  /* one row up: 7 + 40 px row + 9 px gap; the heat bar's 800 px rule uses the same step */
+  }
+}
+
+/* #15: the 260 px heat bar sits between the switch (ends at 237 px) and the
+   #11 buttons (236 px wide at right: 5px) with >= 16 px on each side from
+   774 px up; at 801 px the gaps are ~30 px. Up to 800 px it gets its own
+   row just above the buttons (same 9 px row gap as #11), one row higher
+   again where the buttons already sit above the switch. */
+@media only screen and (max-width: 800px) {
+  #result-container {
+    bottom: 56px;  /* one row up, same step as #game-actions at <= 560 px */
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  #result-container {
+    bottom: 105px;  /* two rows up (56 + 49), above #game-actions' own 56 px row */
   }
 }
 
 #distance-range {
-  width: 80%;
+  flex: 1;
+  min-width: 0;
+  margin: 0 4px;
 }
 
 .heat-range {
   -webkit-animation: none;
   -moz-appearance: none;
-  margin-top: 10px;
   direction: rtl;
 }
 
@@ -419,7 +452,7 @@ input:checked + .switch-slider:before {
   background: -ms-linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   background: linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bade3 ', endColorstr='#ff357f ', GradientType=1 );
-  height: 24px;
+  height: 18px;  /* #15: thinner so the thumb dot fits inside the 40 px bar */
 }
 
 .heat-range:focus {
@@ -436,7 +469,7 @@ input:checked + .switch-slider:before {
   background: -ms-linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   background: linear-gradient(45deg, rgba(0,0,255,1) 0%, rgba(255,0,0,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bade3 ', endColorstr='#ff357f ', GradientType=1 );
-  height: 24px;
+  height: 18px;  /* #15: thinner so the thumb dot fits inside the 40 px bar */
 }
 
 .heat-range::-webkit-slider-thumb {
@@ -467,22 +500,6 @@ input:checked + .switch-slider:before {
   cursor: -moz-grab;
   -moz-transition: border 1000ms ease;
   transition: border 1000ms ease;
-}
-
-.heat-range.blue::-webkit-slider-thumb {
-  border-color: rgb(0,0,255)
-}
-
-.heat-range.read::-webkit-slider-thumb {
-  border-color: rgb(255,0,0)
-}
-
-.heat-range.blue::-moz-range-thumb {
-  border-color: rgb(0,0,255)
-}
-
-.heat-range.read::-moz-range-thumb {
-  border-color: rgb(255,0,0)
 }
 
 .heat-range::-webkit-slider-thumb:active {

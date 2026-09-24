@@ -67,9 +67,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('gameKeyInput')
   private gameKeyInputRef!: ElementRef;
 
-  @ViewChild('distanceRange')
-  private distanceRangeRef!: ElementRef;
-
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
@@ -112,9 +109,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   private get gameKeyInput(): HTMLInputElement {
     return this.gameKeyInputRef.nativeElement;
-  }
-  private get distanceRange(): HTMLInputElement {
-    return this.distanceRangeRef.nativeElement;
   }
 
     // Stage properties

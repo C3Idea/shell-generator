@@ -1,0 +1,21 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 15,
+    "title": "[Game] Move the heat bar out of the gear menu",
+    "url": "https://github.com/C3Idea/shell-generator/issues/15",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5804857708",
+  "spec_comment_id": "5804847482",
+  "pr": {
+    "number": 29,
+    "url": "https://github.com/C3Idea/shell-generator/pull/29",
+    "status": "ready",
+    "createdAt": "2026-09-23T23:59:17Z",
+    "readyAt": "2026-09-24T18:16:29Z"
+  },
+  "deployed_at": "2026-09-23T23:58:58Z",
+  "cached_from": "github",
+  "task_comment_id": "5805023335"
+}

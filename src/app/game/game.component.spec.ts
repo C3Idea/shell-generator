@@ -474,11 +474,12 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
       }
     });
 
-    it('leaves the gear menu with its sliders and heat bar but no action buttons', () => {
+    it('leaves the gear menu with its sliders but no action buttons', () => {
       expect(menu().querySelector('#menu-button-row')).toBeNull();
       expect(menu().querySelectorAll('button').length).toBe(0);
       expect(menu().querySelectorAll('input.slider').length).toBe(4);
-      expect(menu().querySelector('#distance-range')).not.toBeNull();
+      // #15 moved the heat bar out of the menu too.
+      expect(menu().querySelector('#distance-range')).toBeNull();
     });
   });
 
@@ -527,3 +528,98 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
   });
 });
 
+
+
+// #15: the heat bar lives on the game screen (bottom center), not inside the
+// gear menu, and stays put while the menu is open.
+describe('GameComponent heat bar outside the gear menu (#15)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
+  const bar = () => el.querySelector('#result-container') as HTMLDivElement;
+  const range = () => el.querySelector('#distance-range') as HTMLInputElement;
+  const toggleMenu = () => {
+    component.menuButtonClick(new Event('click'));
+    fixture.detectChanges();
+  };
+
+  beforeEach(async () => {
+    installFramePump();
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+  });
+
+  describe('placement', () => {
+    it('renders the bar, with its ✗ and ✓, outside the gear menu', () => {
+      expect(bar()).withContext('#result-container').not.toBeNull();
+      expect(menu().contains(bar())).toBeFalse();
+      expect(bar().contains(range())).toBeTrue();
+      expect(bar().querySelectorAll('img.result-image').length).toBe(2);
+    });
+
+    it('is a fixed control shown with the gear menu closed', () => {
+      const style = getComputedStyle(bar());
+      expect(style.position).toBe('fixed');
+      expect(style.display).not.toBe('none');
+      expect(bar().getBoundingClientRect().width).toBeGreaterThan(0);
+    });
+
+    it('stays shown, in the same place, while the gear menu is open', () => {
+      const closed = bar().getBoundingClientRect();
+      toggleMenu();
+      expect(getComputedStyle(menu()).display).withContext('menu open').toBe('block');
+      const open = bar().getBoundingClientRect();
+      expect(getComputedStyle(bar()).display).not.toBe('none');
+      expect([open.left, open.top, open.width]).toEqual([closed.left, closed.top, closed.width]);
+    });
+
+    it('sits below the pop-ups', () => {
+      const modal = el.querySelector('.modal') as HTMLDivElement;
+      expect(Number(getComputedStyle(bar()).zIndex)).toBeLessThan(Number(getComputedStyle(modal).zIndex));
+    });
+  });
+
+  describe('behaviour', () => {
+    it('updates when a parameter slider is released', async () => {
+      toggleMenu();
+      await fixture.whenStable();
+      const before = component.distance;
+      const beta = menu().querySelectorAll('input.slider')[2] as HTMLInputElement;
+      // Move the player's β to the far end: the player starts at betaMin, so
+      // choosing by the target's β would sometimes leave it where it was.
+      beta.value = component.parameters.beta > 42 ? '0' : '85';
+      beta.dispatchEvent(new Event('input'));
+      beta.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(component.distance).not.toBe(before);
+      expect(Math.abs(Number(range().value) - component.distance)).toBeLessThanOrEqual(0.5);
+    });
+
+    it('stays shown in the Objetivo view', () => {
+      component.targetVisible = true;
+      component.switchButtonClick(new Event('change'));
+      fixture.detectChanges();
+      // If the bar moved back into the (hidden) gear menu, its own display
+      // would still read 'flex', so check it has a size and isn't in the menu.
+      expect(menu().contains(bar())).toBeFalse();
+      expect(bar().getBoundingClientRect().width).toBeGreaterThan(0);
+    });
+  });
+
+  describe('copy', () => {
+    it('labels the bar for screen readers', () => {
+      expect(range().getAttribute('aria-label')).toBe('Qué tan cerca estás del objetivo');
+    });
+
+    it('the welcome text points at the bottom of the screen', () => {
+      const line3 = el.querySelectorAll('.label-howto-line')[2] as HTMLLabelElement;
+      expect(AppStrings.LABEL_HOWTO_WINDOW_LINE3).toBe(
+        'En la parte inferior de la pantalla encontrarás una barra de calor que te indica qué tan cerca estás de lograrlo.');
+      expect(line3.textContent?.trim()).toBe(AppStrings.LABEL_HOWTO_WINDOW_LINE3);
+    });
+  });
+});
