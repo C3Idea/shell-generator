@@ -1,0 +1,140 @@
+{
+  "meta": {
+    "feature": "028-the-maltese-normalizer",
+    "featureName": "Heat bar: normalize the distance so it spans ✗ to ✓ and every parameter counts equally",
+    "version": "2.0",
+    "createdAt": "2026-09-24T18:43:12Z",
+    "lastUpdated": "2026-09-24T18:43:12Z",
+    "specHash": "c87892fda698239277cd5f7f64830897",
+    "planHash": "7f3315cbda48638afb4b5f339356c25f"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 0,
+    "completedWaves": [],
+    "totalTasks": 4,
+    "completedTasks": 0,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-24T18:43:12Z",
+    "contextHint": "Math-only change: distance() over A, α, β, a divided by range, √Σnᵢ²/2×100. Don't touch checkParametersAreSimilar(), the template or the CSS. Specs use explicit target/attempt values (no random targets). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2)."
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Foundational: one shared played-parameter list",
+      "description": "PlayedParameterKey + ShellParameters.playedParameterKeys; GameComponent uses it",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 1,
+      "name": "US1/US2: normalized distance",
+      "story": "US1",
+      "description": "distance() over A, α, β, a divided by range, √Σnᵢ²/2×100, with explicit-value specs",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 2,
+      "name": "US2 S4 / US3: game-level guards",
+      "story": "US3",
+      "description": "Win-threshold characterization, rescaled bar after release, start reads 0–100",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 3,
+      "name": "Polish: verification",
+      "description": "Lint, test, build on 2 cores; win check/template/CSS unchanged",
+      "tasks": [
+        "T004"
+      ],
+      "gateStatus": "pending"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "In src/app/shell-parameters.ts add `export type PlayedParameterKey = 'A' | 'alpha' | 'beta' | 'a'` and `static readonly playedParameterKeys`. In src/app/game/game.component.ts delete `playerParameterKeys` and make randomizePlayerStart iterate ShellParameters.playedParameterKeys. The #12 link-start specs must still pass.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/shell-parameters.ts",
+      "satisfies": [
+        "FR-005"
+      ],
+      "dependencies": []
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "story": "US1",
+      "description": "TDD: add a distance() describe block to src/app/shell-parameters.spec.ts with explicit values: minimums vs maximums ≥ 95 (100); a match reads 0; each of A, α, β, a across its full range with the others matching reads 50 ± 1 and all four are within 1; changing b, μ, ω, φ or θ doesn't change the value. Then rewrite ShellParameters.distance() in src/app/shell-parameters.ts: nᵢ = |Δᵢ| / (maxᵢ − minᵢ) over playedParameterKeys, √Σnᵢ² / 2 × 100.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/shell-parameters.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-008"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "story": "US3",
+      "description": "In src/app/game/game.component.spec.ts add: a win-threshold characterization spec (attempt inside every threshold → checkParametersAreSimilar() true; each of A, α, β, a just outside → false); a spec that the bar shows the rescaled value after a slider release with an explicit target; a spec that a game starting at the slider minimums reads between 0 and 100 for targets at the minimums, midpoints and maximums. No random targets.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-004",
+        "FR-006",
+        "FR-007",
+        "FR-008"
+      ],
+      "dependencies": [
+        "T002"
+      ]
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 3,
+      "description": "Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless (repeat the new specs to rule out flakiness), ng build. Confirm the diff against dev leaves checkParametersAreSimilar(), the template and the CSS unchanged.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-006",
+        "FR-007"
+      ],
+      "dependencies": [
+        "T003"
+      ]
+    }
+  }
+}
