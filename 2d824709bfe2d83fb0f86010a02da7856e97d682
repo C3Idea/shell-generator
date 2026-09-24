@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/shell-parameters.ts,src/app/shell-parameters.spec.ts
+vt.idd:tdd: red=3 of 7 FAILED: per-parameter readings A 8, alpha 10, beta 85, a 5 (expected 50); min-vs-max below 95; copied params changed the value, green=7 of 7 SUCCESS (shell-parameters.spec.ts)
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-24T12:47:37-06:00
