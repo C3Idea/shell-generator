@@ -14,7 +14,7 @@
 ### Research Findings
 
 - **Measured on `dev` (2026-09-23, headless Chrome)**: at 1280 px the switch ends at x 237 and `#game-actions` is x 1039–1275; at 390 px the buttons are on their own row (x 149–385, y 748–788) above the switch (y 797–837). The open menu is x 5–309, y 75–387. So a bottom-center bar has room between the switch (right edge ~237) and the buttons: at 1280 px that gap is ~800 px; the buttons move to their own row at ≤560 px today.
-- **Breakpoint**: the bar needs a min width (target ~220–260 px, matching today's 240 px). Between the switch and the buttons on one row, the usable center width shrinks as the viewport narrows. The bar gets its own row (above `#game-actions`) below a breakpoint chosen so the one-row bar never drops under its min width or overlaps either neighbor — measured during EXECUTE at 390/768/1280, expected ~760 px. Recorded on the issue.
+- **Breakpoint**: the bar needs a min width (target ~220–260 px, matching today's 240 px). Between the switch and the buttons on one row, the usable center width shrinks as the viewport narrows. The bar gets its own row (above `#game-actions`) below a breakpoint chosen so the one-row bar never drops under its min width or overlaps either neighbor — measured during EXECUTE at 390/768/1280, expected ~760 px; final: 800 px (T003). Recorded on the issue.
 - **Menu-open coupling**: `#game-actions` uses `*ngIf`, so it leaves the DOM when the menu opens. The bar must NOT use `menuVisible`; placing it as a sibling with its own fixed position keeps it stable when the buttons vanish.
 - **Software-WebGL note (verification only)**: on WSL headless Chrome, `page.click` on the gear didn't register under swiftshader; `element.click()` via `evaluate` + a ~2.5 s wait works. The `/game` route shows the welcome pop-up on load.
 
@@ -66,7 +66,7 @@ flowchart TB
 2. Ensure the bar shows with the menu closed and stays put when the menu opens (no `menuVisible` coupling); confirm it updates on slider `change` and shows in the Objetivo view.
 
 **Wave 2 — US3: responsive, no collisions**
-3. Add the breakpoint rule (its own row above `#game-actions` below ~760 px; one row otherwise); verify no overlap/clipping at 390/768/1280 px and clear of the top-right #13 corner; keep `.modal` above. Record breakpoint + width on the issue.
+3. Add the breakpoint rule (its own row above `#game-actions` at 800 px and below; one row otherwise); verify no overlap/clipping at 390/768/1280 px and clear of the top-right #13 corner; keep `.modal` above. Record breakpoint + width on the issue.
 
 **Wave 3 — US4 + cleanup**
 4. Rewrite `LABEL_HOWTO_WINDOW_LINE3`; delete `.heat-range.blue`/`.read` and the `distanceRange` getter + `@ViewChild`.

@@ -4,7 +4,7 @@
 # Tasks: Move the heat bar out of the gear menu
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T18:17:19-06:00
+**Generated**: 2026-09-24T12:12:49-06:00
 
 ---
 
@@ -32,7 +32,7 @@
 
 **Purpose**: Breakpoint row; checked at 390/768/1280 px
 
-- [x] T003 [W2] [US3] Responsive layout in game.component.css: one row between the switch and the #11 buttons on wide screens, its own row above the buttons below a measured breakpoint (~760 px). No overlap or clipping at 390/768/1280 px, clear of the top-right #13 corner, .modal stays above. Record the breakpoint and bar width on #15.
+- [x] T003 [W2] [US3] Responsive layout in game.component.css: one row between the switch and the #11 buttons on wide screens, its own row above the buttons at 800 px and below (measured; planned ~760 px). No overlap or clipping at 390/768/1280 px, clear of the top-right #13 corner, .modal stays above. Record the breakpoint and bar width on #15.
 
 **Wave Gate**: passed
 

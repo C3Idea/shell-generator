@@ -3,7 +3,7 @@
 
 ## Summary
 
-Move the **heat bar** (`#result-container`, the disabled `#distance-range` slider between ✗ and ✓ that the app calls "barra de calor") out of the gear menu so players see their progress toward the target without opening settings. It lands bottom-center: on wide screens in the switch's row between the Usuario/Objetivo switch and the #11 buttons; below a measured breakpoint (~760 px) on its own row above those buttons. It stays visible while the gear menu is open and in both the Usuario and Objetivo views. The welcome pop-up's stale line is rewritten, small dead code is removed, and an `aria-label` is added. No change to when the bar updates (parameter slider release) or to the win check.
+Move the **heat bar** (`#result-container`, the disabled `#distance-range` slider between ✗ and ✓ that the app calls "barra de calor") out of the gear menu so players see their progress toward the target without opening settings. It lands bottom-center: on wide screens in the switch's row between the Usuario/Objetivo switch and the #11 buttons; at 800 px and below (measured) on its own row above those buttons. It stays visible while the gear menu is open and in both the Usuario and Objetivo views. The welcome pop-up's stale line is rewritten, small dead code is removed, and an `aria-label` is added. No change to when the bar updates (parameter slider release) or to the win check.
 
 ## User Stories
 
@@ -29,7 +29,7 @@ Move the **heat bar** (`#result-container`, the disabled `#distance-range` slide
 - **FR-001** The heat bar (`#result-container` with `#distance-range`) MUST be rendered outside `#parameters-menu`, in a bottom-center position.
 - **FR-002** The bar MUST be visible with the gear menu closed, in both the Usuario and Objetivo views.
 - **FR-003** The bar MUST stay visible and keep its position when the gear menu opens (the #11 buttons hide via `*ngIf="!menuVisible"`; the bar must not depend on `menuVisible`).
-- **FR-004** On wide screens the bar sits in the switch's row, centered between the switch and the #11 buttons; below a breakpoint (measured; ~760 px) it sits on its own row above the #11 buttons. The breakpoint and bar width MUST be recorded on the issue.
+- **FR-004** On wide screens the bar sits in the switch's row, centered between the switch and the #11 buttons; at 800 px and below (measured; ~760 px was the estimate) it sits on its own row above the #11 buttons. The breakpoint and bar width MUST be recorded on the issue.
 - **FR-005** At 390 px, 768 px and 1280 px the bar MUST NOT overlap the toolbar, the switch, the #11 buttons, or the open gear menu, MUST NOT be clipped by the viewport, and MUST stay clear of the top-right corner reserved for #13.
 - **FR-006** Pop-ups (`.modal`, z-index 1) MUST remain above the bar.
 - **FR-007** The bar MUST update on the same event as today — a parameter slider `change` (release) via `parameterUpdateEvent`.
