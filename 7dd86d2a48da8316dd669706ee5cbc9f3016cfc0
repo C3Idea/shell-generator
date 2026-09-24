@@ -1,0 +1,7 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: (verification only)
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-23T18:07:16-06:00
