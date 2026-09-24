@@ -127,16 +127,19 @@
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
-    <div id="result-container">
-      <img class="result-image" src="./assets/icons/icon_cross_tache.svg" />
-      <input #distanceRange id="distance-range" class="heat-range" type="range" disabled
-        [(ngModel)]="this.distance"
-        [ngModelOptions]="{standalone: true}"
-        min="{{ShellParameters.distMin}}"
-        max="{{ShellParameters.distMax}}" />
-      <img class="result-image" src="./assets/icons/icon_check_correcto.svg" />
-    </div>
   </form>
+  <!-- #15: the heat bar lives on the game screen, not in the gear menu, and
+       stays put while the menu is open so the player sees progress while
+       dragging sliders. -->
+  <div id="result-container">
+    <img class="result-image" src="./assets/icons/icon_cross_tache.svg" />
+    <input #distanceRange id="distance-range" class="heat-range" type="range" disabled
+      [(ngModel)]="this.distance"
+      [ngModelOptions]="{standalone: true}"
+      min="{{ShellParameters.distMin}}"
+      max="{{ShellParameters.distMax}}" />
+    <img class="result-image" src="./assets/icons/icon_check_correcto.svg" />
+  </div>
   <!-- #11: New Game and share live on the game screen, not in the gear menu.
        Hidden while the menu is open: on a phone it covers most of the screen. -->
   <div id="game-actions" *ngIf="!this.menuVisible">

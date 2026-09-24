@@ -474,11 +474,12 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
       }
     });
 
-    it('leaves the gear menu with its sliders and heat bar but no action buttons', () => {
+    it('leaves the gear menu with its sliders but no action buttons', () => {
       expect(menu().querySelector('#menu-button-row')).toBeNull();
       expect(menu().querySelectorAll('button').length).toBe(0);
       expect(menu().querySelectorAll('input.slider').length).toBe(4);
-      expect(menu().querySelector('#distance-range')).not.toBeNull();
+      // #15 moved the heat bar out of the menu too.
+      expect(menu().querySelector('#distance-range')).toBeNull();
     });
   });
 
