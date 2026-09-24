@@ -409,7 +409,7 @@ input:checked + .switch-slider:before {
    gap is >= 80 px, room for longer labels or a wider font. */
 @media only screen and (max-width: 560px) {
   #game-actions {
-    bottom: 56px;
+    bottom: 56px;  /* one row up: 7 + 40 px row + 9 px gap; the heat bar's 800 px rule uses the same step */
   }
 }
 
@@ -420,13 +420,13 @@ input:checked + .switch-slider:before {
    again where the buttons already sit above the switch. */
 @media only screen and (max-width: 800px) {
   #result-container {
-    bottom: 56px;
+    bottom: 56px;  /* one row up, same step as #game-actions at <= 560 px */
   }
 }
 
 @media only screen and (max-width: 560px) {
   #result-container {
-    bottom: 105px;
+    bottom: 105px;  /* two rows up (56 + 49), above #game-actions' own 56 px row */
   }
 }
 
