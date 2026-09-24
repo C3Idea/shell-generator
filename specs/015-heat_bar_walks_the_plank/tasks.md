@@ -4,7 +4,7 @@
 # Tasks: Move the heat bar out of the gear menu
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T17:59:43-06:00
+**Generated**: 2026-09-23T18:05:58-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: #result-container becomes a sibling of the menu, fixed bottom-center
 
-- [ ] T001 [W0] Move #result-container out of <form #parameters-menu> to a top-level sibling in src/app/game/game.component.html, and give it a base fixed bottom-center position in game.component.css that doesn't depend on the menu.
+- [x] T001 [W0] Move #result-container out of <form #parameters-menu> to a top-level sibling in src/app/game/game.component.html, and give it a base fixed bottom-center position in game.component.css that doesn't depend on the menu.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -62,10 +62,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 16%
 
 ---
 

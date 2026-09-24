@@ -14,14 +14,17 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
     "totalTasks": 6,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-23T23:59:43Z",
-    "contextHint": "Layout/CSS move only: keep [(ngModel)]=\"this.distance\"; don't touch the win check or distance scale (#28). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Measuring with headless Chrome under software WebGL: open the gear with element.click() via evaluate and wait ~2.5 s; the /game route shows the welcome pop-up on load. Share specs must stub navigator.clipboard and window.alert/prompt (native dialogs hang headless Chrome)."
+    "lastCheckpoint": "2026-09-23T18:06:37-06:00",
+    "contextHint": "Layout/CSS move only: keep [(ngModel)]=\"this.distance\"; don't touch the win check or distance scale (#28). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Measuring with headless Chrome under software WebGL: open the gear with element.click() via evaluate and wait ~2.5 s; the /game route shows the welcome pop-up on load. Share specs must stub navigator.clipboard and window.alert/prompt (native dialogs hang headless Chrome).",
+    "lastUpdated": "2026-09-23T18:05:58-06:00"
   },
   "waves": [
     {
@@ -31,7 +34,8 @@
       "tasks": [
         "T001"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T18:05:58-06:00"
     },
     {
       "number": 1,
@@ -79,14 +83,25 @@
       "id": "T001",
       "wave": 0,
       "description": "Move #result-container out of <form #parameters-menu> to a top-level sibling in src/app/game/game.component.html, and give it a base fixed bottom-center position in game.component.css that doesn't depend on the menu.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
       "filePath": "src/app/game/game.component.html",
       "satisfies": [
         "FR-001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T18:05:58-06:00",
+        "commitSha": "abd6147cf0e18562de83e2109048ad4f2a43c0fc",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T002": {
       "id": "T002",
