@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 4,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-24T12:48:22-06:00",
+    "lastCheckpoint": "2026-09-24T12:53:11-06:00",
     "contextHint": "Math-only change: distance() over A, α, β, a divided by range, √Σnᵢ²/2×100. Don't touch checkParametersAreSimilar(), the template or the CSS. Specs use explicit target/attempt values (no random targets). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
-    "lastUpdated": "2026-09-24T12:47:37-06:00"
+    "lastUpdated": "2026-09-24T12:52:19-06:00"
   },
   "waves": [
     {
@@ -57,7 +58,8 @@
       "tasks": [
         "T003"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-24T12:52:19-06:00"
     },
     {
       "number": 3,
@@ -135,7 +137,7 @@
       "wave": 2,
       "story": "US3",
       "description": "In src/app/game/game.component.spec.ts add: a win-threshold characterization spec (attempt inside every threshold → checkParametersAreSimilar() true; each of A, α, β, a just outside → false); a spec that the bar shows the rescaled value after a slider release with an explicit target; a spec that a game starting at the slider minimums reads between 0 and 100 for targets at the minimums, midpoints and maximums. No random targets.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -148,7 +150,16 @@
       ],
       "dependencies": [
         "T002"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-24T12:52:19-06:00",
+        "commitSha": "7a9f106264f0572b252d2caa8fa85a63787df540",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T004": {
       "id": "T004",

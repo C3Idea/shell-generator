@@ -4,7 +4,7 @@
 # Tasks: Heat bar: normalize the distance so it spans ✗ to ✓ and every parameter counts equally
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-24T12:47:37-06:00
+**Generated**: 2026-09-24T12:52:19-06:00
 
 ---
 
@@ -32,9 +32,9 @@
 
 **Purpose**: Win-threshold characterization, rescaled bar after release, start reads 0–100
 
-- [ ] T003 [W2] [US3] In src/app/game/game.component.spec.ts add: a win-threshold characterization spec (attempt inside every threshold → checkParametersAreSimilar() true; each of A, α, β, a just outside → false); a spec that the bar shows the rescaled value after a slider release with an explicit target; a spec that a game starting at the slider minimums reads between 0 and 100 for targets at the minimums, midpoints and maximums. No random targets.
+- [x] T003 [W2] [US3] In src/app/game/game.component.spec.ts add: a win-threshold characterization spec (attempt inside every threshold → checkParametersAreSimilar() true; each of A, α, β, a just outside → false); a spec that the bar shows the rescaled value after a slider release with an explicit target; a spec that a game starting at the slider minimums reads between 0 and 100 for targets at the minimums, midpoints and maximums. No random targets.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -51,10 +51,10 @@
 ## Summary
 
 - **Total Tasks**: 4
-- **Completed**: 2
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 50%
+- **Progress**: 75%
 
 ---
 
