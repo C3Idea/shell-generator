@@ -4,7 +4,7 @@
 # Tasks: Move the heat bar out of the gear menu
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T18:05:58-06:00
+**Generated**: 2026-09-23T18:12:34-06:00
 
 ---
 
@@ -22,9 +22,9 @@
 
 **Purpose**: No menuVisible coupling; same update event
 
-- [ ] T002 [W1] [US1] Keep the bar visible with the gear menu closed and in place while it's open (no menuVisible coupling); confirm it updates on a parameter slider change and shows in the Objetivo view.
+- [x] T002 [W1] [US1] Keep the bar visible with the gear menu closed and in place while it's open (no menuVisible coupling); confirm it updates on a parameter slider change and shows in the Objetivo view.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -32,9 +32,9 @@
 
 **Purpose**: Breakpoint row; checked at 390/768/1280 px
 
-- [ ] T003 [W2] [US3] Responsive layout in game.component.css: one row between the switch and the #11 buttons on wide screens, its own row above the buttons below a measured breakpoint (~760 px). No overlap or clipping at 390/768/1280 px, clear of the top-right #13 corner, .modal stays above. Record the breakpoint and bar width on #15.
+- [x] T003 [W2] [US3] Responsive layout in game.component.css: one row between the switch and the #11 buttons on wide screens, its own row above the buttons below a measured breakpoint (~760 px). No overlap or clipping at 390/768/1280 px, clear of the top-right #13 corner, .modal stays above. Record the breakpoint and bar width on #15.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -42,7 +42,7 @@
 
 **Purpose**: New help line, aria-label, dead CSS/TS removed
 
-- [ ] T004 [W3] [US4] Replace AppStrings.LABEL_HOWTO_WINDOW_LINE3 in src/app/app-strings.ts with the approved text; add aria-label="Qué tan cerca estás del objetivo" to #distance-range.
+- [x] T004 [W3] [US4] Replace AppStrings.LABEL_HOWTO_WINDOW_LINE3 in src/app/app-strings.ts with the approved text; add aria-label="Qué tan cerca estás del objetivo" to #distance-range.
 - [ ] T005 [W3] Delete the unused .heat-range.blue / .heat-range.read thumb styles (game.component.css) and the unused distanceRange getter and its @ViewChild (game.component.ts).
 
 **Wave Gate**: pending
@@ -62,10 +62,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 1
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 16%
+- **Progress**: 66%
 
 ---
 

@@ -502,22 +502,6 @@ input:checked + .switch-slider:before {
   transition: border 1000ms ease;
 }
 
-.heat-range.blue::-webkit-slider-thumb {
-  border-color: rgb(0,0,255)
-}
-
-.heat-range.read::-webkit-slider-thumb {
-  border-color: rgb(255,0,0)
-}
-
-.heat-range.blue::-moz-range-thumb {
-  border-color: rgb(0,0,255)
-}
-
-.heat-range.read::-moz-range-thumb {
-  border-color: rgb(255,0,0)
-}
-
 .heat-range::-webkit-slider-thumb:active {
   cursor: -webkit-grabbing;
 }

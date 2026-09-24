@@ -133,7 +133,7 @@
        dragging sliders. -->
   <div id="result-container">
     <img class="result-image" src="./assets/icons/icon_cross_tache.svg" />
-    <input #distanceRange id="distance-range" class="heat-range" type="range" disabled
+    <input id="distance-range" class="heat-range" type="range" disabled
       [attr.aria-label]="AppStrings.LABEL_DISTANCE_BAR"
       [(ngModel)]="this.distance"
       [ngModelOptions]="{standalone: true}"
