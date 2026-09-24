@@ -1,0 +1,7 @@
+vt.idd:task: T004
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/028-the_maltese_normalizer/tasks.json
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-24T12:54:04-06:00
