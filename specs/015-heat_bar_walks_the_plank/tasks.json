@@ -14,19 +14,21 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 3,
+    "currentWave": 4,
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3,
+      4
     ],
     "totalTasks": 6,
-    "completedTasks": 4,
+    "completedTasks": 6,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-23T18:11:11-06:00",
+    "lastCheckpoint": "2026-09-23T18:17:56-06:00",
     "contextHint": "Layout/CSS move only: keep [(ngModel)]=\"this.distance\"; don't touch the win check or distance scale (#28). Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). Measuring with headless Chrome under software WebGL: open the gear with element.click() via evaluate and wait ~2.5 s; the /game route shows the welcome pop-up on load. Share specs must stub navigator.clipboard and window.alert/prompt (native dialogs hang headless Chrome).",
-    "lastUpdated": "2026-09-23T18:12:34-06:00"
+    "lastUpdated": "2026-09-23T18:17:19-06:00"
   },
   "waves": [
     {
@@ -70,7 +72,8 @@
         "T004",
         "T005"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T18:13:54-06:00"
     },
     {
       "number": 4,
@@ -79,7 +82,8 @@
       "tasks": [
         "T006"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-23T18:17:19-06:00"
     }
   ],
   "tasks": {
@@ -195,7 +199,7 @@
       "id": "T005",
       "wave": 3,
       "description": "Delete the unused .heat-range.blue / .heat-range.read thumb styles (game.component.css) and the unused distanceRange getter and its @ViewChild (game.component.ts).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -206,13 +210,24 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T18:13:54-06:00",
+        "commitSha": "de4e9f0aa590ca4a26994fd5f3640bf3ddd6423d",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.css"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T006": {
       "id": "T006",
       "wave": 4,
       "description": "Tests in src/app/game/game.component.spec.ts: rewrite the #11 spec that expected the bar inside the menu; add specs for the bar outside the menu, visible with the menu closed and open, value updating on a slider change, LINE3 text and aria-label. Run ng build and ng test on 2 cores; take before/after screenshots at 390/768/1280 px (menu open and closed) for approval on #15.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -228,7 +243,16 @@
         "T003",
         "T004",
         "T005"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-23T18:17:19-06:00",
+        "commitSha": "c2b93ff5c0bd9b4fc203905271ef8a6c47204394",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     }
   }
 }

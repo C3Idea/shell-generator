@@ -4,7 +4,7 @@
 # Tasks: Move the heat bar out of the gear menu
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-23T18:12:34-06:00
+**Generated**: 2026-09-23T18:17:19-06:00
 
 ---
 
@@ -43,9 +43,9 @@
 **Purpose**: New help line, aria-label, dead CSS/TS removed
 
 - [x] T004 [W3] [US4] Replace AppStrings.LABEL_HOWTO_WINDOW_LINE3 in src/app/app-strings.ts with the approved text; add aria-label="Qué tan cerca estás del objetivo" to #distance-range.
-- [ ] T005 [W3] Delete the unused .heat-range.blue / .heat-range.read thumb styles (game.component.css) and the unused distanceRange getter and its @ViewChild (game.component.ts).
+- [x] T005 [W3] Delete the unused .heat-range.blue / .heat-range.read thumb styles (game.component.css) and the unused distanceRange getter and its @ViewChild (game.component.ts).
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -53,19 +53,19 @@
 
 **Purpose**: #11 spec rewritten, new specs, build/test, screenshots
 
-- [ ] T006 [W4] Tests in src/app/game/game.component.spec.ts: rewrite the #11 spec that expected the bar inside the menu; add specs for the bar outside the menu, visible with the menu closed and open, value updating on a slider change, LINE3 text and aria-label. Run ng build and ng test on 2 cores; take before/after screenshots at 390/768/1280 px (menu open and closed) for approval on #15.
+- [x] T006 [W4] Tests in src/app/game/game.component.spec.ts: rewrite the #11 spec that expected the bar inside the menu; add specs for the bar outside the menu, visible with the menu closed and open, value updating on a slider change, LINE3 text and aria-label. Run ng build and ng test on 2 cores; take before/after screenshots at 390/768/1280 px (menu open and closed) for approval on #15.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 4
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 66%
+- **Progress**: 100%
 
 ---
 
