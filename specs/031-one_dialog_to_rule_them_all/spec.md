@@ -159,37 +159,37 @@ Angular 17.3 (NgModule, not standalone), TypeScript, Karma + Jasmine unit tests.
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|--------------------|----------|--------|
-| VM-001 | S1: Esc closes any pop-up + removes backdrop | [pending] | Pending |
-| VM-002 | S2: backdrop click closes | [pending] | Pending |
-| VM-003 | S3: ✕ closes | [pending] | Pending |
-| VM-004 | S4: `(closed)` updates parent open state | [pending] | Pending |
-| VM-005 | S5: welcome opens on initial-screen load | [pending] | Pending |
-| VM-006 | S6: how-to opens on game load | [pending] | Pending |
-| VM-007 | S7: ¡Victoria! opens on win with actions | [pending] | Pending |
-| VM-008 | S8: ¡Victoria! renders above how-to | [pending] | Pending |
-| VM-009 | S9: "Con clave" reveals + focuses key input | [pending] | Pending |
-| VM-010 | S10: Nuevo juego opens focusing first choice button | [pending] | Pending |
-| VM-011 | S11: parameter help (incl. Resolución) opens with right title/text | [pending] | Pending |
-| VM-012 | S12: win re-check while open throws nothing, stays open | [pending] | Pending |
-| VM-013 | S13: fits viewport at 390/768/1280 + 844×390, scrolls inside | [pending] | Pending |
-| VM-014 | S14: pop-up + backdrop above canvas/toolbar/heat bar/#11 buttons | [pending] | Pending |
-| VM-015 | S15: page behind does not scroll | [pending] | Pending |
-| VM-016 | S16: `role=dialog`/`aria-modal` + `aria-labelledby` → `<h2>` | [pending] | Pending |
-| VM-017 | S17: ✕ has `aria-label="Cerrar"` | [pending] | Pending |
+| VM-001 | S1: Esc closes any pop-up + removes backdrop | modal spec "closes on Esc (cancel) and emits (closed) once"; game/sandbox #31 "closes with Esc" (6 pop-ups); harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-002 | S2: backdrop click closes | modal spec "closes on a backdrop click…", drag guards (b66212a); game/sandbox "closes with a click on the backdrop"; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-003 | S3: ✕ closes | modal spec "closes on the header ✕…"; game/sandbox "closes with the ✕"; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-004 | S4: `(closed)` updates parent open state | game/sandbox #31 "[open] flag reset by (closed)" + "reopens after being closed"; modal spec "reopens after a user close" | Pass |
+| VM-005 | S5: welcome opens on initial-screen load | sandbox spec "opens the welcome pop-up on load"; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-006 | S6: how-to opens on game load | game spec "opens the how-to on load, over the game"; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-007 | S7: ¡Victoria! opens on win with actions | game spec "opens on a win with Sandbox then Jugar in its footer"; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-008 | S8: ¡Victoria! renders above how-to | game specs "opens on top of the how-to" + "is on top of the how-to when both open on load" (0e19107, revert-checked) | Pass |
+| VM-009 | S9: "Con clave" reveals + focuses key input | game #23 spec "reveals an empty, focused key field"; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-010 | S10: Nuevo juego opens focusing first choice button | game spec "focuses its first choice on open"; real-Chrome check (focus on Aleatorio, returns to Nuevo juego on Esc) | Pass |
+| VM-011 | S11: parameter help (incl. Resolución) opens with right title/text | sandbox "ⓘ Resolución opens help…" + 6 others; game 4 ⓘ specs; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| VM-012 | S12: win re-check while open throws nothing, stays open | game spec "stays open, without an error, when the win check runs again"; modal spec "does nothing when asked to open while already open" | Pass |
+| VM-013 | S13: fits viewport at 390/768/1280 + 844×390, scrolls inside | modal spec "keeps a tall pop-up inside the viewport…" (b66212a); harness `validaciones/31` e2e 359/359 on c645cc7 (1280/768/390/360 px, 844×390; Chromium only) | Pass |
+| VM-014 | S14: pop-up + backdrop above canvas/toolbar/heat bar/#11 buttons | #15 spec "sits below the pop-ups" (hit test); harness `validaciones/31` e2e 359/359 on c645cc7 (heat bar, #11 buttons, switch, toolbar, canvas covered) | Pass |
+| VM-015 | S15: page behind does not scroll | html/body overflow hidden (src/styles.css:2-7); harness `validaciones/31` e2e 359/359 on c645cc7 (wheel leaves page scrollTop 0) | Pass |
+| VM-016 | S16: `role=dialog`/`aria-modal` + `aria-labelledby` → `<h2>` | game/sandbox "is named by its <h2> title…" (6 pop-ups), native modal dialog; real screen reader not yet run (31-MANUAL-VALIDATION.md §8) | Partial |
+| VM-017 | S17: ✕ has `aria-label="Cerrar"` | modal spec "labels the dialog with its title and the ✕ with \"Cerrar\""; game/sandbox per-pop-up specs | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | All six pop-ups render through the shared `ModalComponent`; no `.modal*-content` classes or duplicate `.modal-button-bar` remain | [pending] | Pending |
-| SC-002 | No component uses `style.display` or `modalMouseDown` to open/close pop-ups; `onEscape` removed | [pending] | Pending |
-| SC-003 | Every pop-up closes via Esc, backdrop click and ✕, emitting `(closed)` | [pending] | Pending |
-| SC-004 | Every pop-up exposes `role=dialog`/`aria-modal` and `aria-labelledby`→`<h2>`; ✕ has `aria-label="Cerrar"` | [pending] | Pending |
-| SC-005 | Every pop-up fits the viewport at 390/768/1280 px and 844×390 with inner scrolling; page behind does not scroll | [pending] | Pending |
-| SC-006 | Pop-ups + 40% black backdrop sit above canvas, toolbar, heat bar and #11 buttons on both screens (closes #1) | [pending] | Pending |
-| SC-007 | All existing pop-up behaviours (auto-open welcome/how-to, ¡Victoria! on win, #23 Nuevo juego flows, parameter help incl. Resolución) preserved; copy unchanged | [pending] | Pending |
-| SC-008 | Modal styling is one `--modal-*` token set in `src/styles.css`; Pico credited (MIT) in a CSS comment; no Pico dependency added | [pending] | Pending |
-| SC-009 | New component specs + migrated `dialog.open` specs pass; all tests green | [pending] | Pending |
+| SC-001 | All six pop-ups render through the shared `ModalComponent`; no `.modal*-content` classes or duplicate `.modal-button-bar` remain | validate-ci-local.sh source checks 42/42; game/sandbox "renders all four/both through <app-modal>…" | Pass |
+| SC-002 | No component uses `style.display` or `modalMouseDown` to open/close pop-ups; `onEscape` removed | validate-ci-local.sh: no modalMouseDown/onEscape, style.display only on side menus + key row | Pass |
+| SC-003 | Every pop-up closes via Esc, backdrop click and ✕, emitting `(closed)` | game/sandbox #31 close-way specs (✕, Esc, backdrop) for all six; modal spec (closed) once | Pass |
+| SC-004 | Every pop-up exposes `role=dialog`/`aria-modal` and `aria-labelledby`→`<h2>`; ✕ has `aria-label="Cerrar"` | per-pop-up aria-labelledby → <h2> and ✕ "Cerrar" specs; native modal <dialog> (:modal) | Pass |
+| SC-005 | Every pop-up fits the viewport at 390/768/1280 px and 844×390 with inner scrolling; page behind does not scroll | harness `validaciones/31` e2e 359/359 on c645cc7 (5 viewports, inner scroll, page scrollTop 0); modal "tall pop-up" spec; Chromium only | Pass |
+| SC-006 | Pop-ups + 40% black backdrop sit above canvas, toolbar, heat bar and #11 buttons on both screens (closes #1) | modal spec "draws a plain 40% black backdrop with no blur" (b66212a); harness `validaciones/31` e2e 359/359 on c645cc7 (coverage hit tests) | Pass |
+| SC-007 | All existing pop-up behaviours (auto-open welcome/how-to, ¡Victoria! on win, #23 Nuevo juego flows, parameter help incl. Resolución) preserved; copy unchanged | app-strings.ts identical to dev (validate-ci-local.sh); #23/#11/#12 specs pass; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
+| SC-008 | Modal styling is one `--modal-*` token set in `src/styles.css`; Pico credited (MIT) in a CSS comment; no Pico dependency added | src/styles.css token set on :root, ::backdrop + Pico MIT credit; package.json deps identical to dev | Pass |
+| SC-009 | New component specs + migrated `dialog.open` specs pass; all tests green | ng test 160/160 (x2) on c645cc7; revert guard: 78 pop-up specs fail on dev | Pass |
 | SC-010 | Before/after screenshots of all six pop-ups at 390/768/1280 px approved on this issue before merge | [pending] | Pending |
 
 ## Complexity Considerations
