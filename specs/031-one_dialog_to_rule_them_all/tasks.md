@@ -4,7 +4,7 @@
 # Tasks: Shared pop-up component on <dialog>, styled after Pico.css
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-28T14:09:50-06:00
+**Generated**: 2026-09-28T14:14:05-06:00
 
 ---
 
@@ -45,19 +45,19 @@
 
 **Purpose**: Lint, test, build on 2 cores; leftover-code checks
 
-- [ ] T007 [W3] Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless, ng build. Grep src/ to confirm no .modal*-content class, no modalMouseDown, no onEscape/keydown.escape listener, and no style.display on a pop-up (only the side menus and keyEntryRow keep it). Confirm package.json has no new dependency and the pop-up copy in app-strings.ts is unchanged against dev.
+- [x] T007 [W3] Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless, ng build. Grep src/ to confirm no .modal*-content class, no modalMouseDown, no onEscape/keydown.escape listener, and no style.display on a pop-up (only the side menus and keyEntryRow keep it). Confirm package.json has no new dependency and the pop-up copy in app-strings.ts is unchanged against dev.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 7
-- **Completed**: 6
+- **Completed**: 7
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 85%
+- **Progress**: 100%
 
 ---
 
