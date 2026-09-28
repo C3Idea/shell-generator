@@ -4,7 +4,7 @@
 # Tasks: Shared pop-up component on <dialog>, styled after Pico.css
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-28T14:05:51-06:00
+**Generated**: 2026-09-28T14:07:55-06:00
 
 ---
 
@@ -34,7 +34,7 @@
 
 **Purpose**: Welcome and parameter help (incl. Resolución) on <app-modal>; modalMouseDown and modal style.display removed
 
-- [ ] T005 [W2] [TDD] [US2] Update src/app/sandbox/sandbox.component.spec.ts (and src/app/app.component.spec.ts if its TestBed renders the screens) first: declare ModalComponent; move the pop-up assertions from style.display to dialog.open; add specs for the welcome pop-up opening on load, each ⓘ (including Resolución) opening help with its own title/text, Esc/backdrop/✕ closing and resetting the open flag, <h2> titles referenced by aria-labelledby, and the .label-intro-line class and #img-intro-equation still present.
+- [x] T005 [W2] [TDD] [US2] Update src/app/sandbox/sandbox.component.spec.ts (and src/app/app.component.spec.ts if its TestBed renders the screens) first: declare ModalComponent; move the pop-up assertions from style.display to dialog.open; add specs for the welcome pop-up opening on load, each ⓘ (including Resolución) opening help with its own title/text, Esc/backdrop/✕ closing and resetting the open flag, <h2> titles referenced by aria-labelledby, and the .label-intro-line class and #img-intro-equation still present.
 - [ ] T006 [W2] [US2] Move the initial screen's welcome and parameter-help pop-ups to <app-modal> in src/app/sandbox/sandbox.component.{html,ts,css}: no footers, titles as <h2> with ids, text lines as <p> keeping their classes, the empty <img id="img-intro-equation"> kept, copy unchanged. TS: a boolean per pop-up bound to [open] and reset in (closed); ngAfterViewInit opens the welcome; delete modalMouseDown and the pop-up @ViewChilds/style.display lines (keep the menu and visualizationMenu toggles). CSS: remove .modal, .modal-intro-content, .modal-help-content, .modal-close-button and .modal-button-bar.
 
 **Wave Gate**: pending
@@ -54,10 +54,10 @@
 ## Summary
 
 - **Total Tasks**: 7
-- **Completed**: 4
+- **Completed**: 5
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 57%
+- **Progress**: 71%
 
 ---
 

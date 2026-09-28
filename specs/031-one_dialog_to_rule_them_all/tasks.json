@@ -20,12 +20,12 @@
       1
     ],
     "totalTasks": 7,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-28T14:06:43-06:00",
     "contextHint": "One <app-modal> on native <dialog>: [open] input, (closed) output, initial-focus option; showModal() only when !dialog.open. Esc (cancel), backdrop click (target === dialog) and header ✕ (aria-label AppStrings.LABEL_CLOSE) all emit (closed). Tokens --modal-* + dialog::backdrop rgba(0,0,0,.4) in src/styles.css. Footer 'Cerrar' buttons dropped. Leave the side menus' style.display (menu, visualizationMenu) alone. Copy unchanged. NgModule: declare ModalComponent in AppModule and every TestBed. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
-    "lastUpdated": "2026-09-28T14:05:51-06:00"
+    "lastUpdated": "2026-09-28T14:07:55-06:00"
   },
   "waves": [
     {
@@ -221,7 +221,7 @@
       "id": "T005",
       "wave": 2,
       "description": "Update src/app/sandbox/sandbox.component.spec.ts (and src/app/app.component.spec.ts if its TestBed renders the screens) first: declare ModalComponent; move the pop-up assertions from style.display to dialog.open; add specs for the welcome pop-up opening on load, each ⓘ (including Resolución) opening help with its own title/text, Esc/backdrop/✕ closing and resetting the open flag, <h2> titles referenced by aria-labelledby, and the .label-intro-line class and #img-intro-equation still present.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -235,7 +235,22 @@
       ],
       "dependencies": [
         "T004"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:07:55-06:00",
+        "commitSha": "ddb0f5184dacdd32f024f7780f4ce9a830873bbc",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.spec.ts",
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "22 FAILED, 3 SUCCESS against the pre-#31 markup (flags stubbed)",
+          "greenResult": "pending T006 implementation"
+        },
+        "satisfaction": "full"
+      }
     },
     "T006": {
       "id": "T006",

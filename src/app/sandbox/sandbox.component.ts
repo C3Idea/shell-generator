@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
@@ -12,7 +12,7 @@ import { AppStrings } from '../app-strings';
 
 
 
-export class SandboxComponent implements AfterViewInit, OnDestroy {
+export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas')
   private canvasRef!: ElementRef;
 
@@ -21,12 +21,6 @@ export class SandboxComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('visualizationMenu')
   private visualizationMenuRef!: ElementRef;
-
-  @ViewChild('modalHelpWindow')
-  private modalHelpWindowRef!: ElementRef;
-
-  @ViewChild('modalIntroWindow')
-  private modalIntroWindowRef!: ElementRef;
 
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
@@ -49,17 +43,12 @@ export class SandboxComponent implements AfterViewInit, OnDestroy {
   private get visualizationMenu(): HTMLFormElement {
     return this.visualizationMenuRef.nativeElement;
   }
-  private get modalHelpWindow(): HTMLDivElement {
-    return this.modalHelpWindowRef.nativeElement;
-  }
-  private get modalIntroWindow(): HTMLDivElement {
-    return this.modalIntroWindowRef.nativeElement
-  }
 
   helpTitle:   string = "";
   helpContent: string = "";
 
-  // Pop-up state (#31), bound to each <app-modal>'s [open].
+  // Pop-up state (#31), bound to each <app-modal>'s [open] and reset by its
+  // (closed): Esc, a click on the backdrop or the ✕.
   introOpen = false;
   helpOpen  = false;
 
@@ -77,10 +66,15 @@ export class SandboxComponent implements AfterViewInit, OnDestroy {
   constructor(private router: Router) {
   }
 
+  // Opened before the first render, so the welcome shows on load without a
+  // second change detection pass.
+  ngOnInit(): void {
+    this.showIntroWindow();
+  }
+
   ngAfterViewInit(): void {
     this.helper.init(this.fieldOfView, this.nearClippingPlane, this.farClippingPlane, this.canvas);
     this.helper.createGraph(this.parameters);
-    this.showIntroWindow();
   }
 
   // Stop the render loop when leaving the initial screen (#21).
@@ -206,63 +200,46 @@ export class SandboxComponent implements AfterViewInit, OnDestroy {
     this.router.navigate(['game']);
   }
 
-  modalMouseDown(event: Event) {
-    if (event.target == this.modalIntroWindow) {
-      this.closeModalIntroWindow();
-    }
-    else if (event.target == this.modalHelpWindow) {
-      this.closeModalHelpWindow();
-    }
-  }
-
-  private closeModalHelpWindow() {
-    this.modalHelpWindow.style.display = 'none';
-  }
-
-  private closeModalIntroWindow() {
-    this.modalIntroWindow.style.display = 'none';
-  }
-
   parameterHelpAButtonClick(event: Event) {
     this.helpTitle   = AppStrings.LABEL_PARAM_A_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_A_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpBetaButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_BETA_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_BETA_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpA1ButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_A1_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_A1_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpBButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_B_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_B_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpThetaButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_THETA_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_THETA_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpQualButtonClick(event: Event) {
     this.helpTitle   = AppStrings.LABEL_PARAM_QUAL_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_QUAL_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   introButtonClick(event: Event) {
@@ -270,15 +247,7 @@ export class SandboxComponent implements AfterViewInit, OnDestroy {
   }
 
   private showIntroWindow() {
-    this.modalIntroWindow.style.display = 'block';
-  }
-
-  introCloseButtonClick(event: Event) {
-    this.closeModalIntroWindow();
-  }
-
-  helpCloseButtonClick(event: Event) {
-    this.closeModalHelpWindow();
+    this.introOpen = true;
   }
 
 }
