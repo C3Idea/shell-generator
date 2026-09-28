@@ -51,7 +51,7 @@ As a screen-reader user, I want each pop-up announced as a modal dialog with its
 - **FR-001** The system MUST provide a shared `ModalComponent` (`<app-modal>`) that wraps a native `<dialog>` rendering an `<article>` with a `<header>` (title + ✕ close button), a projected body, and an optional `<footer>` for action buttons.
 - **FR-002** The component MUST open via `showModal()` and close via `close()`, driven by an `[open]` input, and MUST NOT set `style.display` anywhere.
 - **FR-003** The component MUST emit a `(closed)` output whenever the dialog closes by any means (✕ click, Esc/native `cancel`, backdrop click).
-- **FR-004** The component MUST support opening from code (welcome and how-to open in `ngAfterViewInit`).
+- **FR-004** The component MUST support opening from code (welcome and how-to open on load: their flags are set in `ngOnInit`, before the first render, and each `<app-modal>` opens in its own `ngAfterViewInit`).
 - **FR-005** Calling open while the dialog is already open MUST be a no-op (guard against `showModal()`'s `InvalidStateError`).
 - **FR-006** The component MUST close on Esc via the native `cancel` event and MUST emit `(closed)`; the game's `@HostListener('document:keydown.escape')` / `onEscape` (#23) MUST be removed.
 - **FR-007** The component MUST close on a backdrop click (click landing on the `<dialog>` element itself, outside the `<article>`) and MUST emit `(closed)`.
@@ -60,14 +60,15 @@ As a screen-reader user, I want each pop-up announced as a modal dialog with its
 - **FR-010** All six pop-ups (¡Victoria!, Nuevo juego, how-to, game parameter-help, welcome, initial parameter-help) MUST be rendered through `ModalComponent`.
 - **FR-011** No `.modal*-content` box classes MAY remain, and neither `game.component.css` nor `sandbox.component.css` MAY retain pop-up rules, apart from content-specific inner layout that must stay local. The duplicate `.modal-button-bar` MUST be removed.
 - **FR-012** No component MAY open or close a pop-up by setting `style.display`; the `modalMouseDown` chains MUST be removed.
-- **FR-013** Modal styling MUST live as one set of `--modal-*` CSS custom properties in `src/styles.css`, modelled on Pico v2 tokens (spacing 1 rem, border radius 0.25 rem, Pico's box shadow, overlay colour), read by the component's styles.
+- **FR-013** Modal styling MUST live as one set of `--modal-*` CSS custom properties in `src/styles.css`, modelled on Pico v2 tokens (spacing 1 rem, border radius 0.25 rem, Pico's box shadow, overlay colour), read by the component's styles. *Amended after review:* inner padding `--modal-padding` 1.5 rem (1.25 rem under 576 px), body line-height 1.65, 1.1 em between paragraphs; the tokens are declared on `:root, ::backdrop` so the overlay also resolves on engines where `::backdrop` doesn't inherit (before Chrome 122 / Firefox 120 / Safari 17.4).
 - **FR-014** The box width MUST be capped by breakpoint following Pico (~510 px, widening to ~700 px on large screens, full width minus spacing on phones); height MUST be capped to the viewport with the body scrolling inside.
 - **FR-015** Footer buttons MUST order secondary (close/cancel) first, primary (confirm) last, per Pico. Footer "Cerrar" buttons are dropped; footers keep only real actions (¡Victoria!'s Jugar/Sandbox; Nuevo juego's choices + key row). Help, how-to and welcome have no footer.
 - **FR-016** The backdrop MUST be a plain `rgba(0, 0, 0, 0.4)` full-viewport overlay via `::backdrop`, set from a custom property, with **no blur**, covering the 3D canvas, toolbar, heat bar and #11 buttons on both screens.
 - **FR-017** Pop-up titles MUST render as `<h2>` (the `aria-labelledby` target) and text lines as `<p>`, keeping existing class names used by specs (e.g. `.label-howto-line`).
 - **FR-018** Pop-up copy MUST be unchanged (copy changes belong to #3 and #10). The welcome pop-up's empty `<img id="img-intro-equation">` stays for #3.
 - **FR-019** The component SHOULD play a short (~150–200 ms) fade/scale on open and close, disabled under `prefers-reduced-motion`.
-- **FR-020** Primary buttons MUST be filled teal `#77aca2`; secondary buttons MUST have a teal outline; the header divider MUST be a light teal tint; fonts stay the app's Lucida stack.
+- **FR-020** Primary buttons MUST be filled teal `#77aca2` with dark ink `#14232a` text (6.3:1; white on this teal is 2.6:1, below WCAG AA) and a `#5f9a90` hover; secondary buttons MUST have a teal outline; the header divider MUST be a light teal tint; fonts stay the app's Lucida stack.
+- **FR-021** The component SHOULD offer an opt-in centred variant (`<app-modal class="modal-centered">`: title, text and buttons centred, the ✕ kept at the right). ¡Victoria! uses it; its content is unchanged (the rest of the ¡Victoria! redesign stays in #17).
 
 ### Key Entities
 
@@ -124,7 +125,8 @@ Angular 17.3 (NgModule, not standalone), TypeScript, Karma + Jasmine unit tests.
 - **#1 fold-in (D4):** *Selected:* #1's backdrop criteria join #31; PR closes both. *Rationale:* one shared `::backdrop` settles #1 definitively.
 - **Pico version (D5):** *Selected:* Pico **v2** modal tokens (spacing 1 rem, radius 0.25 rem, v2 shadow, ~510/~700 px widths). *Rationale:* current Pico line.
 - **Scroll lock (D6):** *Options* — build a scroll lock / rely on existing. *Selected:* rely on existing `html, body { overflow: hidden }`. *Rationale:* page already cannot scroll; no new code needed.
-- **Stacking on load (D7):** *Selected:* ¡Victoria! (opened later) renders above how-to via `showModal()` top-layer ordering. *Rationale:* native top-layer stacks by open order.
+- **Stacking on load (D7):** *Selected:* ¡Victoria! renders above the how-to via `showModal()` top-layer ordering. *Rationale:* the top layer stacks by open order: a later win opens ¡Victoria! after the how-to, and a win on load opens both in the same pass in template order, so ¡Victoria! is last in `game.component.html` (guarded by a spec).
+- **Look refinements after clarification (D8):** *Options* — keep white text on the teal / dark ink; Pico's 1 rem padding / more room; left-aligned ¡Victoria! / centred. *Selected:* dark ink `#14232a` (+ `#5f9a90` hover) for contrast; `--modal-padding` 1.5 rem (1.25 rem on phones), line-height 1.65, 1.1 em paragraphs; ¡Victoria! centred via `modal-centered`. *Rationale:* WCAG AA contrast, and the owner's review of the live build ("the text needs space to breathe", "center the Victoria content").
 
 ## Risk Assessments
 

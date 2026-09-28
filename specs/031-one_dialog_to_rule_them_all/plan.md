@@ -13,10 +13,10 @@
 
 ### Research Findings
 
-- **`showModal()` throws `InvalidStateError` on an already-open dialog.** `GameComponent.checkGameIsOver()` runs in `ngAfterViewInit` and on every slider release (`game.component.ts:154,239,352`), each currently setting `modalWindow.style.display='block'`. Driving `showModal()` unconditionally would throw on the second win-check → **FR-005 open-guard** (`if (!dialog.open) dialog.showModal()`).
+- **`showModal()` throws `InvalidStateError` on an already-open dialog.** `GameComponent.checkGameIsOver()` runs on load (`ngAfterViewInit` on dev; `ngOnInit` in this PR) and on every slider release (`game.component.ts:154,239,352`), each currently setting `modalWindow.style.display='block'`. Driving `showModal()` unconditionally would throw on the second win-check → **FR-005 open-guard** (`if (!dialog.open) dialog.showModal()`).
 - **Native close paths.** `<dialog>` fires `cancel` on Esc and `close` on `close()`. A backdrop click is detected by comparing `event.target === dialogEl`. All three funnel to one `emitClosed()` that fires `(closed)` — replaces `onEscape` (`game.component.ts:75-77`) and both `modalMouseDown` chains (`game.component.ts:495`, `sandbox.component.ts:205`).
 - **Side menus are NOT modals.** `menu`/`visualizationMenu` `style.display` toggles (`game.component.ts:250-263`, `sandbox.component.ts:170-193`) are the parameter/visualization side menus — **out of scope**, must be left untouched. FR-012 targets only the six pop-up windows.
-- **Top-layer stacking** is by open order: how-to opens in `ngAfterViewInit`, ¡Victoria! opens later on win → ¡Victoria! sits on top natively (Scenario 8), no z-index work.
+- **Top-layer stacking** is by open order: the how-to opens on load, ¡Victoria! opens later on a win → ¡Victoria! sits on top natively (Scenario 8), no z-index work. A win on load opens both in the same pass, in template order, so ¡Victoria! is the last `<app-modal>` in the game template.
 - **Focus.** Native `showModal()` moves focus into the dialog. Default focus target = ✕; Nuevo juego overrides to its first choice button (FR-009); "Con clave" continues to focus `gameKeyInput` (existing #23 flow).
 - **Scroll lock** already provided by `html, body { overflow: hidden }` (D6) — no new code (Scenario 15).
 
@@ -33,7 +33,7 @@ No persistent data. Component contract only:
 
 ### API Contracts
 
-No network/API. Parent↔component contract per pop-up: parent holds a boolean (e.g. `showVictoria`), binds `[open]="showVictoria"`, and sets it `false` in `(closed)`. Opening-from-code (welcome/how-to) sets the boolean `true` in `ngAfterViewInit`.
+No network/API. Parent↔component contract per pop-up: parent holds a boolean (e.g. `showVictoria`), binds `[open]="showVictoria"`, and sets it `false` in `(closed)`. Opening-from-code (welcome/how-to) sets the boolean `true` in `ngOnInit`, before the first render (setting it in `ngAfterViewInit` would change a bound value after it was checked).
 
 ### Architecture
 
