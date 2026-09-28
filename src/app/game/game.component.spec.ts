@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 
 import { ShellParameters } from '../shell-parameters';
 import { GameComponent } from './game.component';
+import { ModalComponent } from '../modal/modal.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -13,7 +14,7 @@ import { FramePump, installFramePump } from '../../testing/frame-pump';
 async function renderGame(): Promise<ComponentFixture<GameComponent>> {
   await TestBed.configureTestingModule({
     imports: [ FormsModule ],
-    declarations: [ GameComponent ],
+    declarations: [ GameComponent, ModalComponent ],
     providers: [ provideRouter([]) ]
   }).compileComponents();
   const fixture = TestBed.createComponent(GameComponent);
@@ -44,7 +45,7 @@ describe('GameComponent shared challenge link (#12)', () => {
   function configure(target: string | null): void {
     TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ GameComponent ],
+      declarations: [ GameComponent, ModalComponent ],
       providers: [
         provideRouter([]),
         {
@@ -239,11 +240,16 @@ describe('GameComponent New Game pop-up (#23)', () => {
   let component: GameComponent;
   let el: HTMLElement;
 
-  const popup = () => el.querySelector('#modal-new-game') as HTMLDivElement;
+  const popup = () => el.querySelector('#modal-new-game > dialog') as HTMLDialogElement;
   const menu = () => el.querySelector('#parameters-menu') as HTMLFormElement;
-  const shown = (e: HTMLElement) => e.style.display === 'block';
+  // #31: pop-ups are <dialog>s driven by [open], so render before looking.
+  const shown = (d: HTMLDialogElement) => {
+    fixture.detectChanges();
+    return d.open;
+  };
   const button = (text: string) => Array.from(popup().querySelectorAll('button'))
     .find(b => b.textContent?.trim() === text) as HTMLButtonElement;
+  const closeX = (d: HTMLDialogElement) => d.querySelector('header button') as HTMLButtonElement;
   // A target's ten values to 2 decimals, the precision the issue compares at.
   const values = (p: ShellParameters) =>
     [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
@@ -275,10 +281,11 @@ describe('GameComponent New Game pop-up (#23)', () => {
     });
 
     it('is an accessible dialog with a labelled key field', () => {
-      const dialog = popup().querySelector('[role="dialog"]') as HTMLElement;
-      expect(dialog).withContext('role="dialog"').not.toBeNull();
-      expect(dialog.getAttribute('aria-modal')).toBe('true');
-      const title = el.querySelector('#' + dialog.getAttribute('aria-labelledby'));
+      component.newGameButtonClick(new Event('click'));
+      expect(shown(popup())).toBeTrue();
+      const dialog = popup();
+      expect(dialog.matches(':modal')).withContext('modal <dialog>').toBeTrue();
+      const title = dialog.querySelector('#' + dialog.getAttribute('aria-labelledby'));
       expect(title?.textContent?.trim()).toBe(AppStrings.LABEL_NEW_GAME_POPUP_TITLE);
       const input = popup().querySelector('input[type="text"]') as HTMLInputElement;
       const label = popup().querySelector(`label[for="${input.id}"]`);
@@ -377,9 +384,13 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
   describe('closing without starting a game', () => {
     const closeWays: Record<string, () => void> = {
-      'the close button': () => button(AppStrings.LABEL_CLOSE).click(),
-      'Esc': () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })),
-      'a click on the backdrop': () => popup().dispatchEvent(new MouseEvent('mousedown', { bubbles: true })),
+      'the ✕': () => closeX(popup()).click(),
+      // The browser turns Esc into a cancel event on the top dialog.
+      'Esc': () => popup().dispatchEvent(new Event('cancel', { cancelable: true })),
+      'a click on the backdrop': () => {
+        popup().dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        popup().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      },
     };
 
     for (const [way, close] of Object.entries(closeWays)) {
@@ -387,8 +398,10 @@ describe('GameComponent New Game pop-up (#23)', () => {
         const before = { target: target(), player: values(component.parameters), gameId: component.gameId };
         const newGame = spyOn(component as any, 'newGame').and.callThrough();
         component.newGameButtonClick(new Event('click'));
+        expect(shown(popup())).toBeTrue();
         close();
         expect(shown(popup())).toBeFalse();
+        expect(component.newGameOpen).toBeFalse();
         expect(newGame).not.toHaveBeenCalled();
         expect({ target: target(), player: values(component.parameters), gameId: component.gameId }).toEqual(before);
         expect(component.menuVisible).toBeFalse();
@@ -397,25 +410,32 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
     it('a click inside the box does not close it', () => {
       component.newGameButtonClick(new Event('click'));
-      popup().querySelector('[role="dialog"]')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      expect(shown(popup())).toBeTrue();
+      const title = popup().querySelector('h2') as HTMLElement;
+      title.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      title.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       expect(shown(popup())).toBeTrue();
     });
 
-    it('Esc with the pop-up closed leaves the other pop-ups alone', () => {
-      const howTo = el.querySelector('.modal-howto-content')!.parentElement as HTMLDivElement;
+    it('Esc on the pop-up leaves the how-to under it open', () => {
+      const howTo = el.querySelector('#modal-howto > dialog') as HTMLDialogElement;
       expect(shown(howTo)).withContext('how-to shown at start').toBeTrue();
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      component.newGameButtonClick(new Event('click'));
+      expect(shown(popup())).toBeTrue();
+      popup().dispatchEvent(new Event('cancel', { cancelable: true }));
+      expect(shown(popup())).toBeFalse();
       expect(shown(howTo)).toBeTrue();
     });
   });
 
   describe('from ¡Victoria!', () => {
-    const victory = () => el.querySelector('.modal-content')!.parentElement as HTMLDivElement;
+    const victory = () => el.querySelector('#modal-victory > dialog') as HTMLDialogElement;
     const jugar = () => Array.from(victory().querySelectorAll('button'))
       .find(b => b.textContent?.trim() === AppStrings.LABEL_PLAY_AGAIN) as HTMLButtonElement;
 
     beforeEach(() => {
-      victory().style.display = 'block';
+      component.victoryOpen = true;
+      fixture.detectChanges();
     });
 
     it('Jugar opens the New Game pop-up over ¡Victoria!', () => {
@@ -427,13 +447,15 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
     it('closing the pop-up goes back to ¡Victoria!', () => {
       jugar().click();
-      button(AppStrings.LABEL_CLOSE).click();
+      expect(shown(popup())).toBeTrue();
+      closeX(popup()).click();
       expect(shown(popup())).toBeFalse();
       expect(shown(victory())).toBeTrue();
     });
 
     it('starting a game closes both', () => {
       jugar().click();
+      expect(shown(popup())).toBeTrue();
       button(AppStrings.LABEL_RANDOM_GAME).click();
       expect(shown(popup())).toBeFalse();
       expect(shown(victory())).toBeFalse();
@@ -486,8 +508,9 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
   describe('behaviour', () => {
     it('Nuevo juego opens the New Game pop-up (#23)', () => {
       actionButton(AppStrings.LABEL_NEW_GAME)!.click();
-      const popup = el.querySelector('#modal-new-game') as HTMLDivElement;
-      expect(popup.style.display).toBe('block');
+      fixture.detectChanges();
+      const popup = el.querySelector('#modal-new-game > dialog') as HTMLDialogElement;
+      expect(popup.open).toBeTrue();
       expect(window.prompt).not.toHaveBeenCalled();
     });
 
@@ -576,9 +599,14 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       expect([open.left, open.top, open.width]).toEqual([closed.left, closed.top, closed.width]);
     });
 
+    // #31: pop-ups are modal <dialog>s in the top layer, over everything.
     it('sits below the pop-ups', () => {
-      const modal = el.querySelector('.modal') as HTMLDivElement;
-      expect(Number(getComputedStyle(bar()).zIndex)).toBeLessThan(Number(getComputedStyle(modal).zIndex));
+      const howTo = el.querySelector('#modal-howto > dialog') as HTMLDialogElement;
+      expect(howTo.open).withContext('how-to open at start').toBeTrue();
+      const r = bar().getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      expect(howTo.contains(hit)).withContext('the backdrop covers the bar').toBeTrue();
+      expect(bar().contains(hit)).toBeFalse();
     });
   });
 
@@ -715,4 +743,193 @@ describe('GameComponent heat bar scale (#28)', () => {
       expect(Number((el.querySelector('#distance-range') as HTMLInputElement).value)).toBe(50);
     });
   });
+});
+
+// #31: the game's four pop-ups are the shared <app-modal> (a native <dialog>),
+// each closed with Esc, a click on the backdrop or its header ✕.
+describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const dialog = (id: string) => el.querySelector(`#${id} > dialog`) as HTMLDialogElement;
+  const victory = () => dialog('modal-victory');
+  const newGame = () => dialog('modal-new-game');
+  const howTo = () => dialog('modal-howto');
+  const help = () => dialog('modal-help');
+  const render = () => fixture.detectChanges();
+  const title = (d: HTMLDialogElement) => d.querySelector('header > h2') as HTMLElement;
+  const closeX = (d: HTMLDialogElement) => d.querySelector('header > button') as HTMLButtonElement;
+
+  // The player copies every compared parameter of the target: a win.
+  function win() {
+    Object.assign(component.parameters, component.targetParameters);
+    component.checkGameIsOver();
+    render();
+  }
+
+  // The pop-up drawn at a point, found by what the browser hit-tests there.
+  function dialogAt(d: HTMLDialogElement): HTMLDialogElement | null {
+    const r = d.getBoundingClientRect();
+    return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('dialog') ?? null;
+  }
+
+  // How each pop-up opens, and the flag bound to its [open].
+  const popups: Record<string, { open: () => HTMLDialogElement, flag: () => boolean }> = {
+    '¡Victoria!': {
+      open: () => { win(); return victory(); },
+      flag: () => component.victoryOpen },
+    'Nuevo juego': {
+      open: () => { component.newGameButtonClick(new Event('click')); render(); return newGame(); },
+      flag: () => component.newGameOpen },
+    'how-to': {
+      open: () => { component.howToButtonClick(new Event('click')); render(); return howTo(); },
+      flag: () => component.howToOpen },
+    'parameter help': {
+      open: () => { component.parameterHelpAButtonClick(new Event('click')); render(); return help(); },
+      flag: () => component.helpOpen },
+  };
+
+  beforeEach(async () => {
+    installFramePump();
+    spyOn(window, 'prompt').and.returnValue(null);
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  it('renders all four through <app-modal>, with no hand-built pop-up left', () => {
+    for (const id of ['modal-victory', 'modal-new-game', 'modal-howto', 'modal-help']) {
+      const host = el.querySelector('#' + id);
+      expect(host?.tagName).withContext(id).toBe('APP-MODAL');
+      expect(dialog(id)).withContext(id).not.toBeNull();
+    }
+    expect(el.querySelector('[class*="modal-"][class$="-content"], .modal-content, .modal')).toBeNull();
+  });
+
+  it('opens the how-to on load, over the game', () => {
+    expect(howTo().open).toBeTrue();
+    expect(howTo().matches(':modal')).toBeTrue();
+    expect(component.howToOpen).toBeTrue();
+  });
+
+  it('keeps the how-to text as paragraphs', () => {
+    const lines = Array.from(howTo().querySelectorAll('.label-howto-line'));
+    expect(lines.map(l => l.tagName)).toEqual(['P', 'P', 'P', 'P']);
+    expect(lines.map(l => l.textContent?.trim())).toEqual([
+      AppStrings.LABEL_HOWTO_WINDOW_LINE1, AppStrings.LABEL_HOWTO_WINDOW_LINE2,
+      AppStrings.LABEL_HOWTO_WINDOW_LINE3, AppStrings.LABEL_HOWTO_WINDOW_LINE4,
+    ]);
+  });
+
+  describe('¡Victoria!', () => {
+    it('opens on a win with Sandbox then Jugar in its footer', () => {
+      expect(victory().open).toBeFalse();
+      win();
+      expect(victory().open).toBeTrue();
+      const buttons = Array.from(victory().querySelectorAll('footer button'));
+      expect(buttons.map(b => b.textContent?.trim())).toEqual([AppStrings.LABEL_GO_HOME, AppStrings.LABEL_PLAY_AGAIN]);
+      expect(buttons[0].classList).toContain('secondary');
+      expect(buttons[1].classList).not.toContain('secondary');
+    });
+
+    it('stays open, without an error, when the win check runs again', () => {
+      win();
+      const showModal = spyOn(victory(), 'showModal').and.callThrough();
+      expect(() => { component.checkGameIsOver(); render(); component.checkGameIsOver(); render(); }).not.toThrow();
+      expect(showModal).not.toHaveBeenCalled();
+      expect(victory().open).toBeTrue();
+    });
+
+    it('opens on top of the how-to', () => {
+      expect(howTo().open).withContext('how-to open at start').toBeTrue();
+      win();
+      expect(dialogAt(victory())).toBe(victory());
+    });
+  });
+
+  describe('Nuevo juego', () => {
+    it('focuses its first choice on open', () => {
+      popups['Nuevo juego'].open();
+      const first = newGame().querySelector('.new-game-choices button') as HTMLButtonElement;
+      expect(first.textContent?.trim()).toBe(AppStrings.LABEL_RANDOM_GAME);
+      expect(document.activeElement).toBe(first);
+    });
+  });
+
+  describe('parameter help', () => {
+    const helpButtons: [string, () => void, string, string][] = [
+      ['A', () => component.parameterHelpAButtonClick(new Event('click')),
+        AppStrings.LABEL_PARAM_A_HELP_TITLE, AppStrings.LABEL_PARAM_A_HELP_CONTENT],
+      ['alpha', () => component.parameterHelpAlphaButtonClick(new Event('click')),
+        AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE, AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT],
+      ['beta', () => component.parameterHelpBetaButtonClick(new Event('click')),
+        AppStrings.LABEL_PARAM_BETA_HELP_TITLE, AppStrings.LABEL_PARAM_BETA_HELP_CONTENT],
+      ['a', () => component.parameterHelpA1ButtonClick(new Event('click')),
+        AppStrings.LABEL_PARAM_A1_HELP_TITLE, AppStrings.LABEL_PARAM_A1_HELP_CONTENT],
+    ];
+
+    for (const [name, click, expectedTitle, expectedContent] of helpButtons) {
+      it(`ⓘ ${name} opens help with its own title and text`, () => {
+        click();
+        render();
+        expect(help().open).toBeTrue();
+        expect(title(help()).textContent?.trim()).toBe(expectedTitle);
+        expect(help().querySelector('#label-help-content')?.textContent?.trim()).toBe(expectedContent);
+        expect(help().querySelector('#label-help-content')?.tagName).toBe('P');
+      });
+    }
+  });
+
+  for (const [name, { open, flag }] of Object.entries(popups)) {
+    describe(name, () => {
+      const closeWays: Record<string, (d: HTMLDialogElement) => void> = {
+        'the ✕': d => closeX(d).click(),
+        'Esc': d => d.dispatchEvent(new Event('cancel', { cancelable: true })),
+        'a click on the backdrop': d => {
+          d.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+          d.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        },
+      };
+
+      for (const [way, close] of Object.entries(closeWays)) {
+        it(`closes with ${way}`, () => {
+          const d = open();
+          expect(d.open).withContext('open').toBeTrue();
+          close(d);
+          render();
+          expect(d.open).toBeFalse();
+          expect(flag()).withContext('[open] flag reset by (closed)').toBeFalse();
+        });
+      }
+
+      it('reopens after being closed', () => {
+        const d = open();
+        closeX(d).click();
+        render();
+        expect(d.open).toBeFalse();
+        open();
+        expect(d.open).toBeTrue();
+      });
+
+      it('is named by its <h2> title and has a ✕ labelled "Cerrar"', () => {
+        const d = open();
+        const labelledBy = d.getAttribute('aria-labelledby');
+        expect(labelledBy).withContext('aria-labelledby').toBeTruthy();
+        expect(title(d).id).toBe(labelledBy!);
+        expect(title(d).textContent?.trim()).not.toBe('');
+        expect(closeX(d).getAttribute('aria-label')).toBe(AppStrings.LABEL_CLOSE);
+      });
+
+      it('has no footer "Cerrar" button', () => {
+        const d = open();
+        const texts = Array.from(d.querySelectorAll('button')).map(b => b.textContent?.trim());
+        expect(texts).not.toContain(AppStrings.LABEL_CLOSE);
+      });
+    });
+  }
 });

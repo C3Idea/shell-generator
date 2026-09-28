@@ -4,7 +4,7 @@
 # Tasks: Shared pop-up component on <dialog>, styled after Pico.css
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-28T13:51:39-06:00
+**Generated**: 2026-09-28T13:57:13-06:00
 
 ---
 
@@ -13,9 +13,9 @@
 **Purpose**: --modal-* tokens and ::backdrop, ModalComponent with its specs, declared in AppModule
 
 - [x] T001 [W0] In src/styles.css add the --modal-* custom properties from Pico v2 (spacing 1rem, border radius 0.25rem, Pico v2 box shadow, width ~510px widening to ~700px on large screens and full width minus spacing on phones, overlay rgba(0,0,0,0.4), teal #77aca2 primary/outline/light divider tint, 150–200 ms animation duration) plus a dialog::backdrop rule that reads the overlay token (no backdrop-filter). Add a comment crediting Pico.css (MIT). Do not add any dependency.
-- [ ] T002 [W0] [TDD] [US1] Add src/app/modal/modal.component.{ts,html,css,spec.ts} and declare ModalComponent in src/app/app.module.ts. <dialog> with aria-labelledby=titleId, <article> with <header> (projected [modal-title] <h2> + ✕ button, aria-label AppStrings.LABEL_CLOSE), projected body, optional [modal-footer]. Inputs: open, titleId, initialFocus (default the ✕). Output: closed. Open calls showModal() only when !dialog.open, then focuses the initial-focus target; closing calls close(). Esc (cancel, preventDefault then close), a click whose target is the <dialog> itself, and the ✕ all go through one path that emits closed once. Styles read the --modal-* tokens: capped width, max-height within the viewport, body scrolls inside, footer buttons secondary before primary, fade/scale off under prefers-reduced-motion. Write the specs first: open/close via [open], Esc, backdrop click, ✕, closed emitted once, open-while-open no-op (no InvalidStateError), initial focus, aria-labelledby and the ✕ aria-label.
+- [x] T002 [W0] [TDD] [US1] Add src/app/modal/modal.component.{ts,html,css,spec.ts} and declare ModalComponent in src/app/app.module.ts. <dialog> with aria-labelledby=titleId, <article> with <header> (projected [modal-title] <h2> + ✕ button, aria-label AppStrings.LABEL_CLOSE), projected body, optional [modal-footer]. Inputs: open, titleId, initialFocus (default the ✕). Output: closed. Open calls showModal() only when !dialog.open, then focuses the initial-focus target; closing calls close(). Esc (cancel, preventDefault then close), a click whose target is the <dialog> itself, and the ✕ all go through one path that emits closed once. Styles read the --modal-* tokens: capped width, max-height within the viewport, body scrolls inside, footer buttons secondary before primary, fade/scale off under prefers-reduced-motion. Write the specs first: open/close via [open], Esc, backdrop click, ✕, closed emitted once, open-while-open no-op (no InvalidStateError), initial focus, aria-labelledby and the ✕ aria-label.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -54,10 +54,10 @@
 ## Summary
 
 - **Total Tasks**: 7
-- **Completed**: 1
+- **Completed**: 2
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 14%
+- **Progress**: 28%
 
 ---
 

@@ -132,6 +132,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   helpTitle:   string = "";
   helpContent: string = "";
 
+  // Pop-up state (#31), bound to each <app-modal>'s [open].
+  victoryOpen = false;
+  newGameOpen = false;
+  howToOpen   = false;
+  helpOpen    = false;
+
   distance: number;
   gameId: string = "";
 

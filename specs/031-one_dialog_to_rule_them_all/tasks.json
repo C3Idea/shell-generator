@@ -14,15 +14,17 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
     "totalTasks": 7,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-28T19:47:38Z",
+    "lastCheckpoint": "2026-09-28T13:57:55-06:00",
     "contextHint": "One <app-modal> on native <dialog>: [open] input, (closed) output, initial-focus option; showModal() only when !dialog.open. Esc (cancel), backdrop click (target === dialog) and header ✕ (aria-label AppStrings.LABEL_CLOSE) all emit (closed). Tokens --modal-* + dialog::backdrop rgba(0,0,0,.4) in src/styles.css. Footer 'Cerrar' buttons dropped. Leave the side menus' style.display (menu, visualizationMenu) alone. Copy unchanged. NgModule: declare ModalComponent in AppModule and every TestBed. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
-    "lastUpdated": "2026-09-28T13:51:39-06:00"
+    "lastUpdated": "2026-09-28T13:57:13-06:00"
   },
   "waves": [
     {
@@ -33,7 +35,8 @@
         "T001",
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-28T13:57:13-06:00"
     },
     {
       "number": 1,
@@ -98,7 +101,7 @@
       "id": "T002",
       "wave": 0,
       "description": "Add src/app/modal/modal.component.{ts,html,css,spec.ts} and declare ModalComponent in src/app/app.module.ts. <dialog> with aria-labelledby=titleId, <article> with <header> (projected [modal-title] <h2> + ✕ button, aria-label AppStrings.LABEL_CLOSE), projected body, optional [modal-footer]. Inputs: open, titleId, initialFocus (default the ✕). Output: closed. Open calls showModal() only when !dialog.open, then focuses the initial-focus target; closing calls close(). Esc (cancel, preventDefault then close), a click whose target is the <dialog> itself, and the ✕ all go through one path that emits closed once. Styles read the --modal-* tokens: capped width, max-height within the viewport, body scrolls inside, footer buttons secondary before primary, fade/scale off under prefers-reduced-motion. Write the specs first: open/close via [open], Esc, backdrop click, ✕, closed emitted once, open-while-open no-op (no InvalidStateError), initial focus, aria-labelledby and the ✕ aria-label.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -120,7 +123,26 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T13:57:13-06:00",
+        "commitSha": "c30f36dfeb6dfb60c79e0a21a05ed7ef2170e57b",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/modal/modal.component.ts",
+          "src/app/modal/modal.component.html",
+          "src/app/modal/modal.component.css",
+          "src/app/modal/modal.component.spec.ts",
+          "src/app/app.module.ts",
+          "src/styles.css"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/modal/modal.component.spec.ts",
+          "redResult": "14 of 15 FAILED against an empty stub",
+          "greenResult": "15 of 15 SUCCESS (3 consecutive runs); full suite 98 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",
