@@ -1,0 +1,8 @@
+vt.idd:task: T005
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.spec.ts,src/app/sandbox/sandbox.component.ts
+vt.idd:tdd: red=22 FAILED, 3 SUCCESS against the pre-#31 markup (flags stubbed), green=pending T006 implementation
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-28T14:07:55-06:00
