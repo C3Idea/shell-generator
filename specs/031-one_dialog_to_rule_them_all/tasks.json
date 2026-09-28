@@ -14,17 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1
     ],
     "totalTasks": 7,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-28T13:57:55-06:00",
+    "lastCheckpoint": "2026-09-28T14:06:43-06:00",
     "contextHint": "One <app-modal> on native <dialog>: [open] input, (closed) output, initial-focus option; showModal() only when !dialog.open. Esc (cancel), backdrop click (target === dialog) and header ✕ (aria-label AppStrings.LABEL_CLOSE) all emit (closed). Tokens --modal-* + dialog::backdrop rgba(0,0,0,.4) in src/styles.css. Footer 'Cerrar' buttons dropped. Leave the side menus' style.display (menu, visualizationMenu) alone. Copy unchanged. NgModule: declare ModalComponent in AppModule and every TestBed. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
-    "lastUpdated": "2026-09-28T14:00:55-06:00"
+    "lastUpdated": "2026-09-28T14:05:51-06:00"
   },
   "waves": [
     {
@@ -47,7 +48,8 @@
         "T003",
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-28T14:05:51-06:00"
     },
     {
       "number": 2,
@@ -184,7 +186,7 @@
       "id": "T004",
       "wave": 1,
       "description": "Move the game's 4 pop-ups to <app-modal> in src/app/game/game.component.{html,ts,css}. HTML: ¡Victoria! with a footer holding Jugar and Sandbox; Nuevo juego with the choices and key row in the body, initialFocus on the first choice button; how-to and help with no footer. Titles as <h2> with ids, text lines as <p> keeping their classes; copy unchanged; footer 'Cerrar' buttons removed. TS: a boolean per pop-up bound to [open] and reset in (closed); checkGameIsOver() sets the ¡Victoria! flag; ngAfterViewInit opens the how-to; delete onEscape/@HostListener('document:keydown.escape'), modalMouseDown and the pop-up @ViewChilds/style.display lines (keep keyEntryRow/gameKeyInput and the menu toggles). CSS: remove .modal, .modal-content, .modal-new-game-content, .modal-howto-content, .modal-help-content, .modal-close-button, .modal-title and both .modal-button-bar rules; keep content-only layout such as .new-game-choices and .key-entry-row.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -201,7 +203,19 @@
       ],
       "dependencies": [
         "T003"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:05:51-06:00",
+        "commitSha": "25f894dacf9c9f0890e36478326186ca7807565a",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T005": {
       "id": "T005",

@@ -59,6 +59,10 @@ export class SandboxComponent implements AfterViewInit, OnDestroy {
   helpTitle:   string = "";
   helpContent: string = "";
 
+  // Pop-up state (#31), bound to each <app-modal>'s [open].
+  introOpen = false;
+  helpOpen  = false;
+
   // Visual parameters
   menuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
