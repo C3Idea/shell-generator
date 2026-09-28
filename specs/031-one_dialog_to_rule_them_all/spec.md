@@ -174,7 +174,7 @@ Angular 17.3 (NgModule, not standalone), TypeScript, Karma + Jasmine unit tests.
 | VM-013 | S13: fits viewport at 390/768/1280 + 844×390, scrolls inside | modal spec "keeps a tall pop-up inside the viewport…" (b66212a); harness `validaciones/31` e2e 359/359 on c645cc7 (1280/768/390/360 px, 844×390; Chromium only) | Pass |
 | VM-014 | S14: pop-up + backdrop above canvas/toolbar/heat bar/#11 buttons | #15 spec "sits below the pop-ups" (hit test); harness `validaciones/31` e2e 359/359 on c645cc7 (heat bar, #11 buttons, switch, toolbar, canvas covered) | Pass |
 | VM-015 | S15: page behind does not scroll | html/body overflow hidden (src/styles.css:2-7); harness `validaciones/31` e2e 359/359 on c645cc7 (wheel leaves page scrollTop 0) | Pass |
-| VM-016 | S16: `role=dialog`/`aria-modal` + `aria-labelledby` → `<h2>` | game/sandbox "is named by its <h2> title…" (6 pop-ups), native modal dialog; real screen reader not yet run (31-MANUAL-VALIDATION.md §8) | Partial |
+| VM-016 | S16: `role=dialog`/`aria-modal` + `aria-labelledby` → `<h2>` | game/sandbox "is named by its <h2> title…" (6 pop-ups), native modal dialog; screen reader checked in the owner's manual pass (https://github.com/C3Idea/shell-generator/issues/31#issuecomment-5880674339) | Pass |
 | VM-017 | S17: ✕ has `aria-label="Cerrar"` | modal spec "labels the dialog with its title and the ✕ with \"Cerrar\""; game/sandbox per-pop-up specs | Pass |
 
 ## Success Criteria
@@ -190,7 +190,7 @@ Angular 17.3 (NgModule, not standalone), TypeScript, Karma + Jasmine unit tests.
 | SC-007 | All existing pop-up behaviours (auto-open welcome/how-to, ¡Victoria! on win, #23 Nuevo juego flows, parameter help incl. Resolución) preserved; copy unchanged | app-strings.ts identical to dev (validate-ci-local.sh); #23/#11/#12 specs pass; harness `validaciones/31` e2e 359/359 on c645cc7 | Pass |
 | SC-008 | Modal styling is one `--modal-*` token set in `src/styles.css`; Pico credited (MIT) in a CSS comment; no Pico dependency added | src/styles.css token set on :root, ::backdrop + Pico MIT credit; package.json deps identical to dev | Pass |
 | SC-009 | New component specs + migrated `dialog.open` specs pass; all tests green | ng test 160/160 (x2) on c645cc7; revert guard: 78 pop-up specs fail on dev | Pass |
-| SC-010 | Before/after screenshots of all six pop-ups at 390/768/1280 px approved on this issue before merge | [pending] | Pending |
+| SC-010 | Before/after screenshots of all six pop-ups at 390/768/1280 px approved on this issue before merge | owner approval of the before/after sheets (390/768/1280 px, 844×390) and the manual pass: https://github.com/C3Idea/shell-generator/issues/31#issuecomment-5880674339 | Pass |
 
 ## Complexity Considerations
 
