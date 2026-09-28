@@ -189,7 +189,7 @@
     <h2 modal-title id="label-help-title">{{this.helpTitle}}</h2>
     <p id="label-help-content">{{this.helpContent}}</p>
   </app-modal>
-  <app-modal id="modal-victory" titleId="label-success-title" [open]="this.victoryOpen"
+  <app-modal id="modal-victory" class="modal-centered" titleId="label-success-title" [open]="this.victoryOpen"
     (closed)="this.victoryOpen = false">
     <h2 modal-title id="label-success-title">{{AppStrings.LABEL_SUCCESS}}</h2>
     <footer modal-footer>

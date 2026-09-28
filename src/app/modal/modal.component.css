@@ -61,7 +61,13 @@ app-modal > dialog[open]::backdrop {
 }
 
 /* Pico's widths: full width minus spacing on phones, 510 px from 576 px,
-   700 px from 768 px. */
+   700 px from 768 px. Phones get a little less room inside the box. */
+@media (max-width: 575px) {
+  app-modal > dialog {
+    --modal-padding: 1.25rem;
+  }
+}
+
 @media (min-width: 576px) {
   app-modal > dialog {
     max-width: var(--modal-width-sm);
@@ -89,7 +95,7 @@ app-modal > dialog > article > header {
   align-items: center;
   justify-content: space-between;
   gap: var(--modal-spacing);
-  padding: calc(var(--modal-spacing) * 0.75) var(--modal-spacing);
+  padding: calc(var(--modal-padding) * 0.75) var(--modal-padding);
   border-bottom: 1px solid var(--modal-divider);
 }
 
@@ -122,8 +128,8 @@ app-modal > dialog > article > .modal-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--modal-spacing);
-  line-height: 1.5;
+  padding: var(--modal-padding);
+  line-height: 1.65;
 }
 
 app-modal > dialog > article > .modal-body:empty {
@@ -131,7 +137,7 @@ app-modal > dialog > article > .modal-body:empty {
 }
 
 app-modal > dialog > article > .modal-body > p {
-  margin: 0 0 var(--modal-spacing) 0;
+  margin: 0 0 1.1em 0;
 }
 
 app-modal > dialog > article > .modal-body > p:last-child {
@@ -143,9 +149,35 @@ app-modal > dialog > article > footer {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: calc(var(--modal-spacing) * 0.5);
-  padding: calc(var(--modal-spacing) * 0.75) var(--modal-spacing);
+  gap: calc(var(--modal-spacing) * 0.75);
+  padding: var(--modal-padding);
   border-top: 1px solid var(--modal-divider);
+}
+
+/* Centered variant (<app-modal class="modal-centered">, used by ¡Victoria!):
+   title, text and buttons centred. The ✕ sits out of the flow at the right,
+   with matching room on both sides, so the title is centred on the box. */
+app-modal.modal-centered > dialog > article > header {
+  position: relative;
+  justify-content: center;
+  padding-left: calc(var(--modal-padding) + 2rem);
+  padding-right: calc(var(--modal-padding) + 2rem);
+}
+
+app-modal.modal-centered > dialog > article > header > h2,
+app-modal.modal-centered > dialog > article > .modal-body {
+  text-align: center;
+}
+
+app-modal.modal-centered .modal-close {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--modal-padding) - 0.5rem);
+  transform: translateY(-50%);
+}
+
+app-modal.modal-centered > dialog > article > footer {
+  justify-content: center;
 }
 
 /* Footer buttons are primary (filled teal) unless marked .secondary (teal

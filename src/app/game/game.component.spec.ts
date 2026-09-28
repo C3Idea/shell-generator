@@ -853,6 +853,19 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
       expect(victory().open).toBeTrue();
     });
 
+    it('centres its title and buttons, with the ✕ still at the right', () => {
+      win();
+      const header = title(victory()).getBoundingClientRect();
+      const box = victory().getBoundingClientRect();
+      const centre = (r: DOMRect) => r.left + r.width / 2;
+      expect(getComputedStyle(title(victory())).textAlign).toBe('center');
+      expect(Math.abs(centre(header) - centre(box))).toBeLessThan(1);
+      const buttons = Array.from(victory().querySelectorAll('footer button')).map(b => b.getBoundingClientRect());
+      const row = { left: Math.min(...buttons.map(b => b.left)), right: Math.max(...buttons.map(b => b.right)) };
+      expect(Math.abs((row.left + row.right) / 2 - centre(box))).toBeLessThan(1);
+      expect(closeX(victory()).getBoundingClientRect().right).toBeGreaterThan(box.right - 40);
+    });
+
     it('opens on top of the how-to', () => {
       expect(howTo().open).withContext('how-to open at start').toBeTrue();
       win();

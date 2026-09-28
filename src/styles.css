@@ -11,7 +11,8 @@ body {
    (https://picocss.com, MIT License, Copyright (c) 2019-2024 Pico); colours
    and fonts are the app's own. No Pico dependency. */
 :root {
-    --modal-spacing: 1rem;
+    --modal-spacing: 1rem;     /* gap between the box and the screen edge */
+    --modal-padding: 1.5rem;   /* room inside the box; 1.25rem on phones */
     --modal-border-radius: 0.25rem;
     --modal-box-shadow:
         0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698),
