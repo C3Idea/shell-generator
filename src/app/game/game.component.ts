@@ -45,18 +45,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('targetCanvas')
   private targetCanvasRef!: ElementRef;
 
-  @ViewChild('modalWindow')
-  private modalWindowRef!: ElementRef;
-
-  @ViewChild('modalHelpWindow')
-  private modalHelpWindowRef!: ElementRef;
-
-  @ViewChild('modalHowToWindow')
-  private modalHowToWindowRef!: ElementRef;
-
-  @ViewChild('modalNewGame')
-  private modalNewGameRef!: ElementRef;
-
   @ViewChild('keyEntryRow')
   private keyEntryRowRef!: ElementRef;
 
@@ -71,14 +59,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.targetViewer.resize(width, height);
   }
 
-  // Esc closes only the New Game pop-up (#23); the other pop-ups have no Esc.
-  @HostListener('document:keydown.escape')
-  onEscape() {
-    if (this.modalNewGame.style.display === 'block') {
-      this.closeNewGamePopup();
-    }
-  }
-
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
@@ -87,18 +67,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   private get targetCanvas(): HTMLCanvasElement {
     return this.targetCanvasRef.nativeElement;
-  }
-  private get modalWindow(): HTMLDivElement {
-    return this.modalWindowRef.nativeElement;
-  }
-  private get modalHelpWindow(): HTMLDivElement {
-    return this.modalHelpWindowRef.nativeElement;
-  }
-  private get modalHowToWindow(): HTMLDivElement {
-    return this.modalHowToWindowRef.nativeElement;
-  }
-  private get modalNewGame(): HTMLDivElement {
-    return this.modalNewGameRef.nativeElement;
   }
   private get keyEntryRow(): HTMLDivElement {
     return this.keyEntryRowRef.nativeElement;
@@ -132,7 +100,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   helpTitle:   string = "";
   helpContent: string = "";
 
-  // Pop-up state (#31), bound to each <app-modal>'s [open].
+  // Pop-up state (#31), bound to each <app-modal>'s [open] and reset by its
+  // (closed): Esc, a click on the backdrop or the ✕.
   victoryOpen = false;
   newGameOpen = false;
   howToOpen   = false;
@@ -149,15 +118,17 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.distance = this.parameters.distance(this.targetParameters);
   }
 
+  // Opened before the first render, so the pop-ups show on load without a
+  // second change detection pass.
   ngOnInit(): void {
+    this.showHowToWindow();
+    this.checkGameIsOver();
   }
-  
+
   ngAfterViewInit(): void {
     this.setupShellViewers();
     this.setShellVisibility();
     this.createShellGraphs();
-    this.showHowToWindow();
-    this.checkGameIsOver();
   }
 
   // Stop the render loops when leaving the game (#21). The viewers only exist
@@ -294,7 +265,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   checkGameIsOver(): void {
     const result = this.checkParametersAreSimilar();
     if (result) {
-      this.modalWindow.style.display = 'block';
+      this.victoryOpen = true;
     }
   }
 
@@ -332,18 +303,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     return true;
   }
 
-  private closeModalWindow() {
-    this.modalWindow.style.display = 'none';
-  }
-
-  private closeModalHelpWindow() {
-    this.modalHelpWindow.style.display = 'none';
-  }
-
-  private closeModalHowToWindow() {
-    this.modalHowToWindow.style.display = 'none';
-  }
-
   private newGame(seed?: string) {
     this.clearTargetFromUrl();
     this.parameters       = new ShellParameters();
@@ -369,11 +328,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   private openNewGamePopup() {
     this.gameKeyInput.value = '';
     this.keyEntryRow.style.display = 'none';
-    this.modalNewGame.style.display = 'block';
-  }
-
-  private closeNewGamePopup() {
-    this.modalNewGame.style.display = 'none';
+    this.newGameOpen = true;
   }
 
   enterKeyButtonClick(event: Event) {
@@ -391,11 +346,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startNewGameFromPopup(key === '' ? undefined : key);
   }
 
-  newGameCloseButtonClick(event: Event) {
-    event.preventDefault();
-    this.closeNewGamePopup();
-  }
-
   randomGameButtonClick(event: Event) {
     event.preventDefault();
     this.startNewGameFromPopup(undefined);
@@ -405,8 +355,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // any string, even '', is hashed into a fixed seed.
   private startNewGameFromPopup(seed: string | undefined) {
     this.gameId = seed ?? '';
-    this.closeNewGamePopup();
-    this.closeModalWindow();
+    this.newGameOpen = false;
+    this.victoryOpen = false;
     this.newGame(seed);
   }
 
@@ -498,43 +448,28 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.navigateToSandbox();
   }
 
-  modalMouseDown(event: Event) {
-    if (event.target == this.modalWindow) {
-      this.closeModalWindow();
-    }
-    else if (event.target == this.modalHelpWindow) {
-      this.closeModalHelpWindow();
-    }
-    else if (event.target == this.modalHowToWindow) {
-      this.closeModalHowToWindow();
-    }
-    else if (event.target == this.modalNewGame) {
-      this.closeNewGamePopup();
-    }
-  }
-
   parameterHelpAButtonClick(event: Event) {
     this.helpTitle   = AppStrings.LABEL_PARAM_A_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_A_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpBetaButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_BETA_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_BETA_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   parameterHelpA1ButtonClick(event: Event) {
     this.helpTitle = AppStrings.LABEL_PARAM_A1_HELP_TITLE;
     this.helpContent = AppStrings.LABEL_PARAM_A1_HELP_CONTENT;
-    this.modalHelpWindow.style.display = 'block';
+    this.helpOpen = true;
   }
 
   howToButtonClick(event: Event) {
@@ -542,15 +477,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private showHowToWindow() {
-    this.modalHowToWindow.style.display = 'block';
-  }
-
-  howToCloseButtonClick(event: Event) {
-    this.closeModalHowToWindow();
-  }
-
-  helpCloseButtonClick(event: Event) {
-    this.closeModalHelpWindow();
+    this.howToOpen = true;
   }
 
 }

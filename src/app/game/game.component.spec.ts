@@ -250,6 +250,11 @@ describe('GameComponent New Game pop-up (#23)', () => {
   const button = (text: string) => Array.from(popup().querySelectorAll('button'))
     .find(b => b.textContent?.trim() === text) as HTMLButtonElement;
   const closeX = (d: HTMLDialogElement) => d.querySelector('header button') as HTMLButtonElement;
+  // Nuevo juego, rendered as the app does after the click.
+  const openPopup = () => {
+    component.newGameButtonClick(new Event('click'));
+    fixture.detectChanges();
+  };
   // A target's ten values to 2 decimals, the precision the issue compares at.
   const values = (p: ShellParameters) =>
     [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
@@ -267,7 +272,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
   describe('opening', () => {
     it('Nuevo juego opens the pop-up instead of window.prompt', () => {
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(prompt).not.toHaveBeenCalled();
       expect(shown(popup())).toBeTrue();
     });
@@ -275,13 +280,13 @@ describe('GameComponent New Game pop-up (#23)', () => {
     it('opening from the gear menu hides the menu', () => {
       component.menuButtonClick(new Event('click'));
       expect(component.menuVisible).toBeTrue();
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(component.menuVisible).toBeFalse();
       expect(menu().style.display).toBe('none');
     });
 
     it('is an accessible dialog with a labelled key field', () => {
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(shown(popup())).toBeTrue();
       const dialog = popup();
       expect(dialog.matches(':modal')).withContext('modal <dialog>').toBeTrue();
@@ -296,7 +301,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
   describe('Aleatorio', () => {
     it('starts an unseeded game and closes the pop-up', () => {
       const newGame = spyOn(component as any, 'newGame').and.callThrough();
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       button(AppStrings.LABEL_RANDOM_GAME).click();
       expect(newGame).toHaveBeenCalledTimes(1);
       expect(newGame.calls.mostRecent().args[0]).toBeUndefined();
@@ -306,10 +311,10 @@ describe('GameComponent New Game pop-up (#23)', () => {
     });
 
     it('gives a different target each time', () => {
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       button(AppStrings.LABEL_RANDOM_GAME).click();
       const first = target();
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       button(AppStrings.LABEL_RANDOM_GAME).click();
       expect(target()).not.toEqual(first);
     });
@@ -320,7 +325,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
     const keyInput = () => el.querySelector('#game-key-input') as HTMLInputElement;
 
     function playKey(key: string, confirm: 'button' | 'enter' = 'button'): number[] {
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       button(AppStrings.LABEL_ENTER_KEY).click();
       keyInput().value = key;
       if (confirm === 'enter') {
@@ -333,7 +338,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
     }
 
     it('reveals an empty, focused key field', () => {
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(keyRow().style.display).toBe('none');
       button(AppStrings.LABEL_ENTER_KEY).click();
       expect(keyRow().style.display).not.toBe('none');
@@ -376,7 +381,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
     it('opens empty and hidden again after a keyed game', () => {
       playKey('reto1');
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(keyRow().style.display).toBe('none');
       expect(keyInput().value).toBe('');
     });
@@ -397,7 +402,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
       it(`${way} leaves the current game unchanged`, () => {
         const before = { target: target(), player: values(component.parameters), gameId: component.gameId };
         const newGame = spyOn(component as any, 'newGame').and.callThrough();
-        component.newGameButtonClick(new Event('click'));
+        openPopup();
         expect(shown(popup())).toBeTrue();
         close();
         expect(shown(popup())).toBeFalse();
@@ -409,7 +414,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
     }
 
     it('a click inside the box does not close it', () => {
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(shown(popup())).toBeTrue();
       const title = popup().querySelector('h2') as HTMLElement;
       title.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
@@ -420,7 +425,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
     it('Esc on the pop-up leaves the how-to under it open', () => {
       const howTo = el.querySelector('#modal-howto > dialog') as HTMLDialogElement;
       expect(shown(howTo)).withContext('how-to shown at start').toBeTrue();
-      component.newGameButtonClick(new Event('click'));
+      openPopup();
       expect(shown(popup())).toBeTrue();
       popup().dispatchEvent(new Event('cancel', { cancelable: true }));
       expect(shown(popup())).toBeFalse();
@@ -440,6 +445,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
     it('Jugar opens the New Game pop-up over ¡Victoria!', () => {
       jugar().click();
+      fixture.detectChanges();
       expect(prompt).not.toHaveBeenCalled();
       expect(shown(popup())).toBeTrue();
       expect(shown(victory())).toBeTrue();
@@ -447,6 +453,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
     it('closing the pop-up goes back to ¡Victoria!', () => {
       jugar().click();
+      fixture.detectChanges();
       expect(shown(popup())).toBeTrue();
       closeX(popup()).click();
       expect(shown(popup())).toBeFalse();
@@ -455,6 +462,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
 
     it('starting a game closes both', () => {
       jugar().click();
+      fixture.detectChanges();
       expect(shown(popup())).toBeTrue();
       button(AppStrings.LABEL_RANDOM_GAME).click();
       expect(shown(popup())).toBeFalse();
@@ -665,7 +673,7 @@ describe('GameComponent heat bar scale (#28)', () => {
   function createAgainst(target: ShellParameters): GameComponent {
     TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ GameComponent ],
+      declarations: [ GameComponent, ModalComponent ],
       providers: [ provideRouter([]) ]
     });
     spyOn(ShellParameters, 'randomParameters').and.returnValue(target);

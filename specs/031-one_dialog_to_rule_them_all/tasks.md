@@ -4,7 +4,7 @@
 # Tasks: Shared pop-up component on <dialog>, styled after Pico.css
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-28T13:57:13-06:00
+**Generated**: 2026-09-28T14:00:55-06:00
 
 ---
 
@@ -23,7 +23,7 @@
 
 **Purpose**: ¡Victoria!, Nuevo juego, how-to and parameter help on <app-modal>; onEscape, modalMouseDown and modal style.display removed
 
-- [ ] T003 [W1] [TDD] [US1] Update src/app/game/game.component.spec.ts first: declare ModalComponent in the TestBed; move the pop-up assertions from style.display to dialog.open; add specs for ¡Victoria! opening on a win and staying open with no error when checkGameIsOver() runs again, the how-to opening on load, Nuevo juego focusing its first choice button and 'Con clave' focusing the key input, each ⓘ opening help with its own title/text, Esc/backdrop/✕ closing each pop-up and resetting its open flag, <h2> titles referenced by aria-labelledby, and the .label-howto-line class still present.
+- [x] T003 [W1] [TDD] [US1] Update src/app/game/game.component.spec.ts first: declare ModalComponent in the TestBed; move the pop-up assertions from style.display to dialog.open; add specs for ¡Victoria! opening on a win and staying open with no error when checkGameIsOver() runs again, the how-to opening on load, Nuevo juego focusing its first choice button and 'Con clave' focusing the key input, each ⓘ opening help with its own title/text, Esc/backdrop/✕ closing each pop-up and resetting its open flag, <h2> titles referenced by aria-labelledby, and the .label-howto-line class still present.
 - [ ] T004 [W1] [US1] Move the game's 4 pop-ups to <app-modal> in src/app/game/game.component.{html,ts,css}. HTML: ¡Victoria! with a footer holding Jugar and Sandbox; Nuevo juego with the choices and key row in the body, initialFocus on the first choice button; how-to and help with no footer. Titles as <h2> with ids, text lines as <p> keeping their classes; copy unchanged; footer 'Cerrar' buttons removed. TS: a boolean per pop-up bound to [open] and reset in (closed); checkGameIsOver() sets the ¡Victoria! flag; ngAfterViewInit opens the how-to; delete onEscape/@HostListener('document:keydown.escape'), modalMouseDown and the pop-up @ViewChilds/style.display lines (keep keyEntryRow/gameKeyInput and the menu toggles). CSS: remove .modal, .modal-content, .modal-new-game-content, .modal-howto-content, .modal-help-content, .modal-close-button, .modal-title and both .modal-button-bar rules; keep content-only layout such as .new-game-choices and .key-entry-row.
 
 **Wave Gate**: pending
@@ -54,10 +54,10 @@
 ## Summary
 
 - **Total Tasks**: 7
-- **Completed**: 2
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 28%
+- **Progress**: 42%
 
 ---
 

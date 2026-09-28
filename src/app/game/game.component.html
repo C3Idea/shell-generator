@@ -151,24 +151,14 @@
       {{AppStrings.LABEL_SHARE_GAME}}
     </button>
   </div>
-  <div #modalWindow class="modal" (mousedown)="this.modalMouseDown($event)">
-    <div class="modal-content">
-      <label class="modal-title">{{AppStrings.LABEL_SUCCESS}}</label>
-      <div class="modal-button-bar">
-        <button class="modal-button" (click)="this.newGameButtonClick($event)">
-          <label>{{AppStrings.LABEL_PLAY_AGAIN}}</label>
-        </button>
-        <button class="modal-button" (click)="this.sandboxButtonClick($event)">
-          <label>{{AppStrings.LABEL_GO_HOME}}</label>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div #modalNewGame id="modal-new-game" class="modal" (mousedown)="this.modalMouseDown($event)">
-    <div class="modal-new-game-content" role="dialog" aria-modal="true" aria-labelledby="label-new-game-title">
-      <label id="label-new-game-title">{{AppStrings.LABEL_NEW_GAME_POPUP_TITLE}}</label>
+  <!-- Pop-ups (#31): the shared <app-modal>. ¡Victoria! comes last so it
+       lands on top when it opens together with the how-to. -->
+  <app-modal id="modal-new-game" titleId="label-new-game-title" [open]="this.newGameOpen"
+    [initialFocus]="randomGameButton" (closed)="this.newGameOpen = false">
+    <h2 modal-title id="label-new-game-title">{{AppStrings.LABEL_NEW_GAME_POPUP_TITLE}}</h2>
+    <footer modal-footer>
       <div class="new-game-choices">
-        <button type="button" class="new-game-button" (click)="this.randomGameButtonClick($event)">
+        <button #randomGameButton type="button" class="new-game-button" (click)="this.randomGameButtonClick($event)">
           {{AppStrings.LABEL_RANDOM_GAME}}
         </button>
         <button type="button" class="new-game-button" (click)="this.enterKeyButtonClick($event)">
@@ -184,36 +174,31 @@
           {{AppStrings.LABEL_START_KEYED_GAME}}
         </button>
       </div>
-      <div class="modal-button-bar">
-        <button type="button" class="modal-close-button" (click)="this.newGameCloseButtonClick($event)">
-          <label>{{AppStrings.LABEL_CLOSE}}</label>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div #modalHowToWindow class="modal" (mousedown)="this.modalMouseDown($event)">
-    <div class="modal-howto-content">
-      <label id="label-howto-title">{{AppStrings.LABEL_HOWTO_WINDOW_TITLE}}</label>
-      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE1}}</label>
-      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE2}}</label>
-      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE3}}</label>
-      <label class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE4}}</label>
-      <div class="modal-button-bar">
-        <button class="modal-close-button" (click)="this.howToCloseButtonClick($event)">
-          <label>{{AppStrings.LABEL_CLOSE}}</label>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
-    <div class="modal-help-content">
-      <label id="label-help-title">{{this.helpTitle}}</label>
-      <label id="label-help-content">{{this.helpContent}}</label>
-      <div class="modal-button-bar">
-        <button class="modal-close-button" (click)="this.helpCloseButtonClick($event)">
-          <label>{{AppStrings.LABEL_CLOSE}}</label>
-        </button>
-      </div>
-    </div>
-  </div>
+    </footer>
+  </app-modal>
+  <app-modal id="modal-howto" titleId="label-howto-title" [open]="this.howToOpen"
+    (closed)="this.howToOpen = false">
+    <h2 modal-title id="label-howto-title">{{AppStrings.LABEL_HOWTO_WINDOW_TITLE}}</h2>
+    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE1}}</p>
+    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE2}}</p>
+    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE3}}</p>
+    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE4}}</p>
+  </app-modal>
+  <app-modal id="modal-help" titleId="label-help-title" [open]="this.helpOpen"
+    (closed)="this.helpOpen = false">
+    <h2 modal-title id="label-help-title">{{this.helpTitle}}</h2>
+    <p id="label-help-content">{{this.helpContent}}</p>
+  </app-modal>
+  <app-modal id="modal-victory" titleId="label-success-title" [open]="this.victoryOpen"
+    (closed)="this.victoryOpen = false">
+    <h2 modal-title id="label-success-title">{{AppStrings.LABEL_SUCCESS}}</h2>
+    <footer modal-footer>
+      <button type="button" class="secondary" (click)="this.sandboxButtonClick($event)">
+        {{AppStrings.LABEL_GO_HOME}}
+      </button>
+      <button type="button" (click)="this.newGameButtonClick($event)">
+        {{AppStrings.LABEL_PLAY_AGAIN}}
+      </button>
+    </footer>
+  </app-modal>
 </div>
