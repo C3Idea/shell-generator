@@ -1,6 +1,6 @@
 <dialog #dialog class="modal-dialog" [attr.aria-labelledby]="titleId || null"
   (cancel)="onCancel($event)" (close)="onNativeClose()"
-  (mousedown)="onMouseDown($event)" (click)="onClick($event)">
+  (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)" (click)="onClick($event)">
   <article>
     <header>
       <ng-content select="[modal-title]"></ng-content>

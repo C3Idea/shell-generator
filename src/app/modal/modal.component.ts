@@ -34,11 +34,14 @@ export class ModalComponent implements OnChanges, AfterViewInit {
   // Set once (closed) has fired for the current opening, so a user close and
   // the native close event that follows it emit only once.
   private closeReported = false;
-  // Where the last press started: a drag from inside the box that ends on the
-  // backdrop is not a backdrop click.
+  // Where the last press started and ended: only a press and release both on
+  // the backdrop close it, not a drag into or out of the box.
   private pressedOnBackdrop = false;
+  private releasedOnBackdrop = false;
 
-  // Synced once all inputs are set, so initialFocus is known on open.
+  // Runs after each batch of input changes, so initialFocus is already set
+  // when [open] turns true. Before the view exists this is a no-op and
+  // ngAfterViewInit does the first sync.
   ngOnChanges(): void {
     this.sync();
   }
@@ -74,14 +77,21 @@ export class ModalComponent implements OnChanges, AfterViewInit {
     this.pressedOnBackdrop = event.target === this.dialogRef?.nativeElement;
   }
 
-  // The <dialog> has no padding and the <article> fills it, so a click whose
-  // target is the <dialog> itself landed on the backdrop.
+  onMouseUp(event: MouseEvent): void {
+    this.releasedOnBackdrop = event.target === this.dialogRef?.nativeElement;
+  }
+
+  // The <dialog> has no padding and the <article> fills it, so an event whose
+  // target is the <dialog> itself is on the backdrop. A drag between the box
+  // and the backdrop also clicks the <dialog> (their common ancestor), so the
+  // press and the release must both be on the backdrop.
   onClick(event: MouseEvent): void {
     const onBackdrop = event.target === this.dialogRef?.nativeElement;
-    if (onBackdrop && this.pressedOnBackdrop) {
+    if (onBackdrop && this.pressedOnBackdrop && this.releasedOnBackdrop) {
       this.requestClose();
     }
     this.pressedOnBackdrop = false;
+    this.releasedOnBackdrop = false;
   }
 
   // Runs on every input change: showModal() throws on a dialog that is

@@ -13,6 +13,7 @@ import { AppStrings } from '../app-strings';
       (closed)="onClosed()">
       <h2 modal-title id="test-title">Title</h2>
       <p class="body-line">Body</p>
+      <div class="tall" [style.height.px]="tallPx"></div>
       <button #second type="button" class="second">Second</button>
       <footer modal-footer>
         <button type="button" class="action">Action</button>
@@ -22,6 +23,7 @@ import { AppStrings } from '../app-strings';
 class HostComponent {
   open = false;
   focusSecond = false;
+  tallPx = 0;
   closedCount = 0;
   onClosed() {
     this.closedCount++;
@@ -42,11 +44,12 @@ describe('ModalComponent (#31)', () => {
     fixture.detectChanges();
   }
 
-  // A click on the backdrop reaches the <dialog> itself: press and release
-  // both land on it.
+  // A click on the backdrop reaches the <dialog> itself: press, release and
+  // click all land on it.
   function clickBackdrop() {
-    dialog().dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-    dialog().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    for (const type of ['mousedown', 'mouseup', 'click']) {
+      dialog().dispatchEvent(new MouseEvent(type, { bubbles: true }));
+    }
   }
 
   // The native close event is queued as a task after close(); wait for it
@@ -132,6 +135,7 @@ describe('ModalComponent (#31)', () => {
     setOpen(true);
     const line = dialog().querySelector('.body-line') as HTMLElement;
     line.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    line.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
     line.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(dialog().open).toBeTrue();
     expect(host.closedCount).toBe(0);
@@ -141,8 +145,21 @@ describe('ModalComponent (#31)', () => {
     setOpen(true);
     const line = dialog().querySelector('.body-line') as HTMLElement;
     line.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    dialog().dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
     dialog().dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(dialog().open).toBeTrue();
+  });
+
+  // Press and release on different elements click their common ancestor,
+  // the <dialog>.
+  it('stays open when a press on the backdrop is released inside the box', () => {
+    setOpen(true);
+    const line = dialog().querySelector('.body-line') as HTMLElement;
+    dialog().dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    line.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+    dialog().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(dialog().open).toBeTrue();
+    expect(host.closedCount).toBe(0);
   });
 
   it('closes on the header ✕ and emits (closed) once', async () => {
@@ -195,5 +212,31 @@ describe('ModalComponent (#31)', () => {
     host.focusSecond = true;
     setOpen(true);
     expect(document.activeElement).toBe(dialog().querySelector('.second'));
+  });
+
+  // #1 / #31: the look the issue fixes, from src/styles.css and the component
+  // styles (both loaded by Karma).
+  describe('look', () => {
+    it('draws a plain 40% black backdrop with no blur', () => {
+      setOpen(true);
+      const backdrop = getComputedStyle(dialog(), '::backdrop');
+      expect(backdrop.backgroundColor).toBe('rgba(0, 0, 0, 0.4)');
+      expect(backdrop.backdropFilter).toBe('none');
+    });
+
+    it('keeps a tall pop-up inside the viewport and scrolls its body', () => {
+      host.tallPx = 3000;
+      setOpen(true);
+      const box = dialog().getBoundingClientRect();
+      const body = dialog().querySelector('.modal-body') as HTMLElement;
+      expect(box.top).toBeGreaterThanOrEqual(0);
+      expect(box.bottom).toBeLessThanOrEqual(innerHeight);
+      expect(getComputedStyle(body).overflowY).toBe('auto');
+      expect(body.scrollHeight).toBeGreaterThan(body.clientHeight);
+      const header = dialog().querySelector('header') as HTMLElement;
+      const footer = dialog().querySelector('article > footer') as HTMLElement;
+      expect(header.getBoundingClientRect().top).toBeGreaterThanOrEqual(0);
+      expect(footer.getBoundingClientRect().bottom).toBeLessThanOrEqual(innerHeight);
+    });
   });
 });

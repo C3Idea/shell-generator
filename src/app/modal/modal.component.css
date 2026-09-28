@@ -1,6 +1,7 @@
 /* Shared pop-up (#31), after the Pico.css v2 modal (https://picocss.com, MIT).
    Values come from the --modal-* tokens in src/styles.css. Unencapsulated
-   (the content is projected), so every rule starts at app-modal. */
+   (the content is projected), so every rule starts at app-modal: keep that
+   prefix on new rules, or they leak to the whole app. */
 
 app-modal > dialog {
   box-sizing: border-box;
@@ -61,13 +62,7 @@ app-modal > dialog[open]::backdrop {
 }
 
 /* Pico's widths: full width minus spacing on phones, 510 px from 576 px,
-   700 px from 768 px. Phones get a little less room inside the box. */
-@media (max-width: 575px) {
-  app-modal > dialog {
-    --modal-padding: 1.25rem;
-  }
-}
-
+   700 px from 768 px. */
 @media (min-width: 576px) {
   app-modal > dialog {
     max-width: var(--modal-width-sm);
@@ -106,6 +101,7 @@ app-modal > dialog > article > header > h2 {
 }
 
 app-modal .modal-close {
+  position: relative;
   flex: none;
   width: 2rem;
   height: 2rem;
@@ -120,6 +116,13 @@ app-modal .modal-close {
   cursor: pointer;
 }
 
+/* A 44 px hit area for fingers around the 32 px button. */
+app-modal .modal-close::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
 app-modal .modal-close:hover {
   background-color: var(--modal-divider);
 }
@@ -132,6 +135,8 @@ app-modal > dialog > article > .modal-body {
   line-height: 1.65;
 }
 
+/* A pop-up without body text (¡Victoria!, Nuevo juego) drops the padded
+   body. Relies on Angular stripping whitespace-only text between tags. */
 app-modal > dialog > article > .modal-body:empty {
   display: none;
 }
@@ -207,7 +212,12 @@ app-modal > dialog > article > footer button.secondary:hover {
   background-color: var(--modal-divider);
 }
 
-app-modal > dialog button:focus-visible {
+app-modal > dialog input {
+  font: inherit;
+}
+
+app-modal > dialog button:focus-visible,
+app-modal > dialog input:focus-visible {
   outline: 2px solid var(--modal-primary-hover);
   outline-offset: 2px;
 }

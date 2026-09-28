@@ -394,6 +394,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
       'Esc': () => popup().dispatchEvent(new Event('cancel', { cancelable: true })),
       'a click on the backdrop': () => {
         popup().dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        popup().dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
         popup().dispatchEvent(new MouseEvent('click', { bubbles: true }));
       },
     };
@@ -418,6 +419,7 @@ describe('GameComponent New Game pop-up (#23)', () => {
       expect(shown(popup())).toBeTrue();
       const title = popup().querySelector('h2') as HTMLElement;
       title.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      title.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
       title.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       expect(shown(popup())).toBeTrue();
     });
@@ -913,6 +915,7 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
         'Esc': d => d.dispatchEvent(new Event('cancel', { cancelable: true })),
         'a click on the backdrop': d => {
           d.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+          d.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
           d.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         },
       };

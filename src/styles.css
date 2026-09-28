@@ -9,8 +9,11 @@ body {
 /* Pop-up tokens (#31), read by ModalComponent (src/app/modal/). Layout,
    spacing, rounding and shadow follow the Pico.css v2 modal
    (https://picocss.com, MIT License, Copyright (c) 2019-2024 Pico); colours
-   and fonts are the app's own. No Pico dependency. */
-:root {
+   and fonts are the app's own. No Pico dependency.
+   Also declared on ::backdrop: before Chrome 122 / Firefox 120 / Safari 17.4
+   the backdrop inherits nothing, so var(--modal-overlay) would be empty. */
+:root,
+::backdrop {
     --modal-spacing: 1rem;     /* gap between the box and the screen edge */
     --modal-padding: 1.5rem;   /* room inside the box; 1.25rem on phones */
     --modal-border-radius: 0.25rem;
@@ -33,6 +36,14 @@ body {
     --modal-primary-inverse: #14232a;  /* dark ink: white on the teal is under 3:1 */
     --modal-divider: rgba(119, 172, 162, 0.35);
     --modal-duration: 180ms;
+}
+
+/* Phones get a little less room inside the box. */
+@media (max-width: 575px) {
+    :root,
+    ::backdrop {
+        --modal-padding: 1.25rem;
+    }
 }
 
 /* Every pop-up's overlay covers the whole viewport, the 3D canvas included:

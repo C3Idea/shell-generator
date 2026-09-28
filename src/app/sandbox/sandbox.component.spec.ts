@@ -167,6 +167,7 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
         'Esc': d => d.dispatchEvent(new Event('cancel', { cancelable: true })),
         'a click on the backdrop': d => {
           d.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+          d.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
           d.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         },
       };
