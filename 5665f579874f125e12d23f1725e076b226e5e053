@@ -1,0 +1,7 @@
+vt.idd:task: T007
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/031-one_dialog_to_rule_them_all/tasks.json
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-28T14:14:05-06:00
