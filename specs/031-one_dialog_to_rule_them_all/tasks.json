@@ -17,18 +17,22 @@
     "currentWave": 0,
     "completedWaves": [],
     "totalTasks": 7,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-28T19:47:38Z",
-    "contextHint": "One <app-modal> on native <dialog>: [open] input, (closed) output, initial-focus option; showModal() only when !dialog.open. Esc (cancel), backdrop click (target === dialog) and header ✕ (aria-label AppStrings.LABEL_CLOSE) all emit (closed). Tokens --modal-* + dialog::backdrop rgba(0,0,0,.4) in src/styles.css. Footer 'Cerrar' buttons dropped. Leave the side menus' style.display (menu, visualizationMenu) alone. Copy unchanged. NgModule: declare ModalComponent in AppModule and every TestBed. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2)."
+    "contextHint": "One <app-modal> on native <dialog>: [open] input, (closed) output, initial-focus option; showModal() only when !dialog.open. Esc (cancel), backdrop click (target === dialog) and header ✕ (aria-label AppStrings.LABEL_CLOSE) all emit (closed). Tokens --modal-* + dialog::backdrop rgba(0,0,0,.4) in src/styles.css. Footer 'Cerrar' buttons dropped. Leave the side menus' style.display (menu, visualizationMenu) alone. Copy unchanged. NgModule: declare ModalComponent in AppModule and every TestBed. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
+    "lastUpdated": "2026-09-28T13:51:39-06:00"
   },
   "waves": [
     {
       "number": 0,
       "name": "Foundational: shared modal",
       "description": "--modal-* tokens and ::backdrop, ModalComponent with its specs, declared in AppModule",
-      "tasks": ["T001", "T002"],
+      "tasks": [
+        "T001",
+        "T002"
+      ],
       "gateStatus": "pending"
     },
     {
@@ -36,7 +40,10 @@
       "name": "US1/US2/US4: game pop-ups",
       "story": "US1",
       "description": "¡Victoria!, Nuevo juego, how-to and parameter help on <app-modal>; onEscape, modalMouseDown and modal style.display removed",
-      "tasks": ["T003", "T004"],
+      "tasks": [
+        "T003",
+        "T004"
+      ],
       "gateStatus": "pending"
     },
     {
@@ -44,14 +51,19 @@
       "name": "US1/US2/US4: initial-screen pop-ups",
       "story": "US2",
       "description": "Welcome and parameter help (incl. Resolución) on <app-modal>; modalMouseDown and modal style.display removed",
-      "tasks": ["T005", "T006"],
+      "tasks": [
+        "T005",
+        "T006"
+      ],
       "gateStatus": "pending"
     },
     {
       "number": 3,
       "name": "Polish: verification",
       "description": "Lint, test, build on 2 cores; leftover-code checks",
-      "tasks": ["T007"],
+      "tasks": [
+        "T007"
+      ],
       "gateStatus": "pending"
     }
   ],
@@ -60,13 +72,27 @@
       "id": "T001",
       "wave": 0,
       "description": "In src/styles.css add the --modal-* custom properties from Pico v2 (spacing 1rem, border radius 0.25rem, Pico v2 box shadow, width ~510px widening to ~700px on large screens and full width minus spacing on phones, overlay rgba(0,0,0,0.4), teal #77aca2 primary/outline/light divider tint, 150–200 ms animation duration) plus a dialog::backdrop rule that reads the overlay token (no backdrop-filter). Add a comment crediting Pico.css (MIT). Do not add any dependency.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
       "filePath": "src/styles.css",
-      "satisfies": ["FR-013", "FR-014", "FR-016", "FR-020"],
-      "dependencies": []
+      "satisfies": [
+        "FR-013",
+        "FR-014",
+        "FR-016",
+        "FR-020"
+      ],
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-28T13:51:39-06:00",
+        "commitSha": "cd094a0af2658f419c04476d1640742bce3c891c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/styles.css"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T002": {
       "id": "T002",
@@ -78,8 +104,23 @@
       "domain": "frontend",
       "filePath": "src/app/modal/modal.component.ts",
       "story": "US1",
-      "satisfies": ["FR-001", "FR-002", "FR-003", "FR-004", "FR-005", "FR-006", "FR-007", "FR-008", "FR-009", "FR-014", "FR-015", "FR-019"],
-      "dependencies": ["T001"]
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-007",
+        "FR-008",
+        "FR-009",
+        "FR-014",
+        "FR-015",
+        "FR-019"
+      ],
+      "dependencies": [
+        "T001"
+      ]
     },
     "T003": {
       "id": "T003",
@@ -91,8 +132,16 @@
       "domain": "frontend",
       "filePath": "src/app/game/game.component.spec.ts",
       "story": "US1",
-      "satisfies": ["FR-003", "FR-005", "FR-009", "FR-010", "FR-017"],
-      "dependencies": ["T002"]
+      "satisfies": [
+        "FR-003",
+        "FR-005",
+        "FR-009",
+        "FR-010",
+        "FR-017"
+      ],
+      "dependencies": [
+        "T002"
+      ]
     },
     "T004": {
       "id": "T004",
@@ -104,8 +153,18 @@
       "domain": "frontend",
       "filePath": "src/app/game/game.component.html",
       "story": "US1",
-      "satisfies": ["FR-006", "FR-010", "FR-011", "FR-012", "FR-015", "FR-017", "FR-018"],
-      "dependencies": ["T003"]
+      "satisfies": [
+        "FR-006",
+        "FR-010",
+        "FR-011",
+        "FR-012",
+        "FR-015",
+        "FR-017",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T003"
+      ]
     },
     "T005": {
       "id": "T005",
@@ -117,8 +176,15 @@
       "domain": "frontend",
       "filePath": "src/app/sandbox/sandbox.component.spec.ts",
       "story": "US2",
-      "satisfies": ["FR-003", "FR-010", "FR-017", "FR-018"],
-      "dependencies": ["T004"]
+      "satisfies": [
+        "FR-003",
+        "FR-010",
+        "FR-017",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T004"
+      ]
     },
     "T006": {
       "id": "T006",
@@ -130,8 +196,17 @@
       "domain": "frontend",
       "filePath": "src/app/sandbox/sandbox.component.html",
       "story": "US2",
-      "satisfies": ["FR-004", "FR-010", "FR-011", "FR-012", "FR-017", "FR-018"],
-      "dependencies": ["T005"]
+      "satisfies": [
+        "FR-004",
+        "FR-010",
+        "FR-011",
+        "FR-012",
+        "FR-017",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T005"
+      ]
     },
     "T007": {
       "id": "T007",
@@ -142,8 +217,15 @@
       "parallel": false,
       "domain": "frontend",
       "filePath": "src/app/modal/modal.component.ts",
-      "satisfies": ["FR-011", "FR-012", "FR-013", "FR-018"],
-      "dependencies": ["T006"]
+      "satisfies": [
+        "FR-011",
+        "FR-012",
+        "FR-013",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T006"
+      ]
     }
   }
 }

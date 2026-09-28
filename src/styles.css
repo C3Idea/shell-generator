@@ -28,8 +28,8 @@ body {
     --modal-color: #373c44;
     --modal-font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     --modal-primary: #77aca2;
-    --modal-primary-hover: #468189;
-    --modal-primary-inverse: #ffffff;
+    --modal-primary-hover: #5f9a90;
+    --modal-primary-inverse: #14232a;  /* dark ink: white on the teal is under 3:1 */
     --modal-divider: rgba(119, 172, 162, 0.35);
     --modal-duration: 180ms;
 }

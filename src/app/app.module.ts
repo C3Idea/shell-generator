@@ -8,12 +8,14 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { GameComponent } from './game/game.component';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SandboxComponent,
     GameComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
