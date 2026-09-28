@@ -615,6 +615,7 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       expect(howTo.open).withContext('how-to open at start').toBeTrue();
       const r = bar().getBoundingClientRect();
       const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      expect(hit).withContext('the bar\'s centre is inside the test viewport').not.toBeNull();
       expect(howTo.contains(hit)).withContext('the backdrop covers the bar').toBeTrue();
       expect(bar().contains(hit)).toBeFalse();
     });
@@ -781,7 +782,9 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
   // The pop-up drawn at a point, found by what the browser hit-tests there.
   function dialogAt(d: HTMLDialogElement): HTMLDialogElement | null {
     const r = d.getBoundingClientRect();
-    return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('dialog') ?? null;
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    expect(hit).withContext('the pop-up\'s centre is inside the test viewport').not.toBeNull();
+    return hit?.closest('dialog') ?? null;
   }
 
   // How each pop-up opens, and the flag bound to its [open].
@@ -872,6 +875,20 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
       expect(howTo().open).withContext('how-to open at start').toBeTrue();
       win();
       expect(dialogAt(victory())).toBe(victory());
+    });
+
+    // A win on load opens both in the same pass: each <app-modal> calls
+    // showModal() in template order, so ¡Victoria! must come after the how-to.
+    it('is on top of the how-to when both open on load', () => {
+      fixture.destroy();
+      const loaded = TestBed.createComponent(GameComponent);
+      Object.assign(loaded.componentInstance.parameters, loaded.componentInstance.targetParameters);
+      loaded.detectChanges();
+      el = loaded.nativeElement;
+      expect(howTo().open).withContext('how-to open').toBeTrue();
+      expect(victory().open).withContext('¡Victoria! open').toBeTrue();
+      expect(dialogAt(victory())).toBe(victory());
+      loaded.destroy();
     });
   });
 
