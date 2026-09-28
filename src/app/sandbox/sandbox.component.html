@@ -246,30 +246,19 @@
         title="{{AppStrings.WIREFRAME_COLOR_INPUT_HELP_TEXT}}"/>
     </div>
   </form>
-  <div #modalIntroWindow class="modal" (mousedown)="this.modalMouseDown($event)">
-    <div class="modal-intro-content">
-      <label id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</label>
-      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</label>
-      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE2}}</label>
-      <img id="img-intro-equation" />
-      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</label>
-      <label class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</label>
-      <div class="modal-button-bar">
-        <button class="modal-close-button" (click)="this.introCloseButtonClick($event)">
-          <label>{{AppStrings.LABEL_CLOSE}}</label>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div #modalHelpWindow class="modal" (mousedown)="this.modalMouseDown($event)">
-    <div class="modal-help-content">
-      <label id="label-help-title">{{this.helpTitle}}</label>
-      <label id="label-help-content">{{this.helpContent}}</label>
-      <div class="modal-button-bar">
-        <button class="modal-close-button" (click)="this.helpCloseButtonClick($event)">
-          <label>{{AppStrings.LABEL_CLOSE}}</label>
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- Pop-ups (#31): the shared <app-modal>. -->
+  <app-modal id="modal-intro" titleId="label-intro-welcome" [open]="this.introOpen"
+    (closed)="this.introOpen = false">
+    <h2 modal-title id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</h2>
+    <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</p>
+    <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE2}}</p>
+    <img id="img-intro-equation" />
+    <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</p>
+    <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</p>
+  </app-modal>
+  <app-modal id="modal-help" titleId="label-help-title" [open]="this.helpOpen"
+    (closed)="this.helpOpen = false">
+    <h2 modal-title id="label-help-title">{{this.helpTitle}}</h2>
+    <p id="label-help-content">{{this.helpContent}}</p>
+  </app-modal>
 </div>

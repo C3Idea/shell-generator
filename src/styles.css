@@ -5,3 +5,49 @@ body {
     padding: 0;
     overflow: hidden;
 }
+
+/* Pop-up tokens (#31), read by ModalComponent (src/app/modal/). Layout,
+   spacing, rounding and shadow follow the Pico.css v2 modal
+   (https://picocss.com, MIT License, Copyright (c) 2019-2024 Pico); colours
+   and fonts are the app's own. No Pico dependency.
+   Also declared on ::backdrop: before Chrome 122 / Firefox 120 / Safari 17.4
+   the backdrop inherits nothing, so var(--modal-overlay) would be empty. */
+:root,
+::backdrop {
+    --modal-spacing: 1rem;     /* gap between the box and the screen edge */
+    --modal-padding: 1.5rem;   /* room inside the box; 1.25rem on phones */
+    --modal-border-radius: 0.25rem;
+    --modal-box-shadow:
+        0.0145rem 0.029rem 0.174rem rgba(129, 145, 181, 0.01698),
+        0.0335rem 0.067rem 0.402rem rgba(129, 145, 181, 0.024),
+        0.0625rem 0.125rem 0.75rem rgba(129, 145, 181, 0.03),
+        0.1125rem 0.225rem 1.35rem rgba(129, 145, 181, 0.036),
+        0.2085rem 0.417rem 2.502rem rgba(129, 145, 181, 0.04302),
+        0.5rem 1rem 6rem rgba(129, 145, 181, 0.06),
+        0 0 0 0.0625rem rgba(129, 145, 181, 0.015);
+    --modal-width-sm: 510px;   /* from 576 px wide */
+    --modal-width-md: 700px;   /* from 768 px wide */
+    --modal-overlay: rgba(0, 0, 0, 0.4);  /* #1: plain, no blur */
+    --modal-background: #ffffff;
+    --modal-color: #373c44;
+    --modal-font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    --modal-primary: #77aca2;
+    --modal-primary-hover: #5f9a90;
+    --modal-primary-inverse: #14232a;  /* dark ink: white on the teal is under 3:1 */
+    --modal-divider: rgba(119, 172, 162, 0.35);
+    --modal-duration: 180ms;
+}
+
+/* Phones get a little less room inside the box. */
+@media (max-width: 575px) {
+    :root,
+    ::backdrop {
+        --modal-padding: 1.25rem;
+    }
+}
+
+/* Every pop-up's overlay covers the whole viewport, the 3D canvas included:
+   the <dialog> and its backdrop live in the browser's top layer. */
+app-modal > dialog::backdrop {
+    background-color: var(--modal-overlay);
+}

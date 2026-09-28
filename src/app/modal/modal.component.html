@@ -1,0 +1,15 @@
+<dialog #dialog class="modal-dialog" [attr.aria-labelledby]="titleId || null"
+  (cancel)="onCancel($event)" (close)="onNativeClose()"
+  (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)" (click)="onClick($event)">
+  <article>
+    <header>
+      <ng-content select="[modal-title]"></ng-content>
+      <button type="button" class="modal-close" [attr.aria-label]="AppStrings.LABEL_CLOSE"
+        (click)="requestClose()">
+        <span aria-hidden="true">✕</span>
+      </button>
+    </header>
+    <div class="modal-body"><ng-content></ng-content></div>
+    <ng-content select="[modal-footer]"></ng-content>
+  </article>
+</dialog>

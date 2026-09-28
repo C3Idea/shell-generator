@@ -1,0 +1,21 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 31,
+    "title": "[App] Shared pop-up component on <dialog>, styled after Pico.css",
+    "url": "https://github.com/C3Idea/shell-generator/issues/31",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5877018953",
+  "spec_comment_id": "5876987166",
+  "pr": {
+    "number": 32,
+    "url": "https://github.com/C3Idea/shell-generator/pull/32",
+    "status": "ready",
+    "createdAt": "2026-09-28T19:46:33Z",
+    "readyAt": "2026-09-28T23:11:43Z"
+  },
+  "deployed_at": "2026-09-28T19:45:53Z",
+  "cached_from": "github",
+  "task_comment_id": "5877424479"
+}

@@ -1,0 +1,223 @@
+/* Shared pop-up (#31), after the Pico.css v2 modal (https://picocss.com, MIT).
+   Values come from the --modal-* tokens in src/styles.css. Unencapsulated
+   (the content is projected), so every rule starts at app-modal: keep that
+   prefix on new rules, or they leak to the whole app. */
+
+app-modal > dialog {
+  box-sizing: border-box;
+  width: calc(100% - 2 * var(--modal-spacing));
+  max-width: calc(100% - 2 * var(--modal-spacing));
+  max-height: calc(100% - 2 * var(--modal-spacing));
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--modal-border-radius);
+  overflow: hidden;
+  background-color: var(--modal-background);
+  color: var(--modal-color);
+  box-shadow: var(--modal-box-shadow);
+  font-family: var(--modal-font-family);
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity var(--modal-duration) ease-out,
+    transform var(--modal-duration) ease-out,
+    overlay var(--modal-duration) allow-discrete,
+    display var(--modal-duration) allow-discrete;
+}
+
+app-modal > dialog[open] {
+  display: flex;
+  opacity: 1;
+  transform: none;
+}
+
+app-modal > dialog::backdrop {
+  opacity: 0;
+  transition:
+    opacity var(--modal-duration) ease-out,
+    overlay var(--modal-duration) allow-discrete,
+    display var(--modal-duration) allow-discrete;
+}
+
+app-modal > dialog[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  app-modal > dialog[open] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  app-modal > dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  app-modal > dialog,
+  app-modal > dialog::backdrop {
+    transition: none;
+  }
+}
+
+/* Pico's widths: full width minus spacing on phones, 510 px from 576 px,
+   700 px from 768 px. */
+@media (min-width: 576px) {
+  app-modal > dialog {
+    max-width: var(--modal-width-sm);
+  }
+}
+
+@media (min-width: 768px) {
+  app-modal > dialog {
+    max-width: var(--modal-width-md);
+  }
+}
+
+/* The box never outgrows the viewport: the header and footer stay put and
+   the body scrolls. */
+app-modal > dialog > article {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+app-modal > dialog > article > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--modal-spacing);
+  padding: calc(var(--modal-padding) * 0.75) var(--modal-padding);
+  border-bottom: 1px solid var(--modal-divider);
+}
+
+app-modal > dialog > article > header > h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+app-modal .modal-close {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--modal-border-radius);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* A 44 px hit area for fingers around the 32 px button. */
+app-modal .modal-close::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
+app-modal .modal-close:hover {
+  background-color: var(--modal-divider);
+}
+
+app-modal > dialog > article > .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--modal-padding);
+  line-height: 1.65;
+}
+
+/* A pop-up without body text (¡Victoria!, Nuevo juego) drops the padded
+   body. Relies on Angular stripping whitespace-only text between tags. */
+app-modal > dialog > article > .modal-body:empty {
+  display: none;
+}
+
+app-modal > dialog > article > .modal-body > p {
+  margin: 0 0 1.1em 0;
+}
+
+app-modal > dialog > article > .modal-body > p:last-child {
+  margin-bottom: 0;
+}
+
+app-modal > dialog > article > footer {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: calc(var(--modal-spacing) * 0.75);
+  padding: var(--modal-padding);
+  border-top: 1px solid var(--modal-divider);
+}
+
+/* Centered variant (<app-modal class="modal-centered">, used by ¡Victoria!):
+   title, text and buttons centred. The ✕ sits out of the flow at the right,
+   with matching room on both sides, so the title is centred on the box. */
+app-modal.modal-centered > dialog > article > header {
+  position: relative;
+  justify-content: center;
+  padding-left: calc(var(--modal-padding) + 2rem);
+  padding-right: calc(var(--modal-padding) + 2rem);
+}
+
+app-modal.modal-centered > dialog > article > header > h2,
+app-modal.modal-centered > dialog > article > .modal-body {
+  text-align: center;
+}
+
+app-modal.modal-centered .modal-close {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--modal-padding) - 0.5rem);
+  transform: translateY(-50%);
+}
+
+app-modal.modal-centered > dialog > article > footer {
+  justify-content: center;
+}
+
+/* Footer buttons are primary (filled teal) unless marked .secondary (teal
+   outline). A secondary button goes before the primary one, as in Pico. */
+app-modal > dialog > article > footer button {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border: 2px solid var(--modal-primary);
+  border-radius: var(--modal-border-radius);
+  background-color: var(--modal-primary);
+  color: var(--modal-primary-inverse);
+  font: inherit;
+  cursor: pointer;
+}
+
+app-modal > dialog > article > footer button:hover {
+  border-color: var(--modal-primary-hover);
+  background-color: var(--modal-primary-hover);
+}
+
+app-modal > dialog > article > footer button.secondary {
+  background-color: transparent;
+  color: var(--modal-color);
+}
+
+app-modal > dialog > article > footer button.secondary:hover {
+  background-color: var(--modal-divider);
+}
+
+app-modal > dialog input {
+  font: inherit;
+}
+
+app-modal > dialog button:focus-visible,
+app-modal > dialog input:focus-visible {
+  outline: 2px solid var(--modal-primary-hover);
+  outline-offset: 2px;
+}

@@ -1,0 +1,321 @@
+{
+  "meta": {
+    "feature": "031-one-dialog-to-rule-them-all",
+    "featureName": "Shared pop-up component on <dialog>, styled after Pico.css",
+    "version": "2.0",
+    "createdAt": "2026-09-28T19:47:38Z",
+    "lastUpdated": "2026-09-28T19:47:38Z",
+    "specHash": "12eb61c9c24ec952a86022d020138040",
+    "planHash": "6960623bf1a83abbba20775947106201"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 3,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "totalTasks": 7,
+    "completedTasks": 7,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-28T14:15:02-06:00",
+    "contextHint": "One <app-modal> on native <dialog>: [open] input, (closed) output, initial-focus option; showModal() only when !dialog.open. Esc (cancel), backdrop click (target === dialog) and header ✕ (aria-label AppStrings.LABEL_CLOSE) all emit (closed). Tokens --modal-* + dialog::backdrop rgba(0,0,0,.4) in src/styles.css. Footer 'Cerrar' buttons dropped. Leave the side menus' style.display (menu, visualizationMenu) alone. Copy unchanged. NgModule: declare ModalComponent in AppModule and every TestBed. Run builds/tests pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
+    "lastUpdated": "2026-09-28T14:14:05-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Foundational: shared modal",
+      "description": "--modal-* tokens and ::backdrop, ModalComponent with its specs, declared in AppModule",
+      "tasks": [
+        "T001",
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-28T13:57:13-06:00"
+    },
+    {
+      "number": 1,
+      "name": "US1/US2/US4: game pop-ups",
+      "story": "US1",
+      "description": "¡Victoria!, Nuevo juego, how-to and parameter help on <app-modal>; onEscape, modalMouseDown and modal style.display removed",
+      "tasks": [
+        "T003",
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-28T14:05:51-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US1/US2/US4: initial-screen pop-ups",
+      "story": "US2",
+      "description": "Welcome and parameter help (incl. Resolución) on <app-modal>; modalMouseDown and modal style.display removed",
+      "tasks": [
+        "T005",
+        "T006"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-28T14:09:50-06:00"
+    },
+    {
+      "number": 3,
+      "name": "Polish: verification",
+      "description": "Lint, test, build on 2 cores; leftover-code checks",
+      "tasks": [
+        "T007"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-28T14:14:05-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "In src/styles.css add the --modal-* custom properties from Pico v2 (spacing 1rem, border radius 0.25rem, Pico v2 box shadow, width ~510px widening to ~700px on large screens and full width minus spacing on phones, overlay rgba(0,0,0,0.4), teal #77aca2 primary/outline/light divider tint, 150–200 ms animation duration) plus a dialog::backdrop rule that reads the overlay token (no backdrop-filter). Add a comment crediting Pico.css (MIT). Do not add any dependency.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/styles.css",
+      "satisfies": [
+        "FR-013",
+        "FR-014",
+        "FR-016",
+        "FR-020"
+      ],
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-28T13:51:39-06:00",
+        "commitSha": "cd094a0af2658f419c04476d1640742bce3c891c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/styles.css"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 0,
+      "description": "Add src/app/modal/modal.component.{ts,html,css,spec.ts} and declare ModalComponent in src/app/app.module.ts. <dialog> with aria-labelledby=titleId, <article> with <header> (projected [modal-title] <h2> + ✕ button, aria-label AppStrings.LABEL_CLOSE), projected body, optional [modal-footer]. Inputs: open, titleId, initialFocus (default the ✕). Output: closed. Open calls showModal() only when !dialog.open, then focuses the initial-focus target; closing calls close(). Esc (cancel, preventDefault then close), a click whose target is the <dialog> itself, and the ✕ all go through one path that emits closed once. Styles read the --modal-* tokens: capped width, max-height within the viewport, body scrolls inside, footer buttons secondary before primary, fade/scale off under prefers-reduced-motion. Write the specs first: open/close via [open], Esc, backdrop click, ✕, closed emitted once, open-while-open no-op (no InvalidStateError), initial focus, aria-labelledby and the ✕ aria-label.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/modal/modal.component.ts",
+      "story": "US1",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-007",
+        "FR-008",
+        "FR-009",
+        "FR-014",
+        "FR-015",
+        "FR-019"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T13:57:13-06:00",
+        "commitSha": "c30f36dfeb6dfb60c79e0a21a05ed7ef2170e57b",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/modal/modal.component.ts",
+          "src/app/modal/modal.component.html",
+          "src/app/modal/modal.component.css",
+          "src/app/modal/modal.component.spec.ts",
+          "src/app/app.module.ts",
+          "src/styles.css"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/modal/modal.component.spec.ts",
+          "redResult": "14 of 15 FAILED against an empty stub",
+          "greenResult": "15 of 15 SUCCESS (3 consecutive runs); full suite 98 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 1,
+      "description": "Update src/app/game/game.component.spec.ts first: declare ModalComponent in the TestBed; move the pop-up assertions from style.display to dialog.open; add specs for ¡Victoria! opening on a win and staying open with no error when checkGameIsOver() runs again, the how-to opening on load, Nuevo juego focusing its first choice button and 'Con clave' focusing the key input, each ⓘ opening help with its own title/text, Esc/backdrop/✕ closing each pop-up and resetting its open flag, <h2> titles referenced by aria-labelledby, and the .label-howto-line class still present.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "story": "US1",
+      "satisfies": [
+        "FR-003",
+        "FR-005",
+        "FR-009",
+        "FR-010",
+        "FR-017"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:00:55-06:00",
+        "commitSha": "8cb953260838bcc7c037c22e049340dc11d10269",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts",
+          "src/app/game/game.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "56 FAILED, 41 SUCCESS against the pre-#31 markup (flags stubbed)",
+          "greenResult": "pending T004 implementation"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 1,
+      "description": "Move the game's 4 pop-ups to <app-modal> in src/app/game/game.component.{html,ts,css}. HTML: ¡Victoria! with a footer holding Jugar and Sandbox; Nuevo juego with the choices and key row in a <footer modal-footer> (as the issue specifies), initialFocus on the first choice button; how-to and help with no footer. Titles as <h2> with ids, text lines as <p> keeping their classes; copy unchanged; footer 'Cerrar' buttons removed. TS: a boolean per pop-up bound to [open] and reset in (closed); checkGameIsOver() sets the ¡Victoria! flag; ngOnInit opens the how-to and runs the load-time win check (setting a bound flag in ngAfterViewInit would change it after it was checked); delete onEscape/@HostListener('document:keydown.escape'), modalMouseDown and the pop-up @ViewChilds/style.display lines (keep keyEntryRow/gameKeyInput and the menu toggles). CSS: remove .modal, .modal-content, .modal-new-game-content, .modal-howto-content, .modal-help-content, .modal-close-button, .modal-title and both .modal-button-bar rules; keep content-only layout such as .new-game-choices and .key-entry-row.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.html",
+      "story": "US1",
+      "satisfies": [
+        "FR-006",
+        "FR-010",
+        "FR-011",
+        "FR-012",
+        "FR-015",
+        "FR-017",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T003"
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:05:51-06:00",
+        "commitSha": "25f894dacf9c9f0890e36478326186ca7807565a",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 2,
+      "description": "Update src/app/sandbox/sandbox.component.spec.ts (and src/app/app.component.spec.ts if its TestBed renders the screens) first: declare ModalComponent; move the pop-up assertions from style.display to dialog.open; add specs for the welcome pop-up opening on load, each ⓘ (including Resolución) opening help with its own title/text, Esc/backdrop/✕ closing and resetting the open flag, <h2> titles referenced by aria-labelledby, and the .label-intro-line class and #img-intro-equation still present.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.spec.ts",
+      "story": "US2",
+      "satisfies": [
+        "FR-003",
+        "FR-010",
+        "FR-017",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T004"
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:07:55-06:00",
+        "commitSha": "ddb0f5184dacdd32f024f7780f4ce9a830873bbc",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.spec.ts",
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "22 FAILED, 3 SUCCESS against the pre-#31 markup (flags stubbed)",
+          "greenResult": "pending T006 implementation"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 2,
+      "description": "Move the initial screen's welcome and parameter-help pop-ups to <app-modal> in src/app/sandbox/sandbox.component.{html,ts,css}: no footers, titles as <h2> with ids, text lines as <p> keeping their classes, the empty <img id=\"img-intro-equation\"> kept, copy unchanged. TS: a boolean per pop-up bound to [open] and reset in (closed); ngOnInit opens the welcome; delete modalMouseDown and the pop-up @ViewChilds/style.display lines (keep the menu and visualizationMenu toggles). CSS: remove .modal, .modal-intro-content, .modal-help-content, .modal-close-button and .modal-button-bar.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.html",
+      "story": "US2",
+      "satisfies": [
+        "FR-004",
+        "FR-010",
+        "FR-011",
+        "FR-012",
+        "FR-017",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T005"
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:09:50-06:00",
+        "commitSha": "3fd948f0618a66333b81a32c625c547290ea6594",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.css"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T007": {
+      "id": "T007",
+      "wave": 3,
+      "description": "Verification on 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2): ng lint, ng test --watch=false --browsers=ChromeHeadless, ng build. Grep src/ to confirm no .modal*-content class, no modalMouseDown, no onEscape/keydown.escape listener, and no style.display on a pop-up (only the side menus and keyEntryRow keep it). Confirm package.json has no new dependency and the pop-up copy in app-strings.ts is unchanged against dev.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/modal/modal.component.ts",
+      "satisfies": [
+        "FR-011",
+        "FR-012",
+        "FR-013",
+        "FR-018"
+      ],
+      "dependencies": [
+        "T006"
+      ],
+      "completion": {
+        "timestamp": "2026-09-28T14:14:05-06:00",
+        "commitSha": "5665f579874f125e12d23f1725e076b226e5e053",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/031-one_dialog_to_rule_them_all/tasks.json"
+        ],
+        "satisfaction": "full"
+      }
+    }
+  }
+}
