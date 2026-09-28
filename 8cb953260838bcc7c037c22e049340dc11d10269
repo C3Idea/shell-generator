@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.spec.ts,src/app/game/game.component.ts
+vt.idd:tdd: red=56 FAILED, 41 SUCCESS against the pre-#31 markup (flags stubbed), green=pending T004 implementation
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-28T14:00:55-06:00
