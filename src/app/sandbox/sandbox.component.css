@@ -152,11 +152,15 @@ label {
   height: 50px;
 }
 
+/* The ⓘ stays 24 px; padding makes its hit area 44×44 px (#6), still
+   centred in the 64 px row. */
 .parameter-help-button {
+  box-sizing: content-box;
   width:  24px;
   height: 24px;
-  margin-top: 20px;
-  margin-left: 2px;
+  padding: 10px;
+  margin-top: 10px;
+  margin-left: 0;
 }
 
 /* Welcome pop-up: the equation image, still empty until #3 gives it one. */
