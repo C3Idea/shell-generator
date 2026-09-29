@@ -512,6 +512,7 @@ describe('SandboxComponent control guide (#5)', () => {
   let component: SandboxComponent;
   let el: HTMLElement;
   let restoreViewport: (() => void) | null = null;
+  let frames: FramePump;
 
   const render = () => fixture.detectChanges();
   const helpButton = () => el.querySelector('#help-button') as HTMLButtonElement;
@@ -552,7 +553,7 @@ describe('SandboxComponent control guide (#5)', () => {
   }
 
   beforeEach(async () => {
-    installFramePump();
+    frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
       declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
@@ -697,6 +698,80 @@ describe('SandboxComponent control guide (#5)', () => {
       expect(HTMLAnchorElement.prototype.click).withContext('image saved').toHaveBeenCalled();
       expect(component.guide.on).toBeTrue();
       expect(guideBubbles().length).toBe(expected.length);
+    });
+  });
+
+  describe('the 3D view while the guide is on', () => {
+    const canvas = () => el.querySelector('#canvas') as HTMLCanvasElement;
+
+    function pointer(type: string, x: number, y: number, id = 1, pointerType = 'mouse') {
+      canvas().dispatchEvent(new PointerEvent(type, {
+        bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType,
+        isPrimary: id === 1, button: 0, buttons: type === 'pointerup' ? 0 : 1,
+      }));
+    }
+
+    function guideOn() {
+      toggleGuide();
+      expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+    }
+
+    beforeEach(() => {
+      // OrbitControls captures the pointer; a synthetic pointer can't be.
+      spyOn(Element.prototype, 'setPointerCapture');
+      spyOn(Element.prototype, 'releasePointerCapture');
+    });
+
+    it('turns the guide off with a tap (mouse)', () => {
+      guideOn();
+      pointer('pointerdown', 200, 400);
+      pointer('pointerup', 200, 400);
+      render();
+      expect(component.guide.on).toBeFalse();
+      expect(guideBubbles().length).toBe(0);
+    });
+
+    it('turns the guide off with a tap (touch), even if the finger moves a little', () => {
+      guideOn();
+      pointer('pointerdown', 200, 400, 7, 'touch');
+      pointer('pointermove', 205, 403, 7, 'touch');
+      pointer('pointerup', 205, 403, 7, 'touch');
+      render();
+      expect(component.guide.on).toBeFalse();
+    });
+
+    it('keeps the guide on while dragging, and the drag rotates the shell', () => {
+      guideOn();
+      const camera = (component.helper as unknown as { camera: { position: { clone(): { distanceTo(p: unknown): number } } } }).camera;
+      const before = camera.position.clone();
+      pointer('pointerdown', 200, 400);
+      pointer('pointermove', 230, 400);
+      pointer('pointermove', 260, 410);
+      pointer('pointerup', 260, 410);
+      frames.pump(2);
+      render();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+      expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
+    });
+
+    it('keeps the guide on while pinching with two fingers', () => {
+      guideOn();
+      pointer('pointerdown', 180, 400, 7, 'touch');
+      pointer('pointerdown', 220, 400, 8, 'touch');
+      pointer('pointermove', 178, 400, 7, 'touch');
+      pointer('pointermove', 222, 400, 8, 'touch');
+      pointer('pointerup', 178, 400, 7, 'touch');
+      pointer('pointerup', 222, 400, 8, 'touch');
+      render();
+      expect(component.guide.on).toBeTrue();
+    });
+
+    it('keeps the guide on while zooming with the wheel', () => {
+      guideOn();
+      canvas().dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100, clientX: 200, clientY: 400 }));
+      render();
+      expect(component.guide.on).toBeTrue();
     });
   });
 

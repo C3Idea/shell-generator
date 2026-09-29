@@ -21,12 +21,12 @@
       2
     ],
     "totalTasks": 13,
-    "completedTasks": 5,
+    "completedTasks": 6,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T15:02:41-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T15:01:27-06:00"
+    "lastUpdated": "2026-09-29T15:05:34-06:00"
   },
   "waves": [
     {
@@ -272,7 +272,7 @@
       "id": "T006",
       "wave": 3,
       "description": "Close rules in SandboxComponent: '?' again and Esc turn the guide off; turning it on closes both panels and any ⓘ callout; opening the parameters panel, the pencil panel, a parameter ⓘ or the welcome pop-up turns it off; camera save leaves it on. Specs first (assert the guide is on before each close).",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -286,7 +286,22 @@
       ],
       "dependencies": [
         "T005"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:05:34-06:00",
+        "commitSha": "e804feee5502c15bffa145ead94338ec7c1afc23",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "7 FAILED of 9 new (the two passing cover existing behaviour: '?' again from T005, camera save untouched)",
+          "greenResult": "53 SUCCESS sandbox; full suite"
+        },
+        "satisfaction": "full"
+      }
     },
     "T007": {
       "id": "T007",

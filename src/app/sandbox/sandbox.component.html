@@ -1,5 +1,7 @@
 <div id="main-container">
-  <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"></canvas>
+  <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"
+    (pointerdown)="this.canvasPointerDown($event)" (pointerup)="this.canvasPointerUp($event)"
+    (pointercancel)="this.canvasPointerCancel($event)"></canvas>
   <div id="toolbar">
     <button type="button" class="toolbar-button" id="parameters-button" title={{AppStrings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">

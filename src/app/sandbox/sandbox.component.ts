@@ -6,6 +6,9 @@ import { AppStrings } from '../app-strings';
 import { HelpKey, ParameterHelp } from '../parameter-help';
 import { ControlGuide } from '../control-guide';
 
+// How far a press may move and still count as a tap on the 3D view (#5).
+const TAP_SLOP = 10;
+
 @Component({
   selector: 'app-surface',
   templateUrl: './sandbox.component.html',
@@ -57,6 +60,11 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // The guide (#5): the "?" button shows a callout beside every control.
   guide = new ControlGuide();
+
+  // Pointers down on the 3D view, where each went down; and whether two
+  // were down at once (a pinch).
+  private presses = new Map<number, { x: number; y: number }>();
+  private pinching = false;
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -166,6 +174,33 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.visualizationMenuVisible) {
       this.hideVisualizationMenu();
+    }
+  }
+
+  // A tap on the 3D view ends the guide (#5); a drag (rotate) or a pinch
+  // (zoom) doesn't, so the user can try what its bubble says. A tap is one
+  // pointer released within TAP_SLOP px of where it went down.
+  canvasPointerDown(event: PointerEvent): void {
+    this.presses.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (this.presses.size > 1) {
+      this.pinching = true;
+    }
+  }
+
+  canvasPointerUp(event: PointerEvent): void {
+    const start = this.presses.get(event.pointerId);
+    const tap = start !== undefined && !this.pinching
+      && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP;
+    this.canvasPointerCancel(event);
+    if (tap) {
+      this.guide.close();
+    }
+  }
+
+  canvasPointerCancel(event: PointerEvent): void {
+    this.presses.delete(event.pointerId);
+    if (this.presses.size === 0) {
+      this.pinching = false;
     }
   }
 
