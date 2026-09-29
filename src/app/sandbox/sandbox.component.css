@@ -149,9 +149,16 @@ label {
 .parameter-label {
   display: inline-block;
   height: 64px;
-  width: 50px;
   line-height: 64px;
+  padding: 0 8px 0 4px;
+  white-space: nowrap;
   text-align: center;
+}
+
+/* #6: the "Resolución" label's box keeps its text's width, so the label
+   no longer runs under the slider. */
+.form-row > div {
+  flex-shrink: 0;
 }
 
 .color-selector {
