@@ -1,0 +1,8 @@
+vt.idd:task: T006
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=7 FAILED of 9 new (the two passing cover existing behaviour: '?' again from T005, camera save untouched), green=53 SUCCESS sandbox; full suite
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-29T15:05:34-06:00
