@@ -20,15 +20,16 @@
       1,
       2,
       3,
-      4
+      4,
+      5
     ],
     "totalTasks": 14,
-    "completedTasks": 13,
+    "completedTasks": 14,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T11:08:18-06:00",
+    "lastCheckpoint": "2026-09-29T13:50:08-06:00",
     "contextHint": "One <app-callout> per screen, mounted at the component root (outside the 0.8-opacity side panels): input active {id,title,text,anchor}|null, pointer-events:none layer, aria-live polite, --modal-* tokens, no animation under reduced motion. Each screen: activeCallout toggled by its ⓘ; Esc / canvas / panel close clear it; sliders never do. Click/tap only, no hover. Remove modal-help + helpOpen/helpTitle/helpContent on both screens; ModalComponent stays. Help strings unchanged except 'superfice'→'superficie'. Side panels keep their look. NgModule: declare CalloutComponent in AppModule and every TestBed. Build/test pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2). No live instances/harness unless the owner asks.",
-    "lastUpdated": "2026-09-29T11:11:38-06:00"
+    "lastUpdated": "2026-09-29T13:48:56-06:00"
   },
   "waves": [
     {
@@ -99,7 +100,8 @@
         "T013",
         "T014"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T13:48:56-06:00"
     }
   ],
   "tasks": {
@@ -530,7 +532,7 @@
       "id": "T014",
       "wave": 5,
       "description": "Owner approval material: before/after screenshots of the shell parameters panel, the visualization panel and the game parameters menu, each with a callout open, at 390 px, 1280 px and 844×390; post on issue #6 for approval (SC-006). Only on the owner's go-ahead for live instances.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
@@ -542,7 +544,17 @@
       ],
       "dependencies": [
         "T013"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T13:48:56-06:00",
+        "commitSha": "64ac550aa5c827cb291e0fe8066f922fe8b7e32a",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/006-attack_of_the_callouts/spec.md"
+        ],
+        "satisfaction": "full",
+        "notes": "owner approved the manual pass and the merge (issuecomment-5897480982); before/after sheets in validaciones/shell_generator/6/capturas for the owner to attach"
+      }
     }
   }
 }

@@ -1,0 +1,292 @@
+{
+  "pass": 1,
+  "pr_number": 33,
+  "pr_title": "feat: callout help for every parameter ⓘ + clearer shell panel (#6)",
+  "copilot_review_summary": "Copilot review: skipped by config/flag (no .vt/vt.config.yaml in this repo, so review.copilot_integration is not enabled). Visual E2E: covered by the local harness (validaciones/shell_generator/6: browser layer at 1280/768/390 px, 360×800 touch and 844×390, before/after sheets) and the owner's manual pass (approved, incl. the 80 % background). Verification pass: not run (no C/S findings); M1 reproduced in the browser instead. Security reviewer: no C/S findings — help text is interpolated constants, no innerHTML, the layer can't intercept input, no new dependency. Reviewer: inline (no sub-agents). Reviewed head: c42d252.",
+  "findings": [
+    {
+      "id": "M1",
+      "title": "The callout stays put when its panel scrolls, so it points at the wrong row (or at nothing)",
+      "severity": "Major",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/callout.component.ts",
+      "lines": "91-110",
+      "description": "The bubble is `position: fixed` and is only re-placed on `window:resize` (and on `recomputeKey`, which nothing binds). #6 made the shell panel scroll on short screens (`max-height: calc(100vh - 150px)`; the game menu likewise), so at 844×390 a user who opens an ⓘ and then scrolls the panel leaves the bubble behind. Reproduced in the browser: with b's callout open, scrolling the panel to the top moved b's ⓘ from y=293 to y=443 (below the panel's visible area) while the bubble stayed at y=247, its arrow now pointing at a different row. #6's criterion is \"stays attached to its ⓘ\"; the unit and e2e specs only check window resize.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Re-place on any scroll (a capture-phase `scroll` listener in CalloutComponent) and hide the bubble while its ⓘ is scrolled out of its panel's visible box; add a spec that scrolls the panel.",
+          "rationale": "Keeps the bubble attached whatever scrolls, with no new wiring in the screens; hiding a bubble whose ⓘ is out of view avoids an arrow pointing at nothing."
+        },
+        "B": {
+          "approach": "Close the callout when its panel scrolls.",
+          "rationale": "Simplest and predictable, but a small accidental scroll on a phone closes the help the user just opened."
+        },
+        "C": {
+          "approach": "Re-place on scroll only.",
+          "rationale": "Stays attached while the ⓘ is visible, but points past the panel's edge when the ⓘ scrolls out."
+        }
+      }
+    },
+    {
+      "id": "m1",
+      "title": "`recomputeKey` is an input nothing binds",
+      "severity": "Minor",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/callout.component.ts",
+      "lines": "62-63",
+      "description": "`@Input() recomputeKey` (ported from gato_magico, where the board bumps it on resize) is bound by no parent in this app; only the callout's own spec sets it. Once the component listens to scroll itself (M1), it has no purpose left and reads as a contract the screens are supposed to honour.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Remove the input and move its spec to the scroll/resize triggers.",
+          "rationale": "Dead API removed; the behaviour it guarded is covered by the real triggers."
+        },
+        "B": {
+          "approach": "Bind it from each panel's `(scroll)`.",
+          "rationale": "Works, but duplicates what one listener in the component does."
+        },
+        "C": {
+          "approach": "Keep it and document it as an escape hatch.",
+          "rationale": "Leaves unused surface."
+        }
+      }
+    },
+    {
+      "id": "m2",
+      "title": "The help state is duplicated in the initial screen and the game",
+      "severity": "Minor",
+      "fix_group": "FG-2",
+      "source": "Quality reviewer",
+      "file": "src/app/sandbox/sandbox.component.ts, src/app/game/game.component.ts",
+      "lines": "sandbox 52-58, 242-262; game 107-113, 473-490",
+      "description": "`helpKey`, `helpCallout`, `calloutId`, `toggleHelp()`, `closeHelp()` and the Esc `@HostListener` are the same ~25 lines in both components. The close rules are the part most likely to be tuned (they already were, twice, during validation); two copies can drift.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Move the state into a small `ParameterHelp` class in `parameter-help.ts` (`key`, `callout`, `toggle(key)`, `close()`); each screen owns one instance and keeps its own Esc listener and panel wiring.",
+          "rationale": "One implementation of toggle/replace/close; the screens only say when to close."
+        },
+        "B": {
+          "approach": "An injectable service.",
+          "rationale": "The state is per screen and short-lived; a service adds DI for no gain."
+        },
+        "C": {
+          "approach": "Acknowledge.",
+          "rationale": "Small today, but the drift risk stays."
+        }
+      }
+    },
+    {
+      "id": "m3",
+      "title": "The ≤380 px rule still forces a permanent scrollbar on the panels",
+      "severity": "Minor",
+      "fix_group": "FG-3",
+      "source": "Quality reviewer",
+      "file": "src/app/sandbox/sandbox.component.css, src/app/game/game.component.css",
+      "lines": "sandbox 203-208; game 404-409",
+      "description": "`@media (max-width: 380px) { #parameters-menu { width: 96%; overflow-y: scroll; } }` predates #6 and overrides its new `overflow-y: auto`. On 360-px phones (the Galaxy A55 the owner tested) a desktop Chrome in device mode shows a scrollbar gutter even when the panel fits, narrowing every row by ~15 px.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Drop `overflow-y: scroll` from the ≤380 px rules (the base rule's `auto` already scrolls when needed).",
+          "rationale": "One declaration each; the panel scrolls only when it has to, at every width."
+        },
+        "B": {
+          "approach": "Change it to `auto` in the media rule.",
+          "rationale": "Same effect, one redundant declaration kept."
+        },
+        "C": {
+          "approach": "Acknowledge (pre-existing).",
+          "rationale": "Leaves the gutter on small phones."
+        }
+      }
+    },
+    {
+      "id": "m4",
+      "title": "`placeCallout` can cover its ⓘ on a very short screen, despite its comment",
+      "severity": "Minor",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/callout.component.ts",
+      "lines": "32-47",
+      "description": "When the bubble fits neither to the right nor below, it goes above with `top = max(MARGIN, …)`; if above doesn't fit either (e.g. 568×320 with an ⓘ near the panel's bottom edge) the clamp pushes it over the ⓘ. The comment says it never covers the anchor.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "When neither below nor above fits, take the side with more room, and make the comment state the limit.",
+          "rationale": "Minimises overlap in the rare case and keeps the comment true."
+        },
+        "B": {
+          "approach": "Cap the bubble's height to the larger side with `overflow: auto`.",
+          "rationale": "Never overlaps, but a scrolling bubble is awkward with `pointer-events: none`."
+        },
+        "C": {
+          "approach": "Fix the comment only.",
+          "rationale": "Honest, but leaves the avoidable overlap."
+        }
+      }
+    },
+    {
+      "id": "m5",
+      "title": "The empty live region is also a named landmark on every screen",
+      "severity": "Minor",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/callout.component.html",
+      "lines": "1",
+      "description": "The layer is `role=\"region\" aria-label=\"Ayuda de parámetros\"`, always in the DOM. Screen-reader landmark lists (NVDA D, VoiceOver rotor) show an empty \"Ayuda de parámetros\" region on both screens even when no bubble is open. `aria-live` alone is enough for the announcement.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Drop `role` and `aria-label` from the layer (keep `aria-live=\"polite\"`) and the now-unused `LABEL_PARAM_HELP_REGION` string.",
+          "rationale": "Announcements unchanged; no phantom landmark; one string fewer."
+        },
+        "B": {
+          "approach": "Render the landmark only while a bubble is open.",
+          "rationale": "Changing a live region's presence can drop the first announcement."
+        },
+        "C": {
+          "approach": "Acknowledge.",
+          "rationale": "Keeps the empty landmark."
+        }
+      }
+    },
+    {
+      "id": "D1",
+      "title": "The callout stylesheet says its shadow and background come from the tokens",
+      "severity": "Documentation",
+      "fix_group": "FG-1",
+      "source": "Documentation reviewer",
+      "file": "src/app/callout/callout.component.css",
+      "lines": "1-2",
+      "description": "The header comment says colours, font, rounding and shadow come from `--modal-*`. The shadow is its own (`0 0.25rem 1rem rgba(20, 35, 42, 0.18)`, stronger than Pico's over the 3D view) and the background is the token mixed to 80 %.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Say which parts use the tokens and why the shadow and background differ.",
+          "rationale": "The next restyle (#17) won't look for a shadow token that isn't used."
+        },
+        "B": {
+          "approach": "Switch to `var(--modal-box-shadow)`.",
+          "rationale": "Consistent, but the owner approved the current look."
+        },
+        "C": {
+          "approach": "Remove the comment.",
+          "rationale": "Loses the pointer to the tokens."
+        }
+      }
+    },
+    {
+      "id": "D2",
+      "title": "Plan and tasks describe code that changed during validation",
+      "severity": "Documentation",
+      "fix_group": "FG-4",
+      "source": "Documentation reviewer",
+      "file": "specs/006-attack_of_the_callouts/plan.md, tasks.json",
+      "lines": "plan Waves/Project Structure; T010, T011",
+      "description": "T011 says the slider fix leaves the shell rows unchanged, but `.slider` is now `flex: 1` for every row (T009). T010 says the cap is \"under the 75 px offset\"; it's 150 px (above the pencil) since 40befed, and the game menu got a 126 px cap (2e7768d) that the plan's Project Structure doesn't list. The plan describes `recomputeKey` as the re-placement trigger. The 80 % background and the ⓘ flex-shrink fix aren't in the plan.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Update plan.md (local and the plan comment on #6) and the T009–T011 descriptions to the code as merged.",
+          "rationale": "The archive is the post-mortem record; it should match what shipped."
+        },
+        "B": {
+          "approach": "Add an addendum at the end of plan.md.",
+          "rationale": "Keeps history, but readers see contradicting sections."
+        },
+        "C": {
+          "approach": "Acknowledge.",
+          "rationale": "Leaves a stale record."
+        }
+      }
+    },
+    {
+      "id": "D3",
+      "title": "Spec and issue say the callout re-places only on window resize",
+      "severity": "Documentation",
+      "fix_group": "FG-4",
+      "source": "Documentation reviewer",
+      "file": "spec comment on #6 (FR-008), #6 acceptance criteria",
+      "lines": "FR-008; Placement criteria",
+      "description": "FR-008 and the issue's Placement criterion only require the bubble to stay attached \"on resize\". With M1 fixed it also follows panel scrolling (and hides while its ⓘ is scrolled away); the criterion should say so, or the fix isn't covered by the acceptance record.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Extend FR-008 and the Placement criterion to panel scroll, and add a verification row.",
+          "rationale": "Makes the M1 behaviour part of what /vt.review stamps."
+        },
+        "B": {
+          "approach": "Note it in Decisions Made only.",
+          "rationale": "Recorded, but not checked."
+        },
+        "C": {
+          "approach": "Acknowledge.",
+          "rationale": "Leaves the criterion narrower than the code."
+        }
+      }
+    },
+    {
+      "id": "D4",
+      "title": "The PR body predates the validation fixes",
+      "severity": "Documentation",
+      "fix_group": "FG-4",
+      "source": "Documentation reviewer",
+      "file": "PR #33 body",
+      "lines": "Summary, Predicted Files, Test Plan",
+      "description": "The body doesn't mention the two landscape fixes (shell panel above the pencil, game menu above the switch), the ⓘ flex-shrink fix, the 80 % background, `parameter-help.ts`, or the game CSS menu cap; the Test Plan boxes are all unticked although the owner's manual pass and the harness ran.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Rewrite Summary/Files/Test Plan to the merged code and tick what's verified.",
+          "rationale": "The PR body is what a reviewer reads first."
+        },
+        "B": {
+          "approach": "Add a 'Changes since opening' section.",
+          "rationale": "Quicker, but the lists above it stay wrong."
+        },
+        "C": {
+          "approach": "Acknowledge.",
+          "rationale": "Leaves a misleading PR description."
+        }
+      }
+    }
+  ],
+  "fix_groups": [
+    {
+      "id": "FG-1",
+      "primary_files": "`src/app/callout/callout.component.{ts,html,css,spec.ts}`, `src/app/app-strings.ts`",
+      "finding_ids": "M1, m1, m4, m5, D1",
+      "boundary": "Hard boundary",
+      "advisory": "One commit on the callout: follow panel scrolling (hide while its ⓘ is out of view), drop recomputeKey, better fallback side, no phantom landmark, accurate comment. RED first: a spec that scrolls a panel.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-2",
+      "primary_files": "`src/app/parameter-help.ts`, `src/app/sandbox/sandbox.component.{ts,html}`, `src/app/game/game.component.{ts,html}`",
+      "finding_ids": "m2",
+      "boundary": "Hard boundary",
+      "advisory": "Refactor only; the existing callout specs on both screens must stay green unchanged.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-3",
+      "primary_files": "`src/app/sandbox/sandbox.component.css`, `src/app/game/game.component.css`",
+      "finding_ids": "m3",
+      "boundary": "Soft boundary (FG-2 touches the same components, not the CSS)",
+      "advisory": "Two one-line CSS removals.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-4",
+      "primary_files": "`specs/006-attack_of_the_callouts/{plan.md,spec.md,tasks.json}`, issue #6, PR #33 body",
+      "finding_ids": "D2, D3, D4",
+      "boundary": "Hard boundary",
+      "advisory": "Docs only, after FG-1–FG-3 land so they describe the final code.",
+      "recommended_disposition": "Fix"
+    }
+  ]
+}

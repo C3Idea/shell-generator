@@ -157,31 +157,31 @@ Angular 17.3 (standalone-free module app; `app.module.ts` declarations), TypeScr
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | ⓘ (A/α/β/a/b/θ) opens an anchored callout with its title+text; `modal-help` stays closed | [pending] | Pending |
-| VM-002 | Clicking a second ⓘ replaces the open callout | [pending] | Pending |
-| VM-003 | Clicking the same ⓘ again closes the callout | [pending] | Pending |
-| VM-004 | Dragging a slider updates the shell and leaves the callout open | [pending] | Pending |
-| VM-005 | Esc / canvas click / panel close all close the callout | [pending] | Pending |
-| VM-006 | Other controls work while a callout is open (layer non-blocking) | [pending] | Pending |
-| VM-007 | Game-screen ⓘ (A/α/β/a) opens the same callout; `modal-help` stays closed | [pending] | Pending |
-| VM-008 | Each shell-panel slider row shows its parameter name | [pending] | Pending |
-| VM-009 | Shell parameters panel not clipped at 844×390 | [pending] | Pending |
-| VM-010 | "Resolución" label fully visible, not overlapping its slider, at 390 px and 1280 px | [pending] | Pending |
-| VM-011 | Callout announced to screen readers (polite live region) | [pending] | Pending |
-| VM-012 | ⓘ exposes `aria-expanded`/`aria-controls`; focus stays on the ⓘ | [pending] | Pending |
-| VM-013 | Scrolling the panel keeps the callout beside its ⓘ; it hides while the ⓘ is scrolled out | [pending] | Pending |
-| VM-014 | A slider under the callout shows through its 80 % background; the text stays solid | [pending] | Pending |
+| VM-001 | ⓘ (A/α/β/a/b/θ) opens an anchored callout with its title+text; `modal-help` stays closed | sandbox spec `ⓘ ${key} shows its own title and text in a callout, not a pop-up` (7 ⓘ); e2e 253/253 on 64ac550 (validaciones/shell_generator/6) | Pass |
+| VM-002 | Clicking a second ⓘ replaces the open callout | sandbox spec `shows one callout at a time: another ⓘ replaces it`; e2e replace check | Pass |
+| VM-003 | Clicking the same ⓘ again closes the callout | sandbox spec `closes when the same ⓘ is clicked again`; game spec `…the same ⓘ closes it` | Pass |
+| VM-004 | Dragging a slider updates the shell and leaves the callout open | sandbox spec `stays open while a slider moves, and the shell updates`; e2e mouse drag α 87.90→81.64 through the bubble | Pass |
+| VM-005 | Esc / canvas click / panel close all close the callout | sandbox specs `closes on Esc` / `closes on a click on the canvas` / `closes when its panel is closed…`; e2e close checks | Pass |
+| VM-006 | Other controls work while a callout is open (layer non-blocking) | callout spec `never takes the pointer…`; e2e `the point on the α slider hits the slider, not the callout` | Pass |
+| VM-007 | Game-screen ⓘ (A/α/β/a) opens the same callout; `modal-help` stays closed | game spec `ⓘ ${key} shows its own title and text in a callout, not a pop-up` (4 ⓘ); e2e 253/253 on 64ac550 (validaciones/shell_generator/6) | Pass |
+| VM-008 | Each shell-panel slider row shows its parameter name | sandbox spec `shows each parameter's name as text next to its icon, labelling its slider` (f787b67) | Pass |
+| VM-009 | Shell parameters panel not clipped at 844×390 | sandbox spec `keeps every shell control reachable at 844×390` (c80f5ff, 40befed); e2e panel above the pencil | Pass |
+| VM-010 | "Resolución" label fully visible, not overlapping its slider, at 390 px and 1280 px | sandbox spec `shows the whole "Resolución" label, clear of its slider, at 390/1280 px` (4bcafaa) | Pass |
+| VM-011 | Callout announced to screen readers (polite live region) | callout spec `is a polite live region…` (ea4dd0c); owner manual pass scenario 7 (issuecomment-5897480982) | Pass |
+| VM-012 | ⓘ exposes `aria-expanded`/`aria-controls`; focus stays on the ⓘ | sandbox/game specs `marks each ⓘ with aria-expanded and aria-controls, and keeps focus on it`; e2e Enter on a focused ⓘ | Pass |
+| VM-013 | Scrolling the panel keeps the callout beside its ⓘ; it hides while the ⓘ is scrolled out | callout specs `follows its ⓘ when the panel scrolls` / `hides while its ⓘ is scrolled out…`; sandbox spec `keeps an open callout on its ⓘ while the panel scrolls at 844×390` (ea4dd0c); e2e wheel scroll | Pass |
+| VM-014 | A slider under the callout shows through its 80 % background; the text stays solid | callout spec `has an 80 % background, so the sliders under it show through, with solid text` (e49777e); owner confirmed | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | No parameter ⓘ opens a modal; every one shows an anchored callout on both screens | [pending] | Pending |
-| SC-002 | The shell and the adjusted control stay visible while its help is shown | [pending] | Pending |
-| SC-003 | Parameter names are readable in the shell panel without opening help | [pending] | Pending |
-| SC-004 | No control (incl. the "Resolución" label) overlaps or is clipped at 390 px, 1280 px, 844×390 | [pending] | Pending |
-| SC-005 | Callout help is reachable by keyboard and announced by a screen reader | [pending] | Pending |
-| SC-006 | Owner approves before/after screenshots of both panels + game menu at the three sizes | [pending] | Pending |
+| SC-001 | No parameter ⓘ opens a modal; every one shows an anchored callout on both screens | CI source checks (no modal-help, 7+4 ⓘ on the callout); e2e 253/253 on 64ac550 (validaciones/shell_generator/6) | Pass |
+| SC-002 | The shell and the adjusted control stay visible while its help is shown | e2e: callout on screen, off its ⓘ, outside the panel, no overlay; owner manual pass (issuecomment-5897480982) | Pass |
+| SC-003 | Parameter names are readable in the shell panel without opening help | VM-008 (f787b67); owner manual pass scenario 5 | Pass |
+| SC-004 | No control (incl. the "Resolución" label) overlaps or is clipped at 390 px, 1280 px, 844×390 | e2e row-overlap + panel-fit checks at 390/1280/844×390; fixes c80f5ff, 4bcafaa, 40befed, 2e7768d, cab09a3 | Pass |
+| SC-005 | Callout help is reachable by keyboard and announced by a screen reader | e2e keyboard (Enter) + specs (aria-expanded, live region); owner manual pass scenario 7 | Pass |
+| SC-006 | Owner approves before/after screenshots of both panels + game menu at the three sizes | owner approved the manual pass and the merge (issuecomment-5897480982); sheets in validaciones/shell_generator/6/capturas | Pass |
 
 ## Complexity Considerations
 
@@ -197,6 +197,7 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
 
 

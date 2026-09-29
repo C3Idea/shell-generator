@@ -4,7 +4,7 @@
 # Tasks: Parameter panels: callout help for every ⓘ + clearer shell panel layout
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T11:11:38-06:00
+**Generated**: 2026-09-29T13:48:56-06:00
 
 ---
 
@@ -22,7 +22,7 @@
 
 **Purpose**: CalloutComponent ported from gato_magico, with its specs, declared in AppModule
 
-- [x] T002 [W1] [TDD] [US1] Add src/app/callout/callout.component.{ts,html,css} ported from ../gato_magico/src/app/components/cue-overlay/ and declare CalloutComponent in src/app/app.module.ts (and in every TestBed that renders a host). Input active: {id,title,text,anchor} | null (one bubble on demand, not gato's fixed cue set) and recomputeKey. Position from the anchor's live getBoundingClientRect() via a pure placeBubble(rect, side): beside the anchor ('right') where there is room, else 'below'/'above' the row; clamp horizontally inside the viewport (8 px margin); render nothing when active is null or the anchor is absent. Layer pointer-events:none, role=region aria-live=polite; bubble role=note with the given id (for aria-controls), arrow toward the anchor; title + text via interpolation only. Styles read the --modal-* tokens (background, color, font, primary accent, radius, shadow); fade off under prefers-reduced-motion: reduce. position: fixed, mounted at the host component root (outside the 0.8-opacity panels). Write the specs first.
+- [x] T002 [W1] [TDD] [US1] Add src/app/callout/callout.component.{ts,html,css} ported from ../gato_magico/src/app/components/cue-overlay/ and declare CalloutComponent in src/app/app.module.ts (and in every TestBed that renders a host). Input active: {id,title,text,anchor} | null (one bubble on demand, not gato's fixed cue set). [As built: re-places on resize and any scroll; no recomputeKey input — review pass 1, M1/m1.] Position from the anchor's live getBoundingClientRect() via a pure placeBubble(rect, side): beside the anchor ('right') where there is room, else 'below'/'above' the row; clamp horizontally inside the viewport (8 px margin); render nothing when active is null or the anchor is absent. Layer pointer-events:none, role=region aria-live=polite; bubble role=note with the given id (for aria-controls), arrow toward the anchor; title + text via interpolation only. Styles read the --modal-* tokens (background, color, font, primary accent, radius, shadow); fade off under prefers-reduced-motion: reduce. position: fixed, mounted at the host component root (outside the 0.8-opacity panels). Write the specs first.
 - [x] T003 [P] [W1] [TDD] [US1] src/app/callout/callout.component.spec.ts: nothing rendered for active=null; one bubble with title+text for an active callout; bubble id matches active.id; placeBubble for 'right'/'below'/'above' and null rect; absent anchor renders nothing; clamp keeps the bubble inside a narrow viewport; layer computes pointer-events:none; live region is polite; no animation under reduced motion (transition/animation none via a class or media check); recomputeKey change repositions.
 
 **Wave Gate**: passed
@@ -57,8 +57,8 @@
 **Purpose**: Parameter names, 844×390 fit, Resolución label/slider
 
 - [x] T009 [W4] [US4] Shell parameters panel names, src/app/sandbox/sandbox.component.{html,css}: each slider row shows the parameter name as text next to its icon (A, α, β, a, b, θ) in the panel's Lucida font; strings reuse the existing BUTTON_PARAM_*_TITLE values or new AppStrings constants (no other copy changes). Every control keeps its binding and still changes the shell. Spec: six rows each render their name.
-- [x] T010 [W4] [US4] Landscape-phone fit, src/app/sandbox/sandbox.component.css: #parameters-menu gets max-height: calc(100vh - its top offset - margin) with overflow-y: auto (and/or tighter row height under a short-viewport media query) so every control is reachable at 844×390; portrait and desktop layout unchanged.
-- [x] T011 [W4] [US5] 'Resolución' overlap, src/app/sandbox/sandbox.component.css: .parameter-label sizes to its text (width auto, flex-shrink 0, small right gap) and .slider takes the remaining width (flex: 1 instead of width: 96%) in the visualization panel's row, without changing the shell panel's icon rows. Spec: the label's right edge is ≤ the slider's left edge at 390 px and 1280 px host widths.
+- [x] T010 [W4] [US4] Landscape-phone fit, src/app/sandbox/sandbox.component.css: #parameters-menu gets max-height: calc(100vh - its top offset - margin) with overflow-y: auto (and/or tighter row height under a short-viewport media query) so every control is reachable at 844×390; portrait and desktop layout unchanged. [As built: max-height calc(100vh - 150px), ending above the pencil button (40befed); the game menu got calc(100vh - 126px), above its switch (2e7768d); the ≤380 px rules no longer force a scrollbar (m3).]
+- [x] T011 [W4] [US5] 'Resolución' overlap, src/app/sandbox/sandbox.component.css: .parameter-label sizes to its text (width auto, flex-shrink 0, small right gap) and .slider takes the remaining width (flex: 1 instead of width: 96%) in the visualization panel's row, without changing the shell panel's icon rows. Spec: the label's right edge is ≤ the slider's left edge at 390 px and 1280 px host widths. [As built: .slider takes the remaining width in every row, shell rows included (names from T009 share the row); ⓘ flex-shrink: 0 (cab09a3).]
 - [x] T012 [P] [W4] [US4] Layout specs in src/app/sandbox/sandbox.component.spec.ts for T009–T011 where a unit test can measure it (names present; Resolución label/slider don't overlap; panel scrolls when shorter than its content). Visual placement at the three sizes goes to T014's screenshots.
 
 **Wave Gate**: passed
@@ -70,19 +70,19 @@
 **Purpose**: Full suite, dead-code grep, screenshots for the owner
 
 - [x] T013 [W5] Verification: ng lint, ng build, full ng test green on 2 cores; grep shows no modal-help / helpOpen / helpTitle / helpContent left in src/app/{sandbox,game}; no new dependency in package.json; revert check recorded (new callout specs fail on dev).
-- [ ] T014 [W5] [US6] Owner approval material: before/after screenshots of the shell parameters panel, the visualization panel and the game parameters menu, each with a callout open, at 390 px, 1280 px and 844×390; post on issue #6 for approval (SC-006). Only on the owner's go-ahead for live instances.
+- [x] T014 [W5] [US6] Owner approval material: before/after screenshots of the shell parameters panel, the visualization panel and the game parameters menu, each with a callout open, at 390 px, 1280 px and 844×390; post on issue #6 for approval (SC-006). Only on the owner's go-ahead for live instances.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 14
-- **Completed**: 13
+- **Completed**: 14
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 92%
+- **Progress**: 100%
 
 ---
 
