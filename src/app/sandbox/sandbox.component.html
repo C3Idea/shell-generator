@@ -117,6 +117,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="A-help-button"
+        [attr.aria-expanded]="this.helpKey === 'A'" [attr.aria-controls]="calloutId('A')"
         title={{AppStrings.BUTTON_PARAM_A_TITLE}}
         (click)="this.parameterHelpAButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -132,6 +133,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="alpha-help-button"
+        [attr.aria-expanded]="this.helpKey === 'alpha'" [attr.aria-controls]="calloutId('alpha')"
         title={{AppStrings.BUTTON_PARAM_ALPHA_TITLE}}
         (click)="this.parameterHelpAlphaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -147,6 +149,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="beta-help-button"
+        [attr.aria-expanded]="this.helpKey === 'beta'" [attr.aria-controls]="calloutId('beta')"
         title={{AppStrings.BUTTON_PARAM_BETA_TITLE}}
         (click)="this.parameterHelpBetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -162,6 +165,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="a-help-button"
+        [attr.aria-expanded]="this.helpKey === 'a'" [attr.aria-controls]="calloutId('a')"
         title={{AppStrings.BUTTON_PARAM_A1_TITLE}}
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -177,6 +181,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="b-help-button"
+        [attr.aria-expanded]="this.helpKey === 'b'" [attr.aria-controls]="calloutId('b')"
         title={{AppStrings.BUTTON_PARAM_B_TITLE}}
         (click)="this.parameterHelpBButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -192,6 +197,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="theta-help-button"
+        [attr.aria-expanded]="this.helpKey === 'theta'" [attr.aria-controls]="calloutId('theta')"
         title={{AppStrings.BUTTON_PARAM_THETA_TITLE}}
         (click)="this.parameterHelpThetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -222,6 +228,7 @@
         step="1"  />
       <input type="image" class="parameter-help-button"
         id="qual-help-button"
+        [attr.aria-expanded]="this.helpKey === 'qual'" [attr.aria-controls]="calloutId('qual')"
         title={{AppStrings.PARAMETER_QUAL_BUTTON_HELP_TEXT}}
         (click)="this.parameterHelpQualButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -246,6 +253,9 @@
         title="{{AppStrings.WIREFRAME_COLOR_INPUT_HELP_TEXT}}"/>
     </div>
   </form>
+  <!-- Parameter help (#6): one callout beside the ⓘ that was clicked. It
+       sits here, outside the side panels, so their opacity doesn't fade it. -->
+  <app-callout [active]="this.helpCallout"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. -->
   <app-modal id="modal-intro" titleId="label-intro-welcome" [open]="this.introOpen"
     (closed)="this.introOpen = false">
@@ -255,10 +265,5 @@
     <img id="img-intro-equation" />
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</p>
-  </app-modal>
-  <app-modal id="modal-help" titleId="label-help-title" [open]="this.helpOpen"
-    (closed)="this.helpOpen = false">
-    <h2 modal-title id="label-help-title">{{this.helpTitle}}</h2>
-    <p id="label-help-content">{{this.helpContent}}</p>
   </app-modal>
 </div>
