@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
+import { CalloutComponent } from '../callout/callout.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -14,7 +15,7 @@ describe('SandboxComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
       providers: [ provideRouter([]) ]
     })
     .compileComponents();
@@ -44,7 +45,7 @@ describe('SandboxComponent render loop (#21)', () => {
     frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
   });
@@ -63,8 +64,9 @@ describe('SandboxComponent render loop (#21)', () => {
   });
 });
 
-// #31: the initial screen's two pop-ups are the shared <app-modal> (a native
-// <dialog>), each closed with Esc, a click on the backdrop or its header ✕.
+// #31: the initial screen's pop-up is the shared <app-modal> (a native
+// <dialog>), closed with Esc, a click on the backdrop or its header ✕.
+// Parameter help is a callout since #6 (below).
 describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
   let fixture: ComponentFixture<SandboxComponent>;
   let component: SandboxComponent;
@@ -72,7 +74,6 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
 
   const dialog = (id: string) => el.querySelector(`#${id} > dialog`) as HTMLDialogElement;
   const intro = () => dialog('modal-intro');
-  const help = () => dialog('modal-help');
   const render = () => fixture.detectChanges();
   const title = (d: HTMLDialogElement) => d.querySelector('header > h2') as HTMLElement;
   const closeX = (d: HTMLDialogElement) => d.querySelector('header > button') as HTMLButtonElement;
@@ -82,16 +83,13 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
     'welcome': {
       open: () => { component.introButtonClick(new Event('click')); render(); return intro(); },
       flag: () => component.introOpen },
-    'parameter help': {
-      open: () => { component.parameterHelpAButtonClick(new Event('click')); render(); return help(); },
-      flag: () => component.helpOpen },
   };
 
   beforeEach(async () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -104,11 +102,11 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
   });
 
-  it('renders both through <app-modal>, with no hand-built pop-up left', () => {
-    for (const id of ['modal-intro', 'modal-help']) {
-      expect(el.querySelector('#' + id)?.tagName).withContext(id).toBe('APP-MODAL');
-      expect(dialog(id)).withContext(id).not.toBeNull();
-    }
+  it('renders the welcome through <app-modal>, with no hand-built pop-up and no help pop-up left', () => {
+    expect(el.querySelector('#modal-intro')?.tagName).toBe('APP-MODAL');
+    expect(intro()).not.toBeNull();
+    expect(el.querySelector('#modal-help')).withContext('#6: help is a callout').toBeNull();
+    expect(el.querySelectorAll('app-modal').length).toBe(1);
     expect(el.querySelector('[class*="modal-"][class$="-content"], .modal')).toBeNull();
   });
 
@@ -127,37 +125,6 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
       AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5,
     ]);
     expect(intro().querySelector('img#img-intro-equation')).not.toBeNull();
-  });
-
-  describe('parameter help', () => {
-    const helpButtons: [string, () => void, string, string][] = [
-      ['A', () => component.parameterHelpAButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_A_HELP_TITLE, AppStrings.LABEL_PARAM_A_HELP_CONTENT],
-      ['alpha', () => component.parameterHelpAlphaButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE, AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT],
-      ['beta', () => component.parameterHelpBetaButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_BETA_HELP_TITLE, AppStrings.LABEL_PARAM_BETA_HELP_CONTENT],
-      ['a', () => component.parameterHelpA1ButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_A1_HELP_TITLE, AppStrings.LABEL_PARAM_A1_HELP_CONTENT],
-      ['b', () => component.parameterHelpBButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_B_HELP_TITLE, AppStrings.LABEL_PARAM_B_HELP_CONTENT],
-      ['theta', () => component.parameterHelpThetaButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_THETA_HELP_TITLE, AppStrings.LABEL_PARAM_THETA_HELP_CONTENT],
-      ['Resolución', () => component.parameterHelpQualButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_QUAL_TITLE, AppStrings.LABEL_PARAM_QUAL_CONTENT],
-    ];
-
-    for (const [name, click, expectedTitle, expectedContent] of helpButtons) {
-      it(`ⓘ ${name} opens help with its own title and text`, () => {
-        click();
-        render();
-        expect(help().open).toBeTrue();
-        expect(title(help()).textContent?.trim()).toBe(expectedTitle);
-        const content = help().querySelector('#label-help-content');
-        expect(content?.textContent?.trim()).toBe(expectedContent);
-        expect(content?.tagName).toBe('P');
-      });
-    }
   });
 
   for (const [name, { open, flag }] of Object.entries(popups)) {
@@ -207,6 +174,333 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
         const texts = Array.from(d.querySelectorAll('button')).map(b => b.textContent?.trim());
         expect(texts).not.toContain(AppStrings.LABEL_CLOSE);
       });
+    });
+  }
+});
+
+// #6: each parameter ⓘ shows its help in a callout beside it instead of a
+// pop-up. One at a time; Esc, a click on the canvas or closing its panel
+// closes it; moving a slider doesn't.
+describe('SandboxComponent parameter help callouts (#6)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+
+  const render = () => fixture.detectChanges();
+  const callouts = () => el.querySelectorAll('.callout');
+  const callout = () => el.querySelector('.callout') as HTMLElement | null;
+  const info = (key: string) => el.querySelector(`#${key}-help-button`) as HTMLInputElement;
+  const toolbarButton = (title: string) =>
+    el.querySelector(`#toolbar button[title="${title}"]`) as HTMLButtonElement;
+
+  // [key, panel it lives in, title, text]
+  const helpButtons: [string, 'shell' | 'visualization', string, string][] = [
+    ['A', 'shell', AppStrings.LABEL_PARAM_A_HELP_TITLE, AppStrings.LABEL_PARAM_A_HELP_CONTENT],
+    ['alpha', 'shell', AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE, AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT],
+    ['beta', 'shell', AppStrings.LABEL_PARAM_BETA_HELP_TITLE, AppStrings.LABEL_PARAM_BETA_HELP_CONTENT],
+    ['a', 'shell', AppStrings.LABEL_PARAM_A1_HELP_TITLE, AppStrings.LABEL_PARAM_A1_HELP_CONTENT],
+    ['b', 'shell', AppStrings.LABEL_PARAM_B_HELP_TITLE, AppStrings.LABEL_PARAM_B_HELP_CONTENT],
+    ['theta', 'shell', AppStrings.LABEL_PARAM_THETA_HELP_TITLE, AppStrings.LABEL_PARAM_THETA_HELP_CONTENT],
+    ['qual', 'visualization', AppStrings.LABEL_PARAM_QUAL_TITLE, AppStrings.LABEL_PARAM_QUAL_CONTENT],
+  ];
+
+  function openPanel(panel: 'shell' | 'visualization') {
+    if (panel === 'shell') {
+      component.menuButtonClick(new Event('click'));
+    }
+    else {
+      component.visualizationMenuButtonClick(new Event('click'));
+    }
+    render();
+  }
+
+  function clickInfo(key: string) {
+    info(key).click();
+    render();
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+    // The welcome opens on load; close it so it isn't in the way.
+    component.introOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  for (const [key, panel, title, text] of helpButtons) {
+    it(`ⓘ ${key} shows its own title and text in a callout, not a pop-up`, () => {
+      openPanel(panel);
+      clickInfo(key);
+      expect(callouts().length).toBe(1);
+      expect(callout()!.id).toBe(`callout-${key}`);
+      expect(callout()!.querySelector('.callout-title')!.textContent!.trim()).toBe(title);
+      expect(callout()!.querySelector('.callout-text')!.textContent!.trim()).toBe(text);
+      expect(el.querySelector('#modal-help')).toBeNull();
+      expect(Array.from(el.querySelectorAll('dialog')).some(d => d.open)).toBeFalse();
+    });
+  }
+
+  it('shows the Resolución help with the typo fixed', () => {
+    openPanel('visualization');
+    clickInfo('qual');
+    const text = callout()!.querySelector('.callout-text')!.textContent!;
+    expect(text).toContain('superficie');
+    expect(text).not.toContain('superfice');
+  });
+
+  it('mounts the callout outside the translucent side panels', () => {
+    openPanel('shell');
+    clickInfo('A');
+    expect(callout()!.closest('#parameters-menu, #visualization-menu')).toBeNull();
+  });
+
+  it('shows one callout at a time: another ⓘ replaces it', () => {
+    openPanel('shell');
+    clickInfo('A');
+    clickInfo('alpha');
+    expect(callouts().length).toBe(1);
+    expect(callout()!.id).toBe('callout-alpha');
+  });
+
+  it('closes when the same ⓘ is clicked again', () => {
+    openPanel('shell');
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    clickInfo('A');
+    expect(callout()).toBeNull();
+  });
+
+  it('closes on Esc', () => {
+    openPanel('shell');
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    render();
+    expect(callout()).toBeNull();
+  });
+
+  it('closes on a click on the canvas', () => {
+    openPanel('shell');
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    el.querySelector('#canvas')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    render();
+    expect(callout()).toBeNull();
+  });
+
+  it('closes when its panel is closed with the menu button', () => {
+    openPanel('shell');
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    toolbarButton(AppStrings.BUTTON_PARAMETERS_TITLE).click();
+    render();
+    expect(callout()).toBeNull();
+  });
+
+  it('closes the Resolución callout when the visualization panel closes', () => {
+    openPanel('visualization');
+    clickInfo('qual');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    openPanel('shell');
+    expect(callout()).toBeNull();
+  });
+
+  it('stays open while a slider moves, and the shell updates', () => {
+    openPanel('shell');
+    clickInfo('A');
+    const createGraph = spyOn(component.helper, 'createGraph');
+    const slider = el.querySelector('#parameters-menu input[type=range]') as HTMLInputElement;
+    slider.value = slider.max;
+    slider.dispatchEvent(new Event('input'));
+    slider.dispatchEvent(new Event('change'));
+    render();
+    expect(createGraph).toHaveBeenCalled();
+    expect(callout()).not.toBeNull();
+  });
+
+  it('opens on click only, not on hover', () => {
+    openPanel('shell');
+    for (const type of ['mouseenter', 'mouseover', 'pointerenter', 'pointerover']) {
+      info('A').dispatchEvent(new MouseEvent(type, { bubbles: true }));
+    }
+    render();
+    expect(callout()).toBeNull();
+    clickInfo('A');
+    expect(callout()).withContext('a click opens it').not.toBeNull();
+  });
+
+  it('marks each ⓘ with aria-expanded and aria-controls, and keeps focus on it', () => {
+    openPanel('shell');
+    for (const [key] of helpButtons) {
+      expect(info(key).getAttribute('aria-expanded')).withContext(key).toBe('false');
+      expect(info(key).getAttribute('aria-controls')).withContext(key).toBe(`callout-${key}`);
+    }
+    info('A').focus();
+    clickInfo('A');
+    expect(info('A').getAttribute('aria-expanded')).toBe('true');
+    expect(info('alpha').getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(info('A'));
+    clickInfo('A');
+    expect(info('A').getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('gives each ⓘ a hit area of at least 44×44 px', () => {
+    openPanel('shell');
+    for (const [key, panel] of helpButtons) {
+      if (panel === 'visualization') {
+        openPanel('visualization');
+      }
+      const box = info(key).getBoundingClientRect();
+      expect(box.width).withContext(`${key} width`).toBeGreaterThanOrEqual(44);
+      expect(box.height).withContext(`${key} height`).toBeGreaterThanOrEqual(44);
+    }
+  });
+});
+
+// #6: the shell parameters panel names each parameter, fits a landscape
+// phone, and the "Resolución" label no longer runs under its slider. Karma
+// runs the specs in an iframe, so resizing it gives the page a real viewport.
+describe('SandboxComponent panel layout (#6)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+  let restoreViewport: (() => void) | null = null;
+
+  const render = () => fixture.detectChanges();
+  const shellMenu = () => el.querySelector('#parameters-menu') as HTMLElement;
+  const shellRows = () => Array.from(shellMenu().querySelectorAll('.form-row'))
+    .filter(row => row.querySelector('.parameter-icon')) as HTMLElement[];
+  const viewportHeight = () => document.documentElement.clientHeight;
+
+  function setViewport(width: number, height: number) {
+    const frame = window.frameElement as HTMLIFrameElement | null;
+    if (!frame) {
+      pending('needs the Karma iframe to set the viewport size');
+      return;
+    }
+    const before = { width: frame.style.width, height: frame.style.height };
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    restoreViewport = () => {
+      frame.style.width = before.width;
+      frame.style.height = before.height;
+    };
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+    component.introOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+    restoreViewport?.();
+    restoreViewport = null;
+  });
+
+  it('shows each parameter\'s name as text next to its icon, labelling its slider', () => {
+    component.menuButtonClick(new Event('click'));
+    render();
+    const rows = shellRows();
+    expect(rows.length).toBe(6);
+    const names = rows.map(row => row.querySelector('.parameter-name') as HTMLLabelElement | null);
+    expect(names.map(n => n?.textContent?.trim())).toEqual(['A', 'α', 'β', 'a', 'b', 'θ']);
+    rows.forEach((row, i) => {
+      const name = names[i]!;
+      const icon = row.querySelector('.parameter-icon') as HTMLElement;
+      const slider = row.querySelector('input.slider') as HTMLInputElement;
+      expect(name.tagName).withContext(`row ${i}`).toBe('LABEL');
+      expect(name.htmlFor).withContext(`row ${i}`).toBe(slider.id);
+      expect(slider.id).withContext(`row ${i}`).not.toBe('');
+      expect(name.getBoundingClientRect().left).withContext(`row ${i}: name after icon`)
+        .toBeGreaterThanOrEqual(icon.getBoundingClientRect().right - 1);
+    });
+  });
+
+  for (const [width, height] of [[844, 390], [390, 844], [1280, 800]]) {
+    it(`keeps every shell control reachable at ${width}×${height}`, () => {
+      setViewport(width, height);
+      component.menuButtonClick(new Event('click'));
+      render();
+      const menu = shellMenu();
+      expect(menu.getBoundingClientRect().bottom).withContext('panel bottom')
+        .toBeLessThanOrEqual(viewportHeight());
+      menu.scrollTop = menu.scrollHeight;
+      const last = el.querySelector('#theta-help-button') as HTMLElement;
+      expect(last.getBoundingClientRect().bottom).withContext('last ⓘ after scrolling')
+        .toBeLessThanOrEqual(Math.min(viewportHeight(), menu.getBoundingClientRect().bottom) + 0.5);
+      // The pencil (visualization) button sits bottom-left, under the panel.
+      const pencil = el.querySelector('#visualization-button') as HTMLElement;
+      expect(menu.getBoundingClientRect().bottom).withContext('panel ends above the pencil button')
+        .toBeLessThanOrEqual(pencil.getBoundingClientRect().top);
+    });
+  }
+
+  it('shows no scrollbar on a 360 px phone when the panel fits', () => {
+    setViewport(360, 800);
+    component.menuButtonClick(new Event('click'));
+    render();
+    const menu = shellMenu();
+    expect(getComputedStyle(menu).overflowY).toBe('auto');
+    expect(menu.scrollHeight).withContext('fits').toBeLessThanOrEqual(menu.clientHeight);
+  });
+
+  it('keeps an open callout on its ⓘ while the panel scrolls at 844×390', () => {
+    setViewport(844, 390);
+    component.menuButtonClick(new Event('click'));
+    render();
+    const menu = shellMenu();
+    menu.scrollTop = menu.scrollHeight;
+    (el.querySelector('#b-help-button') as HTMLElement).click();
+    render();
+    const bubble = () => el.querySelector('.callout') as HTMLElement;
+    const aligned = () => {
+      const i = el.querySelector('#b-help-button')!.getBoundingClientRect();
+      const a = bubble().querySelector('.callout-arrow')!.getBoundingClientRect();
+      return Math.abs((a.top + a.height / 2) - (i.top + i.height / 2)) < 1.5;
+    };
+    expect(aligned()).withContext('open, scrolled to the bottom').toBeTrue();
+    menu.scrollTop = menu.scrollHeight - menu.clientHeight - 60;
+    menu.dispatchEvent(new Event('scroll'));
+    expect(aligned()).withContext('after scrolling up 60 px').toBeTrue();
+    menu.scrollTop = 0;
+    menu.dispatchEvent(new Event('scroll'));
+    expect(getComputedStyle(bubble()).visibility).withContext('b scrolled out of the panel').toBe('hidden');
+  });
+
+  for (const width of [390, 1280]) {
+    it(`shows the whole "Resolución" label, clear of its slider, at ${width} px`, () => {
+      setViewport(width, 800);
+      component.visualizationMenuButtonClick(new Event('click'));
+      render();
+      const label = el.querySelector('#visualization-menu .parameter-label') as HTMLElement;
+      const slider = el.querySelector('#visualization-menu input.slider') as HTMLElement;
+      expect(label.textContent?.trim()).toBe(AppStrings.QUAL_TEXT);
+      expect(label.scrollWidth).withContext('text fits its box').toBeLessThanOrEqual(label.clientWidth);
+      expect(label.getBoundingClientRect().right).withContext('label ends before the slider')
+        .toBeLessThanOrEqual(slider.getBoundingClientRect().left);
     });
   }
 });

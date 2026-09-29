@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
+import { ParameterHelp } from '../parameter-help';
 
 @Component({
   selector: 'app-surface',
@@ -44,13 +45,14 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.visualizationMenuRef.nativeElement;
   }
 
-  helpTitle:   string = "";
-  helpContent: string = "";
-
-  // Pop-up state (#31), bound to each <app-modal>'s [open] and reset by its
+  // Pop-up state (#31), bound to the <app-modal>'s [open] and reset by its
   // (closed): Esc, a click on the backdrop or the ✕.
   introOpen = false;
-  helpOpen  = false;
+
+  // Parameter help (#6): the ⓘ whose callout is open, if any. Its ⓘ toggles
+  // it; Esc, a click on the canvas or closing its panel clears it. Moving a
+  // slider leaves it open.
+  help = new ParameterHelp();
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -175,6 +177,9 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   private hideMenu() {
     this.menu.style.display = 'none';
     this.menuVisible = false;
+    if (this.help.key && this.help.key !== 'qual') {
+      this.help.close();
+    }
   }
 
   private showMenu() {
@@ -190,6 +195,9 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   private hideVisualizationMenu() {
     this.visualizationMenu.style.display = 'none';
     this.visualizationMenuVisible = false;
+    if (this.help.key === 'qual') {
+      this.help.close();
+    }
   }
 
   gameButtonClick(event: Event) {
@@ -201,45 +209,36 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.helpTitle   = AppStrings.LABEL_PARAM_A_HELP_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_A_HELP_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.helpTitle = AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.helpTitle = AppStrings.LABEL_PARAM_BETA_HELP_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_BETA_HELP_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.helpTitle = AppStrings.LABEL_PARAM_A1_HELP_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_A1_HELP_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('a');
   }
 
   parameterHelpBButtonClick(event: Event) {
-    this.helpTitle = AppStrings.LABEL_PARAM_B_HELP_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_B_HELP_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('b');
   }
 
   parameterHelpThetaButtonClick(event: Event) {
-    this.helpTitle = AppStrings.LABEL_PARAM_THETA_HELP_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_THETA_HELP_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('theta');
   }
 
   parameterHelpQualButtonClick(event: Event) {
-    this.helpTitle   = AppStrings.LABEL_PARAM_QUAL_TITLE;
-    this.helpContent = AppStrings.LABEL_PARAM_QUAL_CONTENT;
-    this.helpOpen = true;
+    this.help.toggle('qual');
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.help.close();
   }
 
   introButtonClick(event: Event) {

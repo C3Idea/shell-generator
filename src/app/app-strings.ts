@@ -49,7 +49,14 @@ export class AppStrings {
   static LABEL_PARAM_THETA_HELP_TITLE = "Parámetro theta (total de vueltas)";
   static LABEL_PARAM_THETA_HELP_CONTENT = "Este parámetro controla el número de vueltas que da el caracol.";
   static LABEL_PARAM_QUAL_TITLE   = "Resolución";
-  static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superfice del caracol.";
+  static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superficie del caracol.";
+  // Parameter names shown next to their icons in the shell panel (#6).
+  static LABEL_PARAM_NAME_A     = "A";
+  static LABEL_PARAM_NAME_ALPHA = "α";
+  static LABEL_PARAM_NAME_BETA  = "β";
+  static LABEL_PARAM_NAME_A1    = "a";
+  static LABEL_PARAM_NAME_B     = "b";
+  static LABEL_PARAM_NAME_THETA = "θ";
   static LABEL_HOWTO_WINDOW_TITLE = "¡Bienvenido al juego!";
   static LABEL_HOWTO_WINDOW_LINE1 = "Te retamos a que veas cuánto dominas los parámetros del modelo. Para ello, te proponemos un caracol objetivo y te invitamos a que lo reproduzcas tan parecido como puedas. ¿Te animas?";
   static LABEL_HOWTO_WINDOW_LINE2 = "En la parte inferior puedes encontrar cómo cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que sea idéntico al objetivo.";

@@ -1,0 +1,7 @@
+<div class="callout-layer" aria-live="polite">
+  <div *ngIf="shown" #bubble class="callout" role="note" [id]="shown.id">
+    <span class="callout-arrow" aria-hidden="true"></span>
+    <strong class="callout-title">{{shown.title}}</strong>
+    <p class="callout-text">{{shown.text}}</p>
+  </div>
+</div>

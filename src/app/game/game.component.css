@@ -83,6 +83,12 @@ label {
   list-style-type: none;
   padding: 2px;
   border-radius: 5px;
+  /* #6: ends above the Usuario/Objetivo switch (bottom-left, its top 47 px
+     from the bottom) and scrolls when taller: 75 px offset + 47 px + a 4 px
+     gap. */
+  box-sizing: border-box;
+  max-height: calc(100vh - 126px);
+  overflow-y: auto;
 }
 
 .form-row {
@@ -251,11 +257,16 @@ input:checked + .switch-slider:before {
   min-width: 80px;
 }
 
+/* The ⓘ stays 24 px; padding makes its hit area 44×44 px (#6), still
+   centred in the 64 px row. */
 .parameter-help-button {
+  box-sizing: content-box;
   width:  24px;
   height: 24px;
-  margin-top: 20px;
-  margin-left: 2px;
+  padding: 10px;
+  margin-top: 10px;
+  margin-left: 0;
+  flex-shrink: 0;
 }
 
 /* #11: New Game and share, bottom-right across from the Usuario/Objetivo
@@ -395,16 +406,10 @@ input:checked + .switch-slider:before {
   cursor: -moz-grabbing;
 }
     
+/* Narrow phones: nearly full width. It scrolls only when taller than the
+   screen (the base rule's overflow-y: auto, #6), with no forced scrollbar. */
 @media only screen and (max-width: 380px) {
   #parameters-menu {
     width: 96%;
-    overflow-y: scroll;
   }
-}
-
-@media only screen and (max-height: 400px) {
-    #parameters-menu {
-        height: 96%;
-        overflow-y: scroll;
-    }
 }

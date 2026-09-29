@@ -108,7 +108,8 @@
     </div>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="A-slider">{{AppStrings.LABEL_PARAM_NAME_A}}</label>
+      <input class="slider" type=range id="A-slider"
         [(ngModel)]="this.parameters.A"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -117,13 +118,15 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="A-help-button"
+        [attr.aria-expanded]="this.help.key === 'A'" [attr.aria-controls]="this.help.calloutId('A')"
         title={{AppStrings.BUTTON_PARAM_A_TITLE}}
         (click)="this.parameterHelpAButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="alpha-slider">{{AppStrings.LABEL_PARAM_NAME_ALPHA}}</label>
+      <input class="slider" type=range id="alpha-slider"
         [(ngModel)]="this.parameters.alpha"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -132,13 +135,15 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="alpha-help-button"
+        [attr.aria-expanded]="this.help.key === 'alpha'" [attr.aria-controls]="this.help.calloutId('alpha')"
         title={{AppStrings.BUTTON_PARAM_ALPHA_TITLE}}
         (click)="this.parameterHelpAlphaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="beta-slider">{{AppStrings.LABEL_PARAM_NAME_BETA}}</label>
+      <input class="slider" type=range id="beta-slider"
         [(ngModel)]="this.parameters.beta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -147,13 +152,15 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="beta-help-button"
+        [attr.aria-expanded]="this.help.key === 'beta'" [attr.aria-controls]="this.help.calloutId('beta')"
         title={{AppStrings.BUTTON_PARAM_BETA_TITLE}}
         (click)="this.parameterHelpBetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="a-slider">{{AppStrings.LABEL_PARAM_NAME_A1}}</label>
+      <input class="slider" type=range id="a-slider"
         [(ngModel)]="this.parameters.a"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -162,13 +169,15 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="a-help-button"
+        [attr.aria-expanded]="this.help.key === 'a'" [attr.aria-controls]="this.help.calloutId('a')"
         title={{AppStrings.BUTTON_PARAM_A1_TITLE}}
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="b-slider">{{AppStrings.LABEL_PARAM_NAME_B}}</label>
+      <input class="slider" type=range id="b-slider"
         [(ngModel)]="this.parameters.b"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -177,13 +186,15 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="b-help-button"
+        [attr.aria-expanded]="this.help.key === 'b'" [attr.aria-controls]="this.help.calloutId('b')"
         title={{AppStrings.BUTTON_PARAM_B_TITLE}}
         (click)="this.parameterHelpBButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_theta.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="theta-slider">{{AppStrings.LABEL_PARAM_NAME_THETA}}</label>
+      <input class="slider" type=range id="theta-slider"
         [(ngModel)]="this.parameters.theta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -192,6 +203,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="theta-help-button"
+        [attr.aria-expanded]="this.help.key === 'theta'" [attr.aria-controls]="this.help.calloutId('theta')"
         title={{AppStrings.BUTTON_PARAM_THETA_TITLE}}
         (click)="this.parameterHelpThetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -222,6 +234,7 @@
         step="1"  />
       <input type="image" class="parameter-help-button"
         id="qual-help-button"
+        [attr.aria-expanded]="this.help.key === 'qual'" [attr.aria-controls]="this.help.calloutId('qual')"
         title={{AppStrings.PARAMETER_QUAL_BUTTON_HELP_TEXT}}
         (click)="this.parameterHelpQualButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -246,6 +259,9 @@
         title="{{AppStrings.WIREFRAME_COLOR_INPUT_HELP_TEXT}}"/>
     </div>
   </form>
+  <!-- Parameter help (#6): one callout beside the ⓘ that was clicked. It
+       sits here, outside the side panels, so their opacity doesn't fade it. -->
+  <app-callout [active]="this.help.callout"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. -->
   <app-modal id="modal-intro" titleId="label-intro-welcome" [open]="this.introOpen"
     (closed)="this.introOpen = false">
@@ -255,10 +271,5 @@
     <img id="img-intro-equation" />
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</p>
-  </app-modal>
-  <app-modal id="modal-help" titleId="label-help-title" [open]="this.helpOpen"
-    (closed)="this.helpOpen = false">
-    <h2 modal-title id="label-help-title">{{this.helpTitle}}</h2>
-    <p id="label-help-content">{{this.helpContent}}</p>
   </app-modal>
 </div>

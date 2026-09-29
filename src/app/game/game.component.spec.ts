@@ -5,6 +5,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { ShellParameters } from '../shell-parameters';
 import { GameComponent } from './game.component';
 import { ModalComponent } from '../modal/modal.component';
+import { CalloutComponent } from '../callout/callout.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -14,7 +15,7 @@ import { FramePump, installFramePump } from '../../testing/frame-pump';
 async function renderGame(): Promise<ComponentFixture<GameComponent>> {
   await TestBed.configureTestingModule({
     imports: [ FormsModule ],
-    declarations: [ GameComponent, ModalComponent ],
+    declarations: [ GameComponent, ModalComponent, CalloutComponent ],
     providers: [ provideRouter([]) ]
   }).compileComponents();
   const fixture = TestBed.createComponent(GameComponent);
@@ -45,7 +46,7 @@ describe('GameComponent shared challenge link (#12)', () => {
   function configure(target: string | null): void {
     TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ GameComponent, ModalComponent ],
+      declarations: [ GameComponent, ModalComponent, CalloutComponent ],
       providers: [
         provideRouter([]),
         {
@@ -676,7 +677,7 @@ describe('GameComponent heat bar scale (#28)', () => {
   function createAgainst(target: ShellParameters): GameComponent {
     TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ GameComponent, ModalComponent ],
+      declarations: [ GameComponent, ModalComponent, CalloutComponent ],
       providers: [ provideRouter([]) ]
     });
     spyOn(ShellParameters, 'randomParameters').and.returnValue(target);
@@ -756,8 +757,9 @@ describe('GameComponent heat bar scale (#28)', () => {
   });
 });
 
-// #31: the game's four pop-ups are the shared <app-modal> (a native <dialog>),
-// each closed with Esc, a click on the backdrop or its header ✕.
+// #31: the game's pop-ups are the shared <app-modal> (a native <dialog>),
+// each closed with Esc, a click on the backdrop or its header ✕. Parameter
+// help is a callout since #6 (below).
 describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
   let fixture: ComponentFixture<GameComponent>;
   let component: GameComponent;
@@ -767,7 +769,6 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
   const victory = () => dialog('modal-victory');
   const newGame = () => dialog('modal-new-game');
   const howTo = () => dialog('modal-howto');
-  const help = () => dialog('modal-help');
   const render = () => fixture.detectChanges();
   const title = (d: HTMLDialogElement) => d.querySelector('header > h2') as HTMLElement;
   const closeX = (d: HTMLDialogElement) => d.querySelector('header > button') as HTMLButtonElement;
@@ -798,9 +799,6 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
     'how-to': {
       open: () => { component.howToButtonClick(new Event('click')); render(); return howTo(); },
       flag: () => component.howToOpen },
-    'parameter help': {
-      open: () => { component.parameterHelpAButtonClick(new Event('click')); render(); return help(); },
-      flag: () => component.helpOpen },
   };
 
   beforeEach(async () => {
@@ -815,12 +813,14 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
   });
 
-  it('renders all four through <app-modal>, with no hand-built pop-up left', () => {
-    for (const id of ['modal-victory', 'modal-new-game', 'modal-howto', 'modal-help']) {
+  it('renders all three through <app-modal>, with no hand-built pop-up and no help pop-up left', () => {
+    for (const id of ['modal-victory', 'modal-new-game', 'modal-howto']) {
       const host = el.querySelector('#' + id);
       expect(host?.tagName).withContext(id).toBe('APP-MODAL');
       expect(dialog(id)).withContext(id).not.toBeNull();
     }
+    expect(el.querySelector('#modal-help')).withContext('#6: help is a callout').toBeNull();
+    expect(el.querySelectorAll('app-modal').length).toBe(3);
     expect(el.querySelector('[class*="modal-"][class$="-content"], .modal-content, .modal')).toBeNull();
   });
 
@@ -901,30 +901,6 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
     });
   });
 
-  describe('parameter help', () => {
-    const helpButtons: [string, () => void, string, string][] = [
-      ['A', () => component.parameterHelpAButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_A_HELP_TITLE, AppStrings.LABEL_PARAM_A_HELP_CONTENT],
-      ['alpha', () => component.parameterHelpAlphaButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE, AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT],
-      ['beta', () => component.parameterHelpBetaButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_BETA_HELP_TITLE, AppStrings.LABEL_PARAM_BETA_HELP_CONTENT],
-      ['a', () => component.parameterHelpA1ButtonClick(new Event('click')),
-        AppStrings.LABEL_PARAM_A1_HELP_TITLE, AppStrings.LABEL_PARAM_A1_HELP_CONTENT],
-    ];
-
-    for (const [name, click, expectedTitle, expectedContent] of helpButtons) {
-      it(`ⓘ ${name} opens help with its own title and text`, () => {
-        click();
-        render();
-        expect(help().open).toBeTrue();
-        expect(title(help()).textContent?.trim()).toBe(expectedTitle);
-        expect(help().querySelector('#label-help-content')?.textContent?.trim()).toBe(expectedContent);
-        expect(help().querySelector('#label-help-content')?.tagName).toBe('P');
-      });
-    }
-  });
-
   for (const [name, { open, flag }] of Object.entries(popups)) {
     describe(name, () => {
       const closeWays: Record<string, (d: HTMLDialogElement) => void> = {
@@ -971,6 +947,215 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
         const texts = Array.from(d.querySelectorAll('button')).map(b => b.textContent?.trim());
         expect(texts).not.toContain(AppStrings.LABEL_CLOSE);
       });
+    });
+  }
+});
+
+// #6: the game's four parameter ⓘ show their help in a callout beside them,
+// like the initial screen's. One at a time; Esc, a click on the canvas or
+// closing the menu closes it; moving a slider doesn't.
+describe('GameComponent parameter help callouts (#6)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const render = () => fixture.detectChanges();
+  const callouts = () => el.querySelectorAll('.callout');
+  const callout = () => el.querySelector('.callout') as HTMLElement | null;
+  const info = (key: string) => el.querySelector(`#${key}-help-button`) as HTMLInputElement;
+  const helpButtons: [string, string, string][] = [
+    ['A', AppStrings.LABEL_PARAM_A_HELP_TITLE, AppStrings.LABEL_PARAM_A_HELP_CONTENT],
+    ['alpha', AppStrings.LABEL_PARAM_ALPHA_HELP_TITLE, AppStrings.LABEL_PARAM_ALPHA_HELP_CONTENT],
+    ['beta', AppStrings.LABEL_PARAM_BETA_HELP_TITLE, AppStrings.LABEL_PARAM_BETA_HELP_CONTENT],
+    ['a', AppStrings.LABEL_PARAM_A1_HELP_TITLE, AppStrings.LABEL_PARAM_A1_HELP_CONTENT],
+  ];
+
+  function openMenu() {
+    component.menuButtonClick(new Event('click'));
+    render();
+  }
+
+  function clickInfo(key: string) {
+    info(key).click();
+    render();
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    // The how-to opens on load; close it so it isn't in the way.
+    component.howToOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  for (const [key, title, text] of helpButtons) {
+    it(`ⓘ ${key} shows its own title and text in a callout, not a pop-up`, () => {
+      openMenu();
+      clickInfo(key);
+      expect(callouts().length).toBe(1);
+      expect(callout()!.id).toBe(`callout-${key}`);
+      expect(callout()!.querySelector('.callout-title')!.textContent!.trim()).toBe(title);
+      expect(callout()!.querySelector('.callout-text')!.textContent!.trim()).toBe(text);
+      expect(el.querySelector('#modal-help')).toBeNull();
+      expect(Array.from(el.querySelectorAll('dialog')).some(d => d.open)).toBeFalse();
+    });
+  }
+
+  it('mounts the callout outside the translucent menu', () => {
+    openMenu();
+    clickInfo('A');
+    expect(callout()!.closest('#parameters-menu')).toBeNull();
+  });
+
+  it('shows one callout at a time, and the same ⓘ closes it', () => {
+    openMenu();
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    clickInfo('beta');
+    expect(callouts().length).toBe(1);
+    expect(callout()!.id).toBe('callout-beta');
+    clickInfo('beta');
+    expect(callout()).toBeNull();
+  });
+
+  it('closes on Esc', () => {
+    openMenu();
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    render();
+    expect(callout()).toBeNull();
+  });
+
+  it('closes on a click on the canvas', () => {
+    openMenu();
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    el.querySelector('#canvas')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    render();
+    expect(callout()).toBeNull();
+  });
+
+  it('closes when the menu closes', () => {
+    openMenu();
+    clickInfo('A');
+    expect(callout()).withContext('open before closing').not.toBeNull();
+    openMenu();
+    expect(component.menuVisible).toBeFalse();
+    expect(callout()).toBeNull();
+  });
+
+  it('stays open while a slider moves, and the heat bar updates', () => {
+    openMenu();
+    clickInfo('beta');
+    const before = component.distance;
+    const beta = el.querySelectorAll('#parameters-menu input.slider')[2] as HTMLInputElement;
+    beta.value = component.parameters.beta > 42 ? '0' : '85';
+    beta.dispatchEvent(new Event('input'));
+    beta.dispatchEvent(new Event('change'));
+    render();
+    expect(component.distance).not.toBe(before);
+    expect(callout()).not.toBeNull();
+  });
+
+  it('opens on click only, not on hover', () => {
+    openMenu();
+    for (const type of ['mouseenter', 'mouseover', 'pointerenter', 'pointerover']) {
+      info('A').dispatchEvent(new MouseEvent(type, { bubbles: true }));
+    }
+    render();
+    expect(callout()).toBeNull();
+    clickInfo('A');
+    expect(callout()).withContext('a click opens it').not.toBeNull();
+  });
+
+  it('marks each ⓘ with aria-expanded and aria-controls, and keeps focus on it', () => {
+    openMenu();
+    for (const [key] of helpButtons) {
+      expect(info(key).getAttribute('aria-expanded')).withContext(key).toBe('false');
+      expect(info(key).getAttribute('aria-controls')).withContext(key).toBe(`callout-${key}`);
+    }
+    info('alpha').focus();
+    clickInfo('alpha');
+    expect(info('alpha').getAttribute('aria-expanded')).toBe('true');
+    expect(document.activeElement).toBe(info('alpha'));
+  });
+
+  it('gives each ⓘ a hit area of at least 44×44 px', () => {
+    openMenu();
+    for (const [key] of helpButtons) {
+      const box = info(key).getBoundingClientRect();
+      expect(box.width).withContext(`${key} width`).toBeGreaterThanOrEqual(44);
+      expect(box.height).withContext(`${key} height`).toBeGreaterThanOrEqual(44);
+    }
+  });
+});
+
+// #6: at every checked size the game's parameters menu stays on screen and
+// ends above the Usuario/Objetivo switch, scrolling when it's taller. Karma
+// runs the specs in an iframe, so resizing it gives the page a real viewport.
+describe('GameComponent parameters menu fit (#6)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+  let restoreViewport: (() => void) | null = null;
+
+  function setViewport(width: number, height: number) {
+    const frame = window.frameElement as HTMLIFrameElement | null;
+    if (!frame) {
+      pending('needs the Karma iframe to set the viewport size');
+      return;
+    }
+    const before = { width: frame.style.width, height: frame.style.height };
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    restoreViewport = () => {
+      frame.style.width = before.width;
+      frame.style.height = before.height;
+    };
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    component.howToOpen = false;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+    restoreViewport?.();
+    restoreViewport = null;
+  });
+
+  it('shows no forced scrollbar on a 360 px phone', () => {
+    setViewport(360, 800);
+    component.menuButtonClick(new Event('click'));
+    fixture.detectChanges();
+    expect(getComputedStyle(el.querySelector('#parameters-menu') as HTMLElement).overflowY).toBe('auto');
+  });
+
+  for (const [width, height] of [[844, 390], [390, 844], [1280, 800]]) {
+    it(`keeps every control reachable and clear of the switch at ${width}×${height}`, () => {
+      setViewport(width, height);
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      const menu = el.querySelector('#parameters-menu') as HTMLElement;
+      const toggle = el.querySelector('#toggle-switch') as HTMLElement;
+      const bottom = menu.getBoundingClientRect().bottom;
+      expect(bottom).withContext('menu bottom').toBeLessThanOrEqual(document.documentElement.clientHeight);
+      expect(bottom).withContext('menu ends above the switch').toBeLessThanOrEqual(toggle.getBoundingClientRect().top);
+      menu.scrollTop = menu.scrollHeight;
+      const last = el.querySelector('#a-help-button') as HTMLElement;
+      expect(last.getBoundingClientRect().bottom).withContext('last ⓘ after scrolling').toBeLessThanOrEqual(bottom + 0.5);
     });
   }
 });

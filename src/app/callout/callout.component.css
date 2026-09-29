@@ -1,0 +1,85 @@
+/* The help bubble (#6). Text colour, font, border colour, rounding and fade
+   duration come from the --modal-* tokens in src/styles.css, so it matches
+   the pop-ups (#31). Two parts differ on purpose: the background is the
+   token mixed to 80 % (below), and the shadow is its own, since the
+   pop-ups' faint Pico shadow barely shows over the 3D view. */
+
+/* Covers the viewport without taking the pointer: the sliders and buttons
+   under it keep working while a bubble is open. */
+.callout-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Positioned by the component (left, top, data-side, --callout-arrow). */
+.callout {
+  position: absolute;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(18rem, calc(100vw - 16px));
+  padding: 0.75rem 1rem;
+  /* 80 % background so the sliders under the bubble show through (owner's
+     request); the text, border and arrow stay solid. Solid where color-mix()
+     isn't supported. */
+  background-color: var(--modal-background);
+  background-color: color-mix(in srgb, var(--modal-background) 80%, transparent);
+  color: var(--modal-color);
+  font-family: var(--modal-font-family);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border: 1px solid var(--modal-primary);
+  border-radius: var(--modal-border-radius);
+  box-shadow: 0 0.25rem 1rem rgba(20, 35, 42, 0.18);
+  pointer-events: none;
+  animation: callout-in var(--modal-duration) ease-out;
+}
+
+.callout-title {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.callout-text {
+  margin: 0;
+}
+
+/* The arrow points back at the ⓘ; --callout-arrow is the ⓘ's centre along
+   the bubble's edge, measured from its outer edge. The arrow is positioned
+   inside the 1 px border, hence 9 px (8 px half-arrow + the border). */
+.callout-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+}
+
+.callout[data-side="right"] .callout-arrow {
+  left: -16px;
+  top: calc(var(--callout-arrow, 14px) - 9px);
+  border-right-color: var(--modal-primary);
+}
+
+.callout[data-side="below"] .callout-arrow {
+  top: -16px;
+  left: calc(var(--callout-arrow, 14px) - 9px);
+  border-bottom-color: var(--modal-primary);
+}
+
+.callout[data-side="above"] .callout-arrow {
+  bottom: -16px;
+  left: calc(var(--callout-arrow, 14px) - 9px);
+  border-top-color: var(--modal-primary);
+}
+
+@keyframes callout-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .callout {
+    animation: none;
+  }
+}

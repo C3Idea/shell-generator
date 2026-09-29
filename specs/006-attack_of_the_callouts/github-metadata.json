@@ -1,0 +1,21 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 6,
+    "title": "[App] Parameter panels: callout help for every ⓘ + clearer shell panel layout",
+    "url": "https://github.com/C3Idea/shell-generator/issues/6",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5894332065",
+  "spec_comment_id": "5894283140",
+  "pr": {
+    "number": 33,
+    "url": "https://github.com/C3Idea/shell-generator/pull/33",
+    "status": "ready",
+    "createdAt": "2026-09-29T16:42:20Z",
+    "readyAt": "2026-09-29T19:51:20Z"
+  },
+  "deployed_at": "2026-09-29T16:41:40Z",
+  "cached_from": "github",
+  "task_comment_id": "5894626285"
+}
