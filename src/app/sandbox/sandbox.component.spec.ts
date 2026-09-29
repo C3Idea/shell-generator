@@ -601,6 +601,105 @@ describe('SandboxComponent control guide (#5)', () => {
     });
   });
 
+  describe('one kind of help at a time', () => {
+    const shellMenu = () => el.querySelector('#parameters-menu') as HTMLElement;
+    const pencilMenu = () => el.querySelector('#visualization-menu') as HTMLElement;
+    const info = (key: string) => el.querySelector(`#${key}-help-button`) as HTMLInputElement;
+    const singleCallout = () => el.querySelector('.callout:not(.callout-guide)');
+
+    function guideOn() {
+      toggleGuide();
+      expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+    }
+
+    function expectGuideOff() {
+      expect(component.guide.on).toBeFalse();
+      expect(guideBubbles().length).toBe(0);
+      expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+    }
+
+    it('turns off when the "?" is tapped again', () => {
+      guideOn();
+      toggleGuide();
+      expectGuideOff();
+    });
+
+    it('turns off with Esc', () => {
+      guideOn();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      render();
+      expectGuideOff();
+    });
+
+    it('closes the parameters panel and its open ⓘ when it turns on', () => {
+      (el.querySelector('#parameters-button') as HTMLButtonElement).click();
+      render();
+      info('A').click();
+      render();
+      expect(shellMenu().style.display).withContext('panel open first').toBe('block');
+      expect(singleCallout()).withContext('ⓘ open first').not.toBeNull();
+      guideOn();
+      expect(shellMenu().style.display).toBe('none');
+      expect(component.help.key).toBeNull();
+      expect(singleCallout()).toBeNull();
+    });
+
+    it('closes the pencil panel and its open ⓘ when it turns on', () => {
+      (el.querySelector('#visualization-button') as HTMLButtonElement).click();
+      render();
+      info('qual').click();
+      render();
+      expect(pencilMenu().style.display).withContext('panel open first').toBe('block');
+      expect(singleCallout()).withContext('ⓘ open first').not.toBeNull();
+      guideOn();
+      expect(pencilMenu().style.display).toBe('none');
+      expect(component.help.key).toBeNull();
+      expect(singleCallout()).toBeNull();
+    });
+
+    it('turns off when the parameters panel opens', () => {
+      guideOn();
+      (el.querySelector('#parameters-button') as HTMLButtonElement).click();
+      render();
+      expectGuideOff();
+      expect(shellMenu().style.display).toBe('block');
+    });
+
+    it('turns off when the pencil panel opens', () => {
+      guideOn();
+      (el.querySelector('#visualization-button') as HTMLButtonElement).click();
+      render();
+      expectGuideOff();
+      expect(pencilMenu().style.display).toBe('block');
+    });
+
+    it('turns off when a parameter ⓘ opens', () => {
+      guideOn();
+      info('A').click();
+      render();
+      expectGuideOff();
+      expect(component.help.key).toBe('A');
+    });
+
+    it('turns off when the welcome pop-up opens', () => {
+      guideOn();
+      (el.querySelector('#intro-button') as HTMLButtonElement).click();
+      render();
+      expectGuideOff();
+      expect(component.introOpen).toBeTrue();
+    });
+
+    it('stays on while an image is saved', () => {
+      spyOn(HTMLAnchorElement.prototype, 'click');
+      guideOn();
+      (el.querySelector('#save-image-button') as HTMLButtonElement).click();
+      render();
+      expect(HTMLAnchorElement.prototype.click).withContext('image saved').toHaveBeenCalled();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+  });
+
   describe('turning the guide on', () => {
     it('shows a bubble beside each control, in reading order, and reports the "?" as pressed', () => {
       expect(guideBubbles().length).withContext('before').toBe(0);

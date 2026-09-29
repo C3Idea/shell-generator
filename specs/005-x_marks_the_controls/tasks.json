@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 13,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T14:54:54-06:00",
+    "lastCheckpoint": "2026-09-29T15:02:41-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T14:57:06-06:00"
+    "lastUpdated": "2026-09-29T15:01:27-06:00"
   },
   "waves": [
     {
@@ -57,8 +58,9 @@
         "T004",
         "T005"
       ],
-      "gateStatus": "pending",
-      "story": "US1"
+      "gateStatus": "passed",
+      "story": "US1",
+      "completedAt": "2026-09-29T15:01:27-06:00"
     },
     {
       "number": 3,
@@ -231,7 +233,7 @@
       "id": "T005",
       "wave": 2,
       "description": "Sandbox: add the '?' toolbar button after the book (inline SVG in the toolbar style: rect.svg-border + '?' path.svg-content, viewBox 0 0 67 67, same hover), id help-button, title/aria-label 'Mostrar ayuda', aria-pressed = guide.on, aria-controls = guide id. Give the toolbar buttons stable ids for anchors (parameters-button, save-image-button, game-button, intro-button; pencil is #visualization-button). A zero-size marker at the shell's screen centre anchors the 3D-view callout. Mount <app-callout [guide]>. Specs first: '?' shows seven callouts with their text; aria; 44 px hit area; 3D-view bubble points at the shell.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -248,7 +250,23 @@
       "dependencies": [
         "T003",
         "T004"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:01:27-06:00",
+        "commitSha": "e78e1b6f809c8b84dcfe297b0522c51bb2beb7d5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "5 FAILED (all new #5 specs), 39 SUCCESS",
+          "greenResult": "44 SUCCESS; full suite 248/248"
+        },
+        "satisfaction": "full"
+      }
     },
     "T006": {
       "id": "T006",

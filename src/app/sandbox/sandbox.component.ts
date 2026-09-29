@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { ParameterHelp } from '../parameter-help';
+import { HelpKey, ParameterHelp } from '../parameter-help';
 import { ControlGuide } from '../control-guide';
 
 @Component({
@@ -186,14 +186,17 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // Opening a panel ends the guide (#5): one kind of help at a time.
   private showMenu() {
     this.menu.style.display = 'block';
     this.menuVisible = true;
+    this.guide.close();
   }
 
   private showVisualizationMenu() {
     this.visualizationMenu.style.display = 'block';
     this.visualizationMenuVisible = true;
+    this.guide.close();
   }
 
   private hideVisualizationMenu() {
@@ -213,39 +216,56 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.help.toggle('A');
+    this.toggleHelp('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.help.toggle('alpha');
+    this.toggleHelp('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.help.toggle('beta');
+    this.toggleHelp('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.help.toggle('a');
+    this.toggleHelp('a');
   }
 
   parameterHelpBButtonClick(event: Event) {
-    this.help.toggle('b');
+    this.toggleHelp('b');
   }
 
   parameterHelpThetaButtonClick(event: Event) {
-    this.help.toggle('theta');
+    this.toggleHelp('theta');
   }
 
   parameterHelpQualButtonClick(event: Event) {
-    this.help.toggle('qual');
+    this.toggleHelp('qual');
+  }
+
+  // A parameter ⓘ ends the guide (#5).
+  private toggleHelp(key: HelpKey) {
+    this.guide.close();
+    this.help.toggle(key);
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.help.close();
+    this.guide.close();
   }
 
+  // Turning the guide on closes the panels and any ⓘ help first.
   helpButtonClick(event: Event) {
+    if (!this.guide.on) {
+      this.help.close();
+      if (this.menuVisible) {
+        this.hideMenu();
+      }
+      if (this.visualizationMenuVisible) {
+        this.hideVisualizationMenu();
+      }
+    }
     this.guide.toggle();
   }
 
@@ -254,6 +274,7 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private showIntroWindow() {
+    this.guide.close();
     this.introOpen = true;
   }
 
