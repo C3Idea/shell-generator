@@ -175,6 +175,18 @@ describe('layoutGuide (#5)', () => {
     });
   });
 
+  it('gives the same result whether the 3D view is listed before or after the pencil', () => {
+    for (const viewport of SIZES) {
+      const items = initialScreen(viewport);
+      const swapped = [...items.slice(0, 5), items[6], items[5]];
+      const measure: Measure = (index, maxWidth) => TEXT(index === 5 ? 6 : index === 6 ? 5 : index, maxWidth);
+      const a = layoutGuide(items, TEXT, viewport);
+      const b = layoutGuide(swapped, measure, viewport);
+      expect([b[0], b[1], b[2], b[3], b[4], b[6], b[5]])
+        .withContext(`${viewport.width}×${viewport.height}`).toEqual(a);
+    }
+  });
+
   it('centralRegion is the middle of a box, half its shorter side across', () => {
     expect(centralRegion(box(0, 0, 400, 800))).toEqual(box(100, 300, 200, 200));
   });

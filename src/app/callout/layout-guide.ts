@@ -72,8 +72,8 @@ export function centralRegion(area: Box): Box {
 // nearest the row, each joined to its control by a leader line that passes
 // left of the bubbles above it. Where it fits, the rightmost control's bubble
 // sits beside it instead. Every other bubble sits beside its control on the
-// first side where it fits and covers nothing; a region's bubble may move
-// into the region to find room.
+// first side where it fits and covers nothing, controls before regions; a
+// region's bubble may move into the region to find room.
 export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size): GuidePlacement[] {
   const result: GuidePlacement[] = new Array(items.length);
   const taken: Box[] = [];
@@ -165,10 +165,12 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
   const rows = findRows(items);
   rows.forEach(placeRow);
   const inRow = new Set(rows.flat());
-  items.forEach((item, index) => {
-    if (inRow.has(index)) {
-      return;
-    }
+  // Lone controls before regions: a region's bubble can move into the
+  // region to make room, a control's can't.
+  const singles = items.map((_, index) => index).filter(index => !inRow.has(index));
+  const inOrder = [...singles.filter(i => !items[i].region), ...singles.filter(i => items[i].region)];
+  inOrder.forEach(index => {
+    const item = items[index];
     const sides: Side[] = item.region ? ['below', 'right', 'above', 'left'] : ['right', 'below', 'above', 'left'];
     if (!placeBeside(index, sides)) {
       // Nowhere free: the first side, clamped inside the screen.

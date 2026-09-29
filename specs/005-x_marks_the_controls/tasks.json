@@ -19,12 +19,12 @@
       0
     ],
     "totalTasks": 13,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T14:40:37-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T14:39:43-06:00"
+    "lastUpdated": "2026-09-29T14:49:29-06:00"
   },
   "waves": [
     {
@@ -124,7 +124,7 @@
       "id": "T002",
       "wave": 1,
       "description": "Add src/app/callout/layout-guide.ts: pure layoutGuide(anchors: Box[], bubbles: Size[], viewport: Size): GuidePlacement[] (GuidePlacement = CalloutPlacement + optional leader {x1,y1,x2,y2}). Per bubble: beside its anchor when it fits (reuse placeCallout's rules); where toolbar bubbles would collide, stack them in a staircase below the toolbar, rightmost anchor's bubble nearest, each with a leader line to its anchor centre that crosses no other bubble; never overlap, never leave the viewport (8 px margin), never cover its own anchor. Export placeCallout's Box/Size types from callout.component.ts. Write src/app/callout/layout-guide.spec.ts first (DOM-free): beside at 1280, staircase at 390/360, 844×390 fits without stacking past the screen, no pairwise overlap, lines cross no bubble, all inside the viewport.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -134,7 +134,23 @@
         "FR-008",
         "FR-018",
         "FR-022"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T14:49:29-06:00",
+        "commitSha": "352f2f5e4351af7f60213ff34ccfc6180e2ac863",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts",
+          "src/app/callout/callout.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/layout-guide.spec.ts",
+          "redResult": "29 FAILED of 29 against a stub returning []",
+          "greenResult": "29 SUCCESS; full suite 228/228"
+        },
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",

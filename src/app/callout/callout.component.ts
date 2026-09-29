@@ -1,4 +1,5 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { centralRegion, GuidePlacement, layoutGuide } from './layout-guide';
 
 // One help bubble (#6), shown for the ⓘ that was clicked. `anchor` is a CSS
 // selector for that ⓘ; `id` is the bubble's id, which the ⓘ points at with
@@ -8,6 +9,9 @@ export interface Callout {
   title: string;
   text: string;
   anchor: string;
+  // The guide (#5): the anchor is an area (the 3D view) rather than a button;
+  // the bubble may sit over part of it, as long as it points into it.
+  region?: boolean;
 }
 
 export interface CalloutPlacement {
@@ -68,6 +72,11 @@ function scrollParent(element: Element): Element | null {
 // translucent. It re-places the bubble when the window resizes or anything
 // scrolls (the panel holding its ⓘ scrolls on short screens), and hides it
 // while its ⓘ is scrolled out of that panel.
+//
+// Guide mode (#5): `guide` shows a bubble beside every control at once,
+// placed together by layoutGuide(), with a leader line for each bubble that
+// can't sit right beside its control. Guide bubbles are compact, and are
+// read out in the order given.
 @Component({
   selector: 'app-callout',
   templateUrl: './callout.component.html',
@@ -75,19 +84,34 @@ function scrollParent(element: Element): Element | null {
 })
 export class CalloutComponent implements OnChanges, AfterViewChecked, OnDestroy {
   @Input() active: Callout | null = null;
+  @Input() guide: Callout[] | null = null;
 
   @ViewChild('bubble')
   private bubbleRef?: ElementRef<HTMLElement>;
 
+  @ViewChildren('guideBubble')
+  private guideBubbles?: QueryList<ElementRef<HTMLElement>>;
+
+  @ViewChildren('guideLeader')
+  private guideLeaders?: QueryList<ElementRef<HTMLElement>>;
+
   // The active callout, only while its anchor is on the page.
   shown: Callout | null = null;
 
+  // The guide's callouts whose controls are on the page, in the given order.
+  guideShown: Callout[] = [];
+
   private anchorElement: Element | null = null;
+  private guideAnchors: Element[] = [];
   private needsPlacing = false;
 
   ngOnChanges(): void {
     this.anchorElement = this.active ? document.querySelector(this.active.anchor) : null;
     this.shown = this.anchorElement ? this.active : null;
+    const found = (this.guide ?? []).map(c => ({ callout: c, element: document.querySelector(c.anchor) }))
+      .filter((f): f is { callout: Callout; element: Element } => f.element !== null);
+    this.guideShown = found.map(f => f.callout);
+    this.guideAnchors = found.map(f => f.element);
     this.needsPlacing = true;
   }
 
@@ -118,6 +142,11 @@ export class CalloutComponent implements OnChanges, AfterViewChecked, OnDestroy 
   }
 
   private place(): void {
+    this.placeGuide();
+    this.placeActive();
+  }
+
+  private placeActive(): void {
     const bubble = this.bubbleRef?.nativeElement;
     if (!bubble || !this.anchorElement) {
       return;
@@ -134,5 +163,43 @@ export class CalloutComponent implements OnChanges, AfterViewChecked, OnDestroy 
     bubble.style.left = `${placement.left}px`;
     bubble.style.top = `${placement.top}px`;
     bubble.style.setProperty('--callout-arrow', `${clamp(placement.arrow, ARROW_INSET, edge - ARROW_INSET)}px`);
+  }
+
+  private placeGuide(): void {
+    const bubbles = this.guideBubbles?.map(b => b.nativeElement) ?? [];
+    const leaders = this.guideLeaders?.map(l => l.nativeElement) ?? [];
+    if (bubbles.length === 0 || bubbles.length !== this.guideAnchors.length) {
+      return;
+    }
+    const items = this.guideShown.map((callout, i) => {
+      const rect = this.guideAnchors[i].getBoundingClientRect();
+      return { anchor: callout.region ? centralRegion(rect) : rect, region: callout.region };
+    });
+    const measure = (index: number, maxWidth: number) => {
+      bubbles[index].style.maxWidth = `${maxWidth}px`;
+      return { width: bubbles[index].offsetWidth, height: bubbles[index].offsetHeight };
+    };
+    const viewport = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
+    layoutGuide(items, measure, viewport).forEach((placement, i) => this.applyGuide(bubbles[i], leaders[i], placement));
+  }
+
+  private applyGuide(bubble: HTMLElement, leader: HTMLElement | undefined, placement: GuidePlacement): void {
+    bubble.style.maxWidth = `${placement.maxWidth}px`;
+    const edge = placement.side === 'right' || placement.side === 'left' ? bubble.offsetHeight : bubble.offsetWidth;
+    bubble.dataset['side'] = placement.side;
+    bubble.style.left = `${placement.left}px`;
+    bubble.style.top = `${placement.top}px`;
+    bubble.style.setProperty('--callout-arrow', `${clamp(placement.arrow, ARROW_INSET, edge - ARROW_INSET)}px`);
+    if (!leader) {
+      return;
+    }
+    const line = placement.leader;
+    leader.style.display = line ? 'block' : 'none';
+    if (line) {
+      leader.style.left = `${Math.min(line.x1, line.x2)}px`;
+      leader.style.top = `${Math.min(line.y1, line.y2)}px`;
+      leader.style.width = `${Math.max(1, Math.abs(line.x2 - line.x1))}px`;
+      leader.style.height = `${Math.max(1, Math.abs(line.y2 - line.y1))}px`;
+    }
   }
 }

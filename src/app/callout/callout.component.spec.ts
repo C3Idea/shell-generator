@@ -230,3 +230,148 @@ describe('CalloutComponent (#6)', () => {
     });
   });
 });
+
+// The guide (#5): several bubbles at once. The host copies the initial
+// screen's shape: three 64 px buttons in a row at the top left, a lone one at
+// the bottom left, and a large area (the 3D view) behind everything.
+@Component({
+  template: `
+    <button type="button" id="under" style="position: fixed; inset: 0; width: 100%; height: 100%; margin: 0; border: 0">3D</button>
+    <button type="button" id="g1" style="position: fixed; left: 7px; top: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">1</button>
+    <button type="button" id="g2" style="position: fixed; left: 75px; top: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">2</button>
+    <button type="button" id="g3" style="position: fixed; left: 143px; top: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">3</button>
+    <button type="button" id="g4" style="position: fixed; left: 7px; bottom: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">4</button>
+    <app-callout [guide]="guide"></app-callout>`
+})
+class GuideHostComponent {
+  guide: Callout[] | null = null;
+}
+
+describe('CalloutComponent guide mode (#5)', () => {
+  let fixture: ComponentFixture<GuideHostComponent>;
+  let host: GuideHostComponent;
+  let restoreViewport: (() => void) | null = null;
+
+  const guide: Callout[] = [
+    { id: 'guide-g1', title: 'Uno', text: 'El primer botón de la fila.', anchor: '#g1' },
+    { id: 'guide-g2', title: 'Dos', text: 'El segundo botón de la fila.', anchor: '#g2' },
+    { id: 'guide-g3', title: 'Tres', text: 'El tercer botón, con un texto más largo.', anchor: '#g3' },
+    { id: 'guide-view', title: 'Vista', text: 'Arrastra para girar.', anchor: '#under', region: true },
+    { id: 'guide-g4', title: 'Cuatro', text: 'El botón de abajo.', anchor: '#g4' },
+  ];
+
+  const bubbles = () => Array.from(fixture.nativeElement.querySelectorAll('.callout')) as HTMLElement[];
+  const leaders = () => Array.from(fixture.nativeElement.querySelectorAll('.callout-leader')) as HTMLElement[];
+  const rectOf = (el: Element) => el.getBoundingClientRect();
+  const overlaps = (a: DOMRect, b: DOMRect) =>
+    a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+
+  function setViewport(width: number, height: number) {
+    const frame = window.frameElement as HTMLIFrameElement | null;
+    if (!frame) {
+      pending('needs the Karma iframe to set the viewport size');
+      return;
+    }
+    const before = { width: frame.style.width, height: frame.style.height };
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    window.dispatchEvent(new Event('resize'));
+    restoreViewport = () => {
+      frame.style.width = before.width;
+      frame.style.height = before.height;
+    };
+  }
+
+  function show(callouts: Callout[] | null) {
+    host.guide = callouts;
+    fixture.detectChanges();
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [GuideHostComponent, CalloutComponent]
+    }).compileComponents();
+    setViewport(390, 844);
+    fixture = TestBed.createComponent(GuideHostComponent);
+    host = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    restoreViewport?.();
+    restoreViewport = null;
+  });
+
+  it('shows one bubble per callout, in the given order, each with its id, title, text and arrow', () => {
+    show(guide);
+    const shown = bubbles();
+    expect(shown.map(b => b.id)).toEqual(guide.map(c => c.id));
+    shown.forEach((b, i) => {
+      expect(b.getAttribute('role')).withContext(b.id).toBe('note');
+      expect(b.querySelector('.callout-title')!.textContent!.trim()).toBe(guide[i].title);
+      expect(b.querySelector('.callout-text')!.textContent!.trim()).toBe(guide[i].text);
+      expect(b.querySelector('.callout-arrow')).withContext(b.id).not.toBeNull();
+    });
+  });
+
+  it('leaves out a callout whose control is not on the page, and clears when the guide ends', () => {
+    show([...guide, { id: 'guide-missing', title: 'No', text: 'No está.', anchor: '#missing' }]);
+    expect(bubbles().length).toBe(guide.length);
+    show(null);
+    expect(bubbles().length).toBe(0);
+    expect(leaders().length).toBe(0);
+  });
+
+  it('keeps every bubble on screen, apart from the others and off every button', () => {
+    show(guide);
+    const rects = bubbles().map(rectOf);
+    expect(rects.length).toBe(guide.length);
+    const buttons = ['#g1', '#g2', '#g3', '#g4'].map(s => rectOf(fixture.nativeElement.querySelector(s)));
+    rects.forEach((r, i) => {
+      expect(r.left).withContext(`${guide[i].id} left`).toBeGreaterThanOrEqual(8);
+      expect(r.top).withContext(`${guide[i].id} top`).toBeGreaterThanOrEqual(8);
+      expect(r.right).withContext(`${guide[i].id} right`).toBeLessThanOrEqual(390 - 8 + 0.5);
+      expect(r.bottom).withContext(`${guide[i].id} bottom`).toBeLessThanOrEqual(844 - 8 + 0.5);
+      rects.slice(i + 1).forEach((other, k) =>
+        expect(overlaps(r, other)).withContext(`${guide[i].id} and ${guide[i + 1 + k].id}`).toBeFalse());
+      buttons.forEach((b, k) => expect(overlaps(r, b)).withContext(`${guide[i].id} over g${k + 1}`).toBeFalse());
+    });
+  });
+
+  it('joins a stacked bubble to its button with a thin line that screen readers skip', () => {
+    show(guide);
+    const lines = leaders().filter(l => getComputedStyle(l).display !== 'none');
+    expect(lines.length).withContext('lines shown on a phone').toBeGreaterThan(0);
+    const row = ['#g1', '#g2', '#g3'].map(s => rectOf(fixture.nativeElement.querySelector(s)));
+    lines.forEach(line => {
+      const r = rectOf(line);
+      expect(line.getAttribute('aria-hidden')).toBe('true');
+      expect(r.width).toBeLessThanOrEqual(2);
+      // It starts at the bottom of a button, under its centre.
+      const start = row.find(b => Math.abs(b.left + b.width / 2 - r.left) <= 1.5);
+      expect(start).withContext('line under a button centre').toBeDefined();
+      expect(Math.abs(r.top - start!.bottom)).toBeLessThanOrEqual(1);
+    });
+  });
+
+  it('never takes the pointer: bubbles and lines let clicks through to the controls', () => {
+    show(guide);
+    const targets = [...bubbles(), ...leaders().filter(l => getComputedStyle(l).display !== 'none')];
+    expect(targets.length).toBeGreaterThan(guide.length);
+    targets.forEach(t => {
+      const r = rectOf(t);
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      expect(t.contains(hit)).withContext(t.id || t.className).toBeFalse();
+    });
+  });
+
+  it('re-places the bubbles when the window is resized', () => {
+    show(guide);
+    const before = bubbles().map(b => b.style.left + ',' + b.style.top).join(';');
+    setViewport(1280, 800);
+    const after = bubbles().map(b => b.style.left + ',' + b.style.top).join(';');
+    expect(after).not.toBe(before);
+    const rects = bubbles().map(rectOf);
+    rects.forEach((r, i) => rects.slice(i + 1).forEach(o => expect(overlaps(r, o)).toBeFalse()));
+  });
+});

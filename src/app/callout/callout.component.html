@@ -4,4 +4,12 @@
     <strong class="callout-title">{{shown.title}}</strong>
     <p class="callout-text">{{shown.text}}</p>
   </div>
+  <!-- The guide (#5): a line per bubble (shown only when the bubble can't sit
+       right beside its control), then the bubbles in reading order. -->
+  <span *ngFor="let callout of guideShown" #guideLeader class="callout-leader" aria-hidden="true"></span>
+  <div *ngFor="let callout of guideShown" #guideBubble class="callout callout-guide" role="note" [id]="callout.id">
+    <span class="callout-arrow" aria-hidden="true"></span>
+    <strong class="callout-title">{{callout.title}}</strong>
+    <p class="callout-text">{{callout.text}}</p>
+  </div>
 </div>
