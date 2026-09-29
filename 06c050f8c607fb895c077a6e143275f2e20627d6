@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/control-guide.ts,src/app/control-guide.spec.ts,src/app/app-strings.ts
+vt.idd:tdd: red=7 FAILED of 8 against a stub (only 'starts off' passes), green=8 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-29T14:57:06-06:00
