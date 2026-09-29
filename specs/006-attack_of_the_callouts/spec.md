@@ -58,6 +58,7 @@ As a keyboard or screen-reader user, I want the callout announced and its trigge
 - **FR-007** The callout layer MUST NOT intercept pointer input (`pointer-events: none`, no backdrop, no focus trap); every underlying control stays usable.
 - **FR-008** The callout MUST be anchored beside its ⓘ where there is room, and reposition to below/above the row at narrow widths so it stays fully on-screen and readable at 390 px, 1280 px and 844×390, and MUST stay attached to its ⓘ on window resize.
 - **FR-009** The callout MUST render outside the panel's translucency so it is not dimmed by the panel's `opacity`.
+- **FR-010a** The callout's background MUST be 80 % opaque so the sliders under it show through; its text, border and arrow MUST stay solid (owner's request after the manual pass, 2026-09-29).
 - **FR-010** The callout MUST use the #31 design tokens (`--modal-*`: white background, teal accent, Lucida font) and MUST disable its open/close animation under `prefers-reduced-motion: reduce`.
 - **FR-011** Each ⓘ MUST expose `aria-expanded` reflecting its callout's state and `aria-controls` referencing the callout; the callout MUST be announced to screen readers via a polite live region; focus MUST remain on the ⓘ.
 - **FR-012** Each ⓘ MUST present a pointer hit area of at least 44×44 px (the visible icon MAY remain 24 px).
@@ -121,6 +122,7 @@ Angular 17.3 (standalone-free module app; `app.module.ts` declarations), TypeScr
 - **Layout depth** — options: names + landscape fit only vs also presets section vs also #31 restyle. **Selected: names + landscape fit only** (owner). Rationale: smallest change that makes rows readable; restyling side panels is out of scope.
 - **Resolución overlap** — options: fix in #6 vs separate bug. **Selected: fix in #6** (owner) — it lives in the shared row CSS this issue already touches.
 - **#7 and help text** (owner, 2026-09-29) — options: (a) keep #7 open for a hover tooltip; (b) #6 supersedes #7 and the PR closes it. **Selected: (b).** #7's hover trigger and close-on-pointer-leave are replaced by #6's click/tap rules. Help text: reuse every string unchanged except the typo fix "superfice" → "superficie" (options considered: keep text frozen; rewrite copy; fix only the typo — selected).
+- **Bubble background** (owner, 2026-09-29, after the manual pass) — options: (a) solid white; (b) translucent background, solid text. **Selected: (b) 80 %.** The sliders under a bubble worked but couldn't be seen; 80 % (gato_magico uses 75 %) lets them show through while the dark text keeps about 7:1 contrast.
 - **Component reuse** — options: one shared component vs per-screen. **Selected: shared** — ported once from gato_magico, reused by both screens and future issues.
 - **`modal-help` fate** (CLARIFY, autonomous) — options: (a) leave it in place unused; (b) remove it as dead code. **Selected: (b) remove.** Rationale: a codebase grep confirms `helpOpen`/`modal-help` is set only by the parameter-help handlers on both screens and by nothing else, so once every ⓘ uses the callout it is fully unused. Removing it avoids two divergent help affordances and keeps the #31 modal specs honest.
 
@@ -191,5 +193,6 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
 
