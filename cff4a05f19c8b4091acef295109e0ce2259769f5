@@ -1,0 +1,8 @@
+vt.idd:task: T007
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.html,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=2 FAILED (tap mouse, tap touch); drag/pinch/wheel keep-on guards pass (nothing closed the guide yet), green=58 SUCCESS sandbox; full suite
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-29T15:09:11-06:00
