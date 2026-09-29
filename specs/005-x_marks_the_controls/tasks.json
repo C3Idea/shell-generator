@@ -21,15 +21,16 @@
       2,
       3,
       4,
-      5
+      5,
+      6
     ],
     "totalTasks": 13,
-    "completedTasks": 11,
+    "completedTasks": 13,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T15:26:34-06:00",
+    "lastCheckpoint": "2026-09-29T15:35:09-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T15:25:18-06:00"
+    "lastUpdated": "2026-09-29T15:33:55-06:00"
   },
   "waves": [
     {
@@ -108,7 +109,8 @@
         "T012",
         "T013"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T15:33:55-06:00"
     }
   ],
   "tasks": {
@@ -494,7 +496,7 @@
       "id": "T012",
       "wave": 6,
       "description": "Verification: full npm test ×3 on 2 cores, ng lint, tsc --noEmit (app + spec), npm run build; revert check that the new specs fail on dev; update the spec's Verification Matrix evidence.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "config",
@@ -502,20 +504,38 @@
       "dependencies": [
         "T010",
         "T011"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:33:17-06:00",
+        "commitSha": "2962f84cc29f3179e0b12a82420f0b737920d04a",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/005-x_marks_the_controls/spec.md"
+        ]
+      }
     },
     "T013": {
       "id": "T013",
       "wave": 6,
       "description": "Screenshots of the guide at 360, 390, 1280 and 844×390 posted on #5 for the owner's approval together with the guide's text (live instance only with the owner's go-ahead).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
       "filePath": "specs/005-x_marks_the_controls/spec.md",
       "dependencies": [
         "T012"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:33:55-06:00",
+        "commitSha": "2962f84cc29f3179e0b12a82420f0b737920d04a",
+        "agents": "claude(inline)",
+        "files": [
+          "validaciones/shell_generator/5/capturas/guide-*.png (not committed)"
+        ],
+        "satisfaction": "partial",
+        "notes": "posted for approval (issuecomment-5899391235); owner approval pending (SC-006)"
+      }
     }
   }
 }

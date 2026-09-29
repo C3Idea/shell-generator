@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T15:25:18-06:00
+**Generated**: 2026-09-29T15:33:55-06:00
 
 ---
 
@@ -77,20 +77,20 @@
 
 **Purpose**: Verification and screenshots for approval
 
-- [ ] T012 [W6] Verification: full npm test ×3 on 2 cores, ng lint, tsc --noEmit (app + spec), npm run build; revert check that the new specs fail on dev; update the spec's Verification Matrix evidence.
-- [ ] T013 [W6] Screenshots of the guide at 360, 390, 1280 and 844×390 posted on #5 for the owner's approval together with the guide's text (live instance only with the owner's go-ahead).
+- [x] T012 [W6] Verification: full npm test ×3 on 2 cores, ng lint, tsc --noEmit (app + spec), npm run build; revert check that the new specs fail on dev; update the spec's Verification Matrix evidence.
+- [x] T013 [W6] Screenshots of the guide at 360, 390, 1280 and 844×390 posted on #5 for the owner's approval together with the guide's text (live instance only with the owner's go-ahead).
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 11
+- **Completed**: 13
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 84%
+- **Progress**: 100%
 
 ---
 
