@@ -451,6 +451,10 @@ describe('SandboxComponent panel layout (#6)', () => {
       const last = el.querySelector('#theta-help-button') as HTMLElement;
       expect(last.getBoundingClientRect().bottom).withContext('last ⓘ after scrolling')
         .toBeLessThanOrEqual(Math.min(viewportHeight(), menu.getBoundingClientRect().bottom) + 0.5);
+      // The pencil (visualization) button sits bottom-left, under the panel.
+      const pencil = el.querySelector('#visualization-button') as HTMLElement;
+      expect(menu.getBoundingClientRect().bottom).withContext('panel ends above the pencil button')
+        .toBeLessThanOrEqual(pencil.getBoundingClientRect().top);
     });
   }
 

@@ -66,10 +66,10 @@ label {
   list-style-type: none;
   padding: 2px;
   border-radius: 5px;
-  /* #6: never taller than the space under its 75 px offset; scrolls when it
-     is (landscape phones). */
+  /* #6: ends above the pencil button (bottom-left, its top 71 px from the
+     bottom) and scrolls when taller: 75 px offset + 71 px + a 4 px gap. */
   box-sizing: border-box;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 150px);
   overflow-y: auto;
 }
 
