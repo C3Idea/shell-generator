@@ -1,0 +1,8 @@
+vt.idd:task: T011
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/callout/callout.component.spec.ts
+vt.idd:tdd: red=verification of T003 behaviour; mutation (lines removed from the reduced-motion rule) makes the spec fail, green=55 SUCCESS callout+layout
+vt.idd:satisfies: full
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-29T15:25:18-06:00
