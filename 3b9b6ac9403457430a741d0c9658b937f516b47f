@@ -6,3 +6,11 @@ vt.idd:tdd: red=5 FAILED: no names; Resolución text 79 px in a 50 px box at 390
 vt.idd:satisfies: full
 vt.idd:wave: 4
 vt.idd:timestamp: 2026-09-29T11:07:24-06:00
+
+vt.idd:task: T013
+vt.idd:domain: config
+vt.idd:agents: claude(inline)
+vt.idd:files: package.json
+vt.idd:satisfies: full (lint clean; build OK; 188/188 x3 on 2 cores (160 on dev); no modal-help/helpOpen/helpTitle/helpContent left; package.json unchanged; revert check: 34 new sandbox+game specs fail on the pre-change components)
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-29T11:11:38-06:00
