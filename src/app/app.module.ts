@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { GameComponent } from './game/game.component';
 import { ModalComponent } from './modal/modal.component';
+import { CalloutComponent } from './callout/callout.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { ModalComponent } from './modal/modal.component';
     SandboxComponent,
     GameComponent,
     ModalComponent,
+    CalloutComponent,
   ],
   imports: [
     BrowserModule,

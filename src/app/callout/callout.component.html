@@ -1,0 +1,7 @@
+<div class="callout-layer" role="region" aria-live="polite" [attr.aria-label]="AppStrings.LABEL_PARAM_HELP_REGION">
+  <div *ngIf="shown" #bubble class="callout" role="note" [id]="shown.id">
+    <span class="callout-arrow" aria-hidden="true"></span>
+    <strong class="callout-title">{{shown.title}}</strong>
+    <p class="callout-text">{{shown.text}}</p>
+  </div>
+</div>
