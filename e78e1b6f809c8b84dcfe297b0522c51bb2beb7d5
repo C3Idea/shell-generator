@@ -1,0 +1,8 @@
+vt.idd:task: T005
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.html,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=5 FAILED (all new #5 specs), 39 SUCCESS, green=44 SUCCESS; full suite 248/248
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-29T15:01:27-06:00
