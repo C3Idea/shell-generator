@@ -130,35 +130,35 @@ The existing `CalloutComponent` renders one bubble from an `@Input() active: Cal
 
 | ID | Requirement(s) | Acceptance scenario | Evidence | Status |
 |----|----------------|---------------------|----------|--------|
-| VM-001 | FR-001,002,003 | "?" visible, 44 px, non-overlapping at 360/390/1280/844×390 | [pending] | Pending |
-| VM-002 | FR-004,005 | Tapping "?" shows a callout for all seven anchors with title+text | [pending] | Pending |
-| VM-003 | FR-006,008 | Staircase at 390 px: leader lines, no overlap, no line crossing a bubble | [pending] | Pending |
-| VM-004 | FR-007 | 3D-view bubble in open space, pointer at the shell | [pending] | Pending |
-| VM-005 | FR-004,009,017 | Second "?" tap closes; aria-pressed flips | [pending] | Pending |
-| VM-006 | FR-009 | Esc closes the guide | [pending] | Pending |
-| VM-007 | FR-009 | A tap on the 3D view closes the guide | [pending] | Pending |
-| VM-008 | FR-010 | Drag rotate / wheel / pinch zoom keep the guide on | [pending] | Pending |
-| VM-009 | FR-011 | Opening a panel / ⓘ / welcome closes the guide | [pending] | Pending |
-| VM-010 | FR-012 | Turning the guide on closes open panels and ⓘ | [pending] | Pending |
-| VM-011 | FR-013 | A control works through the callout layer/line (pointer passes) | [pending] | Pending |
-| VM-012 | FR-008,014 | Resize / rotation re-places callouts, still no overlap | [pending] | Pending |
-| VM-013 | FR-015 | Polite live region announces guide text in on-screen order | [pending] | Pending |
-| VM-014 | FR-016 | Reduced motion: no animation | [pending] | Pending |
-| VM-015 | FR-018 | `layoutGuide()` places a set of callouts; pure, DOM-free unit test | [pending] | Pending |
-| VM-016 | FR-019 | #6 single-callout parameter help unchanged (specs green) | [pending] | Pending |
-| VM-017 | FR-020,021 | Text is title + one short line in app-strings; "?" bubble says how to close | [pending] | Pending |
-| VM-018 | FR-022 | The whole callout set fits with no overlap at 844×390 (toolbar callouts beside their icons) | [pending] | Pending |
-| VM-019 | FR-023,024 | Tap under threshold closes; drag rotates and keeps guide on; camera save leaves guide on | [pending] | Pending |
+| VM-001 | FR-001,002,003 | "?" visible, 44 px, non-overlapping at 360/390/1280/844×390 | sandbox `the "?" button` (3) + `shows the "?" on screen, clear of the other icons` at 360/390/1280/844×390 | Pass |
+| VM-002 | FR-004,005 | Tapping "?" shows a callout for all seven anchors with title+text | sandbox `shows a bubble beside each control, in reading order, and reports the "?" as pressed` | Pass |
+| VM-003 | FR-006,008 | Staircase at 390 px: leader lines, no overlap, no line crossing a bubble | sandbox `stacks the toolbar's bubbles in a staircase on a phone` + `…clear of the lines` ×4 sizes; layoutGuide staircase spec | Pass |
+| VM-004 | FR-007 | 3D-view bubble in open space, pointer at the shell | sandbox `points the 3D view's bubble at the shell` (ShellViewer.shellScreenBox, #shell-region) | Pass |
+| VM-005 | FR-004,009,017 | Second "?" tap closes; aria-pressed flips | sandbox `turns off when the "?" is tapped again` | Pass |
+| VM-006 | FR-009 | Esc closes the guide | sandbox `turns off with Esc` | Pass |
+| VM-007 | FR-009 | A tap on the 3D view closes the guide | sandbox `turns the guide off with a tap (mouse)` / `(touch)…` | Pass |
+| VM-008 | FR-010 | Drag rotate / wheel / pinch zoom keep the guide on | sandbox `keeps the guide on while dragging, and the drag rotates the shell` / `…pinching` / `…wheel` | Pass |
+| VM-009 | FR-011 | Opening a panel / ⓘ / welcome closes the guide | sandbox `turns off when the parameters panel / pencil panel / a parameter ⓘ / the welcome pop-up opens` | Pass |
+| VM-010 | FR-012 | Turning the guide on closes open panels and ⓘ | sandbox `closes the parameters panel and its open ⓘ when it turns on` / `…pencil panel…` | Pass |
+| VM-011 | FR-013 | A control works through the callout layer/line (pointer passes) | sandbox `leaves every control reachable` + `lets a press on a bubble or a line through`; callout `never takes the pointer` | Pass |
+| VM-012 | FR-008,014 | Resize / rotation re-places callouts, still no overlap | sandbox `re-places the bubbles when the phone turns, still tidy`; callout `re-places the bubbles when the window is resized` | Pass |
+| VM-013 | FR-015 | Polite live region announces guide text in on-screen order | callout `reads the guide out politely, bubble by bubble in the given order, skipping the lines` | Pass |
+| VM-014 | FR-016 | Reduced motion: no animation | callout `turns off the animation of the bubbles and the lines under prefers-reduced-motion` (mutation-checked) | Pass |
+| VM-015 | FR-018 | `layoutGuide()` places a set of callouts; pure, DOM-free unit test | `src/app/callout/layout-guide.spec.ts`: DOM-free, 4 sizes + staircase, beside, bottom row, order | Pass |
+| VM-016 | FR-019 | #6 single-callout parameter help unchanged (specs green) | #6 sandbox/game ⓘ specs unchanged (git diff dev: no line removed) and green | Pass |
+| VM-017 | FR-020,021 | Text is title + one short line in app-strings; "?" bubble says how to close | `control-guide.spec.ts` (title+short line, "?" says cerrar); text in app-strings, owner approval → SC-006 | Pass |
+| VM-018 | FR-022 | The whole callout set fits with no overlap at 844×390 (toolbar callouts beside their icons) | sandbox `keeps every bubble on screen, apart…at 844×390` + layoutGuide 844×390 | Pass |
+| VM-019 | FR-023,024 | Tap under threshold closes; drag rotates and keeps guide on; camera save leaves guide on | sandbox tap / drag specs + `stays on while an image is saved` | Pass |
 
 ### Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | A first-time user can see what every visible control does from one tap, without opening a menu | [pending] | Pending |
-| SC-002 | The guide reads cleanly (no overlaps, all on-screen) at 360 px, 390 px, 1280 px and 844×390 | [pending] | Pending |
-| SC-003 | Every control still works while the guide is on, including rotate/zoom on the 3D view | [pending] | Pending |
-| SC-004 | The multi-callout guide is reusable by #10 (shared component, pure layout) with #6 help unchanged | [pending] | Pending |
-| SC-005 | The guide is keyboard-dismissable, screen-reader announced, and respects reduced motion | [pending] | Pending |
+| SC-001 | A first-time user can see what every visible control does from one tap, without opening a menu | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
+| SC-002 | The guide reads cleanly (no overlaps, all on-screen) at 360 px, 390 px, 1280 px and 844×390 | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
+| SC-003 | Every control still works while the guide is on, including rotate/zoom on the 3D view | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
+| SC-004 | The multi-callout guide is reusable by #10 (shared component, pure layout) with #6 help unchanged | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
+| SC-005 | The guide is keyboard-dismissable, screen-reader announced, and respects reduced motion | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
 | SC-006 | Owner approves the guide's Spanish text and the screenshots at all four sizes | [pending] | Pending |
 
 ### Applicable Conventions

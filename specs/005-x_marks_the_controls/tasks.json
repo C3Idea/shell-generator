@@ -14,21 +14,22 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 5,
+    "currentWave": 6,
     "completedWaves": [
       0,
       1,
       2,
       3,
-      4
+      4,
+      5
     ],
     "totalTasks": 13,
-    "completedTasks": 10,
+    "completedTasks": 11,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T15:23:22-06:00",
+    "lastCheckpoint": "2026-09-29T15:26:34-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T15:25:11-06:00"
+    "lastUpdated": "2026-09-29T15:25:18-06:00"
   },
   "waves": [
     {
@@ -96,7 +97,8 @@
         "T010",
         "T011"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T15:25:18-06:00"
     },
     {
       "number": 6,
@@ -458,7 +460,7 @@
       "id": "T011",
       "wave": 5,
       "description": "Accessibility pass: live region reads the guide in on-screen order, the '?' reports pressed/not pressed, leader lines aria-hidden, reduced motion shows no animation; ESLint clean.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -472,7 +474,21 @@
       "dependencies": [
         "T008",
         "T009"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:25:18-06:00",
+        "commitSha": "4a4d001888f1c70b2cdcc5f436befade56526763",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/callout.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/callout.component.spec.ts",
+          "redResult": "verification of T003 behaviour; mutation (lines removed from the reduced-motion rule) makes the spec fail",
+          "greenResult": "55 SUCCESS callout+layout"
+        },
+        "satisfaction": "full"
+      }
     },
     "T012": {
       "id": "T012",

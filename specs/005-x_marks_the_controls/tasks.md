@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T15:25:11-06:00
+**Generated**: 2026-09-29T15:25:18-06:00
 
 ---
 
@@ -67,9 +67,9 @@
 **Purpose**: #6 regression, reuse check, a11y
 
 - [x] T010 [W5] [TDD] [US4] Reuse and regression: confirm the #6 parameter ⓘ specs on both screens pass unchanged; check that the game screen can mount <app-callout [guide]> with its own callouts with no copied code (a small spec with a host listing two anchors).
-- [ ] T011 [W5] [TDD] [US5] Accessibility pass: live region reads the guide in on-screen order, the '?' reports pressed/not pressed, leader lines aria-hidden, reduced motion shows no animation; ESLint clean.
+- [x] T011 [W5] [TDD] [US5] Accessibility pass: live region reads the guide in on-screen order, the '?' reports pressed/not pressed, leader lines aria-hidden, reduced motion shows no animation; ESLint clean.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -87,10 +87,10 @@
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 10
+- **Completed**: 11
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 76%
+- **Progress**: 84%
 
 ---
 
