@@ -1,0 +1,8 @@
+vt.idd:task: T008
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.spec.ts
+vt.idd:tdd: red=34 FAILED, 99 SUCCESS: sandbox+game specs against the pre-change components (revert check), green=133 SUCCESS (sandbox+game specs)
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-29T11:02:44-06:00
