@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T15:05:34-06:00
+**Generated**: 2026-09-29T15:09:11-06:00
 
 ---
 
@@ -45,9 +45,9 @@
 **Purpose**: Close rules and tap vs drag on the 3D view
 
 - [x] T006 [W3] [TDD] [US2] Close rules in SandboxComponent: '?' again and Esc turn the guide off; turning it on closes both panels and any ⓘ callout; opening the parameters panel, the pencil panel, a parameter ⓘ or the welcome pop-up turns it off; camera save leaves it on. Specs first (assert the guide is on before each close).
-- [ ] T007 [W3] [TDD] [US2] Tap vs drag on the 3D view: replace the canvas (mousedown) with (pointerdown)/(pointerup); a press-release moving < ~10 px is a tap: closes the guide and keeps today's menu-closing behaviour; a larger move is a drag left to OrbitControls and keeps the guide on. Wheel zoom keeps the guide on. Specs first with synthetic pointer events (mouse and touch pointerType), and check menus still close on a plain click.
+- [x] T007 [W3] [TDD] [US2] Tap vs drag on the 3D view: replace the canvas (mousedown) with (pointerdown)/(pointerup); a press-release moving < ~10 px is a tap: closes the guide and keeps today's menu-closing behaviour; a larger move is a drag left to OrbitControls and keeps the guide on. Wheel zoom keeps the guide on. Specs first with synthetic pointer events (mouse and touch pointerType), and check menus still close on a plain click.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -87,10 +87,10 @@
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 6
+- **Completed**: 7
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 46%
+- **Progress**: 53%
 
 ---
 

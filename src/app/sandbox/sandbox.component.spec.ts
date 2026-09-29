@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
@@ -772,6 +772,51 @@ describe('SandboxComponent control guide (#5)', () => {
       canvas().dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100, clientX: 200, clientY: 400 }));
       render();
       expect(component.guide.on).toBeTrue();
+    });
+  });
+
+  describe('using the screen while the guide is on', () => {
+    const controls = ['#parameters-button', '#save-image-button', '#game-button', '#intro-button', '#help-button', '#visualization-button'];
+    const centre = (e: Element) => {
+      const r = rectOf(e);
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+
+    beforeEach(() => {
+      setViewport(390, 844);
+      toggleGuide();
+      expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+    });
+
+    it('leaves every control reachable: nothing of the guide sits on top of it', () => {
+      controls.forEach(selector => {
+        const control = el.querySelector(selector)!;
+        const { x, y } = centre(control);
+        const hit = document.elementFromPoint(x, y);
+        expect(control.contains(hit)).withContext(selector).toBeTrue();
+      });
+    });
+
+    it('lets a press on a bubble or a line through to what is under it', () => {
+      const layer = el.querySelector('.callout-layer')!;
+      const lines = Array.from(el.querySelectorAll('.callout-leader'))
+        .filter(l => getComputedStyle(l).display !== 'none');
+      expect(lines.length).withContext('lines on a phone').toBeGreaterThan(0);
+      [...guideBubbles(), ...lines].forEach(target => {
+        const { x, y } = centre(target);
+        const hit = document.elementFromPoint(x, y)!;
+        expect(layer.contains(hit)).withContext(`${target.id || 'line'} took the press`).toBeFalse();
+      });
+      // A bubble over the middle of the screen lets the press reach the 3D view.
+      const { x, y } = centre(el.querySelector('#guide-view')!);
+      expect(document.elementFromPoint(x, y)!.id).toBe('canvas');
+    });
+
+    it('still goes to the game from the gamepad', () => {
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate').and.resolveTo(true);
+      (el.querySelector('#game-button') as HTMLButtonElement).click();
+      expect(router.navigate).toHaveBeenCalledWith(['game']);
     });
   });
 

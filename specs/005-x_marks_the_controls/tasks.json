@@ -14,19 +14,20 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 3,
+    "currentWave": 4,
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "totalTasks": 13,
-    "completedTasks": 6,
+    "completedTasks": 7,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T15:02:41-06:00",
+    "lastCheckpoint": "2026-09-29T15:10:20-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T15:05:34-06:00"
+    "lastUpdated": "2026-09-29T15:09:11-06:00"
   },
   "waves": [
     {
@@ -70,8 +71,9 @@
         "T006",
         "T007"
       ],
-      "gateStatus": "pending",
-      "story": "US2"
+      "gateStatus": "passed",
+      "story": "US2",
+      "completedAt": "2026-09-29T15:09:11-06:00"
     },
     {
       "number": 4,
@@ -307,7 +309,7 @@
       "id": "T007",
       "wave": 3,
       "description": "Tap vs drag on the 3D view: replace the canvas (mousedown) with (pointerdown)/(pointerup); a press-release moving < ~10 px is a tap: closes the guide and keeps today's menu-closing behaviour; a larger move is a drag left to OrbitControls and keeps the guide on. Wheel zoom keeps the guide on. Specs first with synthetic pointer events (mouse and touch pointerType), and check menus still close on a plain click.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -320,7 +322,23 @@
       ],
       "dependencies": [
         "T005"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:09:11-06:00",
+        "commitSha": "cff4a05f19c8b4091acef295109e0ce2259769f5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "2 FAILED (tap mouse, tap touch); drag/pinch/wheel keep-on guards pass (nothing closed the guide yet)",
+          "greenResult": "58 SUCCESS sandbox; full suite"
+        },
+        "satisfaction": "full"
+      }
     },
     "T008": {
       "id": "T008",
