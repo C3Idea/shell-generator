@@ -24,7 +24,10 @@
 
 ### Data Model
 
-- **`CalloutComponent`** (new, `src/app/callout/`): `@Input() active: {title,text,anchorSelector} | null`, `@Input() recomputeKey`. Renders one bubble with an arrow at the anchor's live rect; nothing when `active` is null. Reuses gato_magico's `placeBubble`/`clampHorizontally`/`side` logic. Layer is `pointer-events:none`, `role="region" aria-live="polite"`, bubble `role="note"`.
+- **`CalloutComponent`** (new, `src/app/callout/`): `@Input() active: {id,title,text,anchor} | null`. Renders one bubble with an arrow at the anchor's live rect; nothing when `active` is null. Pure `placeCallout` (right if it fits, else below/above, the side with more room when neither fits). Re-places on window resize and on any scroll (one capture-phase listener), hiding the bubble while its ⓘ is scrolled out of its panel. Layer is `pointer-events:none` and `aria-live="polite"` (not a landmark), bubble `role="note"`, background 80 % opaque.
+- **`ParameterHelp`** (`src/app/parameter-help.ts`): per-screen state — `key`, `callout`, `toggle(key)`, `close()` — plus the key → text/anchor map.
+
+> **As built (review pass 1, 2026-09-29):** the plan first had a `recomputeKey` input bumped by the parent; nothing bound it, so it was removed in favour of the scroll listener (M1/m1). The help state was first duplicated in both screens and moved into `ParameterHelp` (m2).
 - **Host state (each screen)**: `activeCallout: string | null` (parameter key). Handlers toggle it: same key → null; different key → switch. Anchor selectors map each key to its ⓘ id (e.g. `#A-help-button`, `#qual-help-button`; game `#A-help-button`…).
 
 ### API Contracts
@@ -44,7 +47,7 @@ flowchart TD
   K --> C[app-callout: bubble + arrow at anchor rect]
   C -. pointer-events:none .-> U[sliders/canvas stay usable]
   E[Esc / canvas / panel close] --> N
-  R[window resize] --> RK[recomputeKey++] --> C
+  R[window resize / any scroll] --> C
 ```
 
 ### Project Structure
@@ -59,6 +62,7 @@ flowchart TD
 - `src/app/sandbox/sandbox.component.css` — `.parameter-label` width; Resolución row; landscape (844×390) fit
 - `src/app/game/game.component.ts` / `.html` — same ⓘ→callout swap; remove `modal-help`; add `<app-callout>`
 - `src/app/sandbox/sandbox.component.spec.ts`, `src/app/game/game.component.spec.ts` — parameter-help specs move from `modal-help` to callout
+- `src/app/game/game.component.css` — also caps the parameters menu above the Usuario/Objetivo switch (`max-height: calc(100vh - 126px)`, scrolls), found in the browser check (2e7768d)
 - `src/app/app-strings.ts` — typo fix "superfice" → "superficie" in `LABEL_PARAM_QUAL_CONTENT`; every other string unchanged
 
 **Remove**
@@ -70,7 +74,7 @@ flowchart TD
 - T001 [W0] Green baseline: `ng lint`, `ng build`, `ng test --watch=false` on 2 cores (taskset).
 
 **Wave 1 — Shared callout + initial-screen help (US1, US2, US6) [P1]**
-- T002 [W1][TDD] `CalloutComponent` (ported): one anchored bubble + arrow from live rect; `active`/`recomputeKey` inputs; `placeBubble` pure; clamp on-screen; skip when anchor absent; `pointer-events:none`; `aria-live` polite; `--modal-*` tokens; fade off under `prefers-reduced-motion`. Declare in `app.module.ts`.
+- T002 [W1][TDD] `CalloutComponent` (ported): one anchored bubble + arrow from live rect; `active` input; `placeCallout` pure; clamp on-screen; skip when anchor absent; `pointer-events:none`; `aria-live` polite; `--modal-*` tokens; fade off under `prefers-reduced-motion`. Declare in `app.module.ts`.
 - T003 [W1] `callout.component.spec.ts`: open/replace/toggle-closed; `placeBubble` sides; absent-anchor skip; reduced-motion; non-blocking layer.
 - T004 [W1][US1] Sandbox: ⓘ handlers (A/α/β/a/b/θ/Resolución) → `activeCallout`; mount `<app-callout>` outside the panel; anchor ids; remove `modal-help` markup + state. Fix the typo "superfice" → "superficie" in `LABEL_PARAM_QUAL_CONTENT` (spec asserts the corrected Resolución text).
 - T005 [W1][US2] Sandbox close rules: Esc / canvas click / menu+visualization close → `activeCallout=null`; slider `change` leaves it open; ⓘ `aria-expanded`/`aria-controls`, 44px hit area.
@@ -84,8 +88,8 @@ flowchart TD
 
 **Wave 3 — Panel layout + Resolución overlap (US4, US5) [P2]**
 - T009 [W3][US4] Shell parameters panel: show each parameter's name next to its icon; keep every control working.
-- T010 [W3][US4] Landscape-phone fit: panel compacts/scrolls so nothing is clipped at 844×390.
-- T011 [W3][US5] Fix `.parameter-label` (size to text) + `.slider` (remaining width) so "Resolución" no longer overlaps.
+- T010 [W3][US4] Landscape-phone fit: panel compacts/scrolls so nothing is clipped at 844×390. *As built:* `max-height: calc(100vh - 150px)` so it also ends above the pencil button (40befed); the ≤380 px rule no longer forces a scrollbar (m3).
+- T011 [W3][US5] Fix `.parameter-label` (size to text) + `.slider` (remaining width) so "Resolución" no longer overlaps. *As built:* `.slider` takes the remaining width in every row (shell rows included, since T009 added the names); the ⓘ got `flex-shrink: 0` (cab09a3).
 - T012 [P][W3] Layout specs / assertions where feasible; visual cases go to screenshots.
 - **Gate**: green; no overlap at 390/1280/844×390.
 

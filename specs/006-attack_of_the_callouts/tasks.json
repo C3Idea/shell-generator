@@ -124,7 +124,7 @@
     "T002": {
       "id": "T002",
       "wave": 1,
-      "description": "Add src/app/callout/callout.component.{ts,html,css} ported from ../gato_magico/src/app/components/cue-overlay/ and declare CalloutComponent in src/app/app.module.ts (and in every TestBed that renders a host). Input active: {id,title,text,anchor} | null (one bubble on demand, not gato's fixed cue set) and recomputeKey. Position from the anchor's live getBoundingClientRect() via a pure placeBubble(rect, side): beside the anchor ('right') where there is room, else 'below'/'above' the row; clamp horizontally inside the viewport (8 px margin); render nothing when active is null or the anchor is absent. Layer pointer-events:none, role=region aria-live=polite; bubble role=note with the given id (for aria-controls), arrow toward the anchor; title + text via interpolation only. Styles read the --modal-* tokens (background, color, font, primary accent, radius, shadow); fade off under prefers-reduced-motion: reduce. position: fixed, mounted at the host component root (outside the 0.8-opacity panels). Write the specs first.",
+      "description": "Add src/app/callout/callout.component.{ts,html,css} ported from ../gato_magico/src/app/components/cue-overlay/ and declare CalloutComponent in src/app/app.module.ts (and in every TestBed that renders a host). Input active: {id,title,text,anchor} | null (one bubble on demand, not gato's fixed cue set). [As built: re-places on resize and any scroll; no recomputeKey input — review pass 1, M1/m1.] Position from the anchor's live getBoundingClientRect() via a pure placeBubble(rect, side): beside the anchor ('right') where there is room, else 'below'/'above' the row; clamp horizontally inside the viewport (8 px margin); render nothing when active is null or the anchor is absent. Layer pointer-events:none, role=region aria-live=polite; bubble role=note with the given id (for aria-controls), arrow toward the anchor; title + text via interpolation only. Styles read the --modal-* tokens (background, color, font, primary accent, radius, shadow); fade off under prefers-reduced-motion: reduce. position: fixed, mounted at the host component root (outside the 0.8-opacity panels). Write the specs first.",
       "status": "completed",
       "tdd": true,
       "parallel": false,
@@ -412,7 +412,7 @@
     "T010": {
       "id": "T010",
       "wave": 4,
-      "description": "Landscape-phone fit, src/app/sandbox/sandbox.component.css: #parameters-menu gets max-height: calc(100vh - its top offset - margin) with overflow-y: auto (and/or tighter row height under a short-viewport media query) so every control is reachable at 844×390; portrait and desktop layout unchanged.",
+      "description": "Landscape-phone fit, src/app/sandbox/sandbox.component.css: #parameters-menu gets max-height: calc(100vh - its top offset - margin) with overflow-y: auto (and/or tighter row height under a short-viewport media query) so every control is reachable at 844×390; portrait and desktop layout unchanged. [As built: max-height calc(100vh - 150px), ending above the pencil button (40befed); the game menu got calc(100vh - 126px), above its switch (2e7768d); the ≤380 px rules no longer force a scrollbar (m3).]",
       "status": "completed",
       "tdd": false,
       "parallel": false,
@@ -439,7 +439,7 @@
     "T011": {
       "id": "T011",
       "wave": 4,
-      "description": "'Resolución' overlap, src/app/sandbox/sandbox.component.css: .parameter-label sizes to its text (width auto, flex-shrink 0, small right gap) and .slider takes the remaining width (flex: 1 instead of width: 96%) in the visualization panel's row, without changing the shell panel's icon rows. Spec: the label's right edge is ≤ the slider's left edge at 390 px and 1280 px host widths.",
+      "description": "'Resolución' overlap, src/app/sandbox/sandbox.component.css: .parameter-label sizes to its text (width auto, flex-shrink 0, small right gap) and .slider takes the remaining width (flex: 1 instead of width: 96%) in the visualization panel's row, without changing the shell panel's icon rows. Spec: the label's right edge is ≤ the slider's left edge at 390 px and 1280 px host widths. [As built: .slider takes the remaining width in every row, shell rows included (names from T009 share the row); ⓘ flex-shrink: 0 (cab09a3).]",
       "status": "completed",
       "tdd": false,
       "parallel": false,

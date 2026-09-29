@@ -22,6 +22,8 @@ As someone adjusting a shell, I want to keep using the sliders while a help bubb
 - **Given** a parameter callout is open, **when** I drag that parameter's slider, **then** the shell updates and the callout stays open (moving a slider does not close it).
 - **Given** a parameter callout is open, **when** I click/tap the canvas, press Esc, or close the panel, **then** the callout closes.
 - **Given** a parameter callout is open, **when** I interact with any other control in the panel, **then** that control works normally (the callout layer never intercepts the interaction).
+- **Given** a callout is open in a panel that scrolls (a short screen), **when** I scroll the panel, **then** the bubble stays beside its ⓘ, and is hidden while its ⓘ is scrolled out of the panel.
+- **Given** a callout covers a slider on a phone, **when** I look at it, **then** the slider shows through the bubble's 80 % background while the text stays solid.
 
 ### US3 — Same callout on the game screen — P2
 As a player tuning my shell, I want parameter help to behave the same as on the initial screen.
@@ -56,7 +58,7 @@ As a keyboard or screen-reader user, I want the callout announced and its trigge
 - **FR-005** At most one callout MUST be shown at a time: opening another replaces the current; clicking the same ⓘ again closes it.
 - **FR-006** The callout MUST close on Esc, on a click/tap on the canvas, and when its panel closes (menu button, visualization button, or the panel being hidden). Moving a slider MUST NOT close it.
 - **FR-007** The callout layer MUST NOT intercept pointer input (`pointer-events: none`, no backdrop, no focus trap); every underlying control stays usable.
-- **FR-008** The callout MUST be anchored beside its ⓘ where there is room, and reposition to below/above the row at narrow widths so it stays fully on-screen and readable at 390 px, 1280 px and 844×390, and MUST stay attached to its ⓘ on window resize.
+- **FR-008** The callout MUST be anchored beside its ⓘ where there is room, and reposition to below/above the row at narrow widths so it stays fully on-screen and readable at 390 px, 1280 px and 844×390, and MUST stay attached to its ⓘ on window resize and when the panel holding its ⓘ scrolls, hiding while that ⓘ is scrolled out of the panel.
 - **FR-009** The callout MUST render outside the panel's translucency so it is not dimmed by the panel's `opacity`.
 - **FR-010a** The callout's background MUST be 80 % opaque so the sliders under it show through; its text, border and arrow MUST stay solid (owner's request after the manual pass, 2026-09-29).
 - **FR-010** The callout MUST use the #31 design tokens (`--modal-*`: white background, teal accent, Lucida font) and MUST disable its open/close animation under `prefers-reduced-motion: reduce`.
@@ -167,6 +169,8 @@ Angular 17.3 (standalone-free module app; `app.module.ts` declarations), TypeScr
 | VM-010 | "Resolución" label fully visible, not overlapping its slider, at 390 px and 1280 px | [pending] | Pending |
 | VM-011 | Callout announced to screen readers (polite live region) | [pending] | Pending |
 | VM-012 | ⓘ exposes `aria-expanded`/`aria-controls`; focus stays on the ⓘ | [pending] | Pending |
+| VM-013 | Scrolling the panel keeps the callout beside its ⓘ; it hides while the ⓘ is scrolled out | [pending] | Pending |
+| VM-014 | A slider under the callout shows through its 80 % background; the text stays solid | [pending] | Pending |
 
 ## Success Criteria
 
