@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T15:09:11-06:00
+**Generated**: 2026-09-29T15:12:46-06:00
 
 ---
 
@@ -55,7 +55,7 @@
 
 **Purpose**: Pass-through and the layout at four sizes
 
-- [ ] T008 [W4] [TDD] [US3] Controls work while the guide is on: specs that hit-test each toolbar control and the pencil through the callout layer and leader lines (elementFromPoint returns the control), clicking gear/pencil/book performs its action, camera export runs.
+- [x] T008 [W4] [TDD] [US3] Controls work while the guide is on: specs that hit-test each toolbar control and the pencil through the callout layer and leader lines (elementFromPoint returns the control), clicking gear/pencil/book performs its action, camera export runs.
 - [ ] T009 [W4] [TDD] [US3] Layout at 360×800, 390×844, 1280×800 and 844×390 (Karma iframe resize): '?' visible and not overlapping another icon; every guide bubble on screen, no pairwise overlap, no leader line crossing a bubble, none covering its control; staircase at 390; resize re-places. Adjust sandbox/callout CSS as the specs demand.
 
 **Wave Gate**: pending
@@ -87,10 +87,10 @@
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 7
+- **Completed**: 8
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 53%
+- **Progress**: 61%
 
 ---
 

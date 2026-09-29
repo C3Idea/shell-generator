@@ -9,6 +9,9 @@ import { ControlGuide } from '../control-guide';
 // How far a press may move and still count as a tap on the 3D view (#5).
 const TAP_SLOP = 10;
 
+// How much of the shell's box #shell-region covers, around its middle (#5).
+const SHELL_REGION_SCALE = 0.7;
+
 @Component({
   selector: 'app-surface',
   templateUrl: './sandbox.component.html',
@@ -27,11 +30,15 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('visualizationMenu')
   private visualizationMenuRef!: ElementRef;
 
+  @ViewChild('shellRegion')
+  private shellRegionRef!: ElementRef<HTMLElement>;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
     this.helper.resize(width, height);
+    this.followShell();
   }
 
   // Stage properties
@@ -195,6 +202,25 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     if (tap) {
       this.guide.close();
     }
+    else {
+      this.followShell();
+    }
+  }
+
+  // Moves #shell-region over the drawn shell, shrunk towards its middle so
+  // the 3D view's arrow lands on the shell rather than a corner of its box,
+  // and has the guide placed again (#5). Only while the guide is on.
+  private followShell(): void {
+    const box = this.guide.on ? this.helper.shellScreenBox() : null;
+    if (!box || !this.shellRegionRef) {
+      return;
+    }
+    const style = this.shellRegionRef.nativeElement.style;
+    style.left = `${box.left + box.width * (1 - SHELL_REGION_SCALE) / 2}px`;
+    style.top = `${box.top + box.height * (1 - SHELL_REGION_SCALE) / 2}px`;
+    style.width = `${box.width * SHELL_REGION_SCALE}px`;
+    style.height = `${box.height * SHELL_REGION_SCALE}px`;
+    this.guide.refresh();
   }
 
   canvasPointerCancel(event: PointerEvent): void {
@@ -302,6 +328,7 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.guide.toggle();
+    this.followShell();
   }
 
   introButtonClick(event: Event) {

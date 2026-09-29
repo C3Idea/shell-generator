@@ -15,6 +15,12 @@ label {
   display: block;
 }
 
+/* Where the shell is drawn, for the guide (#5); sized by the component. */
+#shell-region {
+  position: fixed;
+  pointer-events: none;
+}
+
 #toolbar {
   display: inline;
   position: fixed;

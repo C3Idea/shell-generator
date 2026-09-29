@@ -1,5 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { centralRegion, GuidePlacement, layoutGuide } from './layout-guide';
+import { GuidePlacement, layoutGuide } from './layout-guide';
 
 // One help bubble (#6), shown for the ⓘ that was clicked. `anchor` is a CSS
 // selector for that ⓘ; `id` is the bubble's id, which the ⓘ points at with
@@ -171,10 +171,8 @@ export class CalloutComponent implements OnChanges, AfterViewChecked, OnDestroy 
     if (bubbles.length === 0 || bubbles.length !== this.guideAnchors.length) {
       return;
     }
-    const items = this.guideShown.map((callout, i) => {
-      const rect = this.guideAnchors[i].getBoundingClientRect();
-      return { anchor: callout.region ? centralRegion(rect) : rect, region: callout.region };
-    });
+    const items = this.guideShown.map((callout, i) =>
+      ({ anchor: this.guideAnchors[i].getBoundingClientRect(), region: callout.region }));
     const measure = (index: number, maxWidth: number) => {
       bubbles[index].style.maxWidth = `${maxWidth}px`;
       return { width: bubbles[index].offsetWidth, height: bubbles[index].offsetHeight };

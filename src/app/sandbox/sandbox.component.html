@@ -2,6 +2,9 @@
   <canvas #canvas id="canvas" (mousedown)="this.canvasClickEvent($event)"
     (pointerdown)="this.canvasPointerDown($event)" (pointerup)="this.canvasPointerUp($event)"
     (pointercancel)="this.canvasPointerCancel($event)"></canvas>
+  <!-- Kept over the drawn shell while the guide is on (#5): the 3D view's
+       bubble points into it. Invisible; takes no pointer. -->
+  <div #shellRegion id="shell-region" aria-hidden="true"></div>
   <div id="toolbar">
     <button type="button" class="toolbar-button" id="parameters-button" title={{AppStrings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">

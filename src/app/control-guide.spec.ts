@@ -20,7 +20,7 @@ describe('ControlGuide (#5)', () => {
     expect(guide.on).toBeTrue();
     expect(guide.callouts!.map(c => c.anchor)).toEqual([
       '#parameters-button', '#save-image-button', '#game-button', '#intro-button', '#help-button',
-      '#canvas', '#visualization-button',
+      '#shell-region', '#visualization-button',
     ]);
   });
 
@@ -53,7 +53,7 @@ describe('ControlGuide (#5)', () => {
 
   it('marks only the 3D view as a region', () => {
     guide.toggle();
-    expect(guide.callouts!.filter(c => c.region).map(c => c.anchor)).toEqual(['#canvas']);
+    expect(guide.callouts!.filter(c => c.region).map(c => c.anchor)).toEqual(['#shell-region']);
   });
 
   it("the \"?\" callout says how to close the guide", () => {
@@ -65,6 +65,17 @@ describe('ControlGuide (#5)', () => {
   it('lists every bubble id for the "?" button\'s aria-controls', () => {
     guide.toggle();
     expect(guide.controls).toBe(guide.callouts!.map(c => c.id).join(' '));
+  });
+
+  it('refresh() hands out a new list while on, so the bubbles are placed again', () => {
+    guide.toggle();
+    const first = guide.callouts;
+    guide.refresh();
+    expect(guide.callouts).not.toBe(first);
+    expect(guide.callouts).toEqual(first);
+    guide.close();
+    guide.refresh();
+    expect(guide.callouts).toBeNull();
   });
 
   it('turns off when toggled again, and when closed', () => {

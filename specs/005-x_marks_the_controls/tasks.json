@@ -22,12 +22,12 @@
       3
     ],
     "totalTasks": 13,
-    "completedTasks": 7,
+    "completedTasks": 8,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T15:10:20-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T15:09:11-06:00"
+    "lastUpdated": "2026-09-29T15:12:46-06:00"
   },
   "waves": [
     {
@@ -344,7 +344,7 @@
       "id": "T008",
       "wave": 4,
       "description": "Controls work while the guide is on: specs that hit-test each toolbar control and the pencil through the callout layer and leader lines (elementFromPoint returns the control), clicking gear/pencil/book performs its action, camera export runs.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -357,7 +357,21 @@
       "dependencies": [
         "T006",
         "T007"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:12:46-06:00",
+        "commitSha": "63520118216ab011f0fdc9aabe01ee589ad2398f",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "verification of T003/T005 behaviour: passes on first run; spec bug fixed (1 px line over #toolbar); RED shown by the revert check in T012",
+          "greenResult": "61 SUCCESS sandbox"
+        },
+        "satisfaction": "full"
+      }
     },
     "T009": {
       "id": "T009",

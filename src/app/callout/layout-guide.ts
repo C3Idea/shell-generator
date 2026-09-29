@@ -58,13 +58,6 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 const lineBox = (l: Leader) =>
   box(Math.min(l.x1, l.x2), Math.min(l.y1, l.y2), Math.abs(l.x2 - l.x1) || 1, Math.abs(l.y2 - l.y1) || 1);
 
-// The middle of an area, half its shorter side across: roughly where the
-// shell is drawn in the 3D view.
-export function centralRegion(area: Box): Box {
-  const side = Math.min(area.width, area.height) / 2;
-  return box(area.left + (area.width - side) / 2, area.top + (area.height - side) / 2, side, side);
-}
-
 // Places a bubble beside every item: the order of `items` is the order of
 // the result. Controls in a row (the toolbar) would crowd each other's
 // bubbles, so theirs stack in a staircase away from the row (below it at the

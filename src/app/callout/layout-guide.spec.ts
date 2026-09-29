@@ -1,5 +1,5 @@
 import { Box, Size } from './callout.component';
-import { centralRegion, GuideItem, GuidePlacement, layoutGuide, Measure } from './layout-guide';
+import { GuideItem, GuidePlacement, layoutGuide, Measure } from './layout-guide';
 
 // The guide's layout (#5), without a DOM. The anchors copy the initial
 // screen: five 64 px toolbar buttons in a row at the top left (gear, camera,
@@ -8,6 +8,12 @@ import { centralRegion, GuideItem, GuidePlacement, layoutGuide, Measure } from '
 
 const box = (left: number, top: number, width: number, height: number): Box =>
   ({ left, top, width, height, right: left + width, bottom: top + height });
+
+// Stands in for the shell: the middle of the screen, half its shorter side across.
+function centralRegion(area: Box): Box {
+  const side = Math.min(area.width, area.height) / 2;
+  return box(area.left + (area.width - side) / 2, area.top + (area.height - side) / 2, side, side);
+}
 
 function initialScreen(viewport: Size): GuideItem[] {
   const toolbar = [0, 1, 2, 3, 4].map(i => ({ anchor: box(7 + 68 * i, 7, 64, 64) }));
@@ -185,9 +191,5 @@ describe('layoutGuide (#5)', () => {
       expect([b[0], b[1], b[2], b[3], b[4], b[6], b[5]])
         .withContext(`${viewport.width}×${viewport.height}`).toEqual(a);
     }
-  });
-
-  it('centralRegion is the middle of a box, half its shorter side across', () => {
-    expect(centralRegion(box(0, 0, 400, 800))).toEqual(box(100, 300, 200, 200));
   });
 });

@@ -5,7 +5,6 @@ import { provideRouter, Router } from '@angular/router';
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
 import { CalloutComponent } from '../callout/callout.component';
-import { centralRegion } from '../callout/layout-guide';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -755,6 +754,23 @@ describe('SandboxComponent control guide (#5)', () => {
       expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
     });
 
+    it("moves the 3D view's bubble with the shell once a drag ends", () => {
+      guideOn();
+      const marker = () => (el.querySelector('#shell-region') as HTMLElement).getBoundingClientRect();
+      const before = marker();
+      pointer('pointerdown', 200, 400);
+      pointer('pointermove', 300, 380);
+      frames.pump(2);
+      pointer('pointerup', 300, 380);
+      render();
+      const after = marker();
+      const shell = component.helper.shellScreenBox()!;
+      expect([after.left, after.top, after.width, after.height])
+        .withContext('marker moved').not.toEqual([before.left, before.top, before.width, before.height]);
+      expect(after.left).toBeGreaterThanOrEqual(shell.left - 0.5);
+      expect(after.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
+    });
+
     it('keeps the guide on while pinching with two fingers', () => {
       guideOn();
       pointer('pointerdown', 180, 400, 7, 'touch');
@@ -820,6 +836,77 @@ describe('SandboxComponent control guide (#5)', () => {
     });
   });
 
+  describe('layout', () => {
+    const controls = ['#parameters-button', '#save-image-button', '#game-button', '#intro-button', '#help-button', '#visualization-button'];
+    const overlaps = (a: DOMRect, b: DOMRect) =>
+      a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+    const shownLines = () => (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+      .filter(l => getComputedStyle(l).display !== 'none');
+
+    function expectTidy(width: number, height: number) {
+      const bubbles = guideBubbles().map(b => ({ id: b.id, r: rectOf(b) }));
+      expect(bubbles.length).withContext('guide on').toBe(expected.length);
+      const controlRects = controls.map(c => ({ id: c, r: rectOf(el.querySelector(c)!) }));
+      bubbles.forEach(({ id, r }, i) => {
+        expect(r.left).withContext(`${id} left`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.top).withContext(`${id} top`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.right).withContext(`${id} right`).toBeLessThanOrEqual(width - 8 + 0.5);
+        expect(r.bottom).withContext(`${id} bottom`).toBeLessThanOrEqual(height - 8 + 0.5);
+        bubbles.slice(i + 1).forEach(other =>
+          expect(overlaps(r, other.r)).withContext(`${id} and ${other.id}`).toBeFalse());
+        controlRects.forEach(c => expect(overlaps(r, c.r)).withContext(`${id} over ${c.id}`).toBeFalse());
+      });
+      shownLines().forEach(line => {
+        const l = rectOf(line);
+        bubbles.forEach(({ id, r }) => expect(overlaps(l, r)).withContext(`a line across ${id}`).toBeFalse());
+      });
+    }
+
+    for (const [width, height] of [[360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`shows the "?" on screen, clear of the other icons, at ${width}×${height}`, () => {
+        setViewport(width, height);
+        render();
+        const help = rectOf(helpButton());
+        expect(help.left).toBeGreaterThanOrEqual(0);
+        expect(help.top).toBeGreaterThanOrEqual(0);
+        expect(help.right).toBeLessThanOrEqual(width);
+        expect(help.bottom).toBeLessThanOrEqual(height);
+        controls.filter(c => c !== '#help-button').forEach(c =>
+          expect(overlaps(help, rectOf(el.querySelector(c)!))).withContext(c).toBeFalse());
+        // Same row as the rest of the toolbar.
+        expect(help.top).toBe(rectOf(el.querySelector('#parameters-button')!).top);
+      });
+
+      it(`keeps every bubble on screen, apart, off the controls and clear of the lines at ${width}×${height}`, () => {
+        setViewport(width, height);
+        toggleGuide();
+        expectTidy(width, height);
+      });
+    }
+
+    it('stacks the toolbar\'s bubbles in a staircase on a phone, joined by lines', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const toolbar = ['guide-parameters', 'guide-save-image', 'guide-game', 'guide-intro', 'guide-help']
+        .map(id => el.querySelector(`#${id}`) as HTMLElement);
+      toolbar.forEach(b => expect(b.dataset['side']).withContext(b.id).toBe('below'));
+      const tops = toolbar.map(b => rectOf(b).top);
+      for (let i = 0; i < tops.length - 1; i++) {
+        expect(tops[i]).withContext(`${toolbar[i].id} below ${toolbar[i + 1].id}`).toBeGreaterThan(tops[i + 1]);
+      }
+      expect(shownLines().length).toBe(toolbar.length);
+    });
+
+    it('re-places the bubbles when the phone turns, still tidy', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      expectTidy(390, 844);
+      setViewport(844, 390);
+      render();
+      expectTidy(844, 390);
+    });
+  });
+
   describe('turning the guide on', () => {
     it('shows a bubble beside each control, in reading order, and reports the "?" as pressed', () => {
       expect(guideBubbles().length).withContext('before').toBe(0);
@@ -831,7 +918,7 @@ describe('SandboxComponent control guide (#5)', () => {
       expect(helpButton().getAttribute('aria-pressed')).toBe('true');
     });
 
-    it("points the 3D view's bubble at the shell, in the middle of the view", () => {
+    it("points the 3D view's bubble at the shell", () => {
       setViewport(390, 844);
       toggleGuide();
       const bubble = el.querySelector('#guide-view') as HTMLElement;
@@ -843,11 +930,27 @@ describe('SandboxComponent control guide (#5)', () => {
         : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
         : side === 'right' ? { x: r.left - 9, y: r.top + arrow }
         : { x: r.right + 9, y: r.top + arrow };
-      const shell = centralRegion(rectOf(el.querySelector('#canvas')!));
-      expect(tip.x).toBeGreaterThanOrEqual(shell.left - 1);
-      expect(tip.x).toBeLessThanOrEqual(shell.right + 1);
-      expect(tip.y).toBeGreaterThanOrEqual(shell.top - 1);
-      expect(tip.y).toBeLessThanOrEqual(shell.bottom + 1);
+      const shell = component.helper.shellScreenBox()!;
+      expect(shell).withContext('shell drawn').not.toBeNull();
+      expect(tip.x).toBeGreaterThanOrEqual(shell.left);
+      expect(tip.x).toBeLessThanOrEqual(shell.left + shell.width);
+      expect(tip.y).toBeGreaterThanOrEqual(shell.top);
+      expect(tip.y).toBeLessThanOrEqual(shell.top + shell.height);
+    });
+
+    it('marks where the shell is with an invisible box that takes no pointer', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const marker = el.querySelector('#shell-region') as HTMLElement;
+      const m = rectOf(marker);
+      const shell = component.helper.shellScreenBox()!;
+      expect(m.width).toBeGreaterThan(0);
+      expect(m.left).toBeGreaterThanOrEqual(shell.left - 0.5);
+      expect(m.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
+      expect(m.top).toBeGreaterThanOrEqual(shell.top - 0.5);
+      expect(m.bottom).toBeLessThanOrEqual(shell.top + shell.height + 0.5);
+      expect(marker.getAttribute('aria-hidden')).toBe('true');
+      expect(getComputedStyle(marker).pointerEvents).toBe('none');
     });
   });
 });

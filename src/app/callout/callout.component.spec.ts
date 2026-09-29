@@ -233,7 +233,8 @@ describe('CalloutComponent (#6)', () => {
 
 // The guide (#5): several bubbles at once. The host copies the initial
 // screen's shape: three 64 px buttons in a row at the top left, a lone one at
-// the bottom left, and a large area (the 3D view) behind everything.
+// the bottom left, a large button (the 3D view) behind everything, and a
+// region in the middle (where the shell is drawn).
 @Component({
   template: `
     <button type="button" id="under" style="position: fixed; inset: 0; width: 100%; height: 100%; margin: 0; border: 0">3D</button>
@@ -241,6 +242,7 @@ describe('CalloutComponent (#6)', () => {
     <button type="button" id="g2" style="position: fixed; left: 75px; top: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">2</button>
     <button type="button" id="g3" style="position: fixed; left: 143px; top: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">3</button>
     <button type="button" id="g4" style="position: fixed; left: 7px; bottom: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">4</button>
+    <div id="region" style="position: fixed; left: 100px; top: 350px; width: 190px; height: 150px; pointer-events: none"></div>
     <app-callout [guide]="guide"></app-callout>`
 })
 class GuideHostComponent {
@@ -256,7 +258,7 @@ describe('CalloutComponent guide mode (#5)', () => {
     { id: 'guide-g1', title: 'Uno', text: 'El primer botón de la fila.', anchor: '#g1' },
     { id: 'guide-g2', title: 'Dos', text: 'El segundo botón de la fila.', anchor: '#g2' },
     { id: 'guide-g3', title: 'Tres', text: 'El tercer botón, con un texto más largo.', anchor: '#g3' },
-    { id: 'guide-view', title: 'Vista', text: 'Arrastra para girar.', anchor: '#under', region: true },
+    { id: 'guide-view', title: 'Vista', text: 'Arrastra para girar.', anchor: '#region', region: true },
     { id: 'guide-g4', title: 'Cuatro', text: 'El botón de abajo.', anchor: '#g4' },
   ];
 
