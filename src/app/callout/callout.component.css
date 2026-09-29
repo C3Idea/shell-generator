@@ -17,7 +17,11 @@
   width: max-content;
   max-width: min(18rem, calc(100vw - 16px));
   padding: 0.75rem 1rem;
+  /* 80 % background so the sliders under the bubble show through (owner's
+     request); the text, border and arrow stay solid. Solid where color-mix()
+     isn't supported. */
   background-color: var(--modal-background);
+  background-color: color-mix(in srgb, var(--modal-background) 80%, transparent);
   color: var(--modal-color);
   font-family: var(--modal-font-family);
   font-size: 0.875rem;

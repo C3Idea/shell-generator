@@ -109,6 +109,26 @@ describe('CalloutComponent (#6)', () => {
     expect(getComputedStyle(bubble()!).pointerEvents).toBe('none');
   });
 
+  // Owner's request after the manual pass: the sliders under a bubble should
+  // show through, so only its background is translucent (80 %); the text
+  // stays solid.
+  it('has an 80 % background, so the sliders under it show through, with solid text', () => {
+    show(help);
+    // Chrome reports rgb(r, g, b), rgba(r, g, b, a) or, for color-mix(),
+    // color(srgb r g b / a).
+    const alpha = (css: string) => {
+      const slash = css.match(/\/\s*([\d.]+)\s*\)$/);
+      if (slash) {
+        return parseFloat(slash[1]);
+      }
+      const parts = css.replace(/^[a-z]+\(|\)$/g, '').split(/[ ,]+/).filter(Boolean);
+      return css.startsWith('rgba') ? parseFloat(parts[3]) : 1;
+    };
+    const style = getComputedStyle(bubble()!);
+    expect(alpha(style.backgroundColor)).toBeCloseTo(0.8, 2);
+    expect(alpha(style.color)).toBe(1);
+  });
+
   it('is a polite live region, so a screen reader announces the help', () => {
     expect(layer().getAttribute('aria-live')).toBe('polite');
     show(help);
