@@ -368,3 +368,103 @@ describe('SandboxComponent parameter help callouts (#6)', () => {
     }
   });
 });
+
+// #6: the shell parameters panel names each parameter, fits a landscape
+// phone, and the "Resolución" label no longer runs under its slider. Karma
+// runs the specs in an iframe, so resizing it gives the page a real viewport.
+describe('SandboxComponent panel layout (#6)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+  let restoreViewport: (() => void) | null = null;
+
+  const render = () => fixture.detectChanges();
+  const shellMenu = () => el.querySelector('#parameters-menu') as HTMLElement;
+  const shellRows = () => Array.from(shellMenu().querySelectorAll('.form-row'))
+    .filter(row => row.querySelector('.parameter-icon')) as HTMLElement[];
+  const viewportHeight = () => document.documentElement.clientHeight;
+
+  function setViewport(width: number, height: number) {
+    const frame = window.frameElement as HTMLIFrameElement | null;
+    if (!frame) {
+      pending('needs the Karma iframe to set the viewport size');
+      return;
+    }
+    const before = { width: frame.style.width, height: frame.style.height };
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    restoreViewport = () => {
+      frame.style.width = before.width;
+      frame.style.height = before.height;
+    };
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+    component.introOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+    restoreViewport?.();
+    restoreViewport = null;
+  });
+
+  it('shows each parameter\'s name as text next to its icon, labelling its slider', () => {
+    component.menuButtonClick(new Event('click'));
+    render();
+    const rows = shellRows();
+    expect(rows.length).toBe(6);
+    const names = rows.map(row => row.querySelector('.parameter-name') as HTMLLabelElement | null);
+    expect(names.map(n => n?.textContent?.trim())).toEqual(['A', 'α', 'β', 'a', 'b', 'θ']);
+    rows.forEach((row, i) => {
+      const name = names[i]!;
+      const icon = row.querySelector('.parameter-icon') as HTMLElement;
+      const slider = row.querySelector('input.slider') as HTMLInputElement;
+      expect(name.tagName).withContext(`row ${i}`).toBe('LABEL');
+      expect(name.htmlFor).withContext(`row ${i}`).toBe(slider.id);
+      expect(slider.id).withContext(`row ${i}`).not.toBe('');
+      expect(name.getBoundingClientRect().left).withContext(`row ${i}: name after icon`)
+        .toBeGreaterThanOrEqual(icon.getBoundingClientRect().right - 1);
+    });
+  });
+
+  for (const [width, height] of [[844, 390], [390, 844], [1280, 800]]) {
+    it(`keeps every shell control reachable at ${width}×${height}`, () => {
+      setViewport(width, height);
+      component.menuButtonClick(new Event('click'));
+      render();
+      const menu = shellMenu();
+      expect(menu.getBoundingClientRect().bottom).withContext('panel bottom')
+        .toBeLessThanOrEqual(viewportHeight());
+      menu.scrollTop = menu.scrollHeight;
+      const last = el.querySelector('#theta-help-button') as HTMLElement;
+      expect(last.getBoundingClientRect().bottom).withContext('last ⓘ after scrolling')
+        .toBeLessThanOrEqual(Math.min(viewportHeight(), menu.getBoundingClientRect().bottom) + 0.5);
+    });
+  }
+
+  for (const width of [390, 1280]) {
+    it(`shows the whole "Resolución" label, clear of its slider, at ${width} px`, () => {
+      setViewport(width, 800);
+      component.visualizationMenuButtonClick(new Event('click'));
+      render();
+      const label = el.querySelector('#visualization-menu .parameter-label') as HTMLElement;
+      const slider = el.querySelector('#visualization-menu input.slider') as HTMLElement;
+      expect(label.textContent?.trim()).toBe(AppStrings.QUAL_TEXT);
+      expect(label.scrollWidth).withContext('text fits its box').toBeLessThanOrEqual(label.clientWidth);
+      expect(label.getBoundingClientRect().right).withContext('label ends before the slider')
+        .toBeLessThanOrEqual(slider.getBoundingClientRect().left);
+    });
+  }
+});
