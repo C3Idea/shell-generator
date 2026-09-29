@@ -1136,6 +1136,13 @@ describe('GameComponent parameters menu fit (#6)', () => {
     restoreViewport = null;
   });
 
+  it('shows no forced scrollbar on a 360 px phone', () => {
+    setViewport(360, 800);
+    component.menuButtonClick(new Event('click'));
+    fixture.detectChanges();
+    expect(getComputedStyle(el.querySelector('#parameters-menu') as HTMLElement).overflowY).toBe('auto');
+  });
+
   for (const [width, height] of [[844, 390], [390, 844], [1280, 800]]) {
     it(`keeps every control reachable and clear of the switch at ${width}×${height}`, () => {
       setViewport(width, height);

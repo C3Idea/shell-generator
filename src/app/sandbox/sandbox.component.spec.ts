@@ -458,6 +458,15 @@ describe('SandboxComponent panel layout (#6)', () => {
     });
   }
 
+  it('shows no scrollbar on a 360 px phone when the panel fits', () => {
+    setViewport(360, 800);
+    component.menuButtonClick(new Event('click'));
+    render();
+    const menu = shellMenu();
+    expect(getComputedStyle(menu).overflowY).toBe('auto');
+    expect(menu.scrollHeight).withContext('fits').toBeLessThanOrEqual(menu.clientHeight);
+  });
+
   it('keeps an open callout on its ⓘ while the panel scrolls at 844×390', () => {
     setViewport(844, 390);
     component.menuButtonClick(new Event('click'));

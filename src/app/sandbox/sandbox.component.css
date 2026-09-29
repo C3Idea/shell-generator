@@ -200,9 +200,10 @@ label {
   margin-bottom: var(--modal-spacing);
 }
 
+/* Narrow phones: nearly full width. It scrolls only when taller than the
+   screen (the base rule's overflow-y: auto, #6), with no forced scrollbar. */
 @media only screen and (max-width: 380px) {
   #parameters-menu {
       width: 96%;
-      overflow-y: scroll;
   }
 }
