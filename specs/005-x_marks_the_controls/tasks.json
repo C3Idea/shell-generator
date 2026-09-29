@@ -14,20 +14,21 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 4,
+    "currentWave": 5,
     "completedWaves": [
       0,
       1,
       2,
-      3
+      3,
+      4
     ],
     "totalTasks": 13,
-    "completedTasks": 8,
+    "completedTasks": 10,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T15:10:20-06:00",
+    "lastCheckpoint": "2026-09-29T15:23:22-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T15:12:46-06:00"
+    "lastUpdated": "2026-09-29T15:25:11-06:00"
   },
   "waves": [
     {
@@ -83,8 +84,9 @@
         "T008",
         "T009"
       ],
-      "gateStatus": "pending",
-      "story": "US3"
+      "gateStatus": "passed",
+      "story": "US3",
+      "completedAt": "2026-09-29T15:22:08-06:00"
     },
     {
       "number": 5,
@@ -377,7 +379,7 @@
       "id": "T009",
       "wave": 4,
       "description": "Layout at 360×800, 390×844, 1280×800 and 844×390 (Karma iframe resize): '?' visible and not overlapping another icon; every guide bubble on screen, no pairwise overlap, no leader line crossing a bubble, none covering its control; staircase at 390; resize re-places. Adjust sandbox/callout CSS as the specs demand.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -392,13 +394,38 @@
       "dependencies": [
         "T006",
         "T007"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:22:08-06:00",
+        "commitSha": "79514f7b6b862a4f4f2256885247ed88e7fbc80f",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts",
+          "src/app/shell-viewer.ts",
+          "src/app/shell-viewer.spec.ts",
+          "src/app/control-guide.ts",
+          "src/app/control-guide.spec.ts",
+          "src/app/callout/callout.component.ts",
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts",
+          "src/app/callout/callout.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "layout specs passed first run at all 4 sizes (behaviour from T002-T005); shell-region: 8 FAILED (viewer 2, guide 3, sandbox 3)",
+          "greenResult": "280/280 full suite; screenshots at 4 sizes checked"
+        },
+        "satisfaction": "full"
+      }
     },
     "T010": {
       "id": "T010",
       "wave": 5,
       "description": "Reuse and regression: confirm the #6 parameter ⓘ specs on both screens pass unchanged; check that the game screen can mount <app-callout [guide]> with its own callouts with no copied code (a small spec with a host listing two anchors).",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -411,7 +438,21 @@
       "dependencies": [
         "T008",
         "T009"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:25:11-06:00",
+        "commitSha": "79514f7b6b862a4f4f2256885247ed88e7fbc80f",
+        "agents": "claude(inline)",
+        "files": [
+          "none (verification)"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/callout.component.spec.ts",
+          "redResult": "verification: git diff dev shows no #6 spec line changed (only an added Router import); game files untouched",
+          "greenResult": "#6 sandbox+game ⓘ specs green unchanged; guide mode driven by a standalone GuideHostComponent (reuse for #10)"
+        },
+        "satisfaction": "full"
+      }
     },
     "T011": {
       "id": "T011",

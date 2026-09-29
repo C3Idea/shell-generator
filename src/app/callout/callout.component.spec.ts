@@ -367,6 +367,30 @@ describe('CalloutComponent guide mode (#5)', () => {
     });
   });
 
+  it('reads the guide out politely, bubble by bubble in the given order, skipping the lines', () => {
+    show(guide);
+    const layer = fixture.nativeElement.querySelector('.callout-layer') as HTMLElement;
+    expect(layer.getAttribute('aria-live')).toBe('polite');
+    const notes = Array.from(layer.querySelectorAll('[role="note"]')) as HTMLElement[];
+    expect(notes.map(n => n.id)).toEqual(guide.map(c => c.id));
+    leaders().forEach(l => expect(l.getAttribute('aria-hidden')).toBe('true'));
+    bubbles().forEach(b => expect(b.querySelector('.callout-arrow')!.getAttribute('aria-hidden')).toBe('true'));
+  });
+
+  it('turns off the animation of the bubbles and the lines under prefers-reduced-motion', () => {
+    const rules: CSSRule[] = [];
+    for (const sheet of Array.from(document.styleSheets)) {
+      try { rules.push(...Array.from(sheet.cssRules)); } catch { /* cross-origin */ }
+    }
+    const off = rules.filter((r): r is CSSMediaRule =>
+      r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion'))
+      .flatMap(m => Array.from(m.cssRules) as CSSStyleRule[])
+      .filter(r => r.style?.animationName === 'none')
+      .flatMap(r => r.selectorText.split(',').map(sel => sel.trim()));
+    expect(off.some(sel => /^\.callout(\[|$)/.test(sel))).withContext('bubbles').toBeTrue();
+    expect(off.some(sel => /^\.callout-leader(\[|$)/.test(sel))).withContext('lines').toBeTrue();
+  });
+
   it('re-places the bubbles when the window is resized', () => {
     show(guide);
     const before = bubbles().map(b => b.style.left + ',' + b.style.top).join(';');
