@@ -66,6 +66,11 @@ label {
   list-style-type: none;
   padding: 2px;
   border-radius: 5px;
+  /* #6: never taller than the space under its 75 px offset; scrolls when it
+     is (landscape phones). */
+  box-sizing: border-box;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
 }
 
 #visualization-button {
@@ -190,13 +195,6 @@ label {
 @media only screen and (max-width: 380px) {
   #parameters-menu {
       width: 96%;
-      overflow-y: scroll;
-  }
-}
-
-@media only screen and (max-height: 400px) {
-  #parameters-menu {
-      height: 96%;
       overflow-y: scroll;
   }
 }
