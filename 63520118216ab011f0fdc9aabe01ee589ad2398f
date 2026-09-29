@@ -1,0 +1,8 @@
+vt.idd:task: T008
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=verification of T003/T005 behaviour: passes on first run; spec bug fixed (1 px line over #toolbar); RED shown by the revert check in T012, green=61 SUCCESS sandbox
+vt.idd:satisfies: full
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-29T15:12:46-06:00
