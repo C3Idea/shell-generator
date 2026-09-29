@@ -1096,3 +1096,59 @@ describe('GameComponent parameter help callouts (#6)', () => {
     }
   });
 });
+
+// #6: at every checked size the game's parameters menu stays on screen and
+// ends above the Usuario/Objetivo switch, scrolling when it's taller. Karma
+// runs the specs in an iframe, so resizing it gives the page a real viewport.
+describe('GameComponent parameters menu fit (#6)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+  let restoreViewport: (() => void) | null = null;
+
+  function setViewport(width: number, height: number) {
+    const frame = window.frameElement as HTMLIFrameElement | null;
+    if (!frame) {
+      pending('needs the Karma iframe to set the viewport size');
+      return;
+    }
+    const before = { width: frame.style.width, height: frame.style.height };
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    restoreViewport = () => {
+      frame.style.width = before.width;
+      frame.style.height = before.height;
+    };
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    component.howToOpen = false;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+    restoreViewport?.();
+    restoreViewport = null;
+  });
+
+  for (const [width, height] of [[844, 390], [390, 844], [1280, 800]]) {
+    it(`keeps every control reachable and clear of the switch at ${width}×${height}`, () => {
+      setViewport(width, height);
+      component.menuButtonClick(new Event('click'));
+      fixture.detectChanges();
+      const menu = el.querySelector('#parameters-menu') as HTMLElement;
+      const toggle = el.querySelector('#toggle-switch') as HTMLElement;
+      const bottom = menu.getBoundingClientRect().bottom;
+      expect(bottom).withContext('menu bottom').toBeLessThanOrEqual(document.documentElement.clientHeight);
+      expect(bottom).withContext('menu ends above the switch').toBeLessThanOrEqual(toggle.getBoundingClientRect().top);
+      menu.scrollTop = menu.scrollHeight;
+      const last = el.querySelector('#a-help-button') as HTMLElement;
+      expect(last.getBoundingClientRect().bottom).withContext('last ⓘ after scrolling').toBeLessThanOrEqual(bottom + 0.5);
+    });
+  }
+});

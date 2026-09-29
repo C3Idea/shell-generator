@@ -83,6 +83,12 @@ label {
   list-style-type: none;
   padding: 2px;
   border-radius: 5px;
+  /* #6: ends above the Usuario/Objetivo switch (bottom-left, its top 47 px
+     from the bottom) and scrolls when taller: 75 px offset + 47 px + a 4 px
+     gap. */
+  box-sizing: border-box;
+  max-height: calc(100vh - 126px);
+  overflow-y: auto;
 }
 
 .form-row {
@@ -405,11 +411,4 @@ input:checked + .switch-slider:before {
     width: 96%;
     overflow-y: scroll;
   }
-}
-
-@media only screen and (max-height: 400px) {
-    #parameters-menu {
-        height: 96%;
-        overflow-y: scroll;
-    }
 }
