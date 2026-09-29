@@ -20,12 +20,12 @@
       1
     ],
     "totalTasks": 13,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T14:54:54-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T14:53:48-06:00"
+    "lastUpdated": "2026-09-29T14:57:06-06:00"
   },
   "waves": [
     {
@@ -199,7 +199,7 @@
       "id": "T004",
       "wave": 2,
       "description": "Add src/app/control-guide.ts: ControlGuide {on, callouts, readonly guideId, toggle(), close()} mirroring ParameterHelp; the seven callouts (gear, camera, gamepad, book, pencil, 3D view, ?) built from anchors and new app-strings GUIDE_*_TITLE/TEXT (draft text from #5) plus BUTTON_HELP_TITLE = 'Mostrar ayuda'. Each text is a title + one line ≤ ~45 chars. Unit specs first (toggle/close, seven callouts in on-screen order, text lengths).",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -209,7 +209,23 @@
         "FR-005",
         "FR-020",
         "FR-021"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T14:57:06-06:00",
+        "commitSha": "06c050f8c607fb895c077a6e143275f2e20627d6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/control-guide.ts",
+          "src/app/control-guide.spec.ts",
+          "src/app/app-strings.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/control-guide.spec.ts",
+          "redResult": "7 FAILED of 8 against a stub (only 'starts off' passes)",
+          "greenResult": "8 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
     },
     "T005": {
       "id": "T005",

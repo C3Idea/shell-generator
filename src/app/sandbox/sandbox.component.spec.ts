@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
 import { CalloutComponent } from '../callout/callout.component';
+import { centralRegion } from '../callout/layout-guide';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -503,4 +504,131 @@ describe('SandboxComponent panel layout (#6)', () => {
         .toBeLessThanOrEqual(slider.getBoundingClientRect().left);
     });
   }
+});
+
+// #5: the "?" button turns on a guide, a callout beside every control.
+describe('SandboxComponent control guide (#5)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+  let restoreViewport: (() => void) | null = null;
+
+  const render = () => fixture.detectChanges();
+  const helpButton = () => el.querySelector('#help-button') as HTMLButtonElement;
+  const guideBubbles = () => Array.from(el.querySelectorAll('.callout-guide')) as HTMLElement[];
+  const rectOf = (e: Element) => e.getBoundingClientRect();
+
+  // The guide's bubbles, in reading order: the toolbar left to right, the
+  // 3D view, the pencil.
+  const expected: [string, string][] = [
+    ['guide-parameters', AppStrings.GUIDE_PARAMETERS_TITLE],
+    ['guide-save-image', AppStrings.GUIDE_SAVE_IMAGE_TITLE],
+    ['guide-game', AppStrings.GUIDE_GAME_TITLE],
+    ['guide-intro', AppStrings.GUIDE_INTRO_TITLE],
+    ['guide-help', AppStrings.GUIDE_HELP_TITLE],
+    ['guide-view', AppStrings.GUIDE_VIEW_TITLE],
+    ['guide-visualization', AppStrings.GUIDE_VISUALIZATION_TITLE],
+  ];
+
+  function setViewport(width: number, height: number) {
+    const frame = window.frameElement as HTMLIFrameElement | null;
+    if (!frame) {
+      pending('needs the Karma iframe to set the viewport size');
+      return;
+    }
+    const before = { width: frame.style.width, height: frame.style.height };
+    frame.style.width = `${width}px`;
+    frame.style.height = `${height}px`;
+    window.dispatchEvent(new Event('resize'));
+    restoreViewport = () => {
+      frame.style.width = before.width;
+      frame.style.height = before.height;
+    };
+  }
+
+  function toggleGuide() {
+    helpButton().click();
+    render();
+  }
+
+  beforeEach(async () => {
+    installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+    // The welcome opens on load; close it so it isn't in the way.
+    component.introOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+    restoreViewport?.();
+    restoreViewport = null;
+  });
+
+  describe('the "?" button', () => {
+    it('sits in the toolbar after the book, drawn like the other toolbar icons', () => {
+      const buttons = Array.from(el.querySelectorAll('#toolbar button')) as HTMLButtonElement[];
+      expect(buttons.map(b => b.id)).toEqual(
+        ['parameters-button', 'save-image-button', 'game-button', 'intro-button', 'help-button']);
+      const gear = rectOf(buttons[0]);
+      const help = rectOf(helpButton());
+      expect(help.width).toBe(gear.width);
+      expect(help.height).toBe(gear.height);
+      expect(helpButton().classList).toContain('toolbar-button');
+      expect(helpButton().querySelector('svg rect.svg-border')).not.toBeNull();
+      expect(helpButton().querySelector('svg path.svg-content')).not.toBeNull();
+    });
+
+    it('is named "Mostrar ayuda", reports the guide as not pressed, and points at its bubbles', () => {
+      expect(helpButton().getAttribute('aria-label')).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().title).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+      expect(helpButton().getAttribute('aria-controls')).toBe(component.guide.controls);
+    });
+
+    it('has a hit area of at least 44×44 px', () => {
+      const r = rectOf(helpButton());
+      expect(r.width).toBeGreaterThanOrEqual(44);
+      expect(r.height).toBeGreaterThanOrEqual(44);
+    });
+  });
+
+  describe('turning the guide on', () => {
+    it('shows a bubble beside each control, in reading order, and reports the "?" as pressed', () => {
+      expect(guideBubbles().length).withContext('before').toBe(0);
+      toggleGuide();
+      const bubbles = guideBubbles();
+      expect(bubbles.map(b => b.id)).toEqual(expected.map(([id]) => id));
+      bubbles.forEach((b, i) =>
+        expect(b.querySelector('.callout-title')!.textContent!.trim()).withContext(b.id).toBe(expected[i][1]));
+      expect(helpButton().getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it("points the 3D view's bubble at the shell, in the middle of the view", () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const bubble = el.querySelector('#guide-view') as HTMLElement;
+      expect(bubble).withContext('3D view bubble').not.toBeNull();
+      const r = rectOf(bubble);
+      const arrow = parseFloat(bubble.style.getPropertyValue('--callout-arrow'));
+      const side = bubble.dataset['side'];
+      const tip = side === 'below' ? { x: r.left + arrow, y: r.top - 9 }
+        : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
+        : side === 'right' ? { x: r.left - 9, y: r.top + arrow }
+        : { x: r.right + 9, y: r.top + arrow };
+      const shell = centralRegion(rectOf(el.querySelector('#canvas')!));
+      expect(tip.x).toBeGreaterThanOrEqual(shell.left - 1);
+      expect(tip.x).toBeLessThanOrEqual(shell.right + 1);
+      expect(tip.y).toBeGreaterThanOrEqual(shell.top - 1);
+      expect(tip.y).toBeLessThanOrEqual(shell.bottom + 1);
+    });
+  });
 });

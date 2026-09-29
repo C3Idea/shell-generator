@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T14:53:48-06:00
+**Generated**: 2026-09-29T14:57:06-06:00
 
 ---
 
@@ -33,7 +33,7 @@
 
 **Purpose**: ControlGuide, strings, the '?' button and the seven callouts
 
-- [ ] T004 [W2] [TDD] [US1] Add src/app/control-guide.ts: ControlGuide {on, callouts, readonly guideId, toggle(), close()} mirroring ParameterHelp; the seven callouts (gear, camera, gamepad, book, pencil, 3D view, ?) built from anchors and new app-strings GUIDE_*_TITLE/TEXT (draft text from #5) plus BUTTON_HELP_TITLE = 'Mostrar ayuda'. Each text is a title + one line ≤ ~45 chars. Unit specs first (toggle/close, seven callouts in on-screen order, text lengths).
+- [x] T004 [W2] [TDD] [US1] Add src/app/control-guide.ts: ControlGuide {on, callouts, readonly guideId, toggle(), close()} mirroring ParameterHelp; the seven callouts (gear, camera, gamepad, book, pencil, 3D view, ?) built from anchors and new app-strings GUIDE_*_TITLE/TEXT (draft text from #5) plus BUTTON_HELP_TITLE = 'Mostrar ayuda'. Each text is a title + one line ≤ ~45 chars. Unit specs first (toggle/close, seven callouts in on-screen order, text lengths).
 - [ ] T005 [W2] [TDD] [US1] Sandbox: add the '?' toolbar button after the book (inline SVG in the toolbar style: rect.svg-border + '?' path.svg-content, viewBox 0 0 67 67, same hover), id help-button, title/aria-label 'Mostrar ayuda', aria-pressed = guide.on, aria-controls = guide id. Give the toolbar buttons stable ids for anchors (parameters-button, save-image-button, game-button, intro-button; pencil is #visualization-button). A zero-size marker at the shell's screen centre anchors the 3D-view callout. Mount <app-callout [guide]>. Specs first: '?' shows seven callouts with their text; aria; 44 px hit area; 3D-view bubble points at the shell.
 
 **Wave Gate**: pending
@@ -87,10 +87,10 @@
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 23%
+- **Progress**: 30%
 
 ---
 

@@ -4,6 +4,7 @@ import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
 import { ParameterHelp } from '../parameter-help';
+import { ControlGuide } from '../control-guide';
 
 @Component({
   selector: 'app-surface',
@@ -53,6 +54,9 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   // it; Esc, a click on the canvas or closing its panel clears it. Moving a
   // slider leaves it open.
   help = new ParameterHelp();
+
+  // The guide (#5): the "?" button shows a callout beside every control.
+  guide = new ControlGuide();
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -239,6 +243,10 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.help.close();
+  }
+
+  helpButtonClick(event: Event) {
+    this.guide.toggle();
   }
 
   introButtonClick(event: Event) {
