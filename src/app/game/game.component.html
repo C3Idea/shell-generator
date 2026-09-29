@@ -78,6 +78,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="A-help-button"
+        [attr.aria-expanded]="this.helpKey === 'A'" [attr.aria-controls]="calloutId('A')"
         title={{AppStrings.BUTTON_PARAM_A_TITLE}}
         (click)="this.parameterHelpAButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -93,6 +94,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="alpha-help-button"
+        [attr.aria-expanded]="this.helpKey === 'alpha'" [attr.aria-controls]="calloutId('alpha')"
         title={{AppStrings.BUTTON_PARAM_ALPHA_TITLE}}
         (click)="this.parameterHelpAlphaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -108,6 +110,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="beta-help-button"
+        [attr.aria-expanded]="this.helpKey === 'beta'" [attr.aria-controls]="calloutId('beta')"
         title={{AppStrings.BUTTON_PARAM_BETA_TITLE}}
         (click)="this.parameterHelpBetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -123,6 +126,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="a-help-button"
+        [attr.aria-expanded]="this.helpKey === 'a'" [attr.aria-controls]="calloutId('a')"
         title={{AppStrings.BUTTON_PARAM_A1_TITLE}}
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -151,6 +155,9 @@
       {{AppStrings.LABEL_SHARE_GAME}}
     </button>
   </div>
+  <!-- Parameter help (#6): one callout beside the ⓘ that was clicked, outside
+       the menu so its opacity doesn't fade it. -->
+  <app-callout [active]="this.helpCallout"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. ¡Victoria! comes last so it
        lands on top when it opens together with the how-to. -->
   <app-modal id="modal-new-game" titleId="label-new-game-title" [open]="this.newGameOpen"
@@ -183,11 +190,6 @@
     <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE2}}</p>
     <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE3}}</p>
     <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE4}}</p>
-  </app-modal>
-  <app-modal id="modal-help" titleId="label-help-title" [open]="this.helpOpen"
-    (closed)="this.helpOpen = false">
-    <h2 modal-title id="label-help-title">{{this.helpTitle}}</h2>
-    <p id="label-help-content">{{this.helpContent}}</p>
   </app-modal>
   <app-modal id="modal-victory" class="modal-centered" titleId="label-success-title" [open]="this.victoryOpen"
     (closed)="this.victoryOpen = false">
