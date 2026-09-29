@@ -116,8 +116,24 @@ label {
   padding: 2px;
 }
 
+/* #6: the slider takes whatever the row leaves after the icon, name or
+   label, and the ⓘ, so nothing overlaps it. */
 .slider {
-  width: 96%;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
+/* #6: the parameter's name next to its icon. */
+.parameter-name {
+  flex: 0 0 auto;
+  min-width: 1.25em;
+  padding: 0 6px 0 2px;
+  line-height: 64px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #031926;
+  text-align: center;
 }
 
 .parameter-icon {

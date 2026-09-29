@@ -108,7 +108,8 @@
     </div>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="A-slider">{{AppStrings.LABEL_PARAM_NAME_A}}</label>
+      <input class="slider" type=range id="A-slider"
         [(ngModel)]="this.parameters.A"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -124,7 +125,8 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_alpha.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="alpha-slider">{{AppStrings.LABEL_PARAM_NAME_ALPHA}}</label>
+      <input class="slider" type=range id="alpha-slider"
         [(ngModel)]="this.parameters.alpha"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -140,7 +142,8 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_beta.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="beta-slider">{{AppStrings.LABEL_PARAM_NAME_BETA}}</label>
+      <input class="slider" type=range id="beta-slider"
         [(ngModel)]="this.parameters.beta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -156,7 +159,8 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_a1.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="a-slider">{{AppStrings.LABEL_PARAM_NAME_A1}}</label>
+      <input class="slider" type=range id="a-slider"
         [(ngModel)]="this.parameters.a"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -172,7 +176,8 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_b.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="b-slider">{{AppStrings.LABEL_PARAM_NAME_B}}</label>
+      <input class="slider" type=range id="b-slider"
         [(ngModel)]="this.parameters.b"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
@@ -188,7 +193,8 @@
     </li>
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_theta.svg"/>
-      <input class="slider" type=range
+      <label class="parameter-name" for="theta-slider">{{AppStrings.LABEL_PARAM_NAME_THETA}}</label>
+      <input class="slider" type=range id="theta-slider"
         [(ngModel)]="this.parameters.theta"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterUpdateEvent($event)"
