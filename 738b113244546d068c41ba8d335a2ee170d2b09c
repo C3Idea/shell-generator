@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/callout/callout.component.ts,src/app/callout/callout.component.html,src/app/callout/callout.component.css,src/app/callout/callout.component.spec.ts,src/app/callout/layout-guide.ts,src/app/callout/layout-guide.spec.ts
+vt.idd:tdd: red=7 FAILED (6 guide-mode + 1 order-independence), 47 SUCCESS, green=54 SUCCESS; full suite 235/235
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-29T14:53:48-06:00
