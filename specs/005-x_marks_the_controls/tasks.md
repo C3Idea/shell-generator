@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T14:49:29-06:00
+**Generated**: 2026-09-29T14:53:48-06:00
 
 ---
 
@@ -23,9 +23,9 @@
 **Purpose**: layoutGuide() pure function and CalloutComponent guide mode
 
 - [x] T002 [W1] [TDD] Add src/app/callout/layout-guide.ts: pure layoutGuide(anchors: Box[], bubbles: Size[], viewport: Size): GuidePlacement[] (GuidePlacement = CalloutPlacement + optional leader {x1,y1,x2,y2}). Per bubble: beside its anchor when it fits (reuse placeCallout's rules); where toolbar bubbles would collide, stack them in a staircase below the toolbar, rightmost anchor's bubble nearest, each with a leader line to its anchor centre that crosses no other bubble; never overlap, never leave the viewport (8 px margin), never cover its own anchor. Export placeCallout's Box/Size types from callout.component.ts. Write src/app/callout/layout-guide.spec.ts first (DOM-free): beside at 1280, staircase at 390/360, 844×390 fits without stacking past the screen, no pairwise overlap, lines cross no bubble, all inside the viewport.
-- [ ] T003 [W1] [TDD] CalloutComponent guide mode: new @Input() guide: Callout[] | null. Render each callout (role=note, own id) in the same .callout-layer (pointer-events:none, aria-live polite) in the given order, plus an aria-hidden leader-line element per staircase bubble; place all with layoutGuide on changes, resize and scroll. The single @Input() active path (#6) is unchanged. Styles: leader line 1 px var(--modal-primary), pointer-events none; reduced-motion rule covers guide bubbles. Specs first in callout.component.spec.ts: renders N bubbles with title/text, lines aria-hidden, pointer passes through, live region order, reduced motion, #6 single-callout specs untouched.
+- [x] T003 [W1] [TDD] CalloutComponent guide mode: new @Input() guide: Callout[] | null. Render each callout (role=note, own id) in the same .callout-layer (pointer-events:none, aria-live polite) in the given order, plus an aria-hidden leader-line element per staircase bubble; place all with layoutGuide on changes, resize and scroll. The single @Input() active path (#6) is unchanged. Styles: leader line 1 px var(--modal-primary), pointer-events none; reduced-motion rule covers guide bubbles. Specs first in callout.component.spec.ts: renders N bubbles with title/text, lines aria-hidden, pointer passes through, live region order, reduced motion, #6 single-callout specs untouched.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -87,10 +87,10 @@
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 2
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 15%
+- **Progress**: 23%
 
 ---
 
