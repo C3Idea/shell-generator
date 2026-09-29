@@ -50,7 +50,6 @@ export class AppStrings {
   static LABEL_PARAM_THETA_HELP_CONTENT = "Este parámetro controla el número de vueltas que da el caracol.";
   static LABEL_PARAM_QUAL_TITLE   = "Resolución";
   static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superficie del caracol.";
-  static LABEL_PARAM_HELP_REGION = "Ayuda de parámetros";
   // Parameter names shown next to their icons in the shell panel (#6).
   static LABEL_PARAM_NAME_A     = "A";
   static LABEL_PARAM_NAME_ALPHA = "α";

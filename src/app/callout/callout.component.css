@@ -1,5 +1,8 @@
-/* The help bubble (#6). Colours, font, rounding and shadow come from the
-   --modal-* tokens in src/styles.css, so it matches the pop-ups (#31). */
+/* The help bubble (#6). Text colour, font, border colour, rounding and fade
+   duration come from the --modal-* tokens in src/styles.css, so it matches
+   the pop-ups (#31). Two parts differ on purpose: the background is the
+   token mixed to 80 % (below), and the shadow is its own, since the
+   pop-ups' faint Pico shadow barely shows over the 3D view. */
 
 /* Covers the viewport without taking the pointer: the sliders and buttons
    under it keep working while a bubble is open. */
@@ -43,7 +46,8 @@
 }
 
 /* The arrow points back at the ⓘ; --callout-arrow is the ⓘ's centre along
-   the bubble's edge. */
+   the bubble's edge, measured from its outer edge. The arrow is positioned
+   inside the 1 px border, hence 9 px (8 px half-arrow + the border). */
 .callout-arrow {
   position: absolute;
   width: 0;
@@ -53,19 +57,19 @@
 
 .callout[data-side="right"] .callout-arrow {
   left: -16px;
-  top: calc(var(--callout-arrow, 14px) - 8px);
+  top: calc(var(--callout-arrow, 14px) - 9px);
   border-right-color: var(--modal-primary);
 }
 
 .callout[data-side="below"] .callout-arrow {
   top: -16px;
-  left: calc(var(--callout-arrow, 14px) - 8px);
+  left: calc(var(--callout-arrow, 14px) - 9px);
   border-bottom-color: var(--modal-primary);
 }
 
 .callout[data-side="above"] .callout-arrow {
   bottom: -16px;
-  left: calc(var(--callout-arrow, 14px) - 8px);
+  left: calc(var(--callout-arrow, 14px) - 9px);
   border-top-color: var(--modal-primary);
 }
 

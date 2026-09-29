@@ -458,6 +458,29 @@ describe('SandboxComponent panel layout (#6)', () => {
     });
   }
 
+  it('keeps an open callout on its ⓘ while the panel scrolls at 844×390', () => {
+    setViewport(844, 390);
+    component.menuButtonClick(new Event('click'));
+    render();
+    const menu = shellMenu();
+    menu.scrollTop = menu.scrollHeight;
+    (el.querySelector('#b-help-button') as HTMLElement).click();
+    render();
+    const bubble = () => el.querySelector('.callout') as HTMLElement;
+    const aligned = () => {
+      const i = el.querySelector('#b-help-button')!.getBoundingClientRect();
+      const a = bubble().querySelector('.callout-arrow')!.getBoundingClientRect();
+      return Math.abs((a.top + a.height / 2) - (i.top + i.height / 2)) < 1.5;
+    };
+    expect(aligned()).withContext('open, scrolled to the bottom').toBeTrue();
+    menu.scrollTop = menu.scrollHeight - menu.clientHeight - 60;
+    menu.dispatchEvent(new Event('scroll'));
+    expect(aligned()).withContext('after scrolling up 60 px').toBeTrue();
+    menu.scrollTop = 0;
+    menu.dispatchEvent(new Event('scroll'));
+    expect(getComputedStyle(bubble()).visibility).withContext('b scrolled out of the panel').toBe('hidden');
+  });
+
   for (const width of [390, 1280]) {
     it(`shows the whole "Resolución" label, clear of its slider, at ${width} px`, () => {
       setViewport(width, 800);

@@ -1,5 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
-import { AppStrings } from '../app-strings';
+import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
 
 // One help bubble (#6), shown for the ⓘ that was clicked. `anchor` is a CSS
 // selector for that ⓘ; `id` is the bubble's id, which the ⓘ points at with
@@ -30,9 +29,11 @@ const ARROW_INSET = 14; // the arrow never sits closer than this to a corner
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
 
 // Where the bubble goes, in viewport coordinates: to the right of the anchor
-// when all of it fits there, otherwise below it (or above it when the space
-// below is too short), slid sideways to stay inside the viewport. It never
-// covers the anchor. Pure, so it can be tested without a DOM.
+// when all of it fits there, otherwise below it, or above it when only that
+// fits, slid sideways to stay inside the viewport; then it doesn't cover the
+// anchor. On a screen too short for either, it takes the side with more room
+// and is clamped inside the viewport, so it may overlap the anchor. Pure, so
+// it can be tested without a DOM.
 export function placeCallout(anchor: Box, bubble: Size, viewport: Size): CalloutPlacement {
   const centreX = anchor.left + anchor.width / 2;
   const centreY = anchor.top + anchor.height / 2;
@@ -41,31 +42,42 @@ export function placeCallout(anchor: Box, bubble: Size, viewport: Size): Callout
     return { side: 'right', left: anchor.right + GAP, top, arrow: centreY - top };
   }
   const left = clamp(centreX - bubble.width / 2, MARGIN, viewport.width - MARGIN - bubble.width);
-  const fitsBelow = anchor.bottom + GAP + bubble.height + MARGIN <= viewport.height;
-  const top = fitsBelow ? anchor.bottom + GAP : Math.max(MARGIN, anchor.top - GAP - bubble.height);
-  return { side: fitsBelow ? 'below' : 'above', left, top, arrow: centreX - left };
+  const roomBelow = viewport.height - MARGIN - GAP - anchor.bottom;
+  const roomAbove = anchor.top - GAP - MARGIN;
+  const below = roomBelow >= bubble.height || (roomAbove < bubble.height && roomBelow >= roomAbove);
+  const top = below
+    ? Math.min(anchor.bottom + GAP, viewport.height - MARGIN - bubble.height)
+    : Math.max(MARGIN, anchor.top - GAP - bubble.height);
+  return { side: below ? 'below' : 'above', left, top, arrow: centreX - left };
+}
+
+// The nearest ancestor that scrolls (the shell panel on short screens), if any.
+function scrollParent(element: Element): Element | null {
+  for (let e = element.parentElement; e; e = e.parentElement) {
+    if (/(auto|scroll)/.test(getComputedStyle(e).overflowY) && e.scrollHeight > e.clientHeight) {
+      return e;
+    }
+  }
+  return null;
 }
 
 // Adapted from gato_magico's cue overlay (its issue #4). The layer covers the
 // viewport but takes no pointer events, so the sliders under it keep working;
 // it is a polite live region, so a screen reader reads the help out when a
 // bubble appears. The parent mounts it outside the side panels, which are
-// translucent.
+// translucent. It re-places the bubble when the window resizes or anything
+// scrolls (the panel holding its ⓘ scrolls on short screens), and hides it
+// while its ⓘ is scrolled out of that panel.
 @Component({
   selector: 'app-callout',
   templateUrl: './callout.component.html',
   styleUrls: ['./callout.component.css']
 })
-export class CalloutComponent implements OnChanges, AfterViewChecked {
+export class CalloutComponent implements OnChanges, AfterViewChecked, OnDestroy {
   @Input() active: Callout | null = null;
-
-  // Bumped by the parent to re-place the bubble when its anchor moves.
-  @Input() recomputeKey = 0;
 
   @ViewChild('bubble')
   private bubbleRef?: ElementRef<HTMLElement>;
-
-  AppStrings = AppStrings;
 
   // The active callout, only while its anchor is on the page.
   shown: Callout | null = null;
@@ -93,14 +105,30 @@ export class CalloutComponent implements OnChanges, AfterViewChecked {
     this.place();
   }
 
+  // Scroll events don't bubble, so one capture-phase listener on the document
+  // sees the panel's scrolling as well as the page's.
+  private readonly onScroll = () => this.place();
+
+  constructor() {
+    document.addEventListener('scroll', this.onScroll, true);
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('scroll', this.onScroll, true);
+  }
+
   private place(): void {
     const bubble = this.bubbleRef?.nativeElement;
     if (!bubble || !this.anchorElement) {
       return;
     }
+    const anchor = this.anchorElement.getBoundingClientRect();
+    const panel = scrollParent(this.anchorElement)?.getBoundingClientRect();
+    const centreY = anchor.top + anchor.height / 2;
+    bubble.style.visibility = panel && (centreY < panel.top || centreY > panel.bottom) ? 'hidden' : 'visible';
     const viewport = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
     const size = { width: bubble.offsetWidth, height: bubble.offsetHeight };
-    const placement = placeCallout(this.anchorElement.getBoundingClientRect(), size, viewport);
+    const placement = placeCallout(anchor, size, viewport);
     const edge = placement.side === 'right' ? size.height : size.width;
     bubble.dataset['side'] = placement.side;
     bubble.style.left = `${placement.left}px`;

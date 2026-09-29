@@ -3,19 +3,24 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Callout, CalloutComponent, placeCallout } from './callout.component';
 
-// A host laid out like a side panel: an ⓘ the callout points at, and a slider
-// under the layer that must stay usable.
+// A host laid out like a side panel: an ⓘ the callout points at, a slider
+// under the layer that must stay usable, and a scrolling panel with an ⓘ
+// inside (the shell panel scrolls on short screens).
 @Component({
   template: `
     <button type="button" id="anchor" [style.position]="'fixed'"
       [style.left.px]="anchorLeft" [style.top.px]="anchorTop"
       style="width: 24px; height: 24px; margin: 0; padding: 0; border: 0">i</button>
     <input type="range" id="slider" style="position: fixed; left: 20px; top: 20px; width: 200px" />
-    <app-callout [active]="active" [recomputeKey]="key"></app-callout>`
+    <div id="scroller" style="position: fixed; left: 20px; top: 300px; width: 120px; height: 100px; overflow-y: auto">
+      <div style="height: 400px; padding-top: 40px; box-sizing: border-box">
+        <button type="button" id="inner" style="width: 24px; height: 24px; margin: 0; padding: 0; border: 0">i</button>
+      </div>
+    </div>
+    <app-callout [active]="active"></app-callout>`
 })
 class HostComponent {
   active: Callout | null = null;
-  key = 0;
   anchorLeft = 20;
   anchorTop = 100;
 }
@@ -94,13 +99,53 @@ describe('CalloutComponent (#6)', () => {
     expect(overlaps).toBeFalse();
   });
 
-  it('follows its anchor when recomputeKey changes', () => {
+  it('follows its anchor when the window is resized', () => {
     show(help);
     const before = bubble()!.getBoundingClientRect().top;
     host.anchorTop = 200;
-    host.key++;
     fixture.detectChanges();
+    window.dispatchEvent(new Event('resize'));
     expect(bubble()!.getBoundingClientRect().top).toBeGreaterThan(before + 50);
+  });
+
+  describe('in a scrolling panel', () => {
+    const scroller = () => fixture.nativeElement.querySelector('#scroller') as HTMLElement;
+    const inner = () => fixture.nativeElement.querySelector('#inner') as HTMLElement;
+    // Scroll events are async after setting scrollTop; dispatch one so the
+    // spec doesn't depend on frame timing.
+    function scrollTo(top: number) {
+      scroller().scrollTop = top;
+      scroller().dispatchEvent(new Event('scroll'));
+    }
+    const arrowCentreY = () => {
+      const a = bubble()!.querySelector('.callout-arrow')!.getBoundingClientRect();
+      return a.top + a.height / 2;
+    };
+
+    it('follows its ⓘ when the panel scrolls', () => {
+      show({ ...help, anchor: '#inner' });
+      const i = inner().getBoundingClientRect();
+      expect(arrowCentreY()).toBeCloseTo(i.top + i.height / 2, 0);
+      const before = bubble()!.getBoundingClientRect().top;
+      scrollTo(30);
+      expect(bubble()!.getBoundingClientRect().top).toBeCloseTo(before - 30, 0);
+      const j = inner().getBoundingClientRect();
+      expect(arrowCentreY()).toBeCloseTo(j.top + j.height / 2, 0);
+    });
+
+    it('hides while its ⓘ is scrolled out of the panel, and comes back', () => {
+      show({ ...help, anchor: '#inner' });
+      scrollTo(200);
+      expect(getComputedStyle(bubble()!).visibility).toBe('hidden');
+      scrollTo(0);
+      expect(getComputedStyle(bubble()!).visibility).toBe('visible');
+    });
+
+    it('stops listening once destroyed', () => {
+      show({ ...help, anchor: '#inner' });
+      fixture.destroy();
+      expect(() => scrollTo(30)).not.toThrow();
+    });
   });
 
   it('never takes the pointer: the layer lets clicks through to the controls', () => {
@@ -131,6 +176,9 @@ describe('CalloutComponent (#6)', () => {
 
   it('is a polite live region, so a screen reader announces the help', () => {
     expect(layer().getAttribute('aria-live')).toBe('polite');
+    // Not a landmark: it's empty whenever no bubble is open.
+    expect(layer().hasAttribute('role')).toBeFalse();
+    expect(layer().hasAttribute('aria-label')).toBeFalse();
     show(help);
     expect(bubble()!.getAttribute('role')).toBe('note');
   });
@@ -172,6 +220,13 @@ describe('CalloutComponent (#6)', () => {
       const p = placeCallout(rect(1250, 760), size, viewport);
       expect(p.side).toBe('above');
       expect(p.top + size.height).toBeLessThan(760);
+    });
+
+    it('takes the side with more room when it fits neither below nor above', () => {
+      const short = { width: 1280, height: 200 };
+      const tall = { width: 200, height: 150 };
+      expect(placeCallout(rect(1250, 60), tall, short).side).withContext('more room below').toBe('below');
+      expect(placeCallout(rect(1250, 110), tall, short).side).withContext('more room above').toBe('above');
     });
   });
 });
