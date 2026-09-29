@@ -6,3 +6,12 @@ vt.idd:tdd: red=layout specs passed first run at all 4 sizes (behaviour from T00
 vt.idd:satisfies: full
 vt.idd:wave: 4
 vt.idd:timestamp: 2026-09-29T15:22:08-06:00
+
+vt.idd:task: T010
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: none (verification)
+vt.idd:tdd: red=verification: git diff dev shows no #6 spec line changed (only an added Router import); game files untouched, green=#6 sandbox+game ⓘ specs green unchanged; guide mode driven by a standalone GuideHostComponent (reuse for #10)
+vt.idd:satisfies: full
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-29T15:25:11-06:00
