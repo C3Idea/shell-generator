@@ -391,6 +391,26 @@ describe('CalloutComponent guide mode (#5)', () => {
     expect(off.some(sel => /^\.callout-leader(\[|$)/.test(sel))).withContext('lines').toBeTrue();
   });
 
+  it('has a 95 % background, so the text reads over the 3D view, with solid text (owner, #5)', () => {
+    show(guide);
+    // Chrome reports rgb(r, g, b), rgba(r, g, b, a) or, for color-mix(),
+    // color(srgb r g b / a).
+    const alpha = (css: string) => {
+      const slash = css.match(/\/\s*([\d.]+)\s*\)$/);
+      if (slash) {
+        return parseFloat(slash[1]);
+      }
+      const parts = css.replace(/^[a-z]+\(|\)$/g, '').split(/[ ,]+/).filter(Boolean);
+      return css.startsWith('rgba') ? parseFloat(parts[3]) : 1;
+    };
+    expect(bubbles().length).toBe(guide.length);
+    bubbles().forEach(b => {
+      const style = getComputedStyle(b);
+      expect(alpha(style.backgroundColor)).withContext(b.id).toBeCloseTo(0.95, 2);
+      expect(alpha(style.color)).withContext(b.id).toBe(1);
+    });
+  });
+
   it('re-places the bubbles when the window is resized', () => {
     show(guide);
     const before = bubbles().map(b => b.style.left + ',' + b.style.top).join(';');
