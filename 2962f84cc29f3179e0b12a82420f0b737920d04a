@@ -1,0 +1,6 @@
+vt.idd:task: T012
+vt.idd:domain: config
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/005-x_marks_the_controls/spec.md
+vt.idd:wave: 6
+vt.idd:timestamp: 2026-09-29T15:33:17-06:00
