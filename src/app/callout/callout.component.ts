@@ -19,8 +19,8 @@ export interface CalloutPlacement {
   arrow: number;
 }
 
-interface Box { left: number; top: number; right: number; bottom: number; width: number; height: number; }
-interface Size { width: number; height: number; }
+export interface Box { left: number; top: number; right: number; bottom: number; width: number; height: number; }
+export interface Size { width: number; height: number; }
 
 const GAP = 10;         // between the anchor and the bubble; room for the arrow
 const MARGIN = 8;       // kept between the bubble and the viewport edge

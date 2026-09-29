@@ -4,7 +4,7 @@
 # Tasks: Initial-screen control guide: a "?" button pointing a callout at every control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T14:37:45-06:00
+**Generated**: 2026-09-29T14:39:43-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Baseline tests, lint and build on the branch
 
-- [ ] T001 [W0] Baseline on the branch: npm test (2 cores), ng lint and npm run build green on dev's code before any change; record the spec count.
+- [x] T001 [W0] Baseline on the branch: npm test (2 cores), ng lint and npm run build green on dev's code before any change; record the spec count.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -87,10 +87,10 @@
 ## Summary
 
 - **Total Tasks**: 13
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 7%
 
 ---
 

@@ -1,0 +1,181 @@
+import { Box, Size } from './callout.component';
+import { centralRegion, GuideItem, GuidePlacement, layoutGuide, Measure } from './layout-guide';
+
+// The guide's layout (#5), without a DOM. The anchors copy the initial
+// screen: five 64 px toolbar buttons in a row at the top left (gear, camera,
+// gamepad, book, "?"), the pencil at the bottom left, and the 3D view as the
+// region where the shell is drawn.
+
+const box = (left: number, top: number, width: number, height: number): Box =>
+  ({ left, top, width, height, right: left + width, bottom: top + height });
+
+function initialScreen(viewport: Size): GuideItem[] {
+  const toolbar = [0, 1, 2, 3, 4].map(i => ({ anchor: box(7 + 68 * i, 7, 64, 64) }));
+  const pencil = { anchor: box(7, viewport.height - 71, 64, 64) };
+  const view = { anchor: centralRegion(box(0, 0, viewport.width, viewport.height)), region: true };
+  return [...toolbar, pencil, view];
+}
+
+// A stand-in for the browser: each bubble holds `chars` characters at 7 px
+// each, wrapped to the width it is given, below a 17.5 px title line; plus
+// 14 px of padding and border.
+function fakeMeasure(chars: number[]): Measure {
+  return (index, maxWidth) => {
+    const natural = chars[index] * 7;
+    const width = Math.min(natural, maxWidth);
+    const lines = Math.ceil(natural / width);
+    return { width, height: 14 + 17.5 * (1 + lines) };
+  };
+}
+
+// The guide's draft text lengths: gear, camera, gamepad, book, "?", pencil, 3D view.
+const TEXT = fakeMeasure([28, 29, 36, 36, 26, 32, 51]);
+
+const PHONE = { width: 390, height: 844 };
+const SMALL_PHONE = { width: 360, height: 800 };
+const DESKTOP = { width: 1280, height: 800 };
+const LANDSCAPE = { width: 844, height: 390 };
+const SIZES = [SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE];
+
+function rect(p: GuidePlacement, index: number, measure: Measure): Box {
+  const size = measure(index, p.maxWidth);
+  return box(p.left, p.top, size.width, size.height);
+}
+
+const overlaps = (a: Box, b: Box) =>
+  a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+
+// A vertical or horizontal leader line, as a 1 px box.
+const lineBox = (l: { x1: number; y1: number; x2: number; y2: number }) =>
+  box(Math.min(l.x1, l.x2), Math.min(l.y1, l.y2), Math.abs(l.x2 - l.x1) || 1, Math.abs(l.y2 - l.y1) || 1);
+
+// The point of the arrow: 9 px out from the bubble's edge, at --callout-arrow.
+function arrowTip(p: GuidePlacement, r: Box): { x: number; y: number } {
+  switch (p.side) {
+    case 'right': return { x: r.left - 9, y: r.top + p.arrow };
+    case 'left': return { x: r.right + 9, y: r.top + p.arrow };
+    case 'below': return { x: r.left + p.arrow, y: r.top - 9 };
+    case 'above': return { x: r.left + p.arrow, y: r.bottom + 9 };
+  }
+}
+
+const inside = (pt: { x: number; y: number }, b: Box) =>
+  pt.x >= b.left && pt.x <= b.right && pt.y >= b.top && pt.y <= b.bottom;
+
+describe('layoutGuide (#5)', () => {
+  for (const viewport of SIZES) {
+    describe(`at ${viewport.width}×${viewport.height}`, () => {
+      const items = initialScreen(viewport);
+      const placements = layoutGuide(items, TEXT, viewport);
+      const rects = placements.map((p, i) => rect(p, i, TEXT));
+
+      it('places one bubble per item', () => {
+        expect(placements.length).toBe(items.length);
+      });
+
+      it('keeps every bubble inside the screen, 8 px from its edges', () => {
+        expect(placements.length).withContext('one placement per item').toBe(items.length);
+        rects.forEach((r, i) => {
+          expect(r.left).withContext(`bubble ${i} left`).toBeGreaterThanOrEqual(8);
+          expect(r.top).withContext(`bubble ${i} top`).toBeGreaterThanOrEqual(8);
+          expect(r.right).withContext(`bubble ${i} right`).toBeLessThanOrEqual(viewport.width - 8);
+          expect(r.bottom).withContext(`bubble ${i} bottom`).toBeLessThanOrEqual(viewport.height - 8);
+        });
+      });
+
+      it('never lets two bubbles overlap', () => {
+        expect(placements.length).withContext('one placement per item').toBe(items.length);
+        for (let i = 0; i < rects.length; i++) {
+          for (let j = i + 1; j < rects.length; j++) {
+            expect(overlaps(rects[i], rects[j])).withContext(`bubbles ${i} and ${j}`).toBeFalse();
+          }
+        }
+      });
+
+      it('never covers a control (the 3D view excepted: the bubbles sit over it)', () => {
+        expect(placements.length).withContext('one placement per item').toBe(items.length);
+        rects.forEach((r, i) => {
+          items.forEach((item, j) => {
+            if (!item.region) {
+              expect(overlaps(r, item.anchor)).withContext(`bubble ${i} over control ${j}`).toBeFalse();
+            }
+          });
+        });
+      });
+
+      it("never draws a leader line across another bubble", () => {
+        expect(placements.length).withContext('one placement per item').toBe(items.length);
+        placements.forEach((p, i) => {
+          if (p.leader) {
+            rects.forEach((r, j) => {
+              if (j !== i) {
+                expect(overlaps(lineBox(p.leader!), r)).withContext(`line ${i} across bubble ${j}`).toBeFalse();
+              }
+            });
+          }
+        });
+      });
+
+      it('points every bubble at its control: the arrow, or its leader line, reaches it', () => {
+        expect(placements.length).withContext('one placement per item').toBe(items.length);
+        placements.forEach((p, i) => {
+          const anchor = items[i].anchor;
+          const tip = arrowTip(p, rects[i]);
+          if (p.leader) {
+            // The line runs from the control's edge to the arrow's point.
+            expect(inside({ x: p.leader.x1, y: p.leader.y1 }, anchor)).withContext(`line ${i} start`).toBeTrue();
+            expect(p.leader.x2).withContext(`line ${i} end x`).toBeCloseTo(tip.x, 0);
+            expect(p.leader.y2).withContext(`line ${i} end y`).toBeCloseTo(tip.y, 0);
+          } else if (items[i].region) {
+            expect(inside(tip, anchor)).withContext(`arrow ${i} on the shell`).toBeTrue();
+          } else {
+            // Beside the control: the arrow's point is within 2 px of its edge.
+            const grown = box(anchor.left - 2, anchor.top - 2, anchor.width + 4, anchor.height + 4);
+            expect(inside(tip, grown)).withContext(`arrow ${i} at its control`).toBeTrue();
+          }
+        });
+      });
+    });
+  }
+
+  it('on a phone, stacks the toolbar bubbles in a staircase: the rightmost icon nearest the toolbar', () => {
+    const placements = layoutGuide(initialScreen(PHONE), TEXT, PHONE);
+    const toolbar = placements.slice(0, 5);
+    toolbar.forEach((p, i) => {
+      expect(p.side).withContext(`bubble ${i}`).toBe('below');
+      expect(p.leader).withContext(`bubble ${i} line`).toBeDefined();
+      expect(p.leader!.x1).withContext(`bubble ${i} line x`).toBe(7 + 68 * i + 32);
+    });
+    for (let i = 0; i < 4; i++) {
+      expect(toolbar[i].top).withContext(`bubble ${i} below bubble ${i + 1}`).toBeGreaterThan(toolbar[i + 1].top);
+    }
+  });
+
+  it('on a wide screen, puts the rightmost toolbar bubble beside its icon, with no line', () => {
+    const placements = layoutGuide(initialScreen(DESKTOP), TEXT, DESKTOP);
+    expect(placements[4].side).toBe('right');
+    expect(placements[4].leader).toBeUndefined();
+  });
+
+  it('puts a lone control\'s bubble beside it, as the parameter help does', () => {
+    const placements = layoutGuide(initialScreen(PHONE), TEXT, PHONE);
+    expect(placements[5].side).toBe('right');
+    expect(placements[5].leader).toBeUndefined();
+  });
+
+  it('stacks a row at the bottom of the screen upward', () => {
+    const viewport = PHONE;
+    const row = [0, 1, 2].map(i => ({ anchor: box(7 + 68 * i, viewport.height - 71, 64, 64) }));
+    const measure = fakeMeasure([40, 40, 40]);
+    const placements = layoutGuide(row, measure, viewport);
+    expect(placements.length).toBe(3);
+    placements.forEach((p, i) => {
+      expect(p.side).withContext(`bubble ${i}`).toBe('above');
+      expect(rect(p, i, measure).bottom).withContext(`bubble ${i}`).toBeLessThan(viewport.height - 71);
+    });
+  });
+
+  it('centralRegion is the middle of a box, half its shorter side across', () => {
+    expect(centralRegion(box(0, 0, 400, 800))).toEqual(box(100, 300, 200, 200));
+  });
+});
