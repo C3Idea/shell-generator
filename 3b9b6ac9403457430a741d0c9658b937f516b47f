@@ -1,0 +1,8 @@
+vt.idd:task: T012
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=5 FAILED: no names; Resolución text 79 px in a 50 px box at 390 and 1280; panel bottom 453 px at 844x390 (also exposed the ⓘ shrinking to 41 px, fixed in its own commit), green=139 SUCCESS (sandbox+game specs)
+vt.idd:satisfies: full
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-29T11:07:24-06:00
