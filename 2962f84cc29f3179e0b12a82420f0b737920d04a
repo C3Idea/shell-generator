@@ -4,3 +4,11 @@ vt.idd:agents: claude(inline)
 vt.idd:files: specs/005-x_marks_the_controls/spec.md
 vt.idd:wave: 6
 vt.idd:timestamp: 2026-09-29T15:33:17-06:00
+
+vt.idd:task: T013
+vt.idd:domain: documentation
+vt.idd:agents: claude(inline)
+vt.idd:files: validaciones/shell_generator/5/capturas/guide-*.png (not committed)
+vt.idd:satisfies: partial (posted for approval (issuecomment-5899391235); owner approval pending (SC-006))
+vt.idd:wave: 6
+vt.idd:timestamp: 2026-09-29T15:33:55-06:00
