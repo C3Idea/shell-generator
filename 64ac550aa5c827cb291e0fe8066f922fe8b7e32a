@@ -1,0 +1,7 @@
+vt.idd:task: T014
+vt.idd:domain: documentation
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/006-attack_of_the_callouts/spec.md
+vt.idd:satisfies: full (owner approved the manual pass and the merge (issuecomment-5897480982); before/after sheets in validaciones/shell_generator/6/capturas for the owner to attach)
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-29T13:48:56-06:00
