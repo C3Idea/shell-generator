@@ -189,6 +189,7 @@ label {
   padding: 10px;
   margin-top: 10px;
   margin-left: 0;
+  flex-shrink: 0;
 }
 
 /* Welcome pop-up: the equation image, still empty until #3 gives it one. */
