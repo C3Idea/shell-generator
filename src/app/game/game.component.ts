@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { Callout } from '../callout/callout.component';
-import { HelpKey, calloutId, parameterHelp } from '../parameter-help';
+import { ParameterHelp } from '../parameter-help';
 import { random } from 'src/util';
 
 type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
@@ -108,9 +107,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // Parameter help (#6): the ⓘ whose callout is open, if any. Its ⓘ toggles
   // it; Esc, a click on the canvas or closing the menu clears it. Moving a
   // slider leaves it open.
-  helpKey: HelpKey | null = null;
-  helpCallout: Callout | null = null;
-  calloutId = calloutId;
+  help = new ParameterHelp();
 
   distance: number;
   gameId: string = "";
@@ -239,7 +236,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   private hideMenu() {
     this.menu.style.display = 'none';
     this.menuVisible = false;
-    this.closeHelp();
+    this.help.close();
   }
 
   private showMenu() {
@@ -455,39 +452,24 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.toggleHelp('A');
+    this.help.toggle('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.toggleHelp('alpha');
+    this.help.toggle('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.toggleHelp('beta');
+    this.help.toggle('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.toggleHelp('a');
+    this.help.toggle('a');
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
-    this.closeHelp();
-  }
-
-  // The same ⓘ again closes its callout; another ⓘ replaces it.
-  private toggleHelp(key: HelpKey): void {
-    if (this.helpKey === key) {
-      this.closeHelp();
-      return;
-    }
-    this.helpKey = key;
-    this.helpCallout = parameterHelp(key);
-  }
-
-  private closeHelp(): void {
-    this.helpKey = null;
-    this.helpCallout = null;
+    this.help.close();
   }
 
   howToButtonClick(event: Event) {

@@ -78,7 +78,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="A-help-button"
-        [attr.aria-expanded]="this.helpKey === 'A'" [attr.aria-controls]="calloutId('A')"
+        [attr.aria-expanded]="this.help.key === 'A'" [attr.aria-controls]="this.help.calloutId('A')"
         title={{AppStrings.BUTTON_PARAM_A_TITLE}}
         (click)="this.parameterHelpAButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -94,7 +94,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="alpha-help-button"
-        [attr.aria-expanded]="this.helpKey === 'alpha'" [attr.aria-controls]="calloutId('alpha')"
+        [attr.aria-expanded]="this.help.key === 'alpha'" [attr.aria-controls]="this.help.calloutId('alpha')"
         title={{AppStrings.BUTTON_PARAM_ALPHA_TITLE}}
         (click)="this.parameterHelpAlphaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -110,7 +110,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="beta-help-button"
-        [attr.aria-expanded]="this.helpKey === 'beta'" [attr.aria-controls]="calloutId('beta')"
+        [attr.aria-expanded]="this.help.key === 'beta'" [attr.aria-controls]="this.help.calloutId('beta')"
         title={{AppStrings.BUTTON_PARAM_BETA_TITLE}}
         (click)="this.parameterHelpBetaButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -126,7 +126,7 @@
         step="any" />
       <input type="image" class="parameter-help-button"
         id="a-help-button"
-        [attr.aria-expanded]="this.helpKey === 'a'" [attr.aria-controls]="calloutId('a')"
+        [attr.aria-expanded]="this.help.key === 'a'" [attr.aria-controls]="this.help.calloutId('a')"
         title={{AppStrings.BUTTON_PARAM_A1_TITLE}}
         (click)="this.parameterHelpA1ButtonClick($event)"
         src="./assets/icons/icon_info_i.svg" />
@@ -157,7 +157,7 @@
   </div>
   <!-- Parameter help (#6): one callout beside the ⓘ that was clicked, outside
        the menu so its opacity doesn't fade it. -->
-  <app-callout [active]="this.helpCallout"></app-callout>
+  <app-callout [active]="this.help.callout"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. ¡Victoria! comes last so it
        lands on top when it opens together with the how-to. -->
   <app-modal id="modal-new-game" titleId="label-new-game-title" [open]="this.newGameOpen"

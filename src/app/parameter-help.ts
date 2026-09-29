@@ -24,3 +24,26 @@ export function parameterHelp(key: HelpKey): Callout {
 export function calloutId(key: HelpKey): string {
   return `callout-${key}`;
 }
+
+// The parameter help open on one screen: which ⓘ, and its callout. The same ⓘ
+// again closes it; another ⓘ replaces it. Each screen owns one and decides
+// when to close it (Esc, a click on the canvas, its panel closing).
+export class ParameterHelp {
+  key: HelpKey | null = null;
+  callout: Callout | null = null;
+  readonly calloutId = calloutId;
+
+  toggle(key: HelpKey): void {
+    if (this.key === key) {
+      this.close();
+      return;
+    }
+    this.key = key;
+    this.callout = parameterHelp(key);
+  }
+
+  close(): void {
+    this.key = null;
+    this.callout = null;
+  }
+}

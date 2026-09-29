@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { Callout } from '../callout/callout.component';
-import { HelpKey, calloutId, parameterHelp } from '../parameter-help';
+import { ParameterHelp } from '../parameter-help';
 
 @Component({
   selector: 'app-surface',
@@ -53,9 +52,7 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   // Parameter help (#6): the ⓘ whose callout is open, if any. Its ⓘ toggles
   // it; Esc, a click on the canvas or closing its panel clears it. Moving a
   // slider leaves it open.
-  helpKey: HelpKey | null = null;
-  helpCallout: Callout | null = null;
-  calloutId = calloutId;
+  help = new ParameterHelp();
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -180,8 +177,8 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   private hideMenu() {
     this.menu.style.display = 'none';
     this.menuVisible = false;
-    if (this.helpKey && this.helpKey !== 'qual') {
-      this.closeHelp();
+    if (this.help.key && this.help.key !== 'qual') {
+      this.help.close();
     }
   }
 
@@ -198,8 +195,8 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   private hideVisualizationMenu() {
     this.visualizationMenu.style.display = 'none';
     this.visualizationMenuVisible = false;
-    if (this.helpKey === 'qual') {
-      this.closeHelp();
+    if (this.help.key === 'qual') {
+      this.help.close();
     }
   }
 
@@ -212,51 +209,36 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.toggleHelp('A');
+    this.help.toggle('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.toggleHelp('alpha');
+    this.help.toggle('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.toggleHelp('beta');
+    this.help.toggle('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.toggleHelp('a');
+    this.help.toggle('a');
   }
 
   parameterHelpBButtonClick(event: Event) {
-    this.toggleHelp('b');
+    this.help.toggle('b');
   }
 
   parameterHelpThetaButtonClick(event: Event) {
-    this.toggleHelp('theta');
+    this.help.toggle('theta');
   }
 
   parameterHelpQualButtonClick(event: Event) {
-    this.toggleHelp('qual');
+    this.help.toggle('qual');
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
-    this.closeHelp();
-  }
-
-  // The same ⓘ again closes its callout; another ⓘ replaces it.
-  private toggleHelp(key: HelpKey): void {
-    if (this.helpKey === key) {
-      this.closeHelp();
-      return;
-    }
-    this.helpKey = key;
-    this.helpCallout = parameterHelp(key);
-  }
-
-  private closeHelp(): void {
-    this.helpKey = null;
-    this.helpCallout = null;
+    this.help.close();
   }
 
   introButtonClick(event: Event) {
