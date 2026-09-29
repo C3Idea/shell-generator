@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/callout/callout.component.ts,src/app/callout/callout.component.html,src/app/callout/callout.component.css,src/app/app.module.ts,src/app/app-strings.ts
+vt.idd:tdd: red=11 FAILED, 2 SUCCESS against an empty stub component, green=13 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-29T10:49:08-06:00
