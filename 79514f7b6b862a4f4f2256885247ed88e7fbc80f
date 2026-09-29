@@ -1,0 +1,8 @@
+vt.idd:task: T009
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.html,src/app/sandbox/sandbox.component.css,src/app/sandbox/sandbox.component.spec.ts,src/app/shell-viewer.ts,src/app/shell-viewer.spec.ts,src/app/control-guide.ts,src/app/control-guide.spec.ts,src/app/callout/callout.component.ts,src/app/callout/layout-guide.ts,src/app/callout/layout-guide.spec.ts,src/app/callout/callout.component.spec.ts
+vt.idd:tdd: red=layout specs passed first run at all 4 sizes (behaviour from T002-T005); shell-region: 8 FAILED (viewer 2, guide 3, sandbox 3), green=280/280 full suite; screenshots at 4 sizes checked
+vt.idd:satisfies: full
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-29T15:22:08-06:00
