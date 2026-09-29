@@ -1,0 +1,19 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 5,
+    "title": "[Initial screen] Add help icon explaining the controls",
+    "url": "https://github.com/C3Idea/shell-generator/issues/5",
+    "state": "OPEN"
+  },
+  "spec_comment_id": "5898184830",
+  "plan_comment_id": "5898244215",
+  "pr": {
+    "number": 34,
+    "url": "https://github.com/C3Idea/shell-generator/pull/34",
+    "status": "draft",
+    "createdAt": "2026-09-29T20:36:59Z"
+  },
+  "deployed_at": "2026-09-29T20:36:28Z",
+  "cached_from": "github"
+}
