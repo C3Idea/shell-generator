@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/callout/layout-guide.ts,src/app/callout/layout-guide.spec.ts,src/app/callout/callout.component.ts
+vt.idd:tdd: red=29 FAILED of 29 against a stub returning [], green=29 SUCCESS; full suite 228/228
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-29T14:49:29-06:00
