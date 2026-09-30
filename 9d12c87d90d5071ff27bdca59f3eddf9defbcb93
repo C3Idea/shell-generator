@@ -1,0 +1,8 @@
+vt.idd:task: T008
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.spec.ts
+vt.idd:tdd: red=no RED: behaviour inherited from the shared callout (#5); guards verified by mutation (swapped callout order: 3 FAILED), green=166 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-29T22:07:39-06:00
