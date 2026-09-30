@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
 import { useViewport } from '../../testing/viewport';
 
@@ -676,10 +677,10 @@ describe('SandboxComponent control guide (#5)', () => {
   describe('the 3D view while the guide is on', () => {
     const canvas = () => el.querySelector('#canvas') as HTMLCanvasElement;
 
-    function pointer(type: string, x: number, y: number, id = 1, pointerType = 'mouse') {
+    function pointer(type: string, x: number, y: number, id = 1, pointerType = 'mouse', extra: PointerEventInit = {}) {
       canvas().dispatchEvent(new PointerEvent(type, {
         bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType,
-        isPrimary: id === 1, button: 0, buttons: type === 'pointerup' ? 0 : 1,
+        isPrimary: id === 1, button: 0, buttons: type === 'pointerup' ? 0 : 1, ...extra,
       }));
     }
 
@@ -742,6 +743,27 @@ describe('SandboxComponent control guide (#5)', () => {
         .withContext('marker moved').not.toEqual([before.left, before.top, before.width, before.height]);
       expect(after.left).toBeGreaterThanOrEqual(shell.left - 0.5);
       expect(after.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
+    });
+
+    it('keeps the guide on after a right-click or middle-click on the 3D view (they pan)', () => {
+      guideOn();
+      for (const button of [1, 2]) {
+        pointer('pointerdown', 200, 400, 1, 'mouse', { button, buttons: button === 1 ? 4 : 2 });
+        pointer('pointerup', 200, 400, 1, 'mouse', { button, buttons: 0 });
+      }
+      render();
+      expect(component.guide.on).toBeTrue();
+    });
+
+    it('still turns the guide off with a tap after a touch whose pointerup never arrived', () => {
+      guideOn();
+      // A finger went down and its pointerup was lost (e.g. the browser took the gesture).
+      pointer('pointerdown', 150, 400, 7, 'touch', { isPrimary: true });
+      // The next touch starts a new gesture: its finger is the primary one.
+      pointer('pointerdown', 200, 400, 8, 'touch', { isPrimary: true });
+      pointer('pointerup', 200, 400, 8, 'touch', { isPrimary: true });
+      render();
+      expect(component.guide.on).toBeFalse();
     });
 
     it('keeps the guide on while pinching with two fingers', () => {
@@ -880,13 +902,35 @@ describe('SandboxComponent control guide (#5)', () => {
       expect(shownLines().length).toBe(toolbar.length);
     });
 
-    it('re-places the bubbles when the phone turns, still tidy', () => {
+    it('re-places the bubbles when the phone turns, still tidy and still pointing at the shell', () => {
       setViewport(390, 844);
       toggleGuide();
       expectTidy(390, 844);
       setViewport(844, 390);
       render();
       expectTidy(844, 390);
+      // The 3D view's bubble aims at where the shell is now, not where it was.
+      const view = el.querySelector('#guide-view') as HTMLElement;
+      const r = rectOf(view);
+      const arrow = parseFloat(view.style.getPropertyValue('--callout-arrow'));
+      const side = view.dataset['side'];
+      const tip = side === 'below' ? { x: r.left + arrow, y: r.top - 9 } : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
+        : side === 'right' ? { x: r.left - 9, y: r.top + arrow } : { x: r.right + 9, y: r.top + arrow };
+      const shell = component.helper.shellScreenBox()!;
+      expect(tip.x).toBeGreaterThanOrEqual(shell.left - 1);
+      expect(tip.x).toBeLessThanOrEqual(shell.left + shell.width + 1);
+      expect(tip.y).toBeGreaterThanOrEqual(shell.top - 1);
+      expect(tip.y).toBeLessThanOrEqual(shell.top + shell.height + 1);
+    });
+
+    it('lays the guide out once per window resize', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const callout = fixture.debugElement.query(By.directive(CalloutComponent)).componentInstance as CalloutComponent;
+      const passes = spyOn(callout as unknown as { placeGuide(): void }, 'placeGuide').and.callThrough();
+      window.dispatchEvent(new Event('resize'));
+      render();
+      expect(passes).toHaveBeenCalledTimes(1);
     });
   });
 

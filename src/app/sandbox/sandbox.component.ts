@@ -38,7 +38,9 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     const width = window.innerWidth;
     const height = window.innerHeight;
     this.helper.resize(width, height);
-    this.followShell();
+    // Only move the shell region: the callout's own resize listener, which
+    // runs after this one, lays the guide out again (once).
+    this.followShell(false);
   }
 
   // Stage properties
@@ -186,8 +188,15 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // A tap on the 3D view ends the guide (#5); a drag (rotate) or a pinch
   // (zoom) doesn't, so the user can try what its bubble says. A tap is one
-  // pointer released within TAP_SLOP px of where it went down.
+  // pointer, the primary button, released within TAP_SLOP px of where it
+  // went down; the right and middle buttons pan. A primary pointer going down
+  // starts a new gesture, so a press whose pointerup was lost can't leave a
+  // stale "pinch" behind.
   canvasPointerDown(event: PointerEvent): void {
+    if (event.isPrimary) {
+      this.presses.clear();
+      this.pinching = false;
+    }
     this.presses.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (this.presses.size > 1) {
       this.pinching = true;
@@ -196,7 +205,7 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   canvasPointerUp(event: PointerEvent): void {
     const start = this.presses.get(event.pointerId);
-    const tap = start !== undefined && !this.pinching
+    const tap = start !== undefined && !this.pinching && event.button === 0
       && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP;
     this.canvasPointerCancel(event);
     if (tap) {
@@ -209,8 +218,9 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Moves #shell-region over the drawn shell, shrunk towards its middle so
   // the 3D view's arrow lands on the shell rather than a corner of its box,
-  // and has the guide placed again (#5). Only while the guide is on.
-  private followShell(): void {
+  // and (unless `replace` is false) has the guide placed again (#5). Only
+  // while the guide is on.
+  private followShell(replace = true): void {
     const box = this.guide.on ? this.helper.shellScreenBox() : null;
     if (!box || !this.shellRegionRef) {
       return;
@@ -220,7 +230,9 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     style.top = `${box.top + box.height * (1 - SHELL_REGION_SCALE) / 2}px`;
     style.width = `${box.width * SHELL_REGION_SCALE}px`;
     style.height = `${box.height * SHELL_REGION_SCALE}px`;
-    this.guide.refresh();
+    if (replace) {
+      this.guide.refresh();
+    }
   }
 
   canvasPointerCancel(event: PointerEvent): void {
