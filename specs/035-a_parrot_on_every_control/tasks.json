@@ -14,20 +14,21 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 4,
+    "currentWave": 5,
     "completedWaves": [
       0,
       1,
       2,
-      3
+      3,
+      4
     ],
     "totalTasks": 10,
-    "completedTasks": 7,
+    "completedTasks": 8,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T21:30:00-06:00",
+    "lastCheckpoint": "2026-09-29T22:09:23-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T22:03:56-06:00"
+    "lastUpdated": "2026-09-29T22:07:39-06:00"
   },
   "waves": [
     {
@@ -80,7 +81,8 @@
         "T007",
         "T008"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T22:07:39-06:00"
     },
     {
       "number": 5,
@@ -328,7 +330,7 @@
       "id": "T008",
       "wave": 4,
       "description": "Game accessibility: live region reads the ten callouts in reading order, leader lines aria-hidden, reduced motion removes the animation, the \"?\" name/aria-pressed/aria-controls/44x44 and matching toolbar look. Specs first.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": true,
       "domain": "frontend",
@@ -340,7 +342,21 @@
       "dependencies": [
         "T006"
       ],
-      "story": "US5"
+      "story": "US5",
+      "completion": {
+        "timestamp": "2026-09-29T22:07:39-06:00",
+        "commitSha": "9d12c87d90d5071ff27bdca59f3eddf9defbcb93",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "no RED: behaviour inherited from the shared callout (#5); guards verified by mutation (swapped callout order: 3 FAILED)",
+          "greenResult": "166 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
     },
     "T009": {
       "id": "T009",
