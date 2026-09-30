@@ -4,7 +4,7 @@
 # Tasks: How-to pop-up in short sections
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T15:54:04-06:00
+**Generated**: 2026-09-30T16:01:06-06:00
 
 ---
 
@@ -52,9 +52,9 @@
 
 **Purpose**: No sideways scroll; footer reachable
 
-- [ ] T005 [W4] [US4] Specs at 360, 390, 1280 px and 844×390: no sideways scroll of the pop-up or page; at 844×390 ✕ and ¡A jugar! reachable by scrolling inside the pop-up. Adjust game.component.css section spacing only if needed.
+- [x] T005 [W4] [US4] Specs at 360, 390, 1280 px and 844×390: no sideways scroll of the pop-up or page; at 844×390 ✕ and ¡A jugar! reachable by scrolling inside the pop-up. Adjust game.component.css section spacing only if needed.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -71,10 +71,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 4
+- **Completed**: 5
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 66%
+- **Progress**: 83%
 
 ---
 
