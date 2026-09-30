@@ -1,0 +1,8 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/shell-region.ts,src/app/shell-region.spec.ts
+vt.idd:tdd: red=3 FAILED vs false stub, 7 FAILED vs true stub (every test fails one), green=9 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-29T21:12:31-06:00
