@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 6,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T15:45:49-06:00",
+    "lastCheckpoint": "2026-09-30T15:52:10-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T15:42:48-06:00"
+    "lastUpdated": "2026-09-30T15:50:21-06:00"
   },
   "waves": [
     {
@@ -55,7 +56,8 @@
       "tasks": [
         "T003"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:50:21-06:00"
     },
     {
       "number": 3,
@@ -138,7 +140,7 @@
       "id": "T003",
       "wave": 2,
       "description": "Rewrite #modal-howto in src/app/game/game.component.html: goal line, five <p class=\"label-howto-section\"><strong>title</strong> · text</p> (three titles bound to GUIDE_GAME_*_TITLE), ⚙ aria-hidden, closing line; remove LABEL_HOWTO_WINDOW_LINE1..4; replace the two old-text specs in game.component.spec.ts with #10 specs for content, order, titles, no position words and no \"amarillo\".",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -159,7 +161,18 @@
       "dependencies": [
         "T002"
       ],
-      "story": "US1"
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-09-30T15:50:21-06:00",
+        "commitSha": "37d203293badd617da792d5c8ba64ac752a49ed5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/app-strings.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T004": {
       "id": "T004",

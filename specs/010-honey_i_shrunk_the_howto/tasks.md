@@ -4,7 +4,7 @@
 # Tasks: How-to pop-up in short sections
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T15:42:48-06:00
+**Generated**: 2026-09-30T15:50:21-06:00
 
 ---
 
@@ -32,9 +32,9 @@
 
 **Purpose**: Goal, five titled sections, closing line
 
-- [ ] T003 [W2] [US1] Rewrite #modal-howto in src/app/game/game.component.html: goal line, five <p class="label-howto-section"><strong>title</strong> · text</p> (three titles bound to GUIDE_GAME_*_TITLE), ⚙ aria-hidden, closing line; remove LABEL_HOWTO_WINDOW_LINE1..4; replace the two old-text specs in game.component.spec.ts with #10 specs for content, order, titles, no position words and no "amarillo".
+- [x] T003 [W2] [US1] Rewrite #modal-howto in src/app/game/game.component.html: goal line, five <p class="label-howto-section"><strong>title</strong> · text</p> (three titles bound to GUIDE_GAME_*_TITLE), ⚙ aria-hidden, closing line; remove LABEL_HOWTO_WINDOW_LINE1..4; replace the two old-text specs in game.component.spec.ts with #10 specs for content, order, titles, no position words and no "amarillo".
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -71,10 +71,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 2
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 33%
+- **Progress**: 50%
 
 ---
 
