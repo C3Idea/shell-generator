@@ -389,3 +389,33 @@ describe('layoutGuide on the game screen (#35)', () => {
     expect(inside({ x: p.leader!.x1, y: p.leader!.y1 }, corner.anchor)).withContext('line starts on its control').toBeTrue();
   });
 });
+
+// #35 (owner's report, 2026-09-30): a row bubble's width limit can be
+// fractional, and the browser rounds the measured width up (offsetWidth), so
+// a bubble filling its limit measured 0.03 px wider than the screen allows
+// and fell out of the staircase onto the buttons.
+describe('layoutGuide with rounded measurements (#35)', () => {
+  it('keeps a row bubble that fills a fractional width limit in the staircase', () => {
+    const viewport = { width: 1528, height: 762 };
+    // Two level buttons at the bottom right, the right one's bubble limited
+    // to 1528 − 8 − (1343.03 + 12) = 164.97 px.
+    const newGame = { anchor: box(1278.91, 715, 128.25, 40) };
+    const share = { anchor: box(1415.16, 715, 104.84, 40) };
+    // Long lines, so each bubble fills whatever width it's given; the width
+    // rounded up as offsetWidth does.
+    const measure: Measure = (index, maxWidth) => {
+      const natural = [300, 460][index];
+      const width = Math.min(natural, maxWidth);
+      return { width: Math.ceil(width), height: 14 + 17.5 * (1 + Math.ceil(natural / width)) };
+    };
+    const placements = layoutGuide([newGame, share], measure, viewport);
+    const p = placements[1];
+    expect(p.side).toBe('above');
+    expect(p.leader).withContext('stacked, joined by its line').toBeDefined();
+    expect(p.maxWidth).toBeLessThan(165);
+    expect(p.left + p.maxWidth).toBeLessThanOrEqual(viewport.width - 8);
+    const r = rect(p, 1, measure);
+    expect(overlaps(r, share.anchor)).withContext('off the buttons').toBeFalse();
+    expect(overlaps(r, newGame.anchor)).withContext('off the buttons').toBeFalse();
+  });
+});

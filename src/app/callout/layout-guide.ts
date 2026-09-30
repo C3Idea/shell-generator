@@ -224,7 +224,12 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
       const next = order[k + 1];
       const leftBound = next === undefined ? MARGIN : lineX.get(next)! + LINE_CLEARANCE;
       const maxWidth = Math.min(widest, viewport.width - MARGIN - leftBound);
-      const size = measure(index, maxWidth);
+      // The limit can be fractional and the browser rounds the measured width
+      // up (offsetWidth): a bubble filling its limit would measure a fraction
+      // of a pixel too wide for the screen and fall out of the staircase (#35,
+      // the owner's Windows fonts). It can't be wider than its max-width.
+      const measured = measure(index, maxWidth);
+      const size = { width: Math.min(measured.width, maxWidth), height: measured.height };
       const left = Math.max(leftBound, Math.min(lineAt - size.width / 2, viewport.width - MARGIN - size.width));
       // Nearest the row, then past whatever it would cover there (the
       // bubbles and lines of the controls to its right, and other controls),
