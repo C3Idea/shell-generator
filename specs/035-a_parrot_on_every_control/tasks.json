@@ -19,12 +19,12 @@
       0
     ],
     "totalTasks": 10,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T21:10:27-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T21:09:18-06:00"
+    "lastUpdated": "2026-09-29T21:12:31-06:00"
   },
   "waves": [
     {
@@ -114,7 +114,7 @@
       "id": "T002",
       "wave": 1,
       "description": "Extract the canvas tap-vs-drag gesture (presses/pinching, TAP_SLOP, primary-button reset; pointerUp returns tap|gesture) and the shell-region follow (SHELL_REGION_SCALE, position an element from shellScreenBox()) out of SandboxComponent into src/app/shell-region.ts, no Angular dependency. Specs first in shell-region.spec.ts: tap under 10 px, drag over, pinch never a tap, non-primary buttons never tap, primary down resets a lost gesture, follow math at 70 %, null box leaves the element.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -126,7 +126,22 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T21:12:31-06:00",
+        "commitSha": "363bb59fe4142aa9feeb9a358b78ba32bea1a02e",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/shell-region.ts",
+          "src/app/shell-region.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/shell-region.spec.ts",
+          "redResult": "3 FAILED vs false stub, 7 FAILED vs true stub (every test fails one)",
+          "greenResult": "9 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",
