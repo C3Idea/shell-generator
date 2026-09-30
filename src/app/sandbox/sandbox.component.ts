@@ -317,6 +317,12 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fullEquationOpen = !this.fullEquationOpen;
   }
 
+  // "Jugar" in the welcome pop-up (#3): straight into the game.
+  playButtonClick() {
+    this.introOpen = false;
+    this.navigateToGame();
+  }
+
   introButtonClick(event: Event) {
     this.showIntroWindow();
   }

@@ -245,6 +245,22 @@ label {
   outline-offset: 2px;
 }
 
+/* "Conoce más": a plain underlined link, dark ink for contrast. */
+#intro-more-link {
+  color: var(--modal-primary-inverse);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+#intro-more-link:hover {
+  color: var(--modal-primary-hover);
+}
+
+#intro-more-link:focus-visible {
+  outline: 2px solid var(--modal-primary-hover);
+  outline-offset: 2px;
+}
+
 /* Narrow phones: nearly full width. It scrolls only when taller than the
    screen (the base rule's overflow-y: auto, #6), with no forced scrollbar. */
 @media only screen and (max-width: 380px) {
