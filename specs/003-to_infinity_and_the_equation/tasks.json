@@ -14,21 +14,22 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 5,
+    "currentWave": 6,
     "completedWaves": [
       0,
       1,
       2,
       3,
-      4
+      4,
+      5
     ],
     "totalTasks": 8,
-    "completedTasks": 5,
+    "completedTasks": 6,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T11:40:18-06:00",
+    "lastCheckpoint": "2026-09-30T11:48:29-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:38:23-06:00"
+    "lastUpdated": "2026-09-30T11:46:45-06:00"
   },
   "waves": [
     {
@@ -88,7 +89,8 @@
       "tasks": [
         "T006"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:46:45-06:00"
     },
     {
       "number": 6,
@@ -276,7 +278,7 @@
       "id": "T006",
       "wave": 5,
       "description": "US4 help: fix LABEL_PARAM_A1_HELP_* (horizontal), LABEL_PARAM_B_HELP_* (vertical), LABEL_PARAM_THETA_HELP_* (medias vueltas) in app-strings.ts per #3's table; specs on the initial screen (a, b, θ ⓘ) and the game (a ⓘ) in game.component.spec.ts.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": true,
       "domain": "frontend",
@@ -290,7 +292,18 @@
       "dependencies": [
         "T002"
       ],
-      "story": "US4"
+      "story": "US4",
+      "completion": {
+        "timestamp": "2026-09-30T11:46:45-06:00",
+        "commitSha": "f4d68400b574befd6307d1af4a904ab0db291232",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts",
+          "src/app/sandbox/sandbox.component.spec.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T007": {
       "id": "T007",

@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:38:23-06:00
+**Generated**: 2026-09-30T11:46:45-06:00
 
 ---
 
@@ -62,9 +62,9 @@
 
 **Purpose**: a/b/θ help texts
 
-- [ ] T006 [P] [W5] [US4] US4 help: fix LABEL_PARAM_A1_HELP_* (horizontal), LABEL_PARAM_B_HELP_* (vertical), LABEL_PARAM_THETA_HELP_* (medias vueltas) in app-strings.ts per #3's table; specs on the initial screen (a, b, θ ⓘ) and the game (a ⓘ) in game.component.spec.ts.
+- [x] T006 [P] [W5] [US4] US4 help: fix LABEL_PARAM_A1_HELP_* (horizontal), LABEL_PARAM_B_HELP_* (vertical), LABEL_PARAM_THETA_HELP_* (medias vueltas) in app-strings.ts per #3's table; specs on the initial screen (a, b, θ ⓘ) and the game (a ⓘ) in game.component.spec.ts.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 5
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 62%
+- **Progress**: 75%
 
 ---
 
