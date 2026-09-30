@@ -287,7 +287,7 @@
   <!-- Pop-ups (#31): the shared <app-modal>. -->
   <!-- Centred like ¡Victoria! (#3, owner): title, text and "Jugar". -->
   <app-modal id="modal-intro" class="modal-centered" titleId="label-intro-welcome" [open]="this.introOpen"
-    (closed)="this.introOpen = false">
+    (closed)="this.closeIntro()">
     <h2 modal-title id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</h2>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE2}}</p>

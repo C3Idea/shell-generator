@@ -4,6 +4,7 @@
 
 app-equation {
   display: block;
+  position: relative;  /* holds the spoken text's 1 px box (.visually-hidden) */
 }
 
 app-equation[hidden] {

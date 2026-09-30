@@ -1052,6 +1052,8 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       const box = intro().getBoundingClientRect();
       const close = intro().querySelector('header > button')!.getBoundingClientRect();
       const play = intro().querySelector('#intro-play-button')!.getBoundingClientRect();
+      // The ✕ sits in the header's right padding (within 60 px of the edge);
+      // "Jugar" is centred to 2 px (sub-pixel rounding).
       expect(close.right).toBeGreaterThan(box.right - 60);
       expect(Math.abs((play.left + play.right) / 2 - (box.left + box.right) / 2)).toBeLessThan(2);
     });
@@ -1147,6 +1149,9 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
     const full = () => intro().querySelector('#intro-equation-full') as HTMLElement;
     const toggle = () => intro().querySelector('#intro-equation-toggle') as HTMLButtonElement;
     const shown = (e: HTMLElement) => !e.hidden && e.getBoundingClientRect().height > 0;
+    // Collapsed means hidden AND drawing nothing: app-equation's display: block
+    // would beat the browser's [hidden] rule without app-equation[hidden].
+    const collapsed = (e: HTMLElement) => e.hidden && e.getBoundingClientRect().height === 0;
     // The MathML's text, without its invisible operators (function
     // application, invisible times).
     const mathText = (e: HTMLElement) =>
@@ -1163,7 +1168,8 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       expect(maths.length).toBeGreaterThan(0);
       maths.forEach(m => {
         expect(m.namespaceURI).toBe(MATHML);
-        expect(m instanceof MathMLElement).withContext('laid out as MathML').toBeTrue();
+        expect(typeof MathMLElement !== 'undefined' && m instanceof MathMLElement)
+          .withContext('laid out as MathML').toBeTrue();
       });
       expect(box().querySelector('img, svg, canvas')).toBeNull();
     });
@@ -1181,7 +1187,7 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_SHOW);
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
       expect(toggle().getAttribute('aria-controls')).toBe('intro-equation-full');
-      expect(full().hidden).toBeTrue();
+      expect(collapsed(full())).toBeTrue();
       expect(component.fullEquationOpen).toBeFalse();
     });
 
@@ -1203,7 +1209,7 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       render();
       toggle().click();
       render();
-      expect(full().hidden).toBeTrue();
+      expect(collapsed(full())).toBeTrue();
       expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_SHOW);
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
     });
@@ -1215,8 +1221,24 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       render();
       (el.querySelector('#intro-button') as HTMLButtonElement).click();
       render();
-      expect(full().hidden).toBeTrue();
+      expect(collapsed(full())).toBeTrue();
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('collapses when the pop-up closes, however it closes', () => {
+      toggle().click();
+      render();
+      (intro().querySelector('header > button') as HTMLButtonElement).click();
+      render();
+      expect(component.fullEquationOpen).withContext('✕').toBeFalse();
+      component.introButtonClick(new Event('click'));
+      render();
+      toggle().click();
+      render();
+      spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+      (intro().querySelector('#intro-play-button') as HTMLButtonElement).click();
+      render();
+      expect(component.fullEquationOpen).withContext('Jugar').toBeFalse();
     });
 
     it('is a real button', () => {
