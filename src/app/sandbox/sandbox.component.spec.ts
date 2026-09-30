@@ -118,7 +118,7 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
     expect(component.introOpen).toBeTrue();
   });
 
-  it('keeps the welcome text as paragraphs and the equation image for #3', () => {
+  it('keeps the welcome text as paragraphs', () => {
     expect(title(intro()).textContent?.trim()).toBe(AppStrings.LABEL_INTRO_WELCOME_TEXT);
     const lines = Array.from(intro().querySelectorAll('.label-intro-line'));
     expect(lines.map(l => l.tagName)).toEqual(['P', 'P', 'P', 'P']);
@@ -126,7 +126,6 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
       AppStrings.LABEL_INTRO_LINE1, AppStrings.LABEL_INTRO_LINE2,
       AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5,
     ]);
-    expect(intro().querySelector('img#img-intro-equation')).not.toBeNull();
   });
 
   for (const [name, { open, flag }] of Object.entries(popups)) {
@@ -978,6 +977,69 @@ describe('SandboxComponent control guide (#5)', () => {
       expect(m.bottom).toBeLessThanOrEqual(shell.top + shell.height + 0.5);
       expect(marker.getAttribute('aria-hidden')).toBe('true');
       expect(getComputedStyle(marker).pointerEvents).toBe('none');
+    });
+  });
+});
+
+// #3: the welcome pop-up's new copy, the shell equation, the credit link and
+// the way into the game.
+describe('SandboxComponent welcome pop-up (#3)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+
+  const intro = () => el.querySelector('#modal-intro > dialog') as HTMLDialogElement;
+  const render = () => fixture.detectChanges();
+  const text = () => intro().textContent ?? '';
+
+  beforeEach(async () => {
+    installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('copy', () => {
+    it('opens on load with the new copy, which names the game', () => {
+      expect(intro().open).toBeTrue();
+      for (const line of [AppStrings.LABEL_INTRO_LINE1, AppStrings.LABEL_INTRO_LINE2,
+                          AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5]) {
+        expect(text()).toContain(line);
+      }
+      expect(AppStrings.LABEL_INTRO_LINE5).toContain('modo juego');
+    });
+
+    it('has no equation placeholder and no empty equation image left', () => {
+      expect(text()).not.toContain('Mostrar ecuación');
+      expect((AppStrings as unknown as Record<string, unknown>)['LABEL_INTRO_LINE3']).toBeUndefined();
+      expect(intro().querySelector('img')).toBeNull();
+      expect(el.querySelector('#img-intro-equation')).toBeNull();
+    });
+
+    it('spells the copy with its accents', () => {
+      expect(text()).not.toMatch(/muchisimos|fisica/);
+      expect(AppStrings.LABEL_INTRO_LINE2).toContain('matemáticas');
+      expect(AppStrings.LABEL_INTRO_LINE2).toContain('ecuación');
+    });
+
+    it('opens again from the book button after it was closed', () => {
+      (intro().querySelector('header > button') as HTMLButtonElement).click();
+      render();
+      expect(intro().open).toBeFalse();
+      (el.querySelector('#intro-button') as HTMLButtonElement).click();
+      render();
+      expect(intro().open).toBeTrue();
+      expect(text()).toContain(AppStrings.LABEL_INTRO_LINE1);
     });
   });
 });
