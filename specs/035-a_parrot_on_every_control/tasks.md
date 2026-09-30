@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T21:14:36-06:00
+**Generated**: 2026-09-29T21:16:30-06:00
 
 ---
 
@@ -24,9 +24,9 @@
 
 - [x] T002 [W1] [TDD] Extract the canvas tap-vs-drag gesture (presses/pinching, TAP_SLOP, primary-button reset; pointerUp returns tap|gesture) and the shell-region follow (SHELL_REGION_SCALE, position an element from shellScreenBox()) out of SandboxComponent into src/app/shell-region.ts, no Angular dependency. Specs first in shell-region.spec.ts: tap under 10 px, drag over, pinch never a tap, non-primary buttons never tap, primary down resets a lost gesture, follow math at 70 %, null box leaves the element.
 - [x] T003 [P] [W1] [TDD] ControlGuide takes its callout list as a constructor parameter; export the initial screen's list (unchanged) and add the game's ten callouts in reading order (gear, camera, home, book, ?, 3D view region, switch, heat bar, Nuevo juego, Compartir) with GUIDE_GAME_* strings (draft wording from the issue). Specs first in control-guide.spec.ts: the list is the one passed in, refresh gives a new array, game list order/ids/anchors, wording pinned.
-- [ ] T004 [W1] SandboxComponent uses shell-region.ts and new ControlGuide(its list); behaviour unchanged. Gate: #5 and #6 sandbox specs stay green with no spec edits.
+- [x] T004 [W1] SandboxComponent uses shell-region.ts and new ControlGuide(its list); behaviour unchanged. Gate: #5 and #6 sandbox specs stay green with no spec edits.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -75,10 +75,10 @@
 ## Summary
 
 - **Total Tasks**: 10
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 30%
+- **Progress**: 40%
 
 ---
 

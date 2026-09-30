@@ -14,17 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1
     ],
     "totalTasks": 10,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T21:10:27-06:00",
+    "lastCheckpoint": "2026-09-29T21:17:34-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T21:14:36-06:00"
+    "lastUpdated": "2026-09-29T21:16:30-06:00"
   },
   "waves": [
     {
@@ -46,7 +47,8 @@
         "T003",
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:16:30-06:00"
     },
     {
       "number": 2,
@@ -181,7 +183,7 @@
       "id": "T004",
       "wave": 1,
       "description": "SandboxComponent uses shell-region.ts and new ControlGuide(its list); behaviour unchanged. Gate: #5 and #6 sandbox specs stay green with no spec edits.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -192,7 +194,16 @@
       "dependencies": [
         "T002",
         "T003"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T21:16:30-06:00",
+        "commitSha": "41561d2cee7e318ace19d16aa3839b8e9c57cd35",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T005": {
       "id": "T005",
