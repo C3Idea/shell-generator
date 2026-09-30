@@ -101,3 +101,81 @@ describe('ShellViewer lifecycle (#21)', () => {
     viewer.dispose();
   });
 });
+
+// #5: the guide's 3D-view bubble points at where the shell is drawn.
+describe('ShellViewer shellScreenBox (#5)', () => {
+  let canvas: HTMLCanvasElement;
+  let viewer: ShellViewer;
+
+  beforeEach(() => {
+    installFramePump();
+    canvas = document.createElement('canvas');
+    canvas.style.width = '400px';
+    canvas.style.height = '300px';
+    document.body.appendChild(canvas);
+    viewer = new ShellViewer();
+    viewer.init(1, 1, 10000, canvas);
+    viewer.resize(400, 300);
+  });
+
+  afterEach(() => {
+    viewer.dispose();
+    canvas.remove();
+  });
+
+  it('is null while there is no shell', () => {
+    expect(viewer.shellScreenBox()).toBeNull();
+  });
+
+  it('is the box around the drawn shell, in px from the canvas corner, inside the canvas', () => {
+    viewer.createGraph(ShellParameters.Shell1());
+    const box = viewer.shellScreenBox()!;
+    expect(box).not.toBeNull();
+    expect(box.width).toBeGreaterThan(20);
+    expect(box.height).toBeGreaterThan(20);
+    expect(box.left).toBeGreaterThanOrEqual(-1);
+    expect(box.top).toBeGreaterThanOrEqual(-1);
+    expect(box.left + box.width).toBeLessThanOrEqual(401);
+    expect(box.top + box.height).toBeLessThanOrEqual(301);
+    // The camera looks at the shell, so its box holds the canvas centre.
+    expect(box.left).toBeLessThan(200);
+    expect(box.left + box.width).toBeGreaterThan(200);
+    expect(box.top).toBeLessThan(150);
+    expect(box.top + box.height).toBeGreaterThan(150);
+  });
+
+  // Reaches into the viewer: specs only, to put the camera where a user's
+  // wheel or drag could.
+  const camera = () => (viewer as unknown as { camera: import('three').PerspectiveCamera }).camera;
+
+  it('stays inside the canvas when the camera is zoomed in close to the shell', () => {
+    viewer.createGraph(ShellParameters.Shell1());
+    camera().position.multiplyScalar(0.02);
+    camera().lookAt(0, 0, 0);
+    const box = viewer.shellScreenBox();
+    if (box) {
+      expect(box.left).toBeGreaterThanOrEqual(0);
+      expect(box.top).toBeGreaterThanOrEqual(0);
+      expect(box.left + box.width).toBeLessThanOrEqual(400);
+      expect(box.top + box.height).toBeLessThanOrEqual(300);
+    }
+    expect(box === null || box.width > 0).toBeTrue();
+  });
+
+  it('is null when the shell is behind the camera', () => {
+    viewer.createGraph(ShellParameters.Shell1());
+    const p = camera().position;
+    camera().lookAt(p.x * 2, p.y * 2, p.z * 2);
+    expect(viewer.shellScreenBox()).toBeNull();
+  });
+
+  it('follows the canvas size', () => {
+    viewer.createGraph(ShellParameters.Shell1());
+    const small = viewer.shellScreenBox()!;
+    canvas.style.width = '800px';
+    canvas.style.height = '600px';
+    viewer.resize(800, 600);
+    const big = viewer.shellScreenBox()!;
+    expect(big.width).toBeCloseTo(small.width * 2, -1);
+  });
+});

@@ -15,6 +15,12 @@ label {
   display: block;
 }
 
+/* Where the shell is drawn, for the guide (#5); sized by the component. */
+#shell-region {
+  position: fixed;
+  pointer-events: none;
+}
+
 #toolbar {
   display: inline;
   position: fixed;
@@ -80,6 +86,25 @@ label {
   bottom: 5px;
   left:   5px;
   margin: 2px;
+}
+
+/* The guide's "?" (#5): alone in the top-right corner, level with the
+   toolbar and as far from the edge. */
+#help-button {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}
+
+/* #5: under 356 px the toolbar's four icons and the "?" in the opposite
+   corner no longer fit in one row at 64 px, so the corner icons shrink to
+   56 px (still well over a 44 px hit area). The pencil matches. */
+@media only screen and (max-width: 355px) {
+  .toolbar-button,
+  #visualization-button {
+    width:  56px;
+    height: 56px;
+  }
 }
 
 #visualization-menu {

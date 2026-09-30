@@ -3,7 +3,14 @@ import { Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { ParameterHelp } from '../parameter-help';
+import { HelpKey, ParameterHelp } from '../parameter-help';
+import { ControlGuide } from '../control-guide';
+
+// How far a press may move and still count as a tap on the 3D view (#5).
+const TAP_SLOP = 10;
+
+// How much of the shell's box #shell-region covers, around its middle (#5).
+const SHELL_REGION_SCALE = 0.7;
 
 @Component({
   selector: 'app-surface',
@@ -23,11 +30,17 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('visualizationMenu')
   private visualizationMenuRef!: ElementRef;
 
+  @ViewChild('shellRegion')
+  private shellRegionRef!: ElementRef<HTMLElement>;
+
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
     this.helper.resize(width, height);
+    // Only move the shell region: the callout's own resize listener, which
+    // runs after this one, lays the guide out again (once).
+    this.followShell(false);
   }
 
   // Stage properties
@@ -53,6 +66,14 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   // it; Esc, a click on the canvas or closing its panel clears it. Moving a
   // slider leaves it open.
   help = new ParameterHelp();
+
+  // The guide (#5): the "?" button shows a callout beside every control.
+  guide = new ControlGuide();
+
+  // Pointers down on the 3D view, where each went down; and whether two
+  // were down at once (a pinch).
+  private presses = new Map<number, { x: number; y: number }>();
+  private pinching = false;
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -165,6 +186,62 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // A tap on the 3D view ends the guide (#5); a drag (rotate) or a pinch
+  // (zoom) doesn't, so the user can try what its bubble says. A tap is one
+  // pointer, the primary button, released within TAP_SLOP px of where it
+  // went down; the right and middle buttons pan. A primary pointer going down
+  // starts a new gesture, so a press whose pointerup was lost can't leave a
+  // stale "pinch" behind.
+  canvasPointerDown(event: PointerEvent): void {
+    if (event.isPrimary) {
+      this.presses.clear();
+      this.pinching = false;
+    }
+    this.presses.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (this.presses.size > 1) {
+      this.pinching = true;
+    }
+  }
+
+  canvasPointerUp(event: PointerEvent): void {
+    const start = this.presses.get(event.pointerId);
+    const tap = start !== undefined && !this.pinching && event.button === 0
+      && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP;
+    this.canvasPointerCancel(event);
+    if (tap) {
+      this.guide.close();
+    }
+    else {
+      this.followShell();
+    }
+  }
+
+  // Moves #shell-region over the drawn shell, shrunk towards its middle so
+  // the 3D view's arrow lands on the shell rather than a corner of its box,
+  // and (unless `replace` is false) has the guide placed again (#5). Only
+  // while the guide is on.
+  private followShell(replace = true): void {
+    const box = this.guide.on ? this.helper.shellScreenBox() : null;
+    if (!box || !this.shellRegionRef) {
+      return;
+    }
+    const style = this.shellRegionRef.nativeElement.style;
+    style.left = `${box.left + box.width * (1 - SHELL_REGION_SCALE) / 2}px`;
+    style.top = `${box.top + box.height * (1 - SHELL_REGION_SCALE) / 2}px`;
+    style.width = `${box.width * SHELL_REGION_SCALE}px`;
+    style.height = `${box.height * SHELL_REGION_SCALE}px`;
+    if (replace) {
+      this.guide.refresh();
+    }
+  }
+
+  canvasPointerCancel(event: PointerEvent): void {
+    this.presses.delete(event.pointerId);
+    if (this.presses.size === 0) {
+      this.pinching = false;
+    }
+  }
+
   setMenuVisibility(): void {
     if (this.menuVisible) {
       this.menu.style.display = 'none';
@@ -182,14 +259,17 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // Opening a panel ends the guide (#5): one kind of help at a time.
   private showMenu() {
     this.menu.style.display = 'block';
     this.menuVisible = true;
+    this.guide.close();
   }
 
   private showVisualizationMenu() {
     this.visualizationMenu.style.display = 'block';
     this.visualizationMenuVisible = true;
+    this.guide.close();
   }
 
   private hideVisualizationMenu() {
@@ -209,36 +289,58 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.help.toggle('A');
+    this.toggleHelp('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.help.toggle('alpha');
+    this.toggleHelp('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.help.toggle('beta');
+    this.toggleHelp('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.help.toggle('a');
+    this.toggleHelp('a');
   }
 
   parameterHelpBButtonClick(event: Event) {
-    this.help.toggle('b');
+    this.toggleHelp('b');
   }
 
   parameterHelpThetaButtonClick(event: Event) {
-    this.help.toggle('theta');
+    this.toggleHelp('theta');
   }
 
   parameterHelpQualButtonClick(event: Event) {
-    this.help.toggle('qual');
+    this.toggleHelp('qual');
+  }
+
+  // A parameter ⓘ ends the guide (#5).
+  private toggleHelp(key: HelpKey) {
+    this.guide.close();
+    this.help.toggle(key);
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.help.close();
+    this.guide.close();
+  }
+
+  // Turning the guide on closes the panels and any ⓘ help first.
+  helpButtonClick(event: Event) {
+    if (!this.guide.on) {
+      this.help.close();
+      if (this.menuVisible) {
+        this.hideMenu();
+      }
+      if (this.visualizationMenuVisible) {
+        this.hideVisualizationMenu();
+      }
+    }
+    this.guide.toggle();
+    this.followShell();
   }
 
   introButtonClick(event: Event) {
@@ -246,6 +348,7 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private showIntroWindow() {
+    this.guide.close();
     this.introOpen = true;
   }
 

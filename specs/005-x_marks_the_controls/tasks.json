@@ -1,0 +1,541 @@
+{
+  "meta": {
+    "feature": "005-x_marks_the_controls",
+    "featureName": "Initial-screen control guide: a \"?\" button pointing a callout at every control",
+    "version": "2.0",
+    "createdAt": "2026-09-29T20:37:45Z",
+    "lastUpdated": "2026-09-29T20:37:45Z",
+    "specHash": "9983a6118e9a0adbc3ee4fbd4e1ecea6",
+    "planHash": "f62823d2dd31baf7681bab9756302c2a"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 6,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "totalTasks": 13,
+    "completedTasks": 13,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-29T15:35:09-06:00",
+    "contextHint": "",
+    "lastUpdated": "2026-09-29T15:33:55-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Setup",
+      "description": "Baseline tests, lint and build on the branch",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T14:39:43-06:00"
+    },
+    {
+      "number": 1,
+      "name": "Foundational: guide mode",
+      "description": "layoutGuide() pure function and CalloutComponent guide mode",
+      "tasks": [
+        "T002",
+        "T003"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T14:53:48-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US1: See what each control does",
+      "description": "ControlGuide, strings, the '?' button and the seven callouts",
+      "tasks": [
+        "T004",
+        "T005"
+      ],
+      "gateStatus": "passed",
+      "story": "US1",
+      "completedAt": "2026-09-29T15:01:27-06:00"
+    },
+    {
+      "number": 3,
+      "name": "US2: Turn the guide off",
+      "description": "Close rules and tap vs drag on the 3D view",
+      "tasks": [
+        "T006",
+        "T007"
+      ],
+      "gateStatus": "passed",
+      "story": "US2",
+      "completedAt": "2026-09-29T15:09:11-06:00"
+    },
+    {
+      "number": 4,
+      "name": "US3: Keep using the controls",
+      "description": "Pass-through and the layout at four sizes",
+      "tasks": [
+        "T008",
+        "T009"
+      ],
+      "gateStatus": "passed",
+      "story": "US3",
+      "completedAt": "2026-09-29T15:22:08-06:00"
+    },
+    {
+      "number": 5,
+      "name": "US4/US5: Reuse and accessibility",
+      "description": "#6 regression, reuse check, a11y",
+      "tasks": [
+        "T010",
+        "T011"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T15:25:18-06:00"
+    },
+    {
+      "number": 6,
+      "name": "Polish",
+      "description": "Verification and screenshots for approval",
+      "tasks": [
+        "T012",
+        "T013"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T15:33:55-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Baseline on the branch: npm test (2 cores), ng lint and npm run build green on dev's code before any change; record the spec count.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "karma.conf.js",
+      "completion": {
+        "timestamp": "2026-09-29T14:39:43-06:00",
+        "commitSha": "4a6f2ec206a4ef9c2513ee095a648d371558fca1",
+        "agents": "claude(inline)",
+        "files": [
+          "none (baseline)"
+        ]
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Add src/app/callout/layout-guide.ts: pure layoutGuide(anchors: Box[], bubbles: Size[], viewport: Size): GuidePlacement[] (GuidePlacement = CalloutPlacement + optional leader {x1,y1,x2,y2}). Per bubble: beside its anchor when it fits (reuse placeCallout's rules); where toolbar bubbles would collide, stack them in a staircase below the toolbar, rightmost anchor's bubble nearest, each with a leader line to its anchor centre that crosses no other bubble; never overlap, never leave the viewport (8 px margin), never cover its own anchor. Export placeCallout's Box/Size types from callout.component.ts. Write src/app/callout/layout-guide.spec.ts first (DOM-free): beside at 1280, staircase at 390/360, 844×390 fits without stacking past the screen, no pairwise overlap, lines cross no bubble, all inside the viewport.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/callout/layout-guide.ts",
+      "satisfies": [
+        "FR-006",
+        "FR-008",
+        "FR-018",
+        "FR-022"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T14:49:29-06:00",
+        "commitSha": "352f2f5e4351af7f60213ff34ccfc6180e2ac863",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts",
+          "src/app/callout/callout.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/layout-guide.spec.ts",
+          "redResult": "29 FAILED of 29 against a stub returning []",
+          "greenResult": "29 SUCCESS; full suite 228/228"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 1,
+      "description": "CalloutComponent guide mode: new @Input() guide: Callout[] | null. Render each callout (role=note, own id) in the same .callout-layer (pointer-events:none, aria-live polite) in the given order, plus an aria-hidden leader-line element per staircase bubble; place all with layoutGuide on changes, resize and scroll. The single @Input() active path (#6) is unchanged. Styles: leader line 1 px var(--modal-primary), pointer-events none; reduced-motion rule covers guide bubbles. Specs first in callout.component.spec.ts: renders N bubbles with title/text, lines aria-hidden, pointer passes through, live region order, reduced motion, #6 single-callout specs untouched.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/callout/callout.component.ts",
+      "satisfies": [
+        "FR-005",
+        "FR-006",
+        "FR-013",
+        "FR-015",
+        "FR-016",
+        "FR-018",
+        "FR-019"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T14:53:48-06:00",
+        "commitSha": "738b113244546d068c41ba8d335a2ee170d2b09c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/callout.component.ts",
+          "src/app/callout/callout.component.html",
+          "src/app/callout/callout.component.css",
+          "src/app/callout/callout.component.spec.ts",
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/callout.component.spec.ts",
+          "redResult": "7 FAILED (6 guide-mode + 1 order-independence), 47 SUCCESS",
+          "greenResult": "54 SUCCESS; full suite 235/235"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 2,
+      "description": "Add src/app/control-guide.ts: ControlGuide {on, callouts, readonly guideId, toggle(), close()} mirroring ParameterHelp; the seven callouts (gear, camera, gamepad, book, pencil, 3D view, ?) built from anchors and new app-strings GUIDE_*_TITLE/TEXT (draft text from #5) plus BUTTON_HELP_TITLE = 'Mostrar ayuda'. Each text is a title + one line ≤ ~45 chars. Unit specs first (toggle/close, seven callouts in on-screen order, text lengths).",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/control-guide.ts",
+      "story": "US1",
+      "satisfies": [
+        "FR-005",
+        "FR-020",
+        "FR-021"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T14:57:06-06:00",
+        "commitSha": "06c050f8c607fb895c077a6e143275f2e20627d6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/control-guide.ts",
+          "src/app/control-guide.spec.ts",
+          "src/app/app-strings.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/control-guide.spec.ts",
+          "redResult": "7 FAILED of 8 against a stub (only 'starts off' passes)",
+          "greenResult": "8 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 2,
+      "description": "Sandbox: add the '?' toolbar button after the book (inline SVG in the toolbar style: rect.svg-border + '?' path.svg-content, viewBox 0 0 67 67, same hover), id help-button, title/aria-label 'Mostrar ayuda', aria-pressed = guide.on, aria-controls = guide id. Give the toolbar buttons stable ids for anchors (parameters-button, save-image-button, game-button, intro-button; pencil is #visualization-button). A zero-size marker at the shell's screen centre anchors the 3D-view callout. Mount <app-callout [guide]>. Specs first: '?' shows seven callouts with their text; aria; 44 px hit area; 3D-view bubble points at the shell.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "story": "US1",
+      "satisfies": [
+        "FR-001",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-007",
+        "FR-017"
+      ],
+      "dependencies": [
+        "T003",
+        "T004"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:01:27-06:00",
+        "commitSha": "e78e1b6f809c8b84dcfe297b0522c51bb2beb7d5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "5 FAILED (all new #5 specs), 39 SUCCESS",
+          "greenResult": "44 SUCCESS; full suite 248/248"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 3,
+      "description": "Close rules in SandboxComponent: '?' again and Esc turn the guide off; turning it on closes both panels and any ⓘ callout; opening the parameters panel, the pencil panel, a parameter ⓘ or the welcome pop-up turns it off; camera save leaves it on. Specs first (assert the guide is on before each close).",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "story": "US2",
+      "satisfies": [
+        "FR-009",
+        "FR-011",
+        "FR-012",
+        "FR-024"
+      ],
+      "dependencies": [
+        "T005"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:05:34-06:00",
+        "commitSha": "e804feee5502c15bffa145ead94338ec7c1afc23",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "7 FAILED of 9 new (the two passing cover existing behaviour: '?' again from T005, camera save untouched)",
+          "greenResult": "53 SUCCESS sandbox; full suite"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T007": {
+      "id": "T007",
+      "wave": 3,
+      "description": "Tap vs drag on the 3D view: replace the canvas (mousedown) with (pointerdown)/(pointerup); a press-release moving < ~10 px is a tap: closes the guide and keeps today's menu-closing behaviour; a larger move is a drag left to OrbitControls and keeps the guide on. Wheel zoom keeps the guide on. Specs first with synthetic pointer events (mouse and touch pointerType), and check menus still close on a plain click.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "story": "US2",
+      "satisfies": [
+        "FR-009",
+        "FR-010",
+        "FR-023"
+      ],
+      "dependencies": [
+        "T005"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:09:11-06:00",
+        "commitSha": "cff4a05f19c8b4091acef295109e0ce2259769f5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "2 FAILED (tap mouse, tap touch); drag/pinch/wheel keep-on guards pass (nothing closed the guide yet)",
+          "greenResult": "58 SUCCESS sandbox; full suite"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T008": {
+      "id": "T008",
+      "wave": 4,
+      "description": "Controls work while the guide is on: specs that hit-test each toolbar control and the pencil through the callout layer and leader lines (elementFromPoint returns the control), clicking gear/pencil/book performs its action, camera export runs.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.spec.ts",
+      "story": "US3",
+      "satisfies": [
+        "FR-013",
+        "FR-024"
+      ],
+      "dependencies": [
+        "T006",
+        "T007"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:12:46-06:00",
+        "commitSha": "63520118216ab011f0fdc9aabe01ee589ad2398f",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "verification of T003/T005 behaviour: passes on first run; spec bug fixed (1 px line over #toolbar); RED shown by the revert check in T012",
+          "greenResult": "61 SUCCESS sandbox"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T009": {
+      "id": "T009",
+      "wave": 4,
+      "description": "Layout at 360×800, 390×844, 1280×800 and 844×390 (Karma iframe resize): '?' visible and not overlapping another icon; every guide bubble on screen, no pairwise overlap, no leader line crossing a bubble, none covering its control; staircase at 390; resize re-places. Adjust sandbox/callout CSS as the specs demand.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.css",
+      "story": "US3",
+      "satisfies": [
+        "FR-002",
+        "FR-008",
+        "FR-014",
+        "FR-022"
+      ],
+      "dependencies": [
+        "T006",
+        "T007"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:22:08-06:00",
+        "commitSha": "79514f7b6b862a4f4f2256885247ed88e7fbc80f",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts",
+          "src/app/shell-viewer.ts",
+          "src/app/shell-viewer.spec.ts",
+          "src/app/control-guide.ts",
+          "src/app/control-guide.spec.ts",
+          "src/app/callout/callout.component.ts",
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts",
+          "src/app/callout/callout.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "layout specs passed first run at all 4 sizes (behaviour from T002-T005); shell-region: 8 FAILED (viewer 2, guide 3, sandbox 3)",
+          "greenResult": "280/280 full suite; screenshots at 4 sizes checked"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T010": {
+      "id": "T010",
+      "wave": 5,
+      "description": "Reuse and regression: confirm the #6 parameter ⓘ specs on both screens pass unchanged; check that the game screen can mount <app-callout [guide]> with its own callouts with no copied code (a small spec with a host listing two anchors).",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/callout/callout.component.spec.ts",
+      "story": "US4",
+      "satisfies": [
+        "FR-018",
+        "FR-019"
+      ],
+      "dependencies": [
+        "T008",
+        "T009"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:25:11-06:00",
+        "commitSha": "79514f7b6b862a4f4f2256885247ed88e7fbc80f",
+        "agents": "claude(inline)",
+        "files": [
+          "none (verification)"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/callout.component.spec.ts",
+          "redResult": "verification: git diff dev shows no #6 spec line changed (only an added Router import); game files untouched",
+          "greenResult": "#6 sandbox+game ⓘ specs green unchanged; guide mode driven by a standalone GuideHostComponent (reuse for #10)"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T011": {
+      "id": "T011",
+      "wave": 5,
+      "description": "Accessibility pass: live region reads the guide in on-screen order, the '?' reports pressed/not pressed, leader lines aria-hidden, reduced motion shows no animation; ESLint clean.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.spec.ts",
+      "story": "US5",
+      "satisfies": [
+        "FR-015",
+        "FR-016",
+        "FR-017"
+      ],
+      "dependencies": [
+        "T008",
+        "T009"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:25:18-06:00",
+        "commitSha": "4a4d001888f1c70b2cdcc5f436befade56526763",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/callout.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/callout/callout.component.spec.ts",
+          "redResult": "verification of T003 behaviour; mutation (lines removed from the reduced-motion rule) makes the spec fail",
+          "greenResult": "55 SUCCESS callout+layout"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T012": {
+      "id": "T012",
+      "wave": 6,
+      "description": "Verification: full npm test ×3 on 2 cores, ng lint, tsc --noEmit (app + spec), npm run build; revert check that the new specs fail on dev; update the spec's Verification Matrix evidence.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "specs/005-x_marks_the_controls/spec.md",
+      "dependencies": [
+        "T010",
+        "T011"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:33:17-06:00",
+        "commitSha": "2962f84cc29f3179e0b12a82420f0b737920d04a",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/005-x_marks_the_controls/spec.md"
+        ]
+      }
+    },
+    "T013": {
+      "id": "T013",
+      "wave": 6,
+      "description": "Screenshots of the guide at 360, 390, 1280 and 844×390 posted on #5 for the owner's approval together with the guide's text (live instance only with the owner's go-ahead).",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/005-x_marks_the_controls/spec.md",
+      "dependencies": [
+        "T012"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T15:33:55-06:00",
+        "commitSha": "2962f84cc29f3179e0b12a82420f0b737920d04a",
+        "agents": "claude(inline)",
+        "files": [
+          "validaciones/shell_generator/5/capturas/guide-*.png (not committed)"
+        ],
+        "satisfaction": "partial",
+        "notes": "posted for approval (issuecomment-5899391235); owner approval pending (SC-006)"
+      }
+    }
+  }
+}

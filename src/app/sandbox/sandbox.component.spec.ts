@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
+import { provideRouter, Router } from '@angular/router';
+import { useViewport } from '../../testing/viewport';
 
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
@@ -376,7 +378,6 @@ describe('SandboxComponent panel layout (#6)', () => {
   let fixture: ComponentFixture<SandboxComponent>;
   let component: SandboxComponent;
   let el: HTMLElement;
-  let restoreViewport: (() => void) | null = null;
 
   const render = () => fixture.detectChanges();
   const shellMenu = () => el.querySelector('#parameters-menu') as HTMLElement;
@@ -384,20 +385,8 @@ describe('SandboxComponent panel layout (#6)', () => {
     .filter(row => row.querySelector('.parameter-icon')) as HTMLElement[];
   const viewportHeight = () => document.documentElement.clientHeight;
 
-  function setViewport(width: number, height: number) {
-    const frame = window.frameElement as HTMLIFrameElement | null;
-    if (!frame) {
-      pending('needs the Karma iframe to set the viewport size');
-      return;
-    }
-    const before = { width: frame.style.width, height: frame.style.height };
-    frame.style.width = `${width}px`;
-    frame.style.height = `${height}px`;
-    restoreViewport = () => {
-      frame.style.width = before.width;
-      frame.style.height = before.height;
-    };
-  }
+  const viewport = useViewport();
+  const setViewport = (width: number, height: number) => viewport.set(width, height);
 
   beforeEach(async () => {
     installFramePump();
@@ -416,8 +405,6 @@ describe('SandboxComponent panel layout (#6)', () => {
 
   afterEach(() => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
-    restoreViewport?.();
-    restoreViewport = null;
   });
 
   it('shows each parameter\'s name as text next to its icon, labelling its slider', () => {
@@ -503,4 +490,494 @@ describe('SandboxComponent panel layout (#6)', () => {
         .toBeLessThanOrEqual(slider.getBoundingClientRect().left);
     });
   }
+});
+
+// #5: the "?" button turns on a guide, a callout beside every control.
+describe('SandboxComponent control guide (#5)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+  let frames: FramePump;
+
+  const render = () => fixture.detectChanges();
+  const helpButton = () => el.querySelector('#help-button') as HTMLButtonElement;
+  const guideBubbles = () => Array.from(el.querySelectorAll('.callout-guide')) as HTMLElement[];
+  const rectOf = (e: Element) => e.getBoundingClientRect();
+
+  // The guide's bubbles, in reading order: the toolbar left to right, the
+  // 3D view, the pencil.
+  const expected: [string, string][] = [
+    ['guide-parameters', AppStrings.GUIDE_PARAMETERS_TITLE],
+    ['guide-save-image', AppStrings.GUIDE_SAVE_IMAGE_TITLE],
+    ['guide-game', AppStrings.GUIDE_GAME_TITLE],
+    ['guide-intro', AppStrings.GUIDE_INTRO_TITLE],
+    ['guide-help', AppStrings.GUIDE_HELP_TITLE],
+    ['guide-view', AppStrings.GUIDE_VIEW_TITLE],
+    ['guide-visualization', AppStrings.GUIDE_VISUALIZATION_TITLE],
+  ];
+
+  const viewport = useViewport();
+  const setViewport = (width: number, height: number) => viewport.set(width, height);
+
+  function toggleGuide() {
+    helpButton().click();
+    render();
+  }
+
+  beforeEach(async () => {
+    frames = installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+    // The welcome opens on load; close it so it isn't in the way.
+    component.introOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('the "?" button', () => {
+    it('sits on its own in the upper-right corner, drawn like the toolbar icons', () => {
+      const buttons = Array.from(el.querySelectorAll('#toolbar button')) as HTMLButtonElement[];
+      expect(buttons.map(b => b.id)).toEqual(['parameters-button', 'save-image-button', 'game-button', 'intro-button']);
+      expect(el.querySelector('#toolbar #help-button')).withContext('not in the toolbar').toBeNull();
+      const gear = rectOf(buttons[0]);
+      const help = rectOf(helpButton());
+      expect(help.width).toBe(gear.width);
+      expect(help.height).toBe(gear.height);
+      expect(help.top).withContext('level with the toolbar').toBe(gear.top);
+      // As far from the right edge as the gear is from the left one.
+      expect(document.documentElement.clientWidth - help.right).toBeCloseTo(gear.left, 0);
+      expect(helpButton().classList).toContain('toolbar-button');
+      expect(helpButton().querySelector('svg rect.svg-border')).not.toBeNull();
+      expect(helpButton().querySelector('svg path.svg-content')).not.toBeNull();
+    });
+
+    it('is named "Mostrar ayuda", reports the guide as not pressed, and points at its bubbles', () => {
+      expect(helpButton().getAttribute('aria-label')).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().title).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+      expect(helpButton().getAttribute('aria-controls')).toBe(component.guide.controls);
+    });
+
+    it('has a hit area of at least 44×44 px', () => {
+      const r = rectOf(helpButton());
+      expect(r.width).toBeGreaterThanOrEqual(44);
+      expect(r.height).toBeGreaterThanOrEqual(44);
+    });
+  });
+
+  describe('one kind of help at a time', () => {
+    const shellMenu = () => el.querySelector('#parameters-menu') as HTMLElement;
+    const pencilMenu = () => el.querySelector('#visualization-menu') as HTMLElement;
+    const info = (key: string) => el.querySelector(`#${key}-help-button`) as HTMLInputElement;
+    const singleCallout = () => el.querySelector('.callout:not(.callout-guide)');
+
+    function guideOn() {
+      toggleGuide();
+      expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+    }
+
+    function expectGuideOff() {
+      expect(component.guide.on).toBeFalse();
+      expect(guideBubbles().length).toBe(0);
+      expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+    }
+
+    it('turns off when the "?" is tapped again', () => {
+      guideOn();
+      toggleGuide();
+      expectGuideOff();
+    });
+
+    it('turns off with Esc', () => {
+      guideOn();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      render();
+      expectGuideOff();
+    });
+
+    it('closes the parameters panel and its open ⓘ when it turns on', () => {
+      (el.querySelector('#parameters-button') as HTMLButtonElement).click();
+      render();
+      info('A').click();
+      render();
+      expect(shellMenu().style.display).withContext('panel open first').toBe('block');
+      expect(singleCallout()).withContext('ⓘ open first').not.toBeNull();
+      guideOn();
+      expect(shellMenu().style.display).toBe('none');
+      expect(component.help.key).toBeNull();
+      expect(singleCallout()).toBeNull();
+    });
+
+    it('closes the pencil panel and its open ⓘ when it turns on', () => {
+      (el.querySelector('#visualization-button') as HTMLButtonElement).click();
+      render();
+      info('qual').click();
+      render();
+      expect(pencilMenu().style.display).withContext('panel open first').toBe('block');
+      expect(singleCallout()).withContext('ⓘ open first').not.toBeNull();
+      guideOn();
+      expect(pencilMenu().style.display).toBe('none');
+      expect(component.help.key).toBeNull();
+      expect(singleCallout()).toBeNull();
+    });
+
+    it('turns off when the parameters panel opens', () => {
+      guideOn();
+      (el.querySelector('#parameters-button') as HTMLButtonElement).click();
+      render();
+      expectGuideOff();
+      expect(shellMenu().style.display).toBe('block');
+    });
+
+    it('turns off when the pencil panel opens', () => {
+      guideOn();
+      (el.querySelector('#visualization-button') as HTMLButtonElement).click();
+      render();
+      expectGuideOff();
+      expect(pencilMenu().style.display).toBe('block');
+    });
+
+    it('turns off when a parameter ⓘ opens', () => {
+      guideOn();
+      info('A').click();
+      render();
+      expectGuideOff();
+      expect(component.help.key).toBe('A');
+    });
+
+    it('turns off when the welcome pop-up opens', () => {
+      guideOn();
+      (el.querySelector('#intro-button') as HTMLButtonElement).click();
+      render();
+      expectGuideOff();
+      expect(component.introOpen).toBeTrue();
+    });
+
+    it('stays on while an image is saved', () => {
+      spyOn(HTMLAnchorElement.prototype, 'click');
+      guideOn();
+      (el.querySelector('#save-image-button') as HTMLButtonElement).click();
+      render();
+      expect(HTMLAnchorElement.prototype.click).withContext('image saved').toHaveBeenCalled();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+  });
+
+  describe('the 3D view while the guide is on', () => {
+    const canvas = () => el.querySelector('#canvas') as HTMLCanvasElement;
+
+    function pointer(type: string, x: number, y: number, id = 1, pointerType = 'mouse', extra: PointerEventInit = {}) {
+      canvas().dispatchEvent(new PointerEvent(type, {
+        bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType,
+        isPrimary: id === 1, button: 0, buttons: type === 'pointerup' ? 0 : 1, ...extra,
+      }));
+    }
+
+    function guideOn() {
+      toggleGuide();
+      expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+    }
+
+    beforeEach(() => {
+      // OrbitControls captures the pointer; a synthetic pointer can't be.
+      spyOn(Element.prototype, 'setPointerCapture');
+      spyOn(Element.prototype, 'releasePointerCapture');
+    });
+
+    it('turns the guide off with a tap (mouse)', () => {
+      guideOn();
+      pointer('pointerdown', 200, 400);
+      pointer('pointerup', 200, 400);
+      render();
+      expect(component.guide.on).toBeFalse();
+      expect(guideBubbles().length).toBe(0);
+    });
+
+    it('turns the guide off with a tap (touch), even if the finger moves a little', () => {
+      guideOn();
+      pointer('pointerdown', 200, 400, 7, 'touch');
+      pointer('pointermove', 205, 403, 7, 'touch');
+      pointer('pointerup', 205, 403, 7, 'touch');
+      render();
+      expect(component.guide.on).toBeFalse();
+    });
+
+    it('keeps the guide on while dragging, and the drag rotates the shell', () => {
+      guideOn();
+      const camera = (component.helper as unknown as { camera: { position: { clone(): { distanceTo(p: unknown): number } } } }).camera;
+      const before = camera.position.clone();
+      pointer('pointerdown', 200, 400);
+      pointer('pointermove', 230, 400);
+      pointer('pointermove', 260, 410);
+      pointer('pointerup', 260, 410);
+      frames.pump(2);
+      render();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+      expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
+    });
+
+    it("moves the 3D view's bubble with the shell once a drag ends", () => {
+      guideOn();
+      const marker = () => (el.querySelector('#shell-region') as HTMLElement).getBoundingClientRect();
+      const before = marker();
+      pointer('pointerdown', 200, 400);
+      pointer('pointermove', 300, 380);
+      frames.pump(2);
+      pointer('pointerup', 300, 380);
+      render();
+      const after = marker();
+      const shell = component.helper.shellScreenBox()!;
+      expect([after.left, after.top, after.width, after.height])
+        .withContext('marker moved').not.toEqual([before.left, before.top, before.width, before.height]);
+      expect(after.left).toBeGreaterThanOrEqual(shell.left - 0.5);
+      expect(after.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
+    });
+
+    it('keeps the guide on after a right-click or middle-click on the 3D view (they pan)', () => {
+      guideOn();
+      for (const button of [1, 2]) {
+        pointer('pointerdown', 200, 400, 1, 'mouse', { button, buttons: button === 1 ? 4 : 2 });
+        pointer('pointerup', 200, 400, 1, 'mouse', { button, buttons: 0 });
+      }
+      render();
+      expect(component.guide.on).toBeTrue();
+    });
+
+    it('still turns the guide off with a tap after a touch whose pointerup never arrived', () => {
+      guideOn();
+      // A finger went down and its pointerup was lost (e.g. the browser took the gesture).
+      pointer('pointerdown', 150, 400, 7, 'touch', { isPrimary: true });
+      // The next touch starts a new gesture: its finger is the primary one.
+      pointer('pointerdown', 200, 400, 8, 'touch', { isPrimary: true });
+      pointer('pointerup', 200, 400, 8, 'touch', { isPrimary: true });
+      render();
+      expect(component.guide.on).toBeFalse();
+    });
+
+    it('keeps the guide on while pinching with two fingers', () => {
+      guideOn();
+      pointer('pointerdown', 180, 400, 7, 'touch');
+      pointer('pointerdown', 220, 400, 8, 'touch');
+      pointer('pointermove', 178, 400, 7, 'touch');
+      pointer('pointermove', 222, 400, 8, 'touch');
+      pointer('pointerup', 178, 400, 7, 'touch');
+      pointer('pointerup', 222, 400, 8, 'touch');
+      render();
+      expect(component.guide.on).toBeTrue();
+    });
+
+    it('keeps the guide on while zooming with the wheel', () => {
+      guideOn();
+      canvas().dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100, clientX: 200, clientY: 400 }));
+      render();
+      expect(component.guide.on).toBeTrue();
+    });
+  });
+
+  describe('using the screen while the guide is on', () => {
+    const controls = ['#parameters-button', '#save-image-button', '#game-button', '#intro-button', '#help-button', '#visualization-button'];
+    const centre = (e: Element) => {
+      const r = rectOf(e);
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+
+    beforeEach(() => {
+      setViewport(390, 844);
+      toggleGuide();
+      expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+    });
+
+    it('leaves every control reachable: nothing of the guide sits on top of it', () => {
+      controls.forEach(selector => {
+        const control = el.querySelector(selector)!;
+        const { x, y } = centre(control);
+        const hit = document.elementFromPoint(x, y);
+        expect(control.contains(hit)).withContext(selector).toBeTrue();
+      });
+    });
+
+    it('lets a press on a bubble or a line through to what is under it', () => {
+      const layer = el.querySelector('.callout-layer')!;
+      const lines = Array.from(el.querySelectorAll('.callout-leader'))
+        .filter(l => getComputedStyle(l).display !== 'none');
+      expect(lines.length).withContext('lines on a phone').toBeGreaterThan(0);
+      [...guideBubbles(), ...lines].forEach(target => {
+        const { x, y } = centre(target);
+        const hit = document.elementFromPoint(x, y)!;
+        expect(layer.contains(hit)).withContext(`${target.id || 'line'} took the press`).toBeFalse();
+      });
+      // A bubble over the middle of the screen lets the press reach the 3D view.
+      const { x, y } = centre(el.querySelector('#guide-view')!);
+      expect(document.elementFromPoint(x, y)!.id).toBe('canvas');
+    });
+
+    it('still goes to the game from the gamepad', () => {
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate').and.resolveTo(true);
+      (el.querySelector('#game-button') as HTMLButtonElement).click();
+      expect(router.navigate).toHaveBeenCalledWith(['game']);
+    });
+  });
+
+  describe('layout', () => {
+    const controls = ['#parameters-button', '#save-image-button', '#game-button', '#intro-button', '#help-button', '#visualization-button'];
+    const overlaps = (a: DOMRect, b: DOMRect) =>
+      a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+    const shownLines = () => (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+      .filter(l => getComputedStyle(l).display !== 'none');
+
+    function expectTidy(width: number, height: number) {
+      const bubbles = guideBubbles().map(b => ({ id: b.id, r: rectOf(b) }));
+      expect(bubbles.length).withContext('guide on').toBe(expected.length);
+      const controlRects = controls.map(c => ({ id: c, r: rectOf(el.querySelector(c)!) }));
+      bubbles.forEach(({ id, r }, i) => {
+        expect(r.left).withContext(`${id} left`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.top).withContext(`${id} top`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.right).withContext(`${id} right`).toBeLessThanOrEqual(width - 8 + 0.5);
+        expect(r.bottom).withContext(`${id} bottom`).toBeLessThanOrEqual(height - 8 + 0.5);
+        bubbles.slice(i + 1).forEach(other =>
+          expect(overlaps(r, other.r)).withContext(`${id} and ${other.id}`).toBeFalse());
+        controlRects.forEach(c => expect(overlaps(r, c.r)).withContext(`${id} over ${c.id}`).toBeFalse());
+      });
+      shownLines().forEach(line => {
+        const l = rectOf(line);
+        bubbles.forEach(({ id, r }) => expect(overlaps(l, r)).withContext(`a line across ${id}`).toBeFalse());
+      });
+    }
+
+    for (const [width, height] of [[320, 568], [338, 643], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`shows the "?" on screen, clear of the other icons, at ${width}×${height}`, () => {
+        setViewport(width, height);
+        render();
+        const help = rectOf(helpButton());
+        expect(help.left).toBeGreaterThanOrEqual(0);
+        expect(help.top).toBeGreaterThanOrEqual(0);
+        expect(help.right).toBeLessThanOrEqual(width);
+        expect(help.bottom).toBeLessThanOrEqual(height);
+        controls.filter(c => c !== '#help-button').forEach(c =>
+          expect(overlaps(help, rectOf(el.querySelector(c)!))).withContext(c).toBeFalse());
+        // One row: the toolbar and the "?" all level with the gear.
+        const top = rectOf(el.querySelector('#parameters-button')!).top;
+        controls.filter(c => c !== '#visualization-button').forEach(c =>
+          expect(rectOf(el.querySelector(c)!).top).withContext(`${c} on the top row`).toBe(top));
+        // Still a comfortable hit area on the narrowest phones.
+        controls.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(c).toBeGreaterThanOrEqual(44));
+      });
+
+    }
+
+    // Full phone screens and what's left of them inside a browser (its bars
+    // take 100-150 px): 360×640 / 360×560 small Android, 375×553 iPhone SE in
+    // Safari, 320×568 the first iPhone SE, 338×643 the owner's report.
+    for (const [width, height] of [[320, 568], [338, 643], [360, 560], [360, 640], [375, 553], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`keeps every bubble on screen, apart, off the controls and clear of the lines at ${width}×${height}`, () => {
+        setViewport(width, height);
+        toggleGuide();
+        expectTidy(width, height);
+      });
+    }
+
+    it('stacks the toolbar\'s bubbles in a staircase on a phone, joined by lines', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const toolbar = ['guide-parameters', 'guide-save-image', 'guide-game', 'guide-intro', 'guide-help']
+        .map(id => el.querySelector(`#${id}`) as HTMLElement);
+      toolbar.forEach(b => expect(b.dataset['side']).withContext(b.id).toBe('below'));
+      const tops = toolbar.map(b => rectOf(b).top);
+      for (let i = 0; i < tops.length - 1; i++) {
+        expect(tops[i]).withContext(`${toolbar[i].id} below ${toolbar[i + 1].id}`).toBeGreaterThan(tops[i + 1]);
+      }
+      expect(shownLines().length).toBe(toolbar.length);
+    });
+
+    it('re-places the bubbles when the phone turns, still tidy and still pointing at the shell', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      expectTidy(390, 844);
+      setViewport(844, 390);
+      render();
+      expectTidy(844, 390);
+      // The 3D view's bubble aims at where the shell is now, not where it was.
+      const view = el.querySelector('#guide-view') as HTMLElement;
+      const r = rectOf(view);
+      const arrow = parseFloat(view.style.getPropertyValue('--callout-arrow'));
+      const side = view.dataset['side'];
+      const tip = side === 'below' ? { x: r.left + arrow, y: r.top - 9 } : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
+        : side === 'right' ? { x: r.left - 9, y: r.top + arrow } : { x: r.right + 9, y: r.top + arrow };
+      const shell = component.helper.shellScreenBox()!;
+      expect(tip.x).toBeGreaterThanOrEqual(shell.left - 1);
+      expect(tip.x).toBeLessThanOrEqual(shell.left + shell.width + 1);
+      expect(tip.y).toBeGreaterThanOrEqual(shell.top - 1);
+      expect(tip.y).toBeLessThanOrEqual(shell.top + shell.height + 1);
+    });
+
+    it('lays the guide out once per window resize', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const callout = fixture.debugElement.query(By.directive(CalloutComponent)).componentInstance as CalloutComponent;
+      const passes = spyOn(callout as unknown as { placeGuide(): void }, 'placeGuide').and.callThrough();
+      window.dispatchEvent(new Event('resize'));
+      render();
+      expect(passes).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('turning the guide on', () => {
+    it('shows a bubble beside each control, in reading order, and reports the "?" as pressed', () => {
+      expect(guideBubbles().length).withContext('before').toBe(0);
+      toggleGuide();
+      const bubbles = guideBubbles();
+      expect(bubbles.map(b => b.id)).toEqual(expected.map(([id]) => id));
+      bubbles.forEach((b, i) =>
+        expect(b.querySelector('.callout-title')!.textContent!.trim()).withContext(b.id).toBe(expected[i][1]));
+      expect(helpButton().getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it("points the 3D view's bubble at the shell", () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const bubble = el.querySelector('#guide-view') as HTMLElement;
+      expect(bubble).withContext('3D view bubble').not.toBeNull();
+      const r = rectOf(bubble);
+      const arrow = parseFloat(bubble.style.getPropertyValue('--callout-arrow'));
+      const side = bubble.dataset['side'];
+      const tip = side === 'below' ? { x: r.left + arrow, y: r.top - 9 }
+        : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
+        : side === 'right' ? { x: r.left - 9, y: r.top + arrow }
+        : { x: r.right + 9, y: r.top + arrow };
+      const shell = component.helper.shellScreenBox()!;
+      expect(shell).withContext('shell drawn').not.toBeNull();
+      expect(tip.x).toBeGreaterThanOrEqual(shell.left);
+      expect(tip.x).toBeLessThanOrEqual(shell.left + shell.width);
+      expect(tip.y).toBeGreaterThanOrEqual(shell.top);
+      expect(tip.y).toBeLessThanOrEqual(shell.top + shell.height);
+    });
+
+    it('marks where the shell is with an invisible box that takes no pointer', () => {
+      setViewport(390, 844);
+      toggleGuide();
+      const marker = el.querySelector('#shell-region') as HTMLElement;
+      const m = rectOf(marker);
+      const shell = component.helper.shellScreenBox()!;
+      expect(m.width).toBeGreaterThan(0);
+      expect(m.left).toBeGreaterThanOrEqual(shell.left - 0.5);
+      expect(m.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
+      expect(m.top).toBeGreaterThanOrEqual(shell.top - 0.5);
+      expect(m.bottom).toBeLessThanOrEqual(shell.top + shell.height + 0.5);
+      expect(marker.getAttribute('aria-hidden')).toBe('true');
+      expect(getComputedStyle(marker).pointerEvents).toBe('none');
+    });
+  });
 });
