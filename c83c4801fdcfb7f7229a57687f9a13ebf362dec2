@@ -1,0 +1,7 @@
+vt.idd:task: T009
+vt.idd:domain: config
+vt.idd:agents: claude(inline)
+vt.idd:files: none (verification: 403/403 x3, lint, tsc app+spec, build; revert: dev game html/css -> 57 FAILED, all #35, none else; gesture code only in shell-region.ts)
+vt.idd:satisfies: full
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-29T22:17:22-06:00
