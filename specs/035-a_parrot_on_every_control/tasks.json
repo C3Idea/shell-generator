@@ -19,12 +19,12 @@
       0
     ],
     "totalTasks": 10,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T21:10:27-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T21:12:31-06:00"
+    "lastUpdated": "2026-09-29T21:14:36-06:00"
   },
   "waves": [
     {
@@ -147,7 +147,7 @@
       "id": "T003",
       "wave": 1,
       "description": "ControlGuide takes its callout list as a constructor parameter; export the initial screen's list (unchanged) and add the game's ten callouts in reading order (gear, camera, home, book, ?, 3D view region, switch, heat bar, Nuevo juego, Compartir) with GUIDE_GAME_* strings (draft wording from the issue). Specs first in control-guide.spec.ts: the list is the one passed in, refresh gives a new array, game list order/ids/anchors, wording pinned.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": true,
       "domain": "frontend",
@@ -158,7 +158,24 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T21:14:36-06:00",
+        "commitSha": "7318d2cbabd45f198fcff0f04434aeeb28e9ff81",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/control-guide.ts",
+          "src/app/control-guide.spec.ts",
+          "src/app/app-strings.ts",
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/control-guide.spec.ts",
+          "redResult": "7 FAILED (all game-guide specs, length preconditions added), 10 SUCCESS (#5 specs)",
+          "greenResult": "17 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
     },
     "T004": {
       "id": "T004",
