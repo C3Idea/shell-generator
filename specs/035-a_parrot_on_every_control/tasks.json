@@ -20,15 +20,16 @@
       1,
       2,
       3,
-      4
+      4,
+      5
     ],
     "totalTasks": 10,
-    "completedTasks": 9,
+    "completedTasks": 10,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T22:09:23-06:00",
+    "lastCheckpoint": "2026-09-29T22:20:15-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T22:17:22-06:00"
+    "lastUpdated": "2026-09-29T22:18:35-06:00"
   },
   "waves": [
     {
@@ -92,7 +93,8 @@
         "T009",
         "T010"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T22:18:35-06:00"
     }
   ],
   "tasks": {
@@ -393,7 +395,7 @@
       "id": "T010",
       "wave": 5,
       "description": "Browser check at the listed sizes on Usuario and Objetivo; post the draft wording table and screenshots on #35 for the owner's approval (SC-005, SC-006).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
@@ -403,7 +405,17 @@
       ],
       "dependencies": [
         "T009"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T22:18:35-06:00",
+        "commitSha": "4cf75f61baf499b28f2cb631c513a5536f30b434",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/035-a_parrot_on_every_control/spec.md"
+        ],
+        "satisfaction": "partial",
+        "notes": "Wording posted for approval (issuecomment-5903946552); screenshots not taken: live instances only on the owner's request"
+      }
     }
   }
 }
