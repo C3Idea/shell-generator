@@ -14,19 +14,20 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 3,
+    "currentWave": 4,
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "totalTasks": 6,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T15:52:10-06:00",
+    "lastCheckpoint": "2026-09-30T15:57:53-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T15:50:21-06:00"
+    "lastUpdated": "2026-09-30T15:54:04-06:00"
   },
   "waves": [
     {
@@ -66,7 +67,8 @@
       "tasks": [
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:54:04-06:00"
     },
     {
       "number": 4,
@@ -178,7 +180,7 @@
       "id": "T004",
       "wave": 3,
       "description": "Add the \"¡A jugar!\" footer button (#howto-play-button) and howToPlayButtonClick() in game.component.ts; specs: it closes the pop-up, ✕/Esc/backdrop still close it, the book button reopens it and turns the \"?\" guide off.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -193,7 +195,18 @@
       "dependencies": [
         "T003"
       ],
-      "story": "US3"
+      "story": "US3",
+      "completion": {
+        "timestamp": "2026-09-30T15:54:04-06:00",
+        "commitSha": "1b0b1738f4ae09fa34f79127490b9ca2c2525e11",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T005": {
       "id": "T005",

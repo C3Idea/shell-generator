@@ -4,7 +4,7 @@
 # Tasks: How-to pop-up in short sections
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T15:50:21-06:00
+**Generated**: 2026-09-30T15:54:04-06:00
 
 ---
 
@@ -42,9 +42,9 @@
 
 **Purpose**: Footer button and closing
 
-- [ ] T004 [W3] [US3] Add the "¡A jugar!" footer button (#howto-play-button) and howToPlayButtonClick() in game.component.ts; specs: it closes the pop-up, ✕/Esc/backdrop still close it, the book button reopens it and turns the "?" guide off.
+- [x] T004 [W3] [US3] Add the "¡A jugar!" footer button (#howto-play-button) and howToPlayButtonClick() in game.component.ts; specs: it closes the pop-up, ✕/Esc/backdrop still close it, the book button reopens it and turns the "?" guide off.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -71,10 +71,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 50%
+- **Progress**: 66%
 
 ---
 
