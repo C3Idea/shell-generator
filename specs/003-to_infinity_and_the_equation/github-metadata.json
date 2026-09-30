@@ -1,0 +1,19 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 3,
+    "title": "[Initial screen] Welcome pop-up: new copy mentioning the game + show the equation",
+    "url": "https://github.com/C3Idea/shell-generator/issues/3",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5915772342",
+  "spec_comment_id": "5915732075",
+  "pr": {
+    "number": 37,
+    "url": "https://github.com/C3Idea/shell-generator/pull/37",
+    "status": "draft",
+    "createdAt": "2026-09-30T16:56:24Z"
+  },
+  "deployed_at": "2026-09-30T16:55:58Z",
+  "cached_from": "github"
+}
