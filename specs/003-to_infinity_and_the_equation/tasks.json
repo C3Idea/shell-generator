@@ -14,19 +14,20 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 3,
+    "currentWave": 4,
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "totalTasks": 8,
-    "completedTasks": 3,
+    "completedTasks": 4,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T11:09:06-06:00",
+    "lastCheckpoint": "2026-09-30T11:28:43-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:07:46-06:00"
+    "lastUpdated": "2026-09-30T11:27:10-06:00"
   },
   "waves": [
     {
@@ -66,7 +67,8 @@
       "tasks": [
         "T004"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:27:10-06:00"
     },
     {
       "number": 4,
@@ -184,7 +186,7 @@
       "id": "T004",
       "wave": 3,
       "description": "US2 equation: native MathML in #modal-intro — helix + ellipse form always shown, full Model IV (no D, lines split by hand) in a block behind a button with aria-expanded/aria-controls (fullEquationOpen + toggle in sandbox.component.ts, label Ver/Ocultar), visually-hidden text alternative; CSS: equation box scrolls sideways inside itself only, no animation under reduced motion. Specs: MathML present, expander toggles label/aria/visibility, no pop-up/page sideways scroll at 320x568, 360, 390, 1280, 844x390 collapsed and expanded, text alternative present.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -205,7 +207,29 @@
       "dependencies": [
         "T003"
       ],
-      "story": "US2"
+      "story": "US2",
+      "completion": {
+        "timestamp": "2026-09-30T11:27:10-06:00",
+        "commitSha": "7a903e7c267c7fc6eb6605cfc98d74275b1bf87e",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/equation/shell-equation.ts",
+          "src/app/equation/equation.component.ts",
+          "src/app/equation/equation.component.css",
+          "src/app/equation/equation.component.spec.ts",
+          "src/app/app.module.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "20 FAILED, 87 SUCCESS (new equation/expander/a11y/layout specs; fullEquationOpen stub only)",
+          "greenResult": "108/108 sandbox; full suite 434/434 before the reset-on-open spec; lint clean"
+        },
+        "satisfaction": "full"
+      }
     },
     "T005": {
       "id": "T005",

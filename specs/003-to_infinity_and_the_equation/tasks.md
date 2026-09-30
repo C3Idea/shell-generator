@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:07:46-06:00
+**Generated**: 2026-09-30T11:27:10-06:00
 
 ---
 
@@ -42,9 +42,9 @@
 
 **Purpose**: MathML short + full form, expander
 
-- [ ] T004 [W3] [TDD] [US2] US2 equation: native MathML in #modal-intro — helix + ellipse form always shown, full Model IV (no D, lines split by hand) in a block behind a button with aria-expanded/aria-controls (fullEquationOpen + toggle in sandbox.component.ts, label Ver/Ocultar), visually-hidden text alternative; CSS: equation box scrolls sideways inside itself only, no animation under reduced motion. Specs: MathML present, expander toggles label/aria/visibility, no pop-up/page sideways scroll at 320x568, 360, 390, 1280, 844x390 collapsed and expanded, text alternative present.
+- [x] T004 [W3] [TDD] [US2] US2 equation: native MathML in #modal-intro — helix + ellipse form always shown, full Model IV (no D, lines split by hand) in a block behind a button with aria-expanded/aria-controls (fullEquationOpen + toggle in sandbox.component.ts, label Ver/Ocultar), visually-hidden text alternative; CSS: equation box scrolls sideways inside itself only, no animation under reduced motion. Specs: MathML present, expander toggles label/aria/visibility, no pop-up/page sideways scroll at 320x568, 360, 390, 1280, 844x390 collapsed and expanded, text alternative present.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 3
+- **Completed**: 4
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 37%
+- **Progress**: 50%
 
 ---
 
