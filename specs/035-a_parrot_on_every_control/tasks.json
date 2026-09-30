@@ -1,0 +1,424 @@
+{
+  "meta": {
+    "feature": "035-a_parrot_on_every_control",
+    "featureName": "Game control guide: a \"?\" button pointing a callout at every game control",
+    "version": "2.0",
+    "createdAt": "2026-09-30T03:07:06Z",
+    "lastUpdated": "2026-09-30T03:07:06Z",
+    "specHash": "a14651fd589973d27fe6bc7e7ee5383a",
+    "planHash": "004f659b198af774129f8d5b867bfec6"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 5,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "totalTasks": 10,
+    "completedTasks": 10,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-29T22:20:15-06:00",
+    "contextHint": "",
+    "lastUpdated": "2026-09-29T22:18:35-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Setup",
+      "description": "Baseline",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:09:18-06:00"
+    },
+    {
+      "number": 1,
+      "name": "Foundational: shared pieces",
+      "description": "Shared gesture/shell-region helper, parameterised ControlGuide, sandbox migrated",
+      "tasks": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:16:30-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US1/US2: the game's guide",
+      "description": "The \"?\", ids, both canvases, on/off",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:22:56-06:00"
+    },
+    {
+      "number": 3,
+      "name": "US3: using the screen",
+      "description": "Close rules, keep-on actions, switch flip, resize",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:28:39-06:00"
+    },
+    {
+      "number": 4,
+      "name": "US4/US5: layout and accessibility",
+      "description": "56 px rule, size sweep, a11y",
+      "tasks": [
+        "T007",
+        "T008"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T22:07:39-06:00"
+    },
+    {
+      "number": 5,
+      "name": "Polish",
+      "description": "Verification and owner approval",
+      "tasks": [
+        "T009",
+        "T010"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T22:18:35-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "package.json",
+      "satisfies": [],
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-29T21:09:18-06:00",
+        "commitSha": "be59d1e0a90352cac852f030d3845e08a959f01c",
+        "agents": "claude(inline)",
+        "files": [
+          "none (baseline: 312/312",
+          "lint clean",
+          "build OK)"
+        ]
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Extract the canvas tap-vs-drag gesture (presses/pinching, TAP_SLOP, primary-button reset; pointerUp returns tap|gesture) and the shell-region follow (SHELL_REGION_SCALE, position an element from shellScreenBox()) out of SandboxComponent into src/app/shell-region.ts, no Angular dependency. Specs first in shell-region.spec.ts: tap under 10 px, drag over, pinch never a tap, non-primary buttons never tap, primary down resets a lost gesture, follow math at 70 %, null box leaves the element.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/shell-region.ts",
+      "satisfies": [
+        "FR-005",
+        "FR-006",
+        "FR-010"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T21:12:31-06:00",
+        "commitSha": "363bb59fe4142aa9feeb9a358b78ba32bea1a02e",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/shell-region.ts",
+          "src/app/shell-region.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/shell-region.spec.ts",
+          "redResult": "3 FAILED vs false stub, 7 FAILED vs true stub (every test fails one)",
+          "greenResult": "9 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 1,
+      "description": "ControlGuide takes its callout list as a constructor parameter; export the initial screen's list (unchanged) and add the game's ten callouts in reading order (gear, camera, home, book, ?, 3D view region, switch, heat bar, Nuevo juego, Compartir) with GUIDE_GAME_* strings (draft wording from the issue). Specs first in control-guide.spec.ts: the list is the one passed in, refresh gives a new array, game list order/ids/anchors, wording pinned.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/control-guide.ts",
+      "satisfies": [
+        "FR-002",
+        "FR-011"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T21:14:36-06:00",
+        "commitSha": "7318d2cbabd45f198fcff0f04434aeeb28e9ff81",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/control-guide.ts",
+          "src/app/control-guide.spec.ts",
+          "src/app/app-strings.ts",
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/control-guide.spec.ts",
+          "redResult": "7 FAILED (all game-guide specs, length preconditions added), 10 SUCCESS (#5 specs)",
+          "greenResult": "17 SUCCESS"
+        },
+        "satisfaction": "full",
+        "notes": "Superseded in part by D8 (709aa40): GAME_GUIDE has nine callouts, no 3D-view (#shell-region) entry; heat bar titled \"Progreso\"; Compartir's line is the owner's (limit 75)."
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 1,
+      "description": "SandboxComponent uses shell-region.ts and new ControlGuide(its list); behaviour unchanged. Gate: #5 and #6 sandbox specs stay green with no spec edits.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "satisfies": [
+        "FR-010"
+      ],
+      "dependencies": [
+        "T002",
+        "T003"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T21:16:30-06:00",
+        "commitSha": "41561d2cee7e318ace19d16aa3839b8e9c57cd35",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 2,
+      "description": "Game: the \"?\" button alone in the top-right corner (inline SVG like #5, 44x44, name Mostrar ayuda, aria-pressed, aria-controls), ids on the toolbar buttons, heat bar, Nuevo juego and Compartir; <app-callout [guide]>; #shell-region over the VISIBLE viewer; pointer handlers on both canvases. Toggle on/off, Esc, a canvas tap closes, drag/pinch/wheel keep it. Specs first in game.component.spec.ts.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "FR-007"
+      ],
+      "dependencies": [
+        "T004"
+      ],
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-09-29T21:22:56-06:00",
+        "commitSha": "7c4afe7a350b447850b1c19916ae862a630989ff",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "22 FAILED (every #35 spec), 106 SUCCESS",
+          "greenResult": "128 SUCCESS; full suite 350/350"
+        },
+        "satisfaction": "full",
+        "notes": "Superseded in part by D8 (709aa40): the game has no #shell-region and follows no shell; the 3D-view aim went with the 3D-view bubble. Tap vs drag on both canvases stays."
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 3,
+      "description": "Game close rules and keep-on actions: turning the guide on closes the gear menu and any ⓘ (and pop-ups in code); opening the menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-008"
+      ],
+      "dependencies": [
+        "T005"
+      ],
+      "story": "US3",
+      "completion": {
+        "timestamp": "2026-09-29T21:28:39-06:00",
+        "commitSha": "027a2041f45d621662b8b9bf42184c8a81e59e7c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "10 FAILED (close rules, pop-up safeguard, flip re-aim, resize), 3 regression guards already passing (menu+ⓘ on turn-on, save, Compartir)",
+          "greenResult": "141 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T007": {
+      "id": "T007",
+      "wave": 4,
+      "description": "Game layout: @media (max-width:355px) 56 px toolbar icons and \"?\"; top row on one line at 320-1280 and 844x390. Specs at 360x800, 390x844, 1280x800, 844x390, 320x568, 338x643, 360x640, 360x560, 375x553 on Usuario and Objetivo: every callout on screen, no overlap, no line crossing a callout, none covering a control; resize re-places. Record any size that can only be best effort for the owner.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.css",
+      "satisfies": [
+        "FR-001",
+        "FR-008",
+        "FR-012"
+      ],
+      "dependencies": [
+        "T006"
+      ],
+      "story": "US4",
+      "completion": {
+        "timestamp": "2026-09-29T22:03:56-06:00",
+        "commitSha": "08eedd5ff823f735724de99cc2993a2e2ff2f37c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts",
+          "src/app/callout/callout.component.css",
+          "src/app/callout/callout.component.spec.ts",
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "game layout 22 FAILED; layoutGuide game specs 12 FAILED; compact opt-in 1 FAILED",
+          "greenResult": "400/400; short phones best effort (owner)"
+        },
+        "satisfaction": "partial",
+        "notes": "FR-008: 320x568, 338x643, 360x560, 360x640, 375x553 best effort by owner decision (compact + best effort, 2026-09-30)"
+      }
+    },
+    "T008": {
+      "id": "T008",
+      "wave": 4,
+      "description": "Game accessibility: live region reads the ten callouts in reading order, leader lines aria-hidden, reduced motion removes the animation, the \"?\" name/aria-pressed/aria-controls/44x44 and matching toolbar look. Specs first.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-007",
+        "FR-009"
+      ],
+      "dependencies": [
+        "T006"
+      ],
+      "story": "US5",
+      "completion": {
+        "timestamp": "2026-09-29T22:07:39-06:00",
+        "commitSha": "9d12c87d90d5071ff27bdca59f3eddf9defbcb93",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "no RED: behaviour inherited from the shared callout (#5); guards verified by mutation (swapped callout order: 3 FAILED)",
+          "greenResult": "166 SUCCESS"
+        },
+        "satisfaction": "full",
+        "notes": "Superseded in part by D8 (709aa40): the live region reads nine bubbles; no #shell-region to hide."
+      }
+    },
+    "T009": {
+      "id": "T009",
+      "wave": 5,
+      "description": "Verify: full suite x3 on 2 cores, lint, tsc, build; revert check (dev game templates/css make the #35 specs fail and nothing else); confirm no copied gesture/layout code (grep TAP_SLOP/SHELL_REGION_SCALE only in shell-region.ts).",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-010"
+      ],
+      "dependencies": [
+        "T007",
+        "T008"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T22:17:22-06:00",
+        "commitSha": "c83c4801fdcfb7f7229a57687f9a13ebf362dec2",
+        "agents": "claude(inline)",
+        "files": [
+          "none (verification: 403/403 x3",
+          "lint",
+          "tsc app+spec",
+          "build; revert: dev game html/css -> 57 FAILED",
+          "all #35",
+          "none else; gesture code only in shell-region.ts)"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T010": {
+      "id": "T010",
+      "wave": 5,
+      "description": "Browser check at the listed sizes on Usuario and Objetivo; post the draft wording table and screenshots on #35 for the owner's approval (SC-005, SC-006).",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/035-a_parrot_on_every_control/spec.md",
+      "satisfies": [
+        "FR-011"
+      ],
+      "dependencies": [
+        "T009"
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T22:18:35-06:00",
+        "commitSha": "4cf75f61baf499b28f2cb631c513a5536f30b434",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/035-a_parrot_on_every_control/spec.md"
+        ],
+        "satisfaction": "partial",
+        "notes": "Wording posted for approval (issuecomment-5903946552); screenshots not taken: live instances only on the owner's request"
+      }
+    }
+  }
+}

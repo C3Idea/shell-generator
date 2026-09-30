@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { ParameterHelp } from '../parameter-help';
+import { HelpKey, ParameterHelp } from '../parameter-help';
+import { ControlGuide, GAME_GUIDE } from '../control-guide';
+import { CanvasTap } from '../shell-region';
 import { random } from 'src/util';
 
 type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
@@ -108,6 +110,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // it; Esc, a click on the canvas or closing the menu clears it. Moving a
   // slider leaves it open.
   help = new ParameterHelp();
+
+  // The guide (#35): the "?" button shows a callout beside every control.
+  guide = new ControlGuide(GAME_GUIDE);
+
+  // Tells a tap on the 3D view from a drag or a pinch (#35, shared with #5).
+  private tap = new CanvasTap();
 
   distance: number;
   gameId: string = "";
@@ -224,6 +232,22 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // A tap on the 3D view ends the guide (#35); a drag (rotate) or a pinch
+  // (zoom) doesn't. Both canvases: the one on top depends on the switch.
+  canvasPointerDown(event: PointerEvent): void {
+    this.tap.down(event);
+  }
+
+  canvasPointerUp(event: PointerEvent): void {
+    if (this.tap.up(event)) {
+      this.guide.close();
+    }
+  }
+
+  canvasPointerCancel(event: PointerEvent): void {
+    this.tap.cancel(event);
+  }
+
   setMenuVisibility(): void {
     if (this.menuVisible) {
       this.menu.style.display = 'none';
@@ -239,9 +263,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.help.close();
   }
 
+  // Opening the gear menu ends the guide (#35): one kind of help at a time.
   private showMenu() {
     this.menu.style.display = 'block';
     this.menuVisible = true;
+    this.guide.close();
   }
 
   private setShellVisibility() {
@@ -261,13 +287,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // Flipping the switch keeps the guide on (#35).
   switchButtonClick(event: Event) {
-    this.setShellVisibility(); 
+    this.setShellVisibility();
   }
 
   checkGameIsOver(): void {
     const result = this.checkParametersAreSimilar();
     if (result) {
+      this.guide.close();
       this.victoryOpen = true;
     }
   }
@@ -329,6 +357,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // #23: the pop-up always opens on its two choices, with the key field
   // hidden and empty.
   private openNewGamePopup() {
+    this.guide.close();
     this.gameKeyInput.value = '';
     this.keyEntryRow.style.display = 'none';
     this.newGameOpen = true;
@@ -452,31 +481,55 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.help.toggle('A');
+    this.toggleHelp('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.help.toggle('alpha');
+    this.toggleHelp('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.help.toggle('beta');
+    this.toggleHelp('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.help.toggle('a');
+    this.toggleHelp('a');
+  }
+
+  // A parameter ⓘ ends the guide (#35).
+  private toggleHelp(key: HelpKey) {
+    this.guide.close();
+    this.help.toggle(key);
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.help.close();
+    this.guide.close();
+  }
+
+  // Turning the guide on closes the gear menu, any ⓘ help and any pop-up
+  // first (a pop-up covers the "?", so that last one is only a safeguard).
+  helpButtonClick(event: Event) {
+    if (!this.guide.on) {
+      this.help.close();
+      if (this.menuVisible) {
+        this.hideMenu();
+      }
+      this.howToOpen = false;
+      this.newGameOpen = false;
+      this.victoryOpen = false;
+    }
+    this.guide.toggle();
   }
 
   howToButtonClick(event: Event) {
     this.showHowToWindow();
   }
 
+  // The how-to ends the guide (#35).
   private showHowToWindow() {
+    this.guide.close();
     this.howToOpen = true;
   }
 

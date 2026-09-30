@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { useViewport } from '../../testing/viewport';
@@ -1144,4 +1145,497 @@ describe('GameComponent parameters menu fit (#6)', () => {
       expect(last.getBoundingClientRect().bottom).withContext('last ⓘ after scrolling').toBeLessThanOrEqual(bottom + 0.5);
     });
   }
+});
+
+// #35: the "?" button turns on a guide on the game too, a callout beside
+// every control. The shared pieces are #5's; these specs cover the game's
+// wiring.
+describe('GameComponent control guide (#35)', () => {
+  const TARGET = ShellParameters.randomParameters('guide-35');
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+  let frames: FramePump;
+
+  const render = () => fixture.detectChanges();
+  const helpButton = () => el.querySelector('#help-button') as HTMLButtonElement;
+  const guideBubbles = () => Array.from(el.querySelectorAll('.callout-guide')) as HTMLElement[];
+  const rectOf = (e: Element) => e.getBoundingClientRect();
+
+  // The guide's bubbles, in reading order: the toolbar left to right, the
+  // "?", then the bottom row. No bubble for the 3D view (too crowded, owner
+  // 2026-09-30).
+  const expected: [string, string][] = [
+    ['guide-game-parameters', AppStrings.GUIDE_GAME_PARAMETERS_TITLE],
+    ['guide-game-save-image', AppStrings.GUIDE_SAVE_IMAGE_TITLE],
+    ['guide-game-home', AppStrings.GUIDE_GAME_HOME_TITLE],
+    ['guide-game-howto', AppStrings.GUIDE_GAME_HOWTO_TITLE],
+    ['guide-game-help', AppStrings.GUIDE_HELP_TITLE],
+    ['guide-game-switch', AppStrings.GUIDE_GAME_SWITCH_TITLE],
+    ['guide-game-heat', AppStrings.GUIDE_GAME_HEAT_TITLE],
+    ['guide-game-new-game', AppStrings.GUIDE_GAME_NEW_GAME_TITLE],
+    ['guide-game-share', AppStrings.GUIDE_GAME_SHARE_TITLE],
+  ];
+
+  const viewport = useViewport();
+
+  function toggleGuide() {
+    helpButton().click();
+    render();
+  }
+
+  function guideOn() {
+    toggleGuide();
+    expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+  }
+
+  function expectGuideOff() {
+    expect(component.guide.on).toBeFalse();
+    expect(guideBubbles().length).toBe(0);
+    expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+  }
+
+  // Flips the Usuario/Objetivo switch the way a player does.
+  function flipSwitch() {
+    const input = el.querySelector('#shell-switch input') as HTMLInputElement;
+    input.click();
+    render();
+  }
+
+  beforeEach(async () => {
+    frames = installFramePump();
+    spyOn(window, 'prompt').and.returnValue(null);
+    spyOn(window, 'alert');
+    // The same target every run, so the shell on Objetivo (and so the
+    // layout) doesn't change between runs.
+    spyOn(ShellParameters, 'randomParameters').and.returnValue(TARGET);
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    // The how-to opens on load; close it so it isn't in the way.
+    component.howToOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('the "?" button', () => {
+    it('sits on its own in the upper-right corner, drawn like the toolbar icons', () => {
+      const buttons = Array.from(el.querySelectorAll('#toolbar button')) as HTMLButtonElement[];
+      expect(buttons.map(b => b.id)).toEqual(['parameters-button', 'save-image-button', 'home-button', 'howto-button']);
+      expect(helpButton()).withContext('#help-button').not.toBeNull();
+      expect(el.querySelector('#toolbar #help-button')).withContext('not in the toolbar').toBeNull();
+      const gear = rectOf(buttons[0]);
+      const help = rectOf(helpButton());
+      expect(help.width).toBe(gear.width);
+      expect(help.height).toBe(gear.height);
+      expect(help.top).withContext('level with the toolbar').toBe(gear.top);
+      expect(document.documentElement.clientWidth - help.right).toBeCloseTo(gear.left, 0);
+      expect(helpButton().classList).toContain('toolbar-button');
+      expect(helpButton().querySelector('svg rect.svg-border')).not.toBeNull();
+      expect(helpButton().querySelector('svg path.svg-content')).not.toBeNull();
+    });
+
+    it('is named "Mostrar ayuda", reports the guide as not pressed, and points at its bubbles', () => {
+      expect(helpButton().getAttribute('aria-label')).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().title).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+      expect(helpButton().getAttribute('aria-controls')).toBe(component.guide.controls);
+      expect(component.guide.controls.split(' ').length).toBe(expected.length);
+    });
+
+    it('has a hit area of at least 44×44 px', () => {
+      const r = rectOf(helpButton());
+      expect(r.width).toBeGreaterThanOrEqual(44);
+      expect(r.height).toBeGreaterThanOrEqual(44);
+    });
+
+    it('gives every control the guide points at an id', () => {
+      ['#parameters-button', '#save-image-button', '#home-button', '#howto-button', '#help-button',
+        '#toggle-switch', '#result-container', '#new-game-button', '#share-button']
+        .forEach(id => expect(el.querySelector(id)).withContext(id).not.toBeNull());
+      expect((el.querySelector('#new-game-button') as HTMLElement).textContent!.trim()).toBe(AppStrings.LABEL_NEW_GAME);
+      expect((el.querySelector('#share-button') as HTMLElement).textContent!.trim()).toBe(AppStrings.LABEL_SHARE_GAME);
+    });
+  });
+
+  describe('turning the guide on', () => {
+    it('shows a bubble beside each control, in reading order, and reports the "?" as pressed', () => {
+      expect(guideBubbles().length).withContext('before').toBe(0);
+      toggleGuide();
+      const bubbles = guideBubbles();
+      expect(bubbles.map(b => b.id)).toEqual(expected.map(([id]) => id));
+      bubbles.forEach((b, i) =>
+        expect(b.querySelector('.callout-title')!.textContent!.trim()).withContext(b.id).toBe(expected[i][1]));
+      expect(helpButton().getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('has no bubble for the 3D view, and no shell marker (owner, 2026-09-30)', () => {
+      toggleGuide();
+      expect(el.querySelector('#guide-game-view')).toBeNull();
+      expect(el.querySelector('#shell-region')).toBeNull();
+    });
+  });
+
+  describe('turning the guide off', () => {
+    it('turns off when the "?" is tapped again', () => {
+      guideOn();
+      toggleGuide();
+      expectGuideOff();
+    });
+
+    it('turns off with Esc', () => {
+      guideOn();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      render();
+      expectGuideOff();
+    });
+  });
+
+  describe('one kind of help at a time', () => {
+    const menu = () => el.querySelector('#parameters-menu') as HTMLElement;
+    const info = (key: string) => el.querySelector(`#${key}-help-button`) as HTMLInputElement;
+    const singleCallout = () => el.querySelector('.callout:not(.callout-guide)');
+    const click = (id: string) => {
+      (el.querySelector(id) as HTMLButtonElement).click();
+      render();
+    };
+
+    it('closes the gear menu and its open ⓘ when it turns on', () => {
+      click('#parameters-button');
+      info('A').click();
+      render();
+      expect(menu().style.display).withContext('menu open first').toBe('block');
+      expect(singleCallout()).withContext('ⓘ open first').not.toBeNull();
+      guideOn();
+      expect(menu().style.display).toBe('none');
+      expect(component.menuVisible).toBeFalse();
+      expect(component.help.key).toBeNull();
+      expect(singleCallout()).toBeNull();
+    });
+
+    // A pop-up covers the "?", so this can't happen from the screen; the
+    // rule still holds in code.
+    for (const popup of ['howToOpen', 'newGameOpen', 'victoryOpen'] as const) {
+      it(`closes an open pop-up (${popup}) when it turns on`, () => {
+        component[popup] = true;
+        render();
+        component.helpButtonClick(new Event('click'));
+        render();
+        expect(component[popup]).toBeFalse();
+        expect(component.guide.on).toBeTrue();
+      });
+    }
+
+    it('turns off when the gear menu opens', () => {
+      guideOn();
+      click('#parameters-button');
+      expectGuideOff();
+      expect(menu().style.display).toBe('block');
+    });
+
+    it('turns off when a parameter ⓘ opens', () => {
+      guideOn();
+      info('A').click();
+      render();
+      expectGuideOff();
+      expect(component.help.key).toBe('A');
+    });
+
+    it('turns off when the how-to opens', () => {
+      guideOn();
+      click('#howto-button');
+      expectGuideOff();
+      expect(component.howToOpen).toBeTrue();
+    });
+
+    it('turns off when Nuevo juego opens', () => {
+      guideOn();
+      click('#new-game-button');
+      expectGuideOff();
+      expect(component.newGameOpen).toBeTrue();
+    });
+
+    it('turns off when ¡Victoria! opens', () => {
+      guideOn();
+      spyOn(component, 'checkParametersAreSimilar').and.returnValue(true);
+      component.checkGameIsOver();
+      render();
+      expectGuideOff();
+      expect(component.victoryOpen).toBeTrue();
+    });
+  });
+
+  describe('using the screen while the guide is on', () => {
+    it('stays on while an image is saved', () => {
+      spyOn(HTMLAnchorElement.prototype, 'click');
+      guideOn();
+      (el.querySelector('#save-image-button') as HTMLButtonElement).click();
+      render();
+      expect(HTMLAnchorElement.prototype.click).withContext('image saved').toHaveBeenCalled();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+
+    it('stays on while Compartir copies the link', async () => {
+      const copy = spyOn(navigator.clipboard, 'writeText').and.resolveTo();
+      guideOn();
+      (el.querySelector('#share-button') as HTMLButtonElement).click();
+      await fixture.whenStable();
+      render();
+      expect(copy).withContext('link copied').toHaveBeenCalled();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+
+    it('stays on when the switch flips', () => {
+      guideOn();
+      flipSwitch();
+      expect(component.targetVisible).toBeTrue();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+
+    it('lays the guide out once per window resize', () => {
+      viewport.set(390, 844);
+      guideOn();
+      const callout = fixture.debugElement.query(By.directive(CalloutComponent)).componentInstance as CalloutComponent;
+      const passes = spyOn(callout as unknown as { placeGuide(): void }, 'placeGuide').and.callThrough();
+      window.dispatchEvent(new Event('resize'));
+      render();
+      expect(passes).toHaveBeenCalledTimes(1);
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+  });
+
+  describe('layout', () => {
+    const toolbarRow = ['#parameters-button', '#save-image-button', '#home-button', '#howto-button', '#help-button'];
+    const controls = [...toolbarRow, '#toggle-switch', '#result-container', '#new-game-button', '#share-button'];
+    const overlaps = (a: DOMRect, b: DOMRect) =>
+      a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+    const shownLines = () => (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+      .filter(l => getComputedStyle(l).display !== 'none');
+
+    function expectTidy(width: number, height: number) {
+      const bubbles = guideBubbles().map(b => ({ id: b.id, r: rectOf(b) }));
+      expect(bubbles.length).withContext('guide on').toBe(expected.length);
+      const controlRects = controls.map(c => ({ id: c, r: rectOf(el.querySelector(c)!) }));
+      bubbles.forEach(({ id, r }, i) => {
+        expect(r.left).withContext(`${id} left`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.top).withContext(`${id} top`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.right).withContext(`${id} right`).toBeLessThanOrEqual(width - 8 + 0.5);
+        expect(r.bottom).withContext(`${id} bottom`).toBeLessThanOrEqual(height - 8 + 0.5);
+        bubbles.slice(i + 1).forEach(other =>
+          expect(overlaps(r, other.r)).withContext(`${id} and ${other.id}`).toBeFalse());
+        controlRects.forEach(c => expect(overlaps(r, c.r)).withContext(`${id} over ${c.id}`).toBeFalse());
+      });
+      shownLines().forEach(line => {
+        const l = rectOf(line);
+        bubbles.forEach(({ id, r }) => expect(overlaps(l, r)).withContext(`a line across ${id}`).toBeFalse());
+      });
+    }
+
+    for (const [width, height] of [[320, 568], [338, 643], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`shows the "?" on screen, clear of the other icons, with the toolbar on one row at ${width}×${height}`, () => {
+        viewport.set(width, height);
+        render();
+        const help = rectOf(helpButton());
+        expect(help.left).toBeGreaterThanOrEqual(0);
+        expect(help.top).toBeGreaterThanOrEqual(0);
+        expect(help.right).toBeLessThanOrEqual(width);
+        expect(help.bottom).toBeLessThanOrEqual(height);
+        controls.filter(c => c !== '#help-button').forEach(c =>
+          expect(overlaps(help, rectOf(el.querySelector(c)!))).withContext(c).toBeFalse());
+        const top = rectOf(el.querySelector('#parameters-button')!).top;
+        toolbarRow.forEach(c =>
+          expect(rectOf(el.querySelector(c)!).top).withContext(`${c} on the top row`).toBe(top));
+        toolbarRow.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(c).toBeGreaterThanOrEqual(44));
+      });
+    }
+
+    it('uses the compact bubbles on phone widths, where nine bubbles need the room (owner, #35)', () => {
+      const fontSize = () => parseFloat(getComputedStyle(guideBubbles()[0]).fontSize);
+      viewport.set(390, 844);
+      toggleGuide();
+      expect(fontSize()).withContext('390×844').toBe(12);
+      viewport.set(1280, 800);
+      render();
+      expect(fontSize()).withContext('1280×800').toBe(13);
+    });
+
+    it('shrinks the toolbar icons and the "?" to 56 px under 356 px wide, and keeps 64 px above', () => {
+      viewport.set(355, 640);
+      render();
+      toolbarRow.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(`${c} at 355`).toBe(56));
+      viewport.set(356, 640);
+      render();
+      toolbarRow.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(`${c} at 356`).toBe(64));
+    });
+
+    // Tall phones, a desktop and a phone on its side, with each shell shown.
+    for (const [width, height] of [[360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      for (const objetivo of [false, true]) {
+        it(`keeps every bubble on screen, apart, off the controls and clear of the lines at ${width}×${height} on ${objetivo ? 'Objetivo' : 'Usuario'}`, () => {
+          viewport.set(width, height);
+          render();
+          if (objetivo) {
+            flipSwitch();
+          }
+          toggleGuide();
+          expectTidy(width, height);
+        });
+      }
+    }
+
+    // Short phones (a phone inside its browser): nine bubbles don't fit
+    // under the toolbar's staircase and the game's three bottom rows, so
+    // these are best effort (owner, #35): every bubble still shows, on
+    // screen.
+    for (const [width, height] of [[320, 568], [338, 643], [360, 560], [360, 640], [375, 553]]) {
+      it(`still shows every bubble on screen at ${width}×${height} (best effort)`, () => {
+        viewport.set(width, height);
+        render();
+        toggleGuide();
+        const bubbles = guideBubbles();
+        expect(bubbles.length).toBe(expected.length);
+        bubbles.forEach(b => {
+          const r = rectOf(b);
+          expect(r.left).withContext(`${b.id} left`).toBeGreaterThanOrEqual(8 - 0.5);
+          expect(r.top).withContext(`${b.id} top`).toBeGreaterThanOrEqual(8 - 0.5);
+          expect(r.right).withContext(`${b.id} right`).toBeLessThanOrEqual(width - 8 + 0.5);
+          expect(r.bottom).withContext(`${b.id} bottom`).toBeLessThanOrEqual(height - 8 + 0.5);
+        });
+      });
+    }
+
+    it('re-places the bubbles when the phone turns, still tidy', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      expectTidy(390, 844);
+      viewport.set(844, 390);
+      render();
+      expectTidy(844, 390);
+    });
+  });
+
+  describe('for a screen reader', () => {
+    it('reads the guide out politely, bubble by bubble in reading order, skipping the lines and arrows', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      const layer = el.querySelector('.callout-layer') as HTMLElement;
+      expect(layer.getAttribute('aria-live')).toBe('polite');
+      const notes = Array.from(layer.querySelectorAll('[role="note"]')) as HTMLElement[];
+      expect(notes.map(n => n.id)).toEqual(expected.map(([id]) => id));
+      notes.forEach(n => expect(n.querySelector('.callout-arrow')!.getAttribute('aria-hidden')).withContext(n.id).toBe('true'));
+      const lines = Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[];
+      expect(lines.length).withContext('lines on a phone').toBeGreaterThan(0);
+      lines.forEach(l => expect(l.getAttribute('aria-hidden')).toBe('true'));
+    });
+
+    it("lists exactly the guide's bubbles in the \"?\"'s aria-controls, and they exist while it is on", () => {
+      toggleGuide();
+      const ids = helpButton().getAttribute('aria-controls')!.split(' ');
+      expect(ids).toEqual(expected.map(([id]) => id));
+      ids.forEach(id => expect(el.querySelector(`#${id}`)).withContext(id).not.toBeNull());
+    });
+
+    it('draws its bubbles and lines with the shared callout styles, which drop the animation under reduced motion (#5)', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      guideBubbles().forEach(b => expect(b.matches('.callout.callout-guide')).withContext(b.id).toBeTrue());
+      (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+        .forEach(l => expect(l.matches('.callout-leader')).toBeTrue());
+      const rules: CSSRule[] = [];
+      for (const sheet of Array.from(document.styleSheets)) {
+        try { rules.push(...Array.from(sheet.cssRules)); } catch { /* cross-origin */ }
+      }
+      const off = rules.filter((r): r is CSSMediaRule =>
+        r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion'))
+        .flatMap(m => Array.from(m.cssRules) as CSSStyleRule[])
+        .filter(r => r.style?.animationName === 'none')
+        .flatMap(r => r.selectorText.split(',').map(sel => sel.trim()));
+      expect(off.some(sel => /^\.callout(\[|$)/.test(sel))).withContext('bubbles').toBeTrue();
+      expect(off.some(sel => /^\.callout-leader(\[|$)/.test(sel))).withContext('lines').toBeTrue();
+    });
+  });
+
+  describe('the 3D view while the guide is on', () => {
+    const canvases = ['#canvas', '#target-canvas'];
+
+    function pointer(on: string, type: string, x: number, y: number, id = 1, pointerType = 'mouse', extra: PointerEventInit = {}) {
+      el.querySelector(on)!.dispatchEvent(new PointerEvent(type, {
+        bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType,
+        isPrimary: id === 1, button: 0, buttons: type === 'pointerup' ? 0 : 1, ...extra,
+      }));
+    }
+
+    beforeEach(() => {
+      // OrbitControls captures the pointer; a synthetic pointer can't be.
+      spyOn(Element.prototype, 'setPointerCapture');
+      spyOn(Element.prototype, 'releasePointerCapture');
+    });
+
+    for (const canvas of canvases) {
+      it(`turns the guide off with a tap on ${canvas} (mouse)`, () => {
+        guideOn();
+        pointer(canvas, 'pointerdown', 200, 400);
+        pointer(canvas, 'pointerup', 200, 400);
+        render();
+        expectGuideOff();
+      });
+
+      it(`turns the guide off with a tap on ${canvas} (touch), even if the finger moves a little`, () => {
+        guideOn();
+        pointer(canvas, 'pointerdown', 200, 400, 7, 'touch');
+        pointer(canvas, 'pointermove', 205, 403, 7, 'touch');
+        pointer(canvas, 'pointerup', 205, 403, 7, 'touch');
+        render();
+        expectGuideOff();
+      });
+
+      it(`keeps the guide on while pinching on ${canvas}`, () => {
+        guideOn();
+        pointer(canvas, 'pointerdown', 180, 400, 7, 'touch');
+        pointer(canvas, 'pointerdown', 220, 400, 8, 'touch');
+        pointer(canvas, 'pointerup', 178, 400, 7, 'touch');
+        pointer(canvas, 'pointerup', 222, 400, 8, 'touch');
+        render();
+        expect(component.guide.on).toBeTrue();
+      });
+
+      it(`keeps the guide on after a right-click or middle-click on ${canvas} (they pan)`, () => {
+        guideOn();
+        for (const button of [1, 2]) {
+          pointer(canvas, 'pointerdown', 200, 400, 1, 'mouse', { button, buttons: button === 1 ? 4 : 2 });
+          pointer(canvas, 'pointerup', 200, 400, 1, 'mouse', { button, buttons: 0 });
+        }
+        render();
+        expect(component.guide.on).toBeTrue();
+      });
+
+      it(`keeps the guide on while zooming with the wheel on ${canvas}`, () => {
+        guideOn();
+        el.querySelector(canvas)!.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100, clientX: 200, clientY: 400 }));
+        render();
+        expect(component.guide.on).toBeTrue();
+      });
+    }
+
+    it('keeps the guide on while dragging, and the drag rotates your shell', () => {
+      guideOn();
+      const camera = (component.viewer as unknown as { camera: { position: { clone(): { distanceTo(p: unknown): number } } } }).camera;
+      const before = camera.position.clone();
+      pointer('#canvas', 'pointerdown', 200, 400);
+      pointer('#canvas', 'pointermove', 230, 400);
+      pointer('#canvas', 'pointermove', 260, 410);
+      pointer('#canvas', 'pointerup', 260, 410);
+      frames.pump(2);
+      render();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+      expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
+    });
+  });
 });

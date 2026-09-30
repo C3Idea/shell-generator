@@ -91,4 +91,20 @@ export class AppStrings {
   static GUIDE_VIEW_TEXT           = "Arrastra para girar; rueda o pellizca para acercar.";
   static GUIDE_VISUALIZATION_TITLE = "Apariencia";
   static GUIDE_VISUALIZATION_TEXT  = "Resolución, esqueleto y colores.";
+  // The game's guide (#35). The "?" and the camera reuse the initial
+  // screen's GUIDE_* strings above.
+  static GUIDE_GAME_PARAMETERS_TITLE = "Parámetros";
+  static GUIDE_GAME_PARAMETERS_TEXT  = "Ajusta tu caracol para acercarlo al objetivo.";
+  static GUIDE_GAME_HOME_TITLE       = "Inicio";
+  static GUIDE_GAME_HOME_TEXT        = "Vuelve a la pantalla inicial.";
+  static GUIDE_GAME_HOWTO_TITLE      = "Cómo jugar";
+  static GUIDE_GAME_HOWTO_TEXT       = "Abre las instrucciones del juego.";
+  static GUIDE_GAME_SWITCH_TITLE     = "Usuario / Objetivo";
+  static GUIDE_GAME_SWITCH_TEXT      = "Tu caracol (blanco) o el objetivo (dorado).";
+  static GUIDE_GAME_HEAT_TITLE       = "Progreso";
+  static GUIDE_GAME_HEAT_TEXT        = "Qué tan cerca estás del objetivo.";
+  static GUIDE_GAME_NEW_GAME_TITLE   = "Nuevo juego";
+  static GUIDE_GAME_NEW_GAME_TEXT    = "Empieza otra partida, al azar o con una clave.";
+  static GUIDE_GAME_SHARE_TITLE      = "Compartir";
+  static GUIDE_GAME_SHARE_TEXT       = "Copia el enlace con el caracol que estás adivinando, reta a alguien más.";
 }

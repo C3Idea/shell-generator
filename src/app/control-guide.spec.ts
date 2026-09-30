@@ -1,5 +1,5 @@
 import { AppStrings } from './app-strings';
-import { ControlGuide } from './control-guide';
+import { ControlGuide, GAME_GUIDE, SANDBOX_GUIDE } from './control-guide';
 
 // The initial screen's guide (#5): which controls it points at, in reading
 // order, and its on/off state.
@@ -7,7 +7,7 @@ describe('ControlGuide (#5)', () => {
   let guide: ControlGuide;
 
   beforeEach(() => {
-    guide = new ControlGuide();
+    guide = new ControlGuide(SANDBOX_GUIDE);
   });
 
   it('starts off, with no callouts', () => {
@@ -101,5 +101,75 @@ describe('ControlGuide (#5)', () => {
     guide.close();
     expect(guide.on).toBeFalse();
     expect(guide.callouts).toBeNull();
+  });
+});
+
+// The game's guide (#35): the same class with the game's own nine callouts
+// (no bubble for the 3D view: too crowded, owner 2026-09-30).
+describe('ControlGuide on the game (#35)', () => {
+  let guide: ControlGuide;
+
+  beforeEach(() => {
+    guide = new ControlGuide(GAME_GUIDE);
+    guide.toggle();
+  });
+
+  it('shows the list it was given', () => {
+    expect(guide.callouts!.length).toBe(9);
+    expect(guide.callouts).toEqual(GAME_GUIDE);
+    expect(new ControlGuide(SANDBOX_GUIDE).controls).not.toBe(guide.controls);
+  });
+
+  it('points at the nine game controls, in reading order', () => {
+    expect(guide.callouts!.map(c => c.anchor)).toEqual([
+      '#parameters-button', '#save-image-button', '#home-button', '#howto-button', '#help-button',
+      '#toggle-switch', '#result-container', '#new-game-button', '#share-button',
+    ]);
+  });
+
+  it('gives each callout its own id, and none clashes with the initial screen\'s', () => {
+    const ids = guide.callouts!.map(c => c.id);
+    expect(ids.length).toBe(9);
+    expect(new Set(ids).size).toBe(ids.length);
+    ids.forEach(id => expect(id).toMatch(/^guide-game-/));
+    const sandboxIds = SANDBOX_GUIDE.map(c => c.id);
+    ids.forEach(id => expect(sandboxIds).not.toContain(id));
+  });
+
+  it("uses the owner's wording (#35, 2026-09-30)", () => {
+    expect(guide.callouts!.map(c => [c.title, c.text])).toEqual([
+      ['Parámetros', 'Ajusta tu caracol para acercarlo al objetivo.'],
+      ['Guardar imagen', 'Descarga el caracol como PNG.'],
+      ['Inicio', 'Vuelve a la pantalla inicial.'],
+      ['Cómo jugar', 'Abre las instrucciones del juego.'],
+      ['Ayuda', 'Toca de nuevo para cerrar.'],
+      ['Usuario / Objetivo', 'Tu caracol (blanco) o el objetivo (dorado).'],
+      ['Progreso', 'Qué tan cerca estás del objetivo.'],
+      ['Nuevo juego', 'Empieza otra partida, al azar o con una clave.'],
+      ['Compartir', 'Copia el enlace con el caracol que estás adivinando, reta a alguien más.'],
+    ]);
+  });
+
+  it('reuses the initial screen\'s strings for the "?" and the camera', () => {
+    const byAnchor = (a: string) => guide.callouts!.find(c => c.anchor === a)!;
+    expect(byAnchor('#help-button').text).toBe(AppStrings.GUIDE_HELP_TEXT);
+    expect(byAnchor('#save-image-button').text).toBe(AppStrings.GUIDE_SAVE_IMAGE_TEXT);
+  });
+
+  // A title and one short line; Compartir's line is the owner's own and
+  // longer (72 characters, 2026-09-30), so the game allows up to 75.
+  it('keeps each callout short: a title and one short line', () => {
+    expect(guide.callouts!.length).toBe(9);
+    guide.callouts!.forEach(c => {
+      expect(c.title.length).withContext(c.title).toBeGreaterThan(0);
+      expect(c.title.length).withContext(c.title).toBeLessThanOrEqual(20);
+      expect(c.text.length).withContext(c.text).toBeGreaterThan(0);
+      expect(c.text.length).withContext(c.text).toBeLessThanOrEqual(75);
+    });
+  });
+
+  it('has no region: no bubble for the 3D view', () => {
+    expect(guide.callouts!.some(c => c.region)).toBeFalse();
+    expect(guide.callouts!.map(c => c.anchor)).not.toContain('#shell-region');
   });
 });

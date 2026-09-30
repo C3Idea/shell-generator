@@ -4,13 +4,8 @@ import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
 import { HelpKey, ParameterHelp } from '../parameter-help';
-import { ControlGuide } from '../control-guide';
-
-// How far a press may move and still count as a tap on the 3D view (#5).
-const TAP_SLOP = 10;
-
-// How much of the shell's box #shell-region covers, around its middle (#5).
-const SHELL_REGION_SCALE = 0.7;
+import { ControlGuide, SANDBOX_GUIDE } from '../control-guide';
+import { CanvasTap, followShell } from '../shell-region';
 
 @Component({
   selector: 'app-surface',
@@ -68,12 +63,10 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   help = new ParameterHelp();
 
   // The guide (#5): the "?" button shows a callout beside every control.
-  guide = new ControlGuide();
+  guide = new ControlGuide(SANDBOX_GUIDE);
 
-  // Pointers down on the 3D view, where each went down; and whether two
-  // were down at once (a pinch).
-  private presses = new Map<number, { x: number; y: number }>();
-  private pinching = false;
+  // Tells a tap on the 3D view from a drag or a pinch (#5).
+  private tap = new CanvasTap();
 
   // Visual parameters
   menuVisible: boolean = false;
@@ -187,28 +180,13 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // A tap on the 3D view ends the guide (#5); a drag (rotate) or a pinch
-  // (zoom) doesn't, so the user can try what its bubble says. A tap is one
-  // pointer, the primary button, released within TAP_SLOP px of where it
-  // went down; the right and middle buttons pan. A primary pointer going down
-  // starts a new gesture, so a press whose pointerup was lost can't leave a
-  // stale "pinch" behind.
+  // (zoom) doesn't (CanvasTap, shared with the game).
   canvasPointerDown(event: PointerEvent): void {
-    if (event.isPrimary) {
-      this.presses.clear();
-      this.pinching = false;
-    }
-    this.presses.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    if (this.presses.size > 1) {
-      this.pinching = true;
-    }
+    this.tap.down(event);
   }
 
   canvasPointerUp(event: PointerEvent): void {
-    const start = this.presses.get(event.pointerId);
-    const tap = start !== undefined && !this.pinching && event.button === 0
-      && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP;
-    this.canvasPointerCancel(event);
-    if (tap) {
+    if (this.tap.up(event)) {
       this.guide.close();
     }
     else {
@@ -216,29 +194,18 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // Moves #shell-region over the drawn shell, shrunk towards its middle so
-  // the 3D view's arrow lands on the shell rather than a corner of its box,
-  // and (unless `replace` is false) has the guide placed again (#5). Only
-  // while the guide is on.
-  private followShell(replace = true): void {
-    const box = this.guide.on ? this.helper.shellScreenBox() : null;
-    if (!box || !this.shellRegionRef) {
-      return;
-    }
-    const style = this.shellRegionRef.nativeElement.style;
-    style.left = `${box.left + box.width * (1 - SHELL_REGION_SCALE) / 2}px`;
-    style.top = `${box.top + box.height * (1 - SHELL_REGION_SCALE) / 2}px`;
-    style.width = `${box.width * SHELL_REGION_SCALE}px`;
-    style.height = `${box.height * SHELL_REGION_SCALE}px`;
-    if (replace) {
-      this.guide.refresh();
-    }
+  canvasPointerCancel(event: PointerEvent): void {
+    this.tap.cancel(event);
   }
 
-  canvasPointerCancel(event: PointerEvent): void {
-    this.presses.delete(event.pointerId);
-    if (this.presses.size === 0) {
-      this.pinching = false;
+  // Keeps #shell-region over the drawn shell and (unless `replace` is false)
+  // has the guide placed again (#5). Only while the guide is on.
+  private followShell(replace = true): void {
+    if (!this.guide.on || !this.shellRegionRef) {
+      return;
+    }
+    if (followShell(this.shellRegionRef.nativeElement, this.helper.shellScreenBox()) && replace) {
+      this.guide.refresh();
     }
   }
 

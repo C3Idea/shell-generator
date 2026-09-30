@@ -244,10 +244,11 @@ describe('CalloutComponent (#6)', () => {
     <button type="button" id="g3" style="position: fixed; left: 143px; top: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">3</button>
     <button type="button" id="g4" style="position: fixed; left: 7px; bottom: 7px; width: 64px; height: 64px; margin: 0; padding: 0; border: 0">4</button>
     <div id="region" style="position: fixed; left: 100px; top: 350px; width: 190px; height: 150px; pointer-events: none"></div>
-    <app-callout [guide]="guide"></app-callout>`
+    <app-callout [guide]="guide" [class.guide-compact-narrow]="compactNarrow"></app-callout>`
 })
 class GuideHostComponent {
   guide: Callout[] | null = null;
+  compactNarrow = false;
 }
 
 describe('CalloutComponent guide mode (#5)', () => {
@@ -372,6 +373,30 @@ describe('CalloutComponent guide mode (#5)', () => {
       .flatMap(r => r.selectorText.split(',').map(sel => sel.trim()));
     expect(off.some(sel => /^\.callout(\[|$)/.test(sel))).withContext('bubbles').toBeTrue();
     expect(off.some(sel => /^\.callout-leader(\[|$)/.test(sel))).withContext('lines').toBeTrue();
+  });
+
+  describe('compact bubbles', () => {
+    const fontSize = () => parseFloat(getComputedStyle(bubbles()[0]).fontSize);
+
+    it('are the regular size on a tall phone by default (the initial screen, #5)', () => {
+      show(guide);
+      expect(fontSize()).toBe(13);
+    });
+
+    it('are compact on phone widths for a screen that opts in (the game, #35)', () => {
+      host.compactNarrow = true;
+      show(guide);
+      expect(fontSize()).withContext('390×844').toBe(12);
+      setViewport(561, 844);
+      fixture.detectChanges();
+      expect(fontSize()).withContext('561×844').toBe(13);
+    });
+
+    it('are compact on short screens either way (#5)', () => {
+      setViewport(390, 640);
+      show(guide);
+      expect(fontSize()).toBe(12);
+    });
   });
 
   it('has a 95 % background, so the text reads over the 3D view, with solid text (owner, #5)', () => {

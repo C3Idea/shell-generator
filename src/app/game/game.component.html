@@ -1,8 +1,12 @@
 <div id="main-container">
-  <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
-  <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasMouseDownEvent($event)"></canvas>
+  <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDownEvent($event)"
+    (pointerdown)="this.canvasPointerDown($event)" (pointerup)="this.canvasPointerUp($event)"
+    (pointercancel)="this.canvasPointerCancel($event)"></canvas>
+  <canvas #targetCanvas id="target-canvas" (mousedown)="this.canvasMouseDownEvent($event)"
+    (pointerdown)="this.canvasPointerDown($event)" (pointerup)="this.canvasPointerUp($event)"
+    (pointercancel)="this.canvasPointerCancel($event)"></canvas>
   <div id="toolbar">
-    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
+    <button type="button" class="toolbar-button" id="parameters-button" title={{AppStrings.BUTTON_PARAMETERS_TITLE}} (click)="this.menuButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -13,7 +17,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)">
+    <button type="button" class="toolbar-button" id="save-image-button" title={{AppStrings.BUTTON_SAVE_IMAGE_TITLE}} (click)="this.clickExportImage($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -25,7 +29,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)">
+    <button type="button" class="toolbar-button" id="home-button" title={{AppStrings.BUTTON_SANDBOX_TITLE}} (click)="this.sandboxButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -33,7 +37,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" title={{AppStrings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)">
+    <button type="button" class="toolbar-button" id="howto-button" title={{AppStrings.BUTTON_HOW_TO_TITLE}} (click)="this.howToButtonClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -66,6 +70,22 @@
       <label class="switch-label">{{AppStrings.LABEL_TARGET}}</label>
     </div>
   </div>
+  <!-- The guide (#35): a callout beside every control, as on the initial
+       screen (#5). Alone in the top-right corner, away from the toolbar. -->
+  <button type="button" class="toolbar-button" id="help-button"
+    title={{AppStrings.BUTTON_HELP_TITLE}} [attr.aria-label]="AppStrings.BUTTON_HELP_TITLE"
+    [attr.aria-pressed]="this.guide.on" [attr.aria-controls]="this.guide.controls"
+    (click)="this.helpButtonClick($event)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
+      <g>
+        <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
+        <g>
+          <path class="svg-content" d="M21.5,26A12,12,0,1,1,39.5,36.39L35.1,39.3V43H31.9V37.9L37.9,33.62A8.8,8.8,0,1,0,24.7,26Z"/>
+          <path class="svg-content" d="M31.1,49.5a2.4,2.4,0,1,0,4.8,0a2.4,2.4,0,1,0-4.8,0Z"/>
+        </g>
+      </g>
+    </svg>
+  </button>
   <form #menu id="parameters-menu">
     <li class="form-row">
       <img class="parameter-icon" src="./assets/icons/icon_A.svg"/>
@@ -148,16 +168,17 @@
   <!-- #11: New Game and share live on the game screen, not in the gear menu.
        Hidden while the menu is open: on a phone it covers most of the screen. -->
   <div id="game-actions" *ngIf="!this.menuVisible">
-    <button type="button" class="game-action-button" title={{AppStrings.BUTTON_NEW_GAME_TITLE}} (click)="this.newGameButtonClick($event)">
+    <button type="button" class="game-action-button" id="new-game-button" title={{AppStrings.BUTTON_NEW_GAME_TITLE}} (click)="this.newGameButtonClick($event)">
       {{AppStrings.LABEL_NEW_GAME}}
     </button>
-    <button type="button" class="game-action-button" title={{AppStrings.BUTTON_SHARE_GAME_TITLE}} (click)="this.generateTargetLinkButtonClick($event)">
+    <button type="button" class="game-action-button" id="share-button" title={{AppStrings.BUTTON_SHARE_GAME_TITLE}} (click)="this.generateTargetLinkButtonClick($event)">
       {{AppStrings.LABEL_SHARE_GAME}}
     </button>
   </div>
   <!-- Parameter help (#6): one callout beside the ⓘ that was clicked, outside
-       the menu so its opacity doesn't fade it. -->
-  <app-callout [active]="this.help.callout"></app-callout>
+       the menu so its opacity doesn't fade it; or, while the guide is on
+       (#35), one beside every control, compact on phone widths. -->
+  <app-callout class="guide-compact-narrow" [active]="this.help.callout" [guide]="this.guide.callouts"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. ¡Victoria! comes last so it
        lands on top when it opens together with the how-to. -->
   <app-modal id="modal-new-game" titleId="label-new-game-title" [open]="this.newGameOpen"

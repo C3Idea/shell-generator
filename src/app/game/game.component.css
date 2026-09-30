@@ -32,6 +32,15 @@ label {
   margin: 2px;
 }
 
+/* The guide's "?" (#35): alone in the top-right corner, as on the initial
+   screen, level with the toolbar and as far from the right edge as the gear
+   is from the left. */
+#help-button {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}
+
 #toolbar {
   display: inline;
   position: fixed;
@@ -47,6 +56,16 @@ label {
   background: transparent;
   border: none;
   cursor: pointer;
+}
+
+/* Narrow phones (#35, as on the initial screen): 56 px icons keep the
+   toolbar and the corner "?" on one row down to 320 px, still above the
+   44 px hit area. */
+@media only screen and (max-width: 355px) {
+  .toolbar-button {
+    width:  56px;
+    height: 56px;
+  }
 }
 
 .svg-content {
