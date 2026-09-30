@@ -1,0 +1,7 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.html,src/app/app-strings.ts,src/app/game/game.component.spec.ts
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-09-30T15:50:21-06:00
