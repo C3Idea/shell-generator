@@ -188,8 +188,12 @@ Medium. One new reusable layout mode on an existing component, one screen wired 
 11. **Tap vs drag — a press-release under ≈10 px with no rotation is a tap; more is a drag** (vs any touch closing). *Rationale:* the canvas listens for `mousedown` today, and touch drags may not fire it, so the build distinguishes tap from drag and verifies both on touch. (CLARIFY, 2026-09-29.)
 12. **Guide persistence — only help-competing surfaces close the guide; a camera save leaves it on** (vs any control action closing it). *Rationale:* the user may act on a bubble (save an image) and keep reading. (CLARIFY, 2026-09-29.)
 13. **Leader lines are decorative** (`aria-hidden`); the callout text carries the meaning for assistive tech. *Rationale:* the line is a visual pointer only. (CLARIFY, minor.)
+14. **The "?" in the top-right corner, not after the book** (owner, 2026-09-29, after a 338×643 report). *Rationale:* in the toolbar the five icons wrapped to two rows under 345 px; the gear's line ran through the "?" and Ayuda fell back onto Introducción. `findRows()` now counts level controls as one row however far apart, and a stacked bubble drops only below what is in its way.
+15. **56 px corner icons under 356 px wide** (vs letting the toolbar wrap, vs teaching the layout two rows). *Rationale:* one row down to 320 px keeps the staircase valid; 56 px is still well over the 44 px hit area.
+16. **Short screens: compact bubbles under 700 px tall, and the 3D view's bubble further out with a line** (vs a two-step guide, vs best effort). *Rationale:* phones inside a browser lose 100–150 px; 360×640, 360×560, 375×553 and 320×568 now fit. 320×454 and 667×320 stay best effort.
 
 ### Post-Mortem
 
 _(filled after merge)_
+
 
