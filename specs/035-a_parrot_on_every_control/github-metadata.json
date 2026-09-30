@@ -1,0 +1,18 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 35,
+    "title": "[Game] Add help icon explaining the controls (\"?\" guide)",
+    "url": "https://github.com/C3Idea/shell-generator/issues/35",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5903135210",
+  "pr": {
+    "number": 36,
+    "url": "https://github.com/C3Idea/shell-generator/pull/36",
+    "status": "draft",
+    "createdAt": "2026-09-30T03:06:25Z"
+  },
+  "deployed_at": "2026-09-30T03:06:01Z",
+  "cached_from": "github"
+}

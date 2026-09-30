@@ -1,0 +1,266 @@
+{
+  "meta": {
+    "feature": "035-a_parrot_on_every_control",
+    "featureName": "Game control guide: a \"?\" button pointing a callout at every game control",
+    "version": "2.0",
+    "createdAt": "2026-09-30T03:07:06Z",
+    "lastUpdated": "2026-09-30T03:07:06Z",
+    "specHash": "a14651fd589973d27fe6bc7e7ee5383a",
+    "planHash": "004f659b198af774129f8d5b867bfec6"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 0,
+    "completedWaves": [],
+    "totalTasks": 10,
+    "completedTasks": 0,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-30T03:07:06Z",
+    "contextHint": "",
+    "lastUpdated": "2026-09-30T03:07:06Z"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Setup",
+      "description": "Baseline",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 1,
+      "name": "Foundational: shared pieces",
+      "description": "Shared gesture/shell-region helper, parameterised ControlGuide, sandbox migrated",
+      "tasks": [
+        "T002",
+        "T003",
+        "T004"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 2,
+      "name": "US1/US2: the game's guide",
+      "description": "The \"?\", ids, both canvases, on/off",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 3,
+      "name": "US3: using the screen",
+      "description": "Close rules, keep-on actions, switch flip, resize",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 4,
+      "name": "US4/US5: layout and accessibility",
+      "description": "56 px rule, size sweep, a11y",
+      "tasks": [
+        "T007",
+        "T008"
+      ],
+      "gateStatus": "pending"
+    },
+    {
+      "number": 5,
+      "name": "Polish",
+      "description": "Verification and owner approval",
+      "tasks": [
+        "T009",
+        "T010"
+      ],
+      "gateStatus": "pending"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "package.json",
+      "satisfies": [],
+      "dependencies": []
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Extract the canvas tap-vs-drag gesture (presses/pinching, TAP_SLOP, primary-button reset; pointerUp returns tap|gesture) and the shell-region follow (SHELL_REGION_SCALE, position an element from shellScreenBox()) out of SandboxComponent into src/app/shell-region.ts, no Angular dependency. Specs first in shell-region.spec.ts: tap under 10 px, drag over, pinch never a tap, non-primary buttons never tap, primary down resets a lost gesture, follow math at 70 %, null box leaves the element.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/shell-region.ts",
+      "satisfies": [
+        "FR-005",
+        "FR-006",
+        "FR-010"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 1,
+      "description": "ControlGuide takes its callout list as a constructor parameter; export the initial screen's list (unchanged) and add the game's ten callouts in reading order (gear, camera, home, book, ?, 3D view region, switch, heat bar, Nuevo juego, Compartir) with GUIDE_GAME_* strings (draft wording from the issue). Specs first in control-guide.spec.ts: the list is the one passed in, refresh gives a new array, game list order/ids/anchors, wording pinned.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/control-guide.ts",
+      "satisfies": [
+        "FR-002",
+        "FR-011"
+      ],
+      "dependencies": [
+        "T001"
+      ]
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 1,
+      "description": "SandboxComponent uses shell-region.ts and new ControlGuide(its list); behaviour unchanged. Gate: #5 and #6 sandbox specs stay green with no spec edits.",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "satisfies": [
+        "FR-010"
+      ],
+      "dependencies": [
+        "T002",
+        "T003"
+      ]
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 2,
+      "description": "Game: the \"?\" button alone in the top-right corner (inline SVG like #5, 44x44, name Mostrar ayuda, aria-pressed, aria-controls), ids on the toolbar buttons, heat bar, Nuevo juego and Compartir; <app-callout [guide]>; #shell-region over the VISIBLE viewer; pointer handlers on both canvases. Toggle on/off, Esc, a canvas tap closes, drag/pinch/wheel keep it. Specs first in game.component.spec.ts.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "FR-007"
+      ],
+      "dependencies": [
+        "T004"
+      ],
+      "story": "US1"
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 3,
+      "description": "Game close rules and keep-on actions: turning the guide on closes the gear menu and any \u24d8 (and pop-ups in code); opening the menu, a \u24d8, how-to, Nuevo juego or \u00a1Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-008"
+      ],
+      "dependencies": [
+        "T005"
+      ],
+      "story": "US3"
+    },
+    "T007": {
+      "id": "T007",
+      "wave": 4,
+      "description": "Game layout: @media (max-width:355px) 56 px toolbar icons and \"?\"; top row on one line at 320-1280 and 844x390. Specs at 360x800, 390x844, 1280x800, 844x390, 320x568, 338x643, 360x640, 360x560, 375x553 on Usuario and Objetivo: every callout on screen, no overlap, no line crossing a callout, none covering a control; resize re-places. Record any size that can only be best effort for the owner.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.css",
+      "satisfies": [
+        "FR-001",
+        "FR-008",
+        "FR-012"
+      ],
+      "dependencies": [
+        "T006"
+      ],
+      "story": "US4"
+    },
+    "T008": {
+      "id": "T008",
+      "wave": 4,
+      "description": "Game accessibility: live region reads the ten callouts in reading order, leader lines aria-hidden, reduced motion removes the animation, the \"?\" name/aria-pressed/aria-controls/44x44 and matching toolbar look. Specs first.",
+      "status": "pending",
+      "tdd": true,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-007",
+        "FR-009"
+      ],
+      "dependencies": [
+        "T006"
+      ],
+      "story": "US5"
+    },
+    "T009": {
+      "id": "T009",
+      "wave": 5,
+      "description": "Verify: full suite x3 on 2 cores, lint, tsc, build; revert check (dev game templates/css make the #35 specs fail and nothing else); confirm no copied gesture/layout code (grep TAP_SLOP/SHELL_REGION_SCALE only in shell-region.ts).",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-010"
+      ],
+      "dependencies": [
+        "T007",
+        "T008"
+      ]
+    },
+    "T010": {
+      "id": "T010",
+      "wave": 5,
+      "description": "Browser check at the listed sizes on Usuario and Objetivo; post the draft wording table and screenshots on #35 for the owner's approval (SC-005, SC-006).",
+      "status": "pending",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/035-a_parrot_on_every_control/spec.md",
+      "satisfies": [
+        "FR-011"
+      ],
+      "dependencies": [
+        "T009"
+      ]
+    }
+  }
+}
