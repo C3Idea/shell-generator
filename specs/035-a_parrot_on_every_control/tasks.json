@@ -22,12 +22,12 @@
       3
     ],
     "totalTasks": 10,
-    "completedTasks": 6,
+    "completedTasks": 7,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T21:30:00-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T21:28:39-06:00"
+    "lastUpdated": "2026-09-29T22:03:56-06:00"
   },
   "waves": [
     {
@@ -288,7 +288,7 @@
       "id": "T007",
       "wave": 4,
       "description": "Game layout: @media (max-width:355px) 56 px toolbar icons and \"?\"; top row on one line at 320-1280 and 844x390. Specs at 360x800, 390x844, 1280x800, 844x390, 320x568, 338x643, 360x640, 360x560, 375x553 on Usuario and Objetivo: every callout on screen, no overlap, no line crossing a callout, none covering a control; resize re-places. Record any size that can only be best effort for the owner.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -301,7 +301,28 @@
       "dependencies": [
         "T006"
       ],
-      "story": "US4"
+      "story": "US4",
+      "completion": {
+        "timestamp": "2026-09-29T22:03:56-06:00",
+        "commitSha": "08eedd5ff823f735724de99cc2993a2e2ff2f37c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/callout/layout-guide.ts",
+          "src/app/callout/layout-guide.spec.ts",
+          "src/app/callout/callout.component.css",
+          "src/app/callout/callout.component.spec.ts",
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "game layout 22 FAILED; layoutGuide game specs 12 FAILED; compact opt-in 1 FAILED",
+          "greenResult": "400/400; short phones best effort (owner)"
+        },
+        "satisfaction": "partial",
+        "notes": "FR-008: 320x568, 338x643, 360x560, 360x640, 375x553 best effort by owner decision (compact + best effort, 2026-09-30)"
+      }
     },
     "T008": {
       "id": "T008",

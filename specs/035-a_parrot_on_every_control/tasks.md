@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T21:28:39-06:00
+**Generated**: 2026-09-29T22:03:56-06:00
 
 ---
 
@@ -54,7 +54,7 @@
 
 **Purpose**: 56 px rule, size sweep, a11y
 
-- [ ] T007 [W4] [TDD] [US4] Game layout: @media (max-width:355px) 56 px toolbar icons and "?"; top row on one line at 320-1280 and 844x390. Specs at 360x800, 390x844, 1280x800, 844x390, 320x568, 338x643, 360x640, 360x560, 375x553 on Usuario and Objetivo: every callout on screen, no overlap, no line crossing a callout, none covering a control; resize re-places. Record any size that can only be best effort for the owner.
+- [x] T007 [W4] [TDD] [US4] Game layout: @media (max-width:355px) 56 px toolbar icons and "?"; top row on one line at 320-1280 and 844x390. Specs at 360x800, 390x844, 1280x800, 844x390, 320x568, 338x643, 360x640, 360x560, 375x553 on Usuario and Objetivo: every callout on screen, no overlap, no line crossing a callout, none covering a control; resize re-places. Record any size that can only be best effort for the owner.
 - [ ] T008 [P] [W4] [TDD] [US5] Game accessibility: live region reads the ten callouts in reading order, leader lines aria-hidden, reduced motion removes the animation, the "?" name/aria-pressed/aria-controls/44x44 and matching toolbar look. Specs first.
 
 **Wave Gate**: pending
@@ -75,10 +75,10 @@
 ## Summary
 
 - **Total Tasks**: 10
-- **Completed**: 6
+- **Completed**: 7
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 60%
+- **Progress**: 70%
 
 ---
 
