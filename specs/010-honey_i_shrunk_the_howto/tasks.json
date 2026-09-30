@@ -14,17 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1
     ],
     "totalTasks": 6,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T15:42:09-06:00",
+    "lastCheckpoint": "2026-09-30T15:45:49-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T15:38:51-06:00"
+    "lastUpdated": "2026-09-30T15:42:48-06:00"
   },
   "waves": [
     {
@@ -44,7 +45,8 @@
       "tasks": [
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:42:48-06:00"
     },
     {
       "number": 2,
@@ -110,7 +112,7 @@
       "id": "T002",
       "wave": 1,
       "description": "Add the LABEL_HOWTO_* strings from the plan's Data Model to src/app/app-strings.ts (goal, section texts, the two new titles, closing, ¡A jugar!); keep LINE1..4 until T003 removes their last use.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -121,7 +123,16 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T15:42:48-06:00",
+        "commitSha": "15eee60c7430164cdcf03adc86a3db30382c9ea6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",

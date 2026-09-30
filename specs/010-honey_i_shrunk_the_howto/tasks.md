@@ -4,7 +4,7 @@
 # Tasks: How-to pop-up in short sections
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T15:38:51-06:00
+**Generated**: 2026-09-30T15:42:48-06:00
 
 ---
 
@@ -22,9 +22,9 @@
 
 **Purpose**: New LABEL_HOWTO_* strings
 
-- [ ] T002 [W1] Add the LABEL_HOWTO_* strings from the plan's Data Model to src/app/app-strings.ts (goal, section texts, the two new titles, closing, ¡A jugar!); keep LINE1..4 until T003 removes their last use.
+- [x] T002 [W1] Add the LABEL_HOWTO_* strings from the plan's Data Model to src/app/app-strings.ts (goal, section texts, the two new titles, closing, ¡A jugar!); keep LINE1..4 until T003 removes their last use.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -71,10 +71,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 1
+- **Completed**: 2
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 16%
+- **Progress**: 33%
 
 ---
 
