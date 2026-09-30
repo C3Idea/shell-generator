@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:02:59-06:00
+**Generated**: 2026-09-30T11:07:46-06:00
 
 ---
 
@@ -32,9 +32,9 @@
 
 **Purpose**: New paragraphs, empty image removed
 
-- [ ] T003 [W2] [US1] US1 copy in #modal-intro (src/app/sandbox/sandbox.component.html): new paragraphs in order, remove the empty <img id="img-intro-equation"> and its CSS rule; replace the <img> assertion in sandbox.component.spec.ts with specs for the new copy (game named, LINE3 gone) and for opening on load and from the book button.
+- [x] T003 [W2] [US1] US1 copy in #modal-intro (src/app/sandbox/sandbox.component.html): new paragraphs in order, remove the empty <img id="img-intro-equation"> and its CSS rule; replace the <img> assertion in sandbox.component.spec.ts with specs for the new copy (game named, LINE3 gone) and for opening on load and from the book button.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 2
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 25%
+- **Progress**: 37%
 
 ---
 

@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 8,
-    "completedTasks": 2,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T11:04:23-06:00",
+    "lastCheckpoint": "2026-09-30T11:09:06-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:02:59-06:00"
+    "lastUpdated": "2026-09-30T11:07:46-06:00"
   },
   "waves": [
     {
@@ -55,7 +56,8 @@
       "tasks": [
         "T003"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:07:46-06:00"
     },
     {
       "number": 3,
@@ -149,7 +151,7 @@
       "id": "T003",
       "wave": 2,
       "description": "US1 copy in #modal-intro (src/app/sandbox/sandbox.component.html): new paragraphs in order, remove the empty <img id=\"img-intro-equation\"> and its CSS rule; replace the <img> assertion in sandbox.component.spec.ts with specs for the new copy (game named, LINE3 gone) and for opening on load and from the book button.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -165,7 +167,18 @@
       "dependencies": [
         "T002"
       ],
-      "story": "US1"
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-09-30T11:07:46-06:00",
+        "commitSha": "c78355fea1e23fcbcc9bed82c59f4ae22795e733",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T004": {
       "id": "T004",
