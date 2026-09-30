@@ -1,0 +1,7 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/app-strings.ts
+vt.idd:satisfies: partial (strings only; markup in T003)
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-30T11:02:59-06:00
