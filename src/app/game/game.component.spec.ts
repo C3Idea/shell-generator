@@ -1589,6 +1589,47 @@ describe('GameComponent control guide (#35)', () => {
     });
   });
 
+  describe('for a screen reader', () => {
+    it('reads the guide out politely, bubble by bubble in reading order, skipping the lines and arrows', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      const layer = el.querySelector('.callout-layer') as HTMLElement;
+      expect(layer.getAttribute('aria-live')).toBe('polite');
+      const notes = Array.from(layer.querySelectorAll('[role="note"]')) as HTMLElement[];
+      expect(notes.map(n => n.id)).toEqual(expected.map(([id]) => id));
+      notes.forEach(n => expect(n.querySelector('.callout-arrow')!.getAttribute('aria-hidden')).withContext(n.id).toBe('true'));
+      const lines = Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[];
+      expect(lines.length).withContext('lines on a phone').toBeGreaterThan(0);
+      lines.forEach(l => expect(l.getAttribute('aria-hidden')).toBe('true'));
+    });
+
+    it("lists exactly the guide's bubbles in the \"?\"'s aria-controls, and they exist while it is on", () => {
+      toggleGuide();
+      const ids = helpButton().getAttribute('aria-controls')!.split(' ');
+      expect(ids).toEqual(expected.map(([id]) => id));
+      ids.forEach(id => expect(el.querySelector(`#${id}`)).withContext(id).not.toBeNull());
+    });
+
+    it('draws its bubbles and lines with the shared callout styles, which drop the animation under reduced motion (#5)', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      guideBubbles().forEach(b => expect(b.matches('.callout.callout-guide')).withContext(b.id).toBeTrue());
+      (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+        .forEach(l => expect(l.matches('.callout-leader')).toBeTrue());
+      const rules: CSSRule[] = [];
+      for (const sheet of Array.from(document.styleSheets)) {
+        try { rules.push(...Array.from(sheet.cssRules)); } catch { /* cross-origin */ }
+      }
+      const off = rules.filter((r): r is CSSMediaRule =>
+        r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion'))
+        .flatMap(m => Array.from(m.cssRules) as CSSStyleRule[])
+        .filter(r => r.style?.animationName === 'none')
+        .flatMap(r => r.selectorText.split(',').map(sel => sel.trim()));
+      expect(off.some(sel => /^\.callout(\[|$)/.test(sel))).withContext('bubbles').toBeTrue();
+      expect(off.some(sel => /^\.callout-leader(\[|$)/.test(sel))).withContext('lines').toBeTrue();
+    });
+  });
+
   describe('the 3D view while the guide is on', () => {
     const canvases = ['#canvas', '#target-canvas'];
 
