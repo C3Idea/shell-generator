@@ -4,7 +4,7 @@
 # Tasks: How-to pop-up in short sections
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T15:31:13-06:00
+**Generated**: 2026-09-30T15:38:51-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Baseline
 
-- [ ] T001 [W0] Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.
+- [x] T001 [W0] Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -71,10 +71,10 @@
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 16%
 
 ---
 

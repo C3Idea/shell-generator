@@ -14,15 +14,17 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
     "totalTasks": 6,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": null,
+    "lastCheckpoint": "2026-09-30T15:42:09-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T21:31:13Z"
+    "lastUpdated": "2026-09-30T15:38:51-06:00"
   },
   "waves": [
     {
@@ -32,7 +34,8 @@
       "tasks": [
         "T001"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:38:51-06:00"
     },
     {
       "number": 1,
@@ -85,13 +88,23 @@
       "id": "T001",
       "wave": 0,
       "description": "Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "config",
       "filePath": "package.json",
       "satisfies": [],
-      "dependencies": []
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-30T15:38:51-06:00",
+        "commitSha": "d04c5a6c38b3e3117adcddc8f2d4eb84a35077f8",
+        "agents": "claude(inline)",
+        "files": [
+          "none (baseline: 451/451",
+          "lint clean",
+          "build OK)"
+        ]
+      }
     },
     "T002": {
       "id": "T002",
