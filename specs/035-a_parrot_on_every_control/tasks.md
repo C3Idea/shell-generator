@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T21:07:06-06:00
+**Generated**: 2026-09-29T21:09:18-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Baseline
 
-- [ ] T001 [W0] Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.
+- [x] T001 [W0] Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -75,10 +75,10 @@
 ## Summary
 
 - **Total Tasks**: 10
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 10%
 
 ---
 

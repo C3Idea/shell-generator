@@ -14,15 +14,17 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 0,
-    "completedWaves": [],
+    "currentWave": 1,
+    "completedWaves": [
+      0
+    ],
     "totalTasks": 10,
-    "completedTasks": 0,
+    "completedTasks": 1,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T03:07:06Z",
+    "lastCheckpoint": "2026-09-29T21:10:27-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T03:07:06Z"
+    "lastUpdated": "2026-09-29T21:09:18-06:00"
   },
   "waves": [
     {
@@ -32,7 +34,8 @@
       "tasks": [
         "T001"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:09:18-06:00"
     },
     {
       "number": 1,
@@ -89,13 +92,23 @@
       "id": "T001",
       "wave": 0,
       "description": "Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "config",
       "filePath": "package.json",
       "satisfies": [],
-      "dependencies": []
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-29T21:09:18-06:00",
+        "commitSha": "be59d1e0a90352cac852f030d3845e08a959f01c",
+        "agents": "claude(inline)",
+        "files": [
+          "none (baseline: 312/312",
+          "lint clean",
+          "build OK)"
+        ]
+      }
     },
     "T002": {
       "id": "T002",
@@ -174,7 +187,7 @@
     "T006": {
       "id": "T006",
       "wave": 3,
-      "description": "Game close rules and keep-on actions: turning the guide on closes the gear menu and any \u24d8 (and pop-ups in code); opening the menu, a \u24d8, how-to, Nuevo juego or \u00a1Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.",
+      "description": "Game close rules and keep-on actions: turning the guide on closes the gear menu and any ⓘ (and pop-ups in code); opening the menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.",
       "status": "pending",
       "tdd": true,
       "parallel": false,
