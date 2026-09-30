@@ -1,0 +1,111 @@
+{
+ "pass": 1,
+ "pr_number": 38,
+ "pr_title": "feat: how-to pop-up in short sections (#10)",
+ "copilot_review_summary": "Copilot review: skipped by config/flag (no .vt/vt.config.yaml in this repo, so review.copilot_integration is not enabled). Visual E2E: no ui-visual-reviewer agent; covered by the #10 specs at 320×568/360/390/1280/844×390 and the before/after screenshots in validaciones/shell_generator/10. Verification pass: not run (no C/S findings); M1's recommended fix changes spec decision D6 / FR-011, checked by hand against the template and spec before posting. Security reviewer: no C/S findings (compile-time strings through {{ }} interpolation only; no innerHTML, URL or new dependency). Reviewers: 3 role-scoped `reviewer` instances (security, quality, documentation). Reviewed head: 34ba52a.",
+ "findings": [
+  {"id":"M1","title":"Screen readers hear \"Abre y mueve los sliders…\" with nothing after \"Abre\"","severity":"Major","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.html","lines":"214-216",
+   "description":"The ⚙ is `aria-hidden`, so the spoken Parámetros section is \"Parámetros · Abre y mueve los sliders para cambiar tu caracol.\" and never says what to open. The #10 wording spec pins that exact spoken string. FR-011/D6 assumed the section title covers it, but the title is read before the sentence, not in it.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Replace `aria-hidden` on `.howto-gear` with `role=\"img\"` and `[attr.aria-label]` = `GUIDE_GAME_PARAMETERS_TITLE`, so it is read \"Abre Parámetros y mueve…\"; update the spoken-text spec and amend FR-011/D6.","rationale":"The standard labelled-glyph pattern. The visible text is unchanged, and it reuses an approved string."},
+    "B":{"approach":"Keep `aria-hidden` and reword to \"Abre el menú Parámetros (⚙) y mueve…\".","rationale":"The sentence stands on its own, but it changes the approved visible wording."},
+    "C":{"approach":"Leave it and record the trade-off in D6.","rationale":"No change, but screen readers keep the broken sentence."}}},
+  {"id":"m1","title":"The #31 paragraph spec now pins the count 7, duplicating the #10 order spec","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.spec.ts","lines":"836-840",
+   "description":"'keeps the how-to text as paragraphs' (#31) asserts `length` 7 and all-P; the #10 'opens on load…' spec already pins the seven children by id. Any added paragraph fails two specs.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Keep only the #31 guarantee: at least one child, and every child a <p>.","rationale":"Each spec guards one thing; the #10 spec owns the order and count."},
+    "B":{"approach":"Delete the #31 spec.","rationale":"The #10 spec covers it, but #31's intent (paragraphs, not labels) would lose its own name."},
+    "C":{"approach":"Leave it.","rationale":"Harmless duplication."}}},
+  {"id":"m2","title":"The five section titles are written out twice in the #10 specs","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.spec.ts","lines":"1695, 1798",
+   "description":"The same five-title array appears in the bold-titles spec and the book-button spec.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Hoist `const TITLES = [...]` into the describe and use it in both.","rationale":"One list to edit when a section changes."},
+    "B":{"approach":"Compare the reopened titles with the ones read on first load.","rationale":"No constant needed, but the first read has to be captured before closing."},
+    "C":{"approach":"Leave it.","rationale":"Small duplication."}}},
+  {"id":"m3","title":"The goal and closing paragraphs have no id, so the order spec mixes ids and classes","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.html","lines":"212, 230",
+   "description":"Sections are identified by id, the goal and closing by class, so the spec needs `p.id || p.className`.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Add ids `howto-goal` and `howto-closing` (keeping the classes) and assert on `p.id`.","rationale":"Uniform, readable assertion; ids already name the sections."},
+    "B":{"approach":"Select everything by class.","rationale":"Also uniform, but the sections' ids are already used by other specs."},
+    "C":{"approach":"Leave it.","rationale":"Works as is."}}},
+  {"id":"m4","title":"The layout spec checks every section twice, and the right-edge loop is near-vacuous","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.spec.ts","lines":"1790-1800",
+   "description":"`[...sections(), ...body().children]` repeats the sections, since they are body children. The scrollWidth checks are the real overflow guard.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Iterate `body().children` only.","rationale":"Same coverage without the repeat."},
+    "B":{"approach":"Drop the right-edge loop.","rationale":"Relies only on the scrollWidth checks."},
+    "C":{"approach":"Leave it.","rationale":"Only redundant."}}},
+  {"id":"m5","title":"The 'text scrolling between them' spec never checks that the text overflows","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.spec.ts","lines":"1805-1815",
+   "description":"It asserts overflow-y auto/scroll and that the ✕ and ¡A jugar! are on screen, but not `scrollHeight > clientHeight`, so if the text fits, the scroll part tests nothing.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Assert the body really overflows at the sizes where it does (measure; at least 320×568), and word the title to match.","rationale":"Makes the test exercise the case FR-007 worries about."},
+    "B":{"approach":"Rename to 'keeps ✕ and ¡A jugar! on screen'.","rationale":"Honest title, but it doesn't strengthen the test."},
+    "C":{"approach":"Leave it.","rationale":"The on-screen checks still hold."}}},
+  {"id":"m6","title":"\"Nuevo juego y Compartir\" re-types the two guide titles","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/app-strings.ts","lines":"82",
+   "description":"`LABEL_HOWTO_NEW_GAME_SHARE_TITLE` repeats `GUIDE_GAME_NEW_GAME_TITLE` and `GUIDE_GAME_SHARE_TITLE` and can drift from them.",
+   "recommended":"B",
+   "options":{
+    "A":{"approach":"Compose it in the template: `{{GUIDE_GAME_NEW_GAME_TITLE}} y {{GUIDE_GAME_SHARE_TITLE}}`.","rationale":"No duplicate, but it puts Spanish (\"y\") in the template."},
+    "B":{"approach":"Keep the string and add a spec asserting that it contains both guide titles.","rationale":"Catches drift, and all copy stays in AppStrings."},
+    "C":{"approach":"Leave it.","rationale":"Low drift risk."}}},
+  {"id":"m7","title":"The bold check depends on the browser reporting font-weight '700'","severity":"Minor","fix_group":"FG-1","source":"Quality reviewer","file":"src/app/game/game.component.spec.ts","lines":"1680",
+   "description":"`<strong>` is `bolder`; Chrome reports 700 today, but a font-weight on the paragraph would change the number without the text looking less bold.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Assert `Number(fontWeight) >= 600`.","rationale":"Checks 'bold', not a precise value."},
+    "B":{"approach":"Leave it.","rationale":"Stable in the only browser the specs run in."},
+    "C":{"approach":"Only check the tag is STRONG.","rationale":"Weaker; wouldn't catch a CSS reset."}}},
+  {"id":"m8","title":"howToPlayButtonClick() is a one-liner beside the inline (closed) binding","severity":"Minor","fix_group":"FG-2","source":"Quality reviewer","file":"src/app/game/game.component.ts","lines":"530-534",
+   "description":"It only sets `howToOpen = false`, the same as `(closed)`. That matches the named-handler style of the other footers.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Keep it.","rationale":"Consistent with the other footer handlers, and the comment explains why it's enough."},
+    "B":{"approach":"Inline `(click)=\"this.howToOpen = false\"`.","rationale":"One less method, but it breaks the pattern."},
+    "C":{"approach":"Route (closed) through the same handler.","rationale":"One close path, but (closed) serves every close."}}},
+  {"id":"D1","title":"The Deployment Started comment says 4 tasks in 2 waves; 6 tasks in 6 waves were built","severity":"Documentation","fix_group":"FG-3","source":"Documentation reviewer","file":"specs/010-honey_i_shrunk_the_howto/plan.md","lines":"97-102",
+   "description":"The plan's waves group the work in 2 while tasks.json has W0–W5, so the issue thread shows 4/2 then 6/6 at \"Wave 5/6\".",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Add a line under the plan's Waves (archive + plan comment) saying tasks.json splits them into 6 waves.","rationale":"Explains the jump without editing the automated comment."},
+    "B":{"approach":"Edit the Deployment Started comment.","rationale":"Rewrites an automated historical record."},
+    "C":{"approach":"Leave it.","rationale":"A known plan→tasks expansion."}}},
+  {"id":"D2","title":"The plan's Data Model lists LABEL_HOWTO_PARAMETERS, which doesn't exist","severity":"Documentation","fix_group":"FG-3","source":"Documentation reviewer","file":"specs/010-honey_i_shrunk_the_howto/plan.md","lines":"40-52",
+   "description":"It was built as `LABEL_HOWTO_PARAMETERS_BEFORE` / `_GEAR` / `_AFTER`, and the hedge under the table doesn't name them.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Replace the row with the three built constants and state what was built (archive + plan comment).","rationale":"The plan matches the code a reader will grep for."},
+    "B":{"approach":"Add \"(built as _BEFORE/_GEAR/_AFTER)\" to the row.","rationale":"Smaller edit."},
+    "C":{"approach":"Leave it.","rationale":"The plan is pre-implementation."}}},
+  {"id":"D3","title":"Spec and PR predict playButtonClick and a CSS change; neither exists","severity":"Documentation","fix_group":"FG-3","source":"Documentation reviewer","file":"specs/010-honey_i_shrunk_the_howto/spec.md","lines":"149-153",
+   "description":"The built method is `howToPlayButtonClick()`, and there is no CSS change in the diff.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Name `howToPlayButtonClick` and \"CSS: none needed\" in the spec (archive + comment); replace Predicted Files with the actual files in the PR body.","rationale":"Records match the diff."},
+    "B":{"approach":"Only fix the PR body.","rationale":"The spec keeps the stale name."},
+    "C":{"approach":"Leave it.","rationale":"These were predictions."}}},
+  {"id":"D4","title":"Nothing says the before/after screenshots exist or what is still pending","severity":"Documentation","fix_group":"FG-3","source":"Documentation reviewer","file":"specs/010-honey_i_shrunk_the_howto/tasks.json","lines":"T006",
+   "description":"FR-010/SC-005 require before and after shots at 390/1280. T006 mentions only the after shots, although howto-before-390/1280 and howto-after-* exist in validaciones/shell_generator/10.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"State in the PR body which before/after shots exist and that owner approval on #10 is pending.","rationale":"Makes the merge gate visible."},
+    "B":{"approach":"Amend T006 to say before/after.","rationale":"Fixes the task record only."},
+    "C":{"approach":"Drop 'before' from FR-010.","rationale":"Weakens the gate the owner asked for."}}},
+  {"id":"D5","title":"The spec's sizes omit 320×568, which the specs also test","severity":"Documentation","fix_group":"FG-3","source":"Documentation reviewer","file":"specs/010-honey_i_shrunk_the_howto/spec.md","lines":"FR-007, VM-008/009",
+   "description":"The layout specs run 320×568 (no sideways scroll plus ✕/¡A jugar! reachable), but FR-007/US4/VM-008/009 list only 360/390/1280/844×390.",
+   "recommended":"A",
+   "options":{
+    "A":{"approach":"Add 320×568 to FR-007, US4, VM-008/009 (archive + spec comment) and the PR Test Plan.","rationale":"The spec states what is verified."},
+    "B":{"approach":"Leave it.","rationale":"The tests exceed the requirement."},
+    "C":{"approach":"Mention it only in the PR Test Plan.","rationale":"Partial."}}}
+ ],
+ "fix_groups": [
+  {"id":"FG-1","primary_files":"`src/app/game/game.component.html`, `src/app/game/game.component.spec.ts` (+ `spec.md` FR-011/D6 for M1, soft-shared with FG-3)","finding_ids":"M1, m1, m2, m3, m4, m5, m6, m7","boundary":"Soft boundary with FG-3 (spec.md, different sections)","advisory":"M1 is the only behaviour change (what screen readers hear); the rest tighten specs. M1 changes decision D6 / FR-011, so it's recorded on the spec comment.","recommended_disposition":"Fix"},
+  {"id":"FG-2","primary_files":"`src/app/game/game.component.ts`","finding_ids":"m8","boundary":"Hard boundary","advisory":"Recommended: keep as is.","recommended_disposition":"Acknowledge"},
+  {"id":"FG-3","primary_files":"`specs/010-honey_i_shrunk_the_howto/spec.md`, `plan.md`, PR body (+ spec comment 5919834790, plan comment 5919851072)","finding_ids":"D1, D2, D3, D4, D5","boundary":"Soft boundary with FG-1 (spec.md)","advisory":"Docs only; spec and plan edits go to the issue comments and the archive together.","recommended_disposition":"Fix"}
+ ]
+}
