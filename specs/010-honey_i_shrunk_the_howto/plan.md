@@ -41,7 +41,9 @@ No data model. Strings in `AppStrings`:
 |----------|-------|
 | `LABEL_HOWTO_WINDOW_TITLE` | ¡Bienvenido al juego! *(unchanged)* |
 | `LABEL_HOWTO_GOAL` | Te mostramos un caracol objetivo. ¿Puedes reconstruirlo? |
-| `LABEL_HOWTO_PARAMETERS` | Abre ⚙︎ y mueve los sliders para cambiar tu caracol. *(U+2699 U+FE0E)* |
+| `LABEL_HOWTO_PARAMETERS_BEFORE` | Abre |
+| `LABEL_HOWTO_GEAR` | ⚙︎ *(U+2699 U+FE0E)* |
+| `LABEL_HOWTO_PARAMETERS_AFTER` | y mueve los sliders para cambiar tu caracol. |
 | `LABEL_HOWTO_SWITCH` | Cambia la vista entre tu caracol (blanco) y el objetivo (dorado). |
 | `LABEL_HOWTO_PROGRESS` | La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas! |
 | `LABEL_HOWTO_NEW_GAME_SHARE_TITLE` | Nuevo juego y Compartir |
@@ -51,10 +53,10 @@ No data model. Strings in `AppStrings`:
 | `LABEL_HOWTO_CLOSING` | ¡Suerte y diviértete! |
 | `LABEL_HOWTO_PLAY` | ¡A jugar! |
 
-Removed: `LABEL_HOWTO_WINDOW_LINE1..4`. The glyph is hidden from screen readers by
-splitting the Parámetros text around it in the template (`<span aria-hidden="true">`),
-or by keeping the glyph as its own constant; the build picks the simpler form that
-keeps the text in `app-strings.ts`.
+Removed: `LABEL_HOWTO_WINDOW_LINE1..4`. As built, the Parámetros text is split around
+the glyph (`_BEFORE` / `_GEAR` / `_AFTER`) so the template can wrap the gear in its own
+`<span class="howto-gear">`. That span was `aria-hidden` at first; review M1 made it
+`role="img"` labelled `GUIDE_GAME_PARAMETERS_TITLE`, read as "Abre Parámetros y mueve…".
 
 ### API Contracts
 
@@ -100,6 +102,10 @@ flowchart LR
    "amarillo", "¡A jugar!" and ✕/Esc/backdrop, reopening from the book turns the guide
    off, no sideways scroll at 360/390/1280/844×390 and footer reachable at 844×390;
    full suite green; before/after screenshots at 390 and 1280 px for approval (FR-010).
+
+*Note (review D1):* `tasks.json` splits these two waves into six (W0 setup, W1
+strings, W2 sections, W3 ¡A jugar!, W4 sizes, W5 polish), which is why the
+"Deployment Started" comment says 4 tasks in 2 waves and the dashboard says 6/6.
 
 ### Constitution Check
 

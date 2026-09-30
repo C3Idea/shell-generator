@@ -49,9 +49,9 @@ without reading long paragraphs.
 
 ### US4 — Readable on every screen (P2)
 
-- **Given** the pop-up is open, **When** it renders at 360, 390, 1280 px and 844×390,
+- **Given** the pop-up is open, **When** it renders at 320×568, 360, 390, 1280 px and 844×390,
   **Then** neither the pop-up nor the page scrolls sideways.
-- **Given** a short screen (844×390) where the pop-up is taller than the viewport,
+- **Given** a short screen (320×568 or 844×390) where the pop-up is taller than the viewport,
   **When** the player scrolls inside the pop-up, **Then** ✕ and "¡A jugar!" are
   reachable.
 
@@ -74,9 +74,9 @@ without reading long paragraphs.
   calls the target "amarillo".
 - **FR-006** (MUST): A **"¡A jugar!"** button in the pop-up's footer closes it. The ✕,
   Esc and the backdrop still close it (#31).
-- **FR-007** (MUST): At 360, 390, 1280 px and 844×390 neither the pop-up nor the page
-  scrolls horizontally. The pop-up may scroll vertically inside itself, and ✕ and
-  "¡A jugar!" stay reachable at 844×390.
+- **FR-007** (MUST): At 320×568, 360, 390, 1280 px and 844×390 neither the pop-up nor
+  the page scrolls horizontally. The pop-up may scroll vertically inside itself, and ✕
+  and "¡A jugar!" stay reachable at 320×568 and 844×390.
 - **FR-008** (MUST): The new strings live in `app-strings.ts`. The old
   `LABEL_HOWTO_WINDOW_LINE1..4` are removed, and the specs that checked them are
   updated.
@@ -149,10 +149,11 @@ in ChromeHeadless (a single headless run since #18), viewport pinned via
 ### Project Structure Impact
 
 - **Modified**: `src/app/game/game.component.html` (sections and footer),
-  `game.component.ts` (`playButtonClick` or equivalent closing the how-to),
-  `game.component.css` (section spacing, if needed), `src/app/app-strings.ts`
+  `game.component.ts` (`howToPlayButtonClick()` closing the how-to),
+  `src/app/app-strings.ts`
   (new `LABEL_HOWTO_*`, `LINE1..4` removed), `game.component.spec.ts` (the two
-  specs that pin the old text replaced by #10 specs).
+  specs that pin the old text replaced by #10 specs). CSS: none needed, the #31
+  paragraph margins were enough (review D3).
 - **Added**: none.
 - **Removed**: `LABEL_HOWTO_WINDOW_LINE1..4`.
 
@@ -236,7 +237,8 @@ sections, their order and bold titles; the titles equal the "?" guide's titles; 
 exact text of each section; no position words and no "amarillo"; the old strings
 are gone; "¡A jugar!" closes the pop-up; ✕/Esc/backdrop still close it; the pop-up
 opens on load and from the book button and turns the "?" guide off; no horizontal
-scroll at 360, 390, 1280 and 844×390, and ✕ and "¡A jugar!" reachable at 844×390.
+scroll at 320×568, 360, 390, 1280 and 844×390, and ✕ and "¡A jugar!" reachable at
+320×568 and 844×390.
 Manual: before/after screenshots at 390 and 1280 px approved on this issue.
 Regression: #31 modal specs, #35 guide specs, the ¡Victoria! and Nuevo juego pop-ups.
 
@@ -251,8 +253,8 @@ Regression: #31 modal specs, #35 guide specs, the ¡Victoria! and Nuevo juego po
 | VM-005 | US3 — "¡A jugar!" closes the pop-up | [pending] | Pending |
 | VM-006 | US3 — ✕, Esc and the backdrop still close it (#31) | [pending] | Pending |
 | VM-007 | US3 — the book button reopens it with the same sections and turns the "?" guide off | [pending] | Pending |
-| VM-008 | US4 — no horizontal scroll of the pop-up or page at 360, 390, 1280 px and 844×390 | [pending] | Pending |
-| VM-009 | US4 — at 844×390, ✕ and "¡A jugar!" are reachable by scrolling inside the pop-up | [pending] | Pending |
+| VM-008 | US4 — no horizontal scroll of the pop-up or page at 320×568, 360, 390, 1280 px and 844×390 | [pending] | Pending |
+| VM-009 | US4 — at 320×568 and 844×390, ✕ and "¡A jugar!" are reachable by scrolling inside the pop-up | [pending] | Pending |
 
 ## Success Criteria
 
