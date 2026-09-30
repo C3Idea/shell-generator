@@ -32,6 +32,21 @@ label {
   margin: 2px;
 }
 
+/* Kept over the visible shell while the guide is on (#35). */
+#shell-region {
+  position: fixed;
+  pointer-events: none;
+}
+
+/* The guide's "?" (#35): alone in the top-right corner, as on the initial
+   screen, level with the toolbar and as far from the right edge as the gear
+   is from the left. */
+#help-button {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}
+
 #toolbar {
   display: inline;
   position: fixed;

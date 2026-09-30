@@ -1145,3 +1145,282 @@ describe('GameComponent parameters menu fit (#6)', () => {
     });
   }
 });
+
+// #35: the "?" button turns on a guide on the game too, a callout beside
+// every control. The shared pieces are #5's; these specs cover the game's
+// wiring.
+describe('GameComponent control guide (#35)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+  let frames: FramePump;
+
+  const render = () => fixture.detectChanges();
+  const helpButton = () => el.querySelector('#help-button') as HTMLButtonElement;
+  const guideBubbles = () => Array.from(el.querySelectorAll('.callout-guide')) as HTMLElement[];
+  const rectOf = (e: Element) => e.getBoundingClientRect();
+  const marker = () => el.querySelector('#shell-region') as HTMLElement;
+
+  // The guide's bubbles, in reading order: the toolbar left to right, the
+  // "?", the 3D view, then the bottom row.
+  const expected: [string, string][] = [
+    ['guide-game-parameters', AppStrings.GUIDE_GAME_PARAMETERS_TITLE],
+    ['guide-game-save-image', AppStrings.GUIDE_SAVE_IMAGE_TITLE],
+    ['guide-game-home', AppStrings.GUIDE_GAME_HOME_TITLE],
+    ['guide-game-howto', AppStrings.GUIDE_GAME_HOWTO_TITLE],
+    ['guide-game-help', AppStrings.GUIDE_HELP_TITLE],
+    ['guide-game-view', AppStrings.GUIDE_VIEW_TITLE],
+    ['guide-game-switch', AppStrings.GUIDE_GAME_SWITCH_TITLE],
+    ['guide-game-heat', AppStrings.GUIDE_GAME_HEAT_TITLE],
+    ['guide-game-new-game', AppStrings.GUIDE_GAME_NEW_GAME_TITLE],
+    ['guide-game-share', AppStrings.GUIDE_GAME_SHARE_TITLE],
+  ];
+
+  const viewport = useViewport();
+
+  function toggleGuide() {
+    helpButton().click();
+    render();
+  }
+
+  function guideOn() {
+    toggleGuide();
+    expect(guideBubbles().length).withContext('guide on first').toBe(expected.length);
+  }
+
+  function expectGuideOff() {
+    expect(component.guide.on).toBeFalse();
+    expect(guideBubbles().length).toBe(0);
+    expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+  }
+
+  // Where the bubble's arrow points: its tip, 9 px outside the bubble.
+  function arrowTip(bubble: HTMLElement) {
+    const r = rectOf(bubble);
+    const arrow = parseFloat(bubble.style.getPropertyValue('--callout-arrow'));
+    const side = bubble.dataset['side'];
+    return side === 'below' ? { x: r.left + arrow, y: r.top - 9 }
+      : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
+      : side === 'right' ? { x: r.left - 9, y: r.top + arrow }
+      : { x: r.right + 9, y: r.top + arrow };
+  }
+
+  // Flips the Usuario/Objetivo switch the way a player does.
+  function flipSwitch() {
+    const input = el.querySelector('#shell-switch input') as HTMLInputElement;
+    input.click();
+    render();
+  }
+
+  beforeEach(async () => {
+    frames = installFramePump();
+    spyOn(window, 'prompt').and.returnValue(null);
+    spyOn(window, 'alert');
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    // The how-to opens on load; close it so it isn't in the way.
+    component.howToOpen = false;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('the "?" button', () => {
+    it('sits on its own in the upper-right corner, drawn like the toolbar icons', () => {
+      const buttons = Array.from(el.querySelectorAll('#toolbar button')) as HTMLButtonElement[];
+      expect(buttons.map(b => b.id)).toEqual(['parameters-button', 'save-image-button', 'home-button', 'howto-button']);
+      expect(helpButton()).withContext('#help-button').not.toBeNull();
+      expect(el.querySelector('#toolbar #help-button')).withContext('not in the toolbar').toBeNull();
+      const gear = rectOf(buttons[0]);
+      const help = rectOf(helpButton());
+      expect(help.width).toBe(gear.width);
+      expect(help.height).toBe(gear.height);
+      expect(help.top).withContext('level with the toolbar').toBe(gear.top);
+      expect(document.documentElement.clientWidth - help.right).toBeCloseTo(gear.left, 0);
+      expect(helpButton().classList).toContain('toolbar-button');
+      expect(helpButton().querySelector('svg rect.svg-border')).not.toBeNull();
+      expect(helpButton().querySelector('svg path.svg-content')).not.toBeNull();
+    });
+
+    it('is named "Mostrar ayuda", reports the guide as not pressed, and points at its bubbles', () => {
+      expect(helpButton().getAttribute('aria-label')).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().title).toBe(AppStrings.BUTTON_HELP_TITLE);
+      expect(helpButton().getAttribute('aria-pressed')).toBe('false');
+      expect(helpButton().getAttribute('aria-controls')).toBe(component.guide.controls);
+      expect(component.guide.controls.split(' ').length).toBe(expected.length);
+    });
+
+    it('has a hit area of at least 44×44 px', () => {
+      const r = rectOf(helpButton());
+      expect(r.width).toBeGreaterThanOrEqual(44);
+      expect(r.height).toBeGreaterThanOrEqual(44);
+    });
+
+    it('gives every control the guide points at an id', () => {
+      ['#parameters-button', '#save-image-button', '#home-button', '#howto-button', '#help-button',
+        '#toggle-switch', '#result-container', '#new-game-button', '#share-button']
+        .forEach(id => expect(el.querySelector(id)).withContext(id).not.toBeNull());
+      expect((el.querySelector('#new-game-button') as HTMLElement).textContent!.trim()).toBe(AppStrings.LABEL_NEW_GAME);
+      expect((el.querySelector('#share-button') as HTMLElement).textContent!.trim()).toBe(AppStrings.LABEL_SHARE_GAME);
+    });
+  });
+
+  describe('turning the guide on', () => {
+    it('shows a bubble beside each control, in reading order, and reports the "?" as pressed', () => {
+      expect(guideBubbles().length).withContext('before').toBe(0);
+      toggleGuide();
+      const bubbles = guideBubbles();
+      expect(bubbles.map(b => b.id)).toEqual(expected.map(([id]) => id));
+      bubbles.forEach((b, i) =>
+        expect(b.querySelector('.callout-title')!.textContent!.trim()).withContext(b.id).toBe(expected[i][1]));
+      expect(helpButton().getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it("points the 3D view's bubble at your shell on Usuario", () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      const tip = arrowTip(el.querySelector('#guide-game-view') as HTMLElement);
+      const shell = component.viewer.shellScreenBox()!;
+      expect(shell).withContext('shell drawn').not.toBeNull();
+      expect(tip.x).toBeGreaterThanOrEqual(shell.left);
+      expect(tip.x).toBeLessThanOrEqual(shell.left + shell.width);
+      expect(tip.y).toBeGreaterThanOrEqual(shell.top);
+      expect(tip.y).toBeLessThanOrEqual(shell.top + shell.height);
+    });
+
+    it('marks the visible shell: yours on Usuario, the target on Objetivo', () => {
+      viewport.set(390, 844);
+      // Far-apart boxes, so it's clear which viewer the marker follows.
+      spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 20, top: 150, width: 100, height: 100 });
+      spyOn(component.targetViewer, 'shellScreenBox').and.returnValue({ left: 250, top: 500, width: 100, height: 100 });
+      toggleGuide();
+      expect(rectOf(marker()).left).withContext('Usuario').toBeLessThan(150);
+      toggleGuide();
+      flipSwitch();
+      expect(component.targetVisible).withContext('on Objetivo').toBeTrue();
+      toggleGuide();
+      expect(rectOf(marker()).left).withContext('Objetivo').toBeGreaterThan(250);
+    });
+
+    it('marks the shell with an invisible box that takes no pointer', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      const m = rectOf(marker());
+      const shell = component.viewer.shellScreenBox()!;
+      expect(m.width).toBeGreaterThan(0);
+      expect(m.left).toBeGreaterThanOrEqual(shell.left - 0.5);
+      expect(m.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
+      expect(marker().getAttribute('aria-hidden')).toBe('true');
+      expect(getComputedStyle(marker()).pointerEvents).toBe('none');
+    });
+  });
+
+  describe('turning the guide off', () => {
+    it('turns off when the "?" is tapped again', () => {
+      guideOn();
+      toggleGuide();
+      expectGuideOff();
+    });
+
+    it('turns off with Esc', () => {
+      guideOn();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      render();
+      expectGuideOff();
+    });
+  });
+
+  describe('the 3D view while the guide is on', () => {
+    const canvases = ['#canvas', '#target-canvas'];
+
+    function pointer(on: string, type: string, x: number, y: number, id = 1, pointerType = 'mouse', extra: PointerEventInit = {}) {
+      el.querySelector(on)!.dispatchEvent(new PointerEvent(type, {
+        bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType,
+        isPrimary: id === 1, button: 0, buttons: type === 'pointerup' ? 0 : 1, ...extra,
+      }));
+    }
+
+    beforeEach(() => {
+      // OrbitControls captures the pointer; a synthetic pointer can't be.
+      spyOn(Element.prototype, 'setPointerCapture');
+      spyOn(Element.prototype, 'releasePointerCapture');
+    });
+
+    for (const canvas of canvases) {
+      it(`turns the guide off with a tap on ${canvas} (mouse)`, () => {
+        guideOn();
+        pointer(canvas, 'pointerdown', 200, 400);
+        pointer(canvas, 'pointerup', 200, 400);
+        render();
+        expectGuideOff();
+      });
+
+      it(`turns the guide off with a tap on ${canvas} (touch), even if the finger moves a little`, () => {
+        guideOn();
+        pointer(canvas, 'pointerdown', 200, 400, 7, 'touch');
+        pointer(canvas, 'pointermove', 205, 403, 7, 'touch');
+        pointer(canvas, 'pointerup', 205, 403, 7, 'touch');
+        render();
+        expectGuideOff();
+      });
+
+      it(`keeps the guide on while pinching on ${canvas}`, () => {
+        guideOn();
+        pointer(canvas, 'pointerdown', 180, 400, 7, 'touch');
+        pointer(canvas, 'pointerdown', 220, 400, 8, 'touch');
+        pointer(canvas, 'pointerup', 178, 400, 7, 'touch');
+        pointer(canvas, 'pointerup', 222, 400, 8, 'touch');
+        render();
+        expect(component.guide.on).toBeTrue();
+      });
+
+      it(`keeps the guide on after a right-click or middle-click on ${canvas} (they pan)`, () => {
+        guideOn();
+        for (const button of [1, 2]) {
+          pointer(canvas, 'pointerdown', 200, 400, 1, 'mouse', { button, buttons: button === 1 ? 4 : 2 });
+          pointer(canvas, 'pointerup', 200, 400, 1, 'mouse', { button, buttons: 0 });
+        }
+        render();
+        expect(component.guide.on).toBeTrue();
+      });
+
+      it(`keeps the guide on while zooming with the wheel on ${canvas}`, () => {
+        guideOn();
+        el.querySelector(canvas)!.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100, clientX: 200, clientY: 400 }));
+        render();
+        expect(component.guide.on).toBeTrue();
+      });
+    }
+
+    it('keeps the guide on while dragging, and the drag rotates your shell', () => {
+      guideOn();
+      const camera = (component.viewer as unknown as { camera: { position: { clone(): { distanceTo(p: unknown): number } } } }).camera;
+      const before = camera.position.clone();
+      pointer('#canvas', 'pointerdown', 200, 400);
+      pointer('#canvas', 'pointermove', 230, 400);
+      pointer('#canvas', 'pointermove', 260, 410);
+      pointer('#canvas', 'pointerup', 260, 410);
+      frames.pump(2);
+      render();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+      expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
+    });
+
+    it("moves the 3D view's bubble with the shell once a drag ends", () => {
+      viewport.set(390, 844);
+      guideOn();
+      const box = spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 40, top: 300, width: 100, height: 100 });
+      pointer('#canvas', 'pointerdown', 200, 400);
+      pointer('#canvas', 'pointermove', 300, 380);
+      pointer('#canvas', 'pointerup', 300, 380);
+      render();
+      expect(box).toHaveBeenCalled();
+      expect(rectOf(marker()).left).toBeCloseTo(40 + 100 * 0.15, 0);
+      expect(component.guide.on).toBeTrue();
+    });
+  });
+});

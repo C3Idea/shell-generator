@@ -4,6 +4,8 @@ import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
 import { ParameterHelp } from '../parameter-help';
+import { ControlGuide, GAME_GUIDE } from '../control-guide';
+import { CanvasTap, followShell } from '../shell-region';
 import { random } from 'src/util';
 
 type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
@@ -51,6 +53,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('gameKeyInput')
   private gameKeyInputRef!: ElementRef;
+
+  @ViewChild('shellRegion')
+  private shellRegionRef!: ElementRef<HTMLElement>;
 
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
@@ -108,6 +113,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // it; Esc, a click on the canvas or closing the menu clears it. Moving a
   // slider leaves it open.
   help = new ParameterHelp();
+
+  // The guide (#35): the "?" button shows a callout beside every control.
+  guide = new ControlGuide(GAME_GUIDE);
+
+  // Tells a tap on the 3D view from a drag or a pinch (#35, shared with #5).
+  private tap = new CanvasTap();
 
   distance: number;
   gameId: string = "";
@@ -221,6 +232,38 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   canvasMouseDownEvent(event: MouseEvent): void {
     if (this.menuVisible) {
       this.hideMenu();
+    }
+  }
+
+  // A tap on the 3D view ends the guide (#35); a drag (rotate) or a pinch
+  // (zoom) doesn't. Both canvases: the one on top depends on the switch.
+  canvasPointerDown(event: PointerEvent): void {
+    this.tap.down(event);
+  }
+
+  canvasPointerUp(event: PointerEvent): void {
+    if (this.tap.up(event)) {
+      this.guide.close();
+    }
+    else {
+      this.followShell();
+    }
+  }
+
+  canvasPointerCancel(event: PointerEvent): void {
+    this.tap.cancel(event);
+  }
+
+  // Keeps #shell-region over the visible shell (yours on Usuario, the target
+  // on Objetivo) and (unless `replace` is false) has the guide placed again.
+  // Only while the guide is on.
+  private followShell(replace = true): void {
+    if (!this.guide.on || !this.shellRegionRef) {
+      return;
+    }
+    const visible = this.targetVisible ? this.targetViewer : this.viewer;
+    if (followShell(this.shellRegionRef.nativeElement, visible.shellScreenBox()) && replace) {
+      this.guide.refresh();
     }
   }
 
@@ -470,6 +513,19 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.help.close();
+    this.guide.close();
+  }
+
+  // Turning the guide on closes the gear menu and any ⓘ help first.
+  helpButtonClick(event: Event) {
+    if (!this.guide.on) {
+      this.help.close();
+      if (this.menuVisible) {
+        this.hideMenu();
+      }
+    }
+    this.guide.toggle();
+    this.followShell();
   }
 
   howToButtonClick(event: Event) {
