@@ -313,38 +313,38 @@ specs stay green.
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1 — tap "?" shows one callout per control (9), each labelled and pointing at its control | [pending] | Pending |
-| VM-002 | US1 — screen reader reads callouts in on-screen order | [pending] | Pending |
-| VM-003 | US1 — on Usuario there is no 3D-view callout (D8) | [pending] | Pending |
-| VM-004 | US1 — on Objetivo the same nine callouts show, laid out as on Usuario | [pending] | Pending |
-| VM-005 | US2 — tap "?" again turns the guide off; "?" not pressed | [pending] | Pending |
-| VM-006 | US2 — Esc turns the guide off | [pending] | Pending |
-| VM-007 | US2 — a tap (<~10 px) on either canvas turns the guide off | [pending] | Pending |
-| VM-008 | US3 — dragging rotates and keeps the guide on (mouse and touch) | [pending] | Pending |
-| VM-009 | US3 — wheel/pinch zoom keeps the guide on | [pending] | Pending |
-| VM-010 | US3 — save image, switch flip, Compartir keep the guide on | [pending] | Pending |
-| VM-011 | US3 — opening the gear menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! turns the guide off | [pending] | Pending |
-| VM-012 | US3 — turning the guide on closes an open menu, ⓘ or pop-up | [pending] | Pending |
-| VM-013 | US3 — every control works with the guide on; callouts/lines take no pointer | [pending] | Pending |
-| VM-014 | US4 — every callout on screen, none overlapping, no line crossing a callout, none covering a control, at the listed sizes | [pending] | Pending |
-| VM-015 | US4 — resize/rotate re-places every callout, rules still hold | [pending] | Pending |
-| VM-016 | US4 — under 356 px wide the corner icons are 56 px; top row fits at 320 px | [pending] | Pending |
-| VM-017 | US5 — live region announces the text on turn-on, in order; leader lines hidden | [pending] | Pending |
-| VM-018 | US5 — under reduced motion the callouts appear without animation | [pending] | Pending |
-| VM-019 | FR-010 — no copied code; #5 and #6 specs stay green | [pending] | Pending |
-| VM-020 | FR-007 — the "?" has ≥44×44 hit area, name, aria-pressed, aria-controls | [pending] | Pending |
+| VM-001 | US1 — tap "?" shows one callout per control (9), each labelled and pointing at its control | `game.component.spec.ts` "GameComponent control guide (#35) › turning the guide on › shows a bubble beside each control, in reading order"; harness browser-check 9 sizes (nine bubbles) | Pass |
+| VM-002 | US1 — screen reader reads callouts in on-screen order | `game.component.spec.ts` "GameComponent control guide (#35) › for a screen reader › reads the guide out politely, bubble by bubble in reading order" | Pass |
+| VM-003 | US1 — on Usuario there is no 3D-view callout (D8) | `game.component.spec.ts` "GameComponent control guide (#35) › turning the guide on › has no bubble for the 3D view, and no shell marker"; 709aa40 | Pass |
+| VM-004 | US1 — on Objetivo the same nine callouts show, laid out as on Usuario | `game.component.spec.ts` "GameComponent control guide (#35) › layout › keeps every bubble on screen… on Objetivo" (4 sizes); browser-check Objetivo + 8 random targets | Pass |
+| VM-005 | US2 — tap "?" again turns the guide off; "?" not pressed | `game.component.spec.ts` "GameComponent control guide (#35) › turning the guide off › turns off when the "?" is tapped again" | Pass |
+| VM-006 | US2 — Esc turns the guide off | `game.component.spec.ts` "GameComponent control guide (#35) › turning the guide off › turns off with Esc" | Pass |
+| VM-007 | US2 — a tap (<~10 px) on either canvas turns the guide off | `game.component.spec.ts` "GameComponent control guide (#35) › the 3D view while the guide is on › turns the guide off with a tap on #canvas / #target-canvas (mouse, touch)" | Pass |
+| VM-008 | US3 — dragging rotates and keeps the guide on (mouse and touch) | `game.component.spec.ts` "GameComponent control guide (#35) › … keeps the guide on while dragging, and the drag rotates your shell"; browser-check mouse + CDP touch drag | Pass |
+| VM-009 | US3 — wheel/pinch zoom keeps the guide on | `game.component.spec.ts` "GameComponent control guide (#35) › … keeps the guide on while pinching / zooming with the wheel" (both canvases) | Pass |
+| VM-010 | US3 — save image, switch flip, Compartir keep the guide on | `game.component.spec.ts` "GameComponent control guide (#35) › using the screen while the guide is on › stays on while an image is saved / Compartir copies the link / the switch flips" | Pass |
+| VM-011 | US3 — opening the gear menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! turns the guide off | `game.component.spec.ts` "GameComponent control guide (#35) › one kind of help at a time › turns off when the gear menu / a parameter ⓘ / the how-to / Nuevo juego / ¡Victoria! opens" | Pass |
+| VM-012 | US3 — turning the guide on closes an open menu, ⓘ or pop-up | `game.component.spec.ts` "GameComponent control guide (#35) › one kind of help at a time › closes the gear menu and its open ⓘ… / closes an open pop-up… when it turns on" | Pass |
+| VM-013 | US3 — every control works with the guide on; callouts/lines take no pointer | browser-check "every control reachable with the guide on" (390×844, 1280×800); callout spec "let clicks through" | Pass |
+| VM-014 | US4 — every callout on screen, none overlapping, no line crossing a callout, none covering a control, at the listed sizes | `game.component.spec.ts` "GameComponent control guide (#35) › layout › keeps every bubble on screen, apart…" at 360×800, 390×844, 1280×800, 844×390; short phones best effort (D7, owner); owner Windows case fixed e6d1596 | Pass |
+| VM-015 | US4 — resize/rotate re-places every callout, rules still hold | `game.component.spec.ts` "GameComponent control guide (#35) › layout › re-places the bubbles when the phone turns, still tidy" + "lays the guide out once per window resize" | Pass |
+| VM-016 | US4 — under 356 px wide the corner icons are 56 px; top row fits at 320 px | `game.component.spec.ts` "GameComponent control guide (#35) › layout › shrinks the toolbar icons and the "?" to 56 px under 356 px wide…" + "shows the "?" on screen… one row" (320–1280) | Pass |
+| VM-017 | US5 — live region announces the text on turn-on, in order; leader lines hidden | `game.component.spec.ts` "GameComponent control guide (#35) › for a screen reader › …live region…, lines hidden"; real screen reader optional (manual §10) | Pass |
+| VM-018 | US5 — under reduced motion the callouts appear without animation | `game.component.spec.ts` "GameComponent control guide (#35) › for a screen reader › draws its bubbles and lines with the shared callout styles… reduced motion"; browser-check reduced motion | Pass |
+| VM-019 | FR-010 — no copied code; #5 and #6 specs stay green | `shell-region.ts` holds the only tap/shell-region code (harness CI check); sandbox spec unchanged; 402/402 at 665e6f5 | Pass |
+| VM-020 | FR-007 — the "?" has ≥44×44 hit area, name, aria-pressed, aria-controls | `game.component.spec.ts` "GameComponent control guide (#35) › the "?" button › is named "Mostrar ayuda"… / has a hit area of at least 44×44 px" | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | A player can open a labelled guide over every game control from the top-right "?" | [pending] | Pending |
-| SC-002 | The guide can be dismissed by tap, Esc or a canvas tap, and never blocks using the screen | [pending] | Pending |
-| SC-003 | The guide reads correctly to a screen reader and honours reduced motion | [pending] | Pending |
-| SC-004 | The guide lays out cleanly at the listed sizes (best-effort sizes recorded and owner-approved) | [pending] | Pending |
-| SC-005 | The guide's Spanish wording is approved on this issue before merge | [pending] | Pending |
+| SC-001 | A player can open a labelled guide over every game control from the top-right "?" | VM-001, VM-003; owner manual §1–§2 passed 2026-09-30 (approval comment 5903946552) | Pass |
+| SC-002 | The guide can be dismissed by tap, Esc or a canvas tap, and never blocks using the screen | VM-005–VM-013; owner manual §4–§5 passed 2026-09-30 | Pass |
+| SC-003 | The guide reads correctly to a screen reader and honours reduced motion | DOM-level: VM-017, VM-018 (live region, order, hidden lines, reduced motion); not yet checked with a real screen reader (manual §10, optional) | Partial |
+| SC-004 | The guide lays out cleanly at the listed sizes (best-effort sizes recorded and owner-approved) | VM-014, VM-015; best-effort short phones recorded and approved (spec D7); owner manual §6 passed 2026-09-30 | Pass |
+| SC-005 | The guide's Spanish wording is approved on this issue before merge | owner approved the wording 2026-09-30 (approval comment 5903946552, spec D8) | Pass |
 | SC-006 | Guide screenshots at 338×643, 360×640, 390×844, 1280×800 and 844×390, on Usuario and Objetivo, are approved on this issue before merge | [pending] | Pending |
-| SC-007 | #5's initial-screen guide and #6's parameter help keep working (their specs stay green) | [pending] | Pending |
+| SC-007 | #5's initial-screen guide and #6's parameter help keep working (their specs stay green) | 402/402 at 665e6f5 (#5 sandbox and #6 parameter-help specs unchanged and green); harness revert check: only #35 specs fail on dev's game markup | Pass |
 
 ## Complexity Considerations
 
@@ -366,5 +366,6 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
 
