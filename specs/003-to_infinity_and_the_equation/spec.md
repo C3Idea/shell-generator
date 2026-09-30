@@ -300,34 +300,34 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1 — pop-up opens on load with the new copy and names the game mode | [pending] | Pending |
-| VM-002 | US1 — LINE3 placeholder gone, accents corrected | [pending] | Pending |
-| VM-003 | US2 — helix + ellipse form renders as MathML where the image was | [pending] | Pending |
-| VM-004 | US2 — "Ver ecuación completa" expands the full system; label + aria-expanded flip to expanded | [pending] | Pending |
-| VM-005 | US2 — "Ocultar ecuación completa" collapses it; aria-expanded false | [pending] | Pending |
-| VM-006 | US2 — no horizontal scroll of pop-up/page (only each equation, never the block or button) at 320×568, 360, 390, 1280, 844×390, collapsed and expanded | [pending] | Pending |
-| VM-007 | US2 — a screen reader reads the equation (MathML semantics or text alternative) | [pending] | Pending |
-| VM-008 | US3 — "Conoce más" opens the Atractor URL in a new tab with rel=noopener and the accessible name | [pending] | Pending |
-| VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game | [pending] | Pending |
-| VM-010 | US3 — on a short screen the close button and "Jugar" stay reachable by scrolling inside the pop-up | [pending] | Pending |
-| VM-011 | US4 — the `a` ⓘ help says horizontal axis (initial screen and game) | [pending] | Pending |
-| VM-012 | US4 — the `b` ⓘ help says vertical axis | [pending] | Pending |
-| VM-013 | US4 — the `θ` ⓘ help says half-turns | [pending] | Pending |
-| VM-014 | US5 — the pop-up opens on load and from the book button and closes as before (#31) | [pending] | Pending |
-| VM-015 | US5 — the #5 "Bienvenida" guide bubble and layout are unchanged | [pending] | Pending |
-| VM-016 | US2 — expanded, then closed (✕, Esc, backdrop, Jugar) and reopened: collapsed | [pending] | Pending |
+| VM-001 | US1 — pop-up opens on load with the new copy and names the game mode | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › copy › opens on load with the new copy, which names the game" + "uses the owner's wording…"; owner manual §1–§2 | Pass |
+| VM-002 | US1 — LINE3 placeholder gone, accents corrected | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › copy › has no equation placeholder and no empty equation image left" + "spells the copy with its accents" | Pass |
+| VM-003 | US2 — helix + ellipse form renders as MathML where the image was | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › is written in MathML…" + `equation.component.spec.ts` "EquationComponent (#3) › shows the helix + ellipse form, row by row"; harness browser-check 116/116 @0729355 | Pass |
+| VM-004 | US2 — "Ver ecuación completa" expands the full system; label + aria-expanded flip to expanded | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › \"Ver ecuación completa\" shows the full Model IV system…"; `equation.component.spec.ts` "EquationComponent (#3) › shows the full system exactly as surfaceFunction() computes…" | Pass |
+| VM-005 | US2 — "Ocultar ecuación completa" collapses it; aria-expanded false | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › \"Ocultar ecuación completa\" collapses it again" (collapsed = hidden + draws nothing, 6d3e53e) | Pass |
+| VM-006 | US2 — no horizontal scroll of pop-up/page (only each equation, never the block or button) at 320×568, 360, 390, 1280, 844×390, collapsed and expanded | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › layout › never scrolls the pop-up or the page sideways…" (5 sizes × collapsed/expanded, per-equation scroll); harness browser-check 116/116 @0729355 (7 sizes + 125 % window, touch swipe) | Pass |
+| VM-007 | US2 — a screen reader reads the equation (MathML semantics or text alternative) | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › for a screen reader › …" + `equation.component.spec.ts` "EquationComponent (#3) › says what each function applies to…" (d959406); real screen reader not run (manual §12) | Partial |
+| VM-008 | US3 — "Conoce más" opens the Atractor URL in a new tab with rel=noopener and the accessible name | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › opens the start of Atractor's shells pages in a new tab, safely"; harness browser-check 116/116 @0729355 (new tab, no opener) | Pass |
+| VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › \"Jugar\" closes the pop-up and opens the game"; harness browser-check 116/116 @0729355 | Pass |
+| VM-010 | US3 — on a short screen the close button and "Jugar" stay reachable by scrolling inside the pop-up | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › keeps the ✕ and \"Jugar\" on screen at 320×568 / 844×390…"; harness browser-check 116/116 @0729355 | Pass |
+| VM-011 | US4 — the `a` ⓘ help says horizontal axis (initial screen and game) | `sandbox.component.spec.ts` "ⓘ a describes horizontal (#3)" + `game.component.spec.ts` "ⓘ a describes the horizontal axis (#3)"; harness browser-check 116/116 @0729355 | Pass |
+| VM-012 | US4 — the `b` ⓘ help says vertical axis | `sandbox.component.spec.ts` "ⓘ b describes vertical (#3)"; harness browser-check 116/116 @0729355 | Pass |
+| VM-013 | US4 — the `θ` ⓘ help says half-turns | `sandbox.component.spec.ts` "ⓘ theta describes medias vueltas (#3)"; harness browser-check 116/116 @0729355 | Pass |
+| VM-014 | US5 — the pop-up opens on load and from the book button and closes as before (#31) | `sandbox.component.spec.ts` #31 pop-up specs (welcome: ✕/Esc/backdrop) + `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › copy › opens again from the book button…"; owner manual §9 | Pass |
+| VM-015 | US5 — the #5 "Bienvenida" guide bubble and layout are unchanged | harness browser-check 116/116 @0729355 "#5 guide bubbles identical (text and position)" at 390×844 and 1280×800; revert guard: only #3 specs fail on dev's pop-up (31) | Pass |
+| VM-016 | US2 — expanded, then closed (✕, Esc, backdrop, Jugar) and reopened: collapsed | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › collapses when the pop-up closes, however it closes" + "starts collapsed again each time the pop-up opens" (6d3e53e) | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | The welcome pop-up shows short new copy that names the game mode | [pending] | Pending |
-| SC-002 | The shell equation renders as MathML, with a working "Ver ecuación completa" expander, readable at 320×568/360/390/1280/844×390 without page side-scroll | [pending] | Pending |
-| SC-003 | The equation is readable by a screen reader | [pending] | Pending |
-| SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game | [pending] | Pending |
-| SC-005 | The pop-up copy and the a/b/θ help wording are approved on this issue before merge | [pending] | Pending |
-| SC-006 | The a/b/θ parameter help matches the equation (a horizontal, b vertical, θ half-turns) on both screens | [pending] | Pending |
-| SC-007 | #31 (shared modal), #5 (initial-screen guide) and #6 (parameter help) keep working (their specs stay green); before/after screenshots at 390 and 1280 px approved on this issue | [pending] | Pending |
+| SC-001 | The welcome pop-up shows short new copy that names the game mode | VM-001, VM-002; owner manual §1–§2 passed 2026-09-30 | Pass |
+| SC-002 | The shell equation renders as MathML, with a working "Ver ecuación completa" expander, readable at 320×568/360/390/1280/844×390 without page side-scroll | VM-003–VM-006, VM-016; harness browser-check 116/116 @0729355; revert guard 16/16 mutations caught | Pass |
+| SC-003 | The equation is readable by a screen reader | DOM-level: VM-007 (spoken versions, MathML aria-hidden, expander aria-expanded); real screen reader not yet checked (manual §12, optional) | Partial |
+| SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game | VM-008, VM-009; owner manual §6 passed 2026-09-30 | Pass |
+| SC-005 | The pop-up copy and the a/b/θ help wording are approved on this issue before merge | wording is the owner's (D9, D10) and passed in the manual pass (§2, §3, §8, 2026-09-30); the boxes on approval comment 5916660812 are not ticked yet | Partial |
+| SC-006 | The a/b/θ parameter help matches the equation (a horizontal, b vertical, θ half-turns) on both screens | VM-011–VM-013 (both screens); owner manual §8 passed 2026-09-30 | Pass |
+| SC-007 | #31 (shared modal), #5 (initial-screen guide) and #6 (parameter help) keep working (their specs stay green); before/after screenshots at 390 and 1280 px approved on this issue | 451/451 at 0729355 (#31, #5, #6 specs green; revert guard: only #3 specs fail on dev's pop-up); new compare sheets validaciones/shell_generator/3/capturas/compare-*.png not yet attached/approved on #3 | Partial |
 
 ## Complexity Considerations
 
@@ -348,5 +348,6 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
 
