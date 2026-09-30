@@ -1,0 +1,8 @@
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/control-guide.ts,src/app/control-guide.spec.ts,src/app/app-strings.ts,src/app/sandbox/sandbox.component.ts
+vt.idd:tdd: red=7 FAILED (all game-guide specs, length preconditions added), 10 SUCCESS (#5 specs), green=17 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-09-29T21:14:36-06:00
