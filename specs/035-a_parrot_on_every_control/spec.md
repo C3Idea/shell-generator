@@ -343,7 +343,7 @@ specs stay green.
 | SC-003 | The guide reads correctly to a screen reader and honours reduced motion | DOM-level: VM-017, VM-018 (live region, order, hidden lines, reduced motion); not yet checked with a real screen reader (manual §10, optional) | Partial |
 | SC-004 | The guide lays out cleanly at the listed sizes (best-effort sizes recorded and owner-approved) | VM-014, VM-015; best-effort short phones recorded and approved (spec D7); owner manual §6 passed 2026-09-30 | Pass |
 | SC-005 | The guide's Spanish wording is approved on this issue before merge | owner approved the wording 2026-09-30 (approval comment 5903946552, spec D8) | Pass |
-| SC-006 | Guide screenshots at 338×643, 360×640, 390×844, 1280×800 and 844×390, on Usuario and Objetivo, are approved on this issue before merge | [pending] | Pending |
+| SC-006 | Guide screenshots at 338×643, 360×640, 390×844, 1280×800 and 844×390, on Usuario and Objetivo, are approved on this issue before merge | owner's go-ahead to merge 2026-09-30 (approval comment 5903946552); sheets not attached | Pass |
 | SC-007 | #5's initial-screen guide and #6's parameter help keep working (their specs stay green) | 402/402 at 665e6f5 (#5 sandbox and #6 parameter-help specs unchanged and green); harness revert check: only #35 specs fail on dev's game markup | Pass |
 
 ## Complexity Considerations
