@@ -1,0 +1,8 @@
+vt.idd:task: T007
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/callout/layout-guide.ts,src/app/callout/layout-guide.spec.ts,src/app/callout/callout.component.css,src/app/callout/callout.component.spec.ts,src/app/game/game.component.html,src/app/game/game.component.css,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=game layout 22 FAILED; layoutGuide game specs 12 FAILED; compact opt-in 1 FAILED, green=400/400; short phones best effort (owner)
+vt.idd:satisfies: partial (FR-008: 320x568, 338x643, 360x560, 360x640, 375x553 best effort by owner decision (compact + best effort, 2026-09-30))
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-29T22:03:56-06:00
