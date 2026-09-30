@@ -1161,17 +1161,16 @@ describe('GameComponent control guide (#35)', () => {
   const helpButton = () => el.querySelector('#help-button') as HTMLButtonElement;
   const guideBubbles = () => Array.from(el.querySelectorAll('.callout-guide')) as HTMLElement[];
   const rectOf = (e: Element) => e.getBoundingClientRect();
-  const marker = () => el.querySelector('#shell-region') as HTMLElement;
 
   // The guide's bubbles, in reading order: the toolbar left to right, the
-  // "?", the 3D view, then the bottom row.
+  // "?", then the bottom row. No bubble for the 3D view (too crowded, owner
+  // 2026-09-30).
   const expected: [string, string][] = [
     ['guide-game-parameters', AppStrings.GUIDE_GAME_PARAMETERS_TITLE],
     ['guide-game-save-image', AppStrings.GUIDE_SAVE_IMAGE_TITLE],
     ['guide-game-home', AppStrings.GUIDE_GAME_HOME_TITLE],
     ['guide-game-howto', AppStrings.GUIDE_GAME_HOWTO_TITLE],
     ['guide-game-help', AppStrings.GUIDE_HELP_TITLE],
-    ['guide-game-view', AppStrings.GUIDE_VIEW_TITLE],
     ['guide-game-switch', AppStrings.GUIDE_GAME_SWITCH_TITLE],
     ['guide-game-heat', AppStrings.GUIDE_GAME_HEAT_TITLE],
     ['guide-game-new-game', AppStrings.GUIDE_GAME_NEW_GAME_TITLE],
@@ -1194,33 +1193,6 @@ describe('GameComponent control guide (#35)', () => {
     expect(component.guide.on).toBeFalse();
     expect(guideBubbles().length).toBe(0);
     expect(helpButton().getAttribute('aria-pressed')).toBe('false');
-  }
-
-  // Where the bubble's arrow points: its tip, 9 px outside the bubble.
-  function arrowTip(bubble: HTMLElement) {
-    const r = rectOf(bubble);
-    const arrow = parseFloat(bubble.style.getPropertyValue('--callout-arrow'));
-    const side = bubble.dataset['side'];
-    return side === 'below' ? { x: r.left + arrow, y: r.top - 9 }
-      : side === 'above' ? { x: r.left + arrow, y: r.bottom + 9 }
-      : side === 'right' ? { x: r.left - 9, y: r.top + arrow }
-      : { x: r.right + 9, y: r.top + arrow };
-  }
-
-  // Whether a bubble points into `area`: its arrow's tip is in it, or a
-  // leader line runs from inside it to the tip.
-  function pointsInto(bubble: HTMLElement, area: DOMRect): boolean {
-    const tip = arrowTip(bubble);
-    const within = (x: number, y: number) =>
-      x >= area.left - 1 && x <= area.right + 1 && y >= area.top - 1 && y <= area.bottom + 1;
-    if (within(tip.x, tip.y)) {
-      return true;
-    }
-    return (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
-      .filter(l => getComputedStyle(l).display !== 'none')
-      .map(l => rectOf(l))
-      .some(l => Math.abs(l.left - tip.x) <= 1 && (within(l.left, l.top) || within(l.left, l.bottom))
-        && (Math.abs(l.top - tip.y) <= 1 || Math.abs(l.bottom - tip.y) <= 1));
   }
 
   // Flips the Usuario/Objetivo switch the way a player does.
@@ -1300,42 +1272,10 @@ describe('GameComponent control guide (#35)', () => {
       expect(helpButton().getAttribute('aria-pressed')).toBe('true');
     });
 
-    it("points the 3D view's bubble at your shell on Usuario", () => {
-      viewport.set(390, 844);
+    it('has no bubble for the 3D view, and no shell marker (owner, 2026-09-30)', () => {
       toggleGuide();
-      const tip = arrowTip(el.querySelector('#guide-game-view') as HTMLElement);
-      const shell = component.viewer.shellScreenBox()!;
-      expect(shell).withContext('shell drawn').not.toBeNull();
-      expect(tip.x).toBeGreaterThanOrEqual(shell.left);
-      expect(tip.x).toBeLessThanOrEqual(shell.left + shell.width);
-      expect(tip.y).toBeGreaterThanOrEqual(shell.top);
-      expect(tip.y).toBeLessThanOrEqual(shell.top + shell.height);
-    });
-
-    it('marks the visible shell: yours on Usuario, the target on Objetivo', () => {
-      viewport.set(390, 844);
-      // Far-apart boxes, so it's clear which viewer the marker follows.
-      spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 20, top: 150, width: 100, height: 100 });
-      spyOn(component.targetViewer, 'shellScreenBox').and.returnValue({ left: 250, top: 500, width: 100, height: 100 });
-      toggleGuide();
-      expect(rectOf(marker()).left).withContext('Usuario').toBeLessThan(150);
-      toggleGuide();
-      flipSwitch();
-      expect(component.targetVisible).withContext('on Objetivo').toBeTrue();
-      toggleGuide();
-      expect(rectOf(marker()).left).withContext('Objetivo').toBeGreaterThan(250);
-    });
-
-    it('marks the shell with an invisible box that takes no pointer', () => {
-      viewport.set(390, 844);
-      toggleGuide();
-      const m = rectOf(marker());
-      const shell = component.viewer.shellScreenBox()!;
-      expect(m.width).toBeGreaterThan(0);
-      expect(m.left).toBeGreaterThanOrEqual(shell.left - 0.5);
-      expect(m.right).toBeLessThanOrEqual(shell.left + shell.width + 0.5);
-      expect(marker().getAttribute('aria-hidden')).toBe('true');
-      expect(getComputedStyle(marker()).pointerEvents).toBe('none');
+      expect(el.querySelector('#guide-game-view')).toBeNull();
+      expect(el.querySelector('#shell-region')).toBeNull();
     });
   });
 
@@ -1450,32 +1390,23 @@ describe('GameComponent control guide (#35)', () => {
       expect(guideBubbles().length).toBe(expected.length);
     });
 
-    it("stays on when the switch flips, and the 3D view's bubble moves to the shell now shown", () => {
-      viewport.set(390, 844);
-      spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 20, top: 150, width: 100, height: 100 });
-      spyOn(component.targetViewer, 'shellScreenBox').and.returnValue({ left: 250, top: 500, width: 100, height: 100 });
+    it('stays on when the switch flips', () => {
       guideOn();
-      expect(rectOf(marker()).left).withContext('on yours first').toBeLessThan(150);
       flipSwitch();
       expect(component.targetVisible).toBeTrue();
       expect(component.guide.on).toBeTrue();
       expect(guideBubbles().length).toBe(expected.length);
-      expect(rectOf(marker()).left).withContext('on the target').toBeGreaterThan(250);
-      expect(pointsInto(el.querySelector('#guide-game-view') as HTMLElement, rectOf(marker())))
-        .withContext("the 3D view's bubble reaches the target").toBeTrue();
     });
 
-    it('moves the shell marker when the window is resized, laying the guide out once', () => {
+    it('lays the guide out once per window resize', () => {
       viewport.set(390, 844);
       guideOn();
-      const box = spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 60, top: 200, width: 100, height: 100 });
       const callout = fixture.debugElement.query(By.directive(CalloutComponent)).componentInstance as CalloutComponent;
       const passes = spyOn(callout as unknown as { placeGuide(): void }, 'placeGuide').and.callThrough();
       window.dispatchEvent(new Event('resize'));
       render();
-      expect(box).toHaveBeenCalled();
-      expect(rectOf(marker()).left).toBeCloseTo(60 + 100 * 0.15, 0);
       expect(passes).toHaveBeenCalledTimes(1);
+      expect(guideBubbles().length).toBe(expected.length);
     });
   });
 
@@ -1705,19 +1636,6 @@ describe('GameComponent control guide (#35)', () => {
       expect(component.guide.on).toBeTrue();
       expect(guideBubbles().length).toBe(expected.length);
       expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
-    });
-
-    it("moves the 3D view's bubble with the shell once a drag ends", () => {
-      viewport.set(390, 844);
-      guideOn();
-      const box = spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 40, top: 300, width: 100, height: 100 });
-      pointer('#canvas', 'pointerdown', 200, 400);
-      pointer('#canvas', 'pointermove', 300, 380);
-      pointer('#canvas', 'pointerup', 300, 380);
-      render();
-      expect(box).toHaveBeenCalled();
-      expect(rectOf(marker()).left).toBeCloseTo(40 + 100 * 0.15, 0);
-      expect(component.guide.on).toBeTrue();
     });
   });
 });

@@ -5,7 +5,7 @@ import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
 import { HelpKey, ParameterHelp } from '../parameter-help';
 import { ControlGuide, GAME_GUIDE } from '../control-guide';
-import { CanvasTap, followShell } from '../shell-region';
+import { CanvasTap } from '../shell-region';
 import { random } from 'src/util';
 
 type TargetParameterKey = 'd' | 'A' | 'alpha' | 'beta' | 'a' | 'b' | 'mu' | 'omega' | 'phi' | 'theta';
@@ -54,18 +54,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('gameKeyInput')
   private gameKeyInputRef!: ElementRef;
 
-  @ViewChild('shellRegion')
-  private shellRegionRef!: ElementRef<HTMLElement>;
-
   @HostListener('window:resize', ['$event'])
   onWindowResize(event: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
     this.viewer.resize(width, height);
     this.targetViewer.resize(width, height);
-    // Only move the shell region: the callout's own resize listener, which
-    // runs after this one, lays the guide out again (once).
-    this.followShell(false);
   }
 
   private get canvas(): HTMLCanvasElement {
@@ -248,26 +242,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.tap.up(event)) {
       this.guide.close();
     }
-    else {
-      this.followShell();
-    }
   }
 
   canvasPointerCancel(event: PointerEvent): void {
     this.tap.cancel(event);
-  }
-
-  // Keeps #shell-region over the visible shell (yours on Usuario, the target
-  // on Objetivo) and (unless `replace` is false) has the guide placed again.
-  // Only while the guide is on.
-  private followShell(replace = true): void {
-    if (!this.guide.on || !this.shellRegionRef) {
-      return;
-    }
-    const visible = this.targetVisible ? this.targetViewer : this.viewer;
-    if (followShell(this.shellRegionRef.nativeElement, visible.shellScreenBox()) && replace) {
-      this.guide.refresh();
-    }
   }
 
   setMenuVisibility(): void {
@@ -309,11 +287,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // Flipping the switch keeps the guide on (#35); its 3D view's bubble
-  // moves to the shell now shown.
+  // Flipping the switch keeps the guide on (#35).
   switchButtonClick(event: Event) {
     this.setShellVisibility();
-    this.followShell();
   }
 
   checkGameIsOver(): void {
@@ -545,7 +521,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.victoryOpen = false;
     }
     this.guide.toggle();
-    this.followShell();
   }
 
   howToButtonClick(event: Event) {

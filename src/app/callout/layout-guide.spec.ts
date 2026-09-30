@@ -249,7 +249,7 @@ describe('layoutGuide (#5)', () => {
 // The game screen (#35): the toolbar (gear, camera, home, book) at the top
 // left and the "?" in the top-right corner, as on the initial screen; at the
 // bottom the Usuario/Objetivo switch (left), the heat bar (centre) and
-// Nuevo juego / Compartir (right). On one bottom row on wide screens; the
+// Nuevo juego / Compartir (right). No bubble for the 3D view there. On one bottom row on wide screens; the
 // heat bar goes up a row at 800 px and less, the two buttons at 560 px and
 // less (game.component.css).
 function gameScreen(viewport: Size): GuideItem[] {
@@ -257,7 +257,6 @@ function gameScreen(viewport: Size): GuideItem[] {
   const icon = width < 356 ? 56 : 64;
   const toolbar = [0, 1, 2, 3].map(i => ({ anchor: box(7 + (icon + 4) * i, 7, icon, icon) }));
   const help = { anchor: box(width - 7 - icon, 7, icon, icon) };
-  const view = { anchor: centralRegion(box(0, 0, width, height)), region: true };
   const bottom = (up: number) => height - 47 - up;
   const heatUp = width <= 560 ? 98 : width <= 800 ? 49 : 0;
   const buttonsUp = width <= 560 ? 49 : 0;
@@ -265,14 +264,14 @@ function gameScreen(viewport: Size): GuideItem[] {
   const heat = { anchor: box(width / 2 - 130, bottom(heatUp), 260, 40) };
   const newGame = { anchor: box(width - 241, bottom(buttonsUp), 124, 40) };
   const share = { anchor: box(width - 109, bottom(buttonsUp), 104, 40) };
-  return [...toolbar, help, view, toggle, heat, newGame, share];
+  return [...toolbar, help, toggle, heat, newGame, share];
 }
 
 // The game guide's text lengths, in the same order, as the browser renders
 // them: 6 px a character and 18.5 px lines (the gear's 45-character line is
 // 271×51 px at 1280×800); the compact bubbles of phone widths and short
 // screens take 5.5 px and 16 px lines (247×41 px).
-const GAME_CHARS = [45, 29, 29, 33, 26, 51, 43, 33, 46, 52];
+const GAME_CHARS = [45, 29, 29, 33, 26, 43, 33, 46, 72];
 const gameText = (viewport: Size): Measure => viewport.width <= 560 || viewport.height < 700
   ? fakeMeasure(GAME_CHARS, 5.5, 16, 9)
   : fakeMeasure(GAME_CHARS, 6, 18.5, 14);
@@ -320,18 +319,18 @@ function expectTidyLayout(items: GuideItem[], measure: Measure, viewport: Size) 
 
 describe('layoutGuide on the game screen (#35)', () => {
   for (const viewport of [SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE]) {
-    it(`keeps all ten bubbles tidy at ${viewport.width}×${viewport.height}`, () => {
+    it(`keeps all nine bubbles tidy at ${viewport.width}×${viewport.height}`, () => {
       expectTidyLayout(gameScreen(viewport), gameText(viewport), viewport);
     });
   }
 
-  // Short phones: ten bubbles don't fit (owner, #35: best effort), but each
-  // one is still placed, on screen.
+  // Short phones: best effort (owner, #35): each bubble is still placed, on
+  // screen.
   for (const viewport of [{ width: 320, height: 568 }, NARROW, { width: 360, height: 560 }, SHORT, { width: 375, height: 553 }]) {
-    it(`still places all ten bubbles on screen at ${viewport.width}×${viewport.height} (best effort)`, () => {
+    it(`still places all nine bubbles on screen at ${viewport.width}×${viewport.height} (best effort)`, () => {
       const measure = gameText(viewport);
       const placements = layoutGuide(gameScreen(viewport), measure, viewport);
-      expect(placements.length).toBe(10);
+      expect(placements.length).toBe(9);
       placements.forEach((p, i) => {
         const r = rect(p, i, measure);
         expect(r.left).withContext(`bubble ${i} left`).toBeGreaterThanOrEqual(8);

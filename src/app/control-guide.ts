@@ -18,16 +18,15 @@ export const SANDBOX_GUIDE: Callout[] = [
 ];
 
 // The game's guide (#35), in reading order: the toolbar left to right, the
-// "?" in the top-right corner, the 3D view (the visible shell), then the
-// bottom row (the Usuario/Objetivo switch, the heat bar, Nuevo juego and
-// Compartir).
+// "?" in the top-right corner, then the bottom row (the Usuario/Objetivo
+// switch, the heat bar, Nuevo juego and Compartir). No bubble for the 3D
+// view: with the bottom row's, too crowded (owner, 2026-09-30).
 export const GAME_GUIDE: Callout[] = [
   { id: 'guide-game-parameters', anchor: '#parameters-button', title: AppStrings.GUIDE_GAME_PARAMETERS_TITLE, text: AppStrings.GUIDE_GAME_PARAMETERS_TEXT },
   { id: 'guide-game-save-image', anchor: '#save-image-button', title: AppStrings.GUIDE_SAVE_IMAGE_TITLE, text: AppStrings.GUIDE_SAVE_IMAGE_TEXT },
   { id: 'guide-game-home', anchor: '#home-button', title: AppStrings.GUIDE_GAME_HOME_TITLE, text: AppStrings.GUIDE_GAME_HOME_TEXT },
   { id: 'guide-game-howto', anchor: '#howto-button', title: AppStrings.GUIDE_GAME_HOWTO_TITLE, text: AppStrings.GUIDE_GAME_HOWTO_TEXT },
   { id: 'guide-game-help', anchor: '#help-button', title: AppStrings.GUIDE_HELP_TITLE, text: AppStrings.GUIDE_HELP_TEXT },
-  { id: 'guide-game-view', anchor: '#shell-region', title: AppStrings.GUIDE_VIEW_TITLE, text: AppStrings.GUIDE_VIEW_TEXT, region: true },
   { id: 'guide-game-switch', anchor: '#toggle-switch', title: AppStrings.GUIDE_GAME_SWITCH_TITLE, text: AppStrings.GUIDE_GAME_SWITCH_TEXT },
   { id: 'guide-game-heat', anchor: '#result-container', title: AppStrings.GUIDE_GAME_HEAT_TITLE, text: AppStrings.GUIDE_GAME_HEAT_TEXT },
   { id: 'guide-game-new-game', anchor: '#new-game-button', title: AppStrings.GUIDE_GAME_NEW_GAME_TITLE, text: AppStrings.GUIDE_GAME_NEW_GAME_TEXT },

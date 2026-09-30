@@ -65,9 +65,9 @@ export const lineBox = (l: Leader) =>
 // bubble that can't be stacked (off the screen, or its line across a
 // bubble) is placed like a lone control. Every other bubble sits beside its
 // control on the first side where it fits and covers nothing, controls
-// before regions; a region's bubble may move into the region to find room,
-// or point off-centre. Failing that, a bubble sits further out, joined to
-// its item by a line through a gap.
+// before regions; a region's bubble may move into the region to find room.
+// Failing that, a bubble sits further out, joined to its item by a line
+// through a gap.
 export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size): GuidePlacement[] {
   const result: GuidePlacement[] = new Array(items.length);
   const taken: Box[] = [];
@@ -113,47 +113,17 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
   const placeBeside = (index: number, sides: Side[]): boolean => {
     const item = items[index];
     const size = measure(index, widest);
-    // How far a region's bubble may move into it: the region's length along
-    // the side's direction (a tall, thin shell takes a bubble part way up, #35).
-    const depthFor = (side: Side) =>
-      (side === 'below' || side === 'above' ? item.anchor.height : item.anchor.width) - ARROW_TIP;
+    const depth = Math.min(item.anchor.width, item.anchor.height) - ARROW_TIP;
     // A region's arrow points just inside it, so its bubble starts 1 px nearer.
     const nearest = item.region ? ARROW_TIP - 1 : GAP;
-    const ok = (placement: GuidePlacement) => {
-      const r = box(placement.left, placement.top, size.width, size.height);
-      const point = tip(placement, size);
-      return fits(r) && !blocks(r, index) && !taken.some(t => inside(point.x, point.y, t));
-    };
     for (const side of sides) {
-      for (let distance = nearest; distance >= (item.region ? nearest - depthFor(side) : GAP); distance -= SLIDE_STEP) {
+      for (let distance = nearest; distance >= (item.region ? nearest - depth : GAP); distance -= SLIDE_STEP) {
         const placement = beside(item.anchor, size, side, distance);
-        if (ok(placement)) {
+        const r = box(placement.left, placement.top, size.width, size.height);
+        const point = tip(placement, size);
+        if (fits(r) && !blocks(r, index) && !taken.some(t => inside(point.x, point.y, t))) {
           accept(index, placement, size);
           return true;
-        }
-      }
-    }
-    // A region's bubble may also point off-centre (#35): its arrow anywhere
-    // across the region, above or below it, from the middle outwards.
-    if (item.region) {
-      const region = item.anchor;
-      const centreX = region.left + region.width / 2;
-      for (const side of sides.filter(s => s === 'below' || s === 'above')) {
-        for (let distance = nearest; distance >= nearest - depthFor(side); distance -= SLIDE_STEP) {
-          const centred = beside(region, size, side, distance);
-          for (let d = COLUMN_STEP; d <= region.width / 2 - ARROW_TIP; d += COLUMN_STEP) {
-            for (const x of [centreX + d, centreX - d]) {
-              const left = clamp(x - size.width / 2, MARGIN, viewport.width - MARGIN - size.width);
-              if (x < left + ARROW_INSET || x > left + size.width - ARROW_INSET) {
-                continue;
-              }
-              const placement = { ...centred, left, arrow: x - left };
-              if (ok(placement)) {
-                accept(index, placement, size);
-                return true;
-              }
-            }
-          }
         }
       }
     }
