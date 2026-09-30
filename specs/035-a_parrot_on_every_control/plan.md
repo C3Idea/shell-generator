@@ -4,6 +4,14 @@
 **Generated**: 2026-09-29
 **Issue**: #35 - [Game] Add help icon explaining the controls ("?" guide)
 
+> **Plan snapshot note (2026-09-30):** written on 2026-09-29, before two owner
+> decisions made during `/vt.build`: **D7** (compact bubbles on phone widths,
+> short phones best effort, with fixes to the shared `layoutGuide()`) and **D8**
+> (no bubble for the 3D view: **nine** callouts, not ten; no `#shell-region` and no
+> shell following on the game; heat bar "Progreso"; the owner's Compartir line).
+> Where this plan says ten callouts, a 3D-view region or the game following the
+> visible shell, the spec's D7/D8 and the code win.
+
 ### Technical Context
 
 Angular 17.3 (NgModule), TypeScript, three.js OrbitControls, Karma/Jasmine

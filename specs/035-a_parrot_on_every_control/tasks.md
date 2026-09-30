@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T22:18:35-06:00
+**Generated**: 2026-09-30T00:47:19-06:00
 
 ---
 

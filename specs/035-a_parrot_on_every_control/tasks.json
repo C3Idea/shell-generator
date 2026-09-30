@@ -184,7 +184,8 @@
           "redResult": "7 FAILED (all game-guide specs, length preconditions added), 10 SUCCESS (#5 specs)",
           "greenResult": "17 SUCCESS"
         },
-        "satisfaction": "full"
+        "satisfaction": "full",
+        "notes": "Superseded in part by D8 (709aa40): GAME_GUIDE has nine callouts, no 3D-view (#shell-region) entry; heat bar titled \"Progreso\"; Compartir's line is the owner's (limit 75)."
       }
     },
     "T004": {
@@ -249,7 +250,8 @@
           "redResult": "22 FAILED (every #35 spec), 106 SUCCESS",
           "greenResult": "128 SUCCESS; full suite 350/350"
         },
-        "satisfaction": "full"
+        "satisfaction": "full",
+        "notes": "Superseded in part by D8 (709aa40): the game has no #shell-region and follows no shell; the 3D-view aim went with the 3D-view bubble. Tap vs drag on both canvases stays."
       }
     },
     "T006": {
@@ -357,7 +359,8 @@
           "redResult": "no RED: behaviour inherited from the shared callout (#5); guards verified by mutation (swapped callout order: 3 FAILED)",
           "greenResult": "166 SUCCESS"
         },
-        "satisfaction": "full"
+        "satisfaction": "full",
+        "notes": "Superseded in part by D8 (709aa40): the live region reads nine bubbles; no #shell-region to hide."
       }
     },
     "T009": {
