@@ -21,15 +21,16 @@
       2,
       3,
       4,
-      5
+      5,
+      6
     ],
     "totalTasks": 8,
-    "completedTasks": 7,
+    "completedTasks": 8,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T11:48:29-06:00",
+    "lastCheckpoint": "2026-09-30T11:52:05-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:49:47-06:00"
+    "lastUpdated": "2026-09-30T11:50:21-06:00"
   },
   "waves": [
     {
@@ -100,7 +101,8 @@
         "T007",
         "T008"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:50:21-06:00"
     }
   ],
   "tasks": {
@@ -340,7 +342,7 @@
       "id": "T008",
       "wave": 6,
       "description": "Owner approval: post the copy + ⓘ wording and screenshots (390 and 1280 px, collapsed and expanded) on #3 for approval (FR-011, SC-005, SC-007).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
@@ -350,7 +352,17 @@
       ],
       "dependencies": [
         "T007"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T11:50:21-06:00",
+        "commitSha": "06d6c3b4fa40f6479652b3312f336c51efc7dc97",
+        "agents": "claude(inline)",
+        "files": [
+          "none (approval request issuecomment-5916660812; screenshots in validaciones/shell_generator/3/capturas)"
+        ],
+        "satisfaction": "partial",
+        "notes": "request posted; owner approval of copy, notation, ⓘ wording and screenshots pending"
+      }
     }
   }
 }
