@@ -1,0 +1,7 @@
+vt.idd:task: T006
+vt.idd:domain: config
+vt.idd:agents: claude(inline)
+vt.idd:files: none (full suite + lint via checkpoint; build OK; after screenshots in validaciones/shell_generator/10)
+vt.idd:satisfies: partial (FR-010 needs the owner's approval of wording and screenshots on #10)
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-30T16:10:32-06:00
