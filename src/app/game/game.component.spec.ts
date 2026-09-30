@@ -1801,4 +1801,46 @@ describe('GameComponent how-to pop-up (#10)', () => {
       expect(play()).not.toBeNull();
     });
   });
+
+  describe('layout', () => {
+    const viewport = useViewport();
+    const noSideScroll = (e: Element, what: string) =>
+      expect(e.scrollWidth).withContext(`${what} scrolls sideways`).toBeLessThanOrEqual(e.clientWidth + 1);
+    const onScreen = (e: Element) => {
+      const r = e.getBoundingClientRect();
+      return r.width > 0 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight + 1 && r.right <= window.innerWidth + 1;
+    };
+
+    for (const [width, height] of [[320, 568], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`never scrolls the pop-up or the page sideways at ${width}×${height}`, () => {
+        viewport.set(width, height);
+        render();
+        noSideScroll(document.documentElement, 'the page');
+        noSideScroll(howTo(), 'the pop-up');
+        noSideScroll(howTo().querySelector('article')!, 'the pop-up box');
+        noSideScroll(body(), 'the pop-up body');
+        expect(howTo().getBoundingClientRect().right).toBeLessThanOrEqual(window.innerWidth + 1);
+        // Every line wraps inside the box: no section wider than the body.
+        [...sections(), ...Array.from(body().children)].forEach(p =>
+          expect(p.getBoundingClientRect().right).withContext(p.id || p.className)
+            .toBeLessThanOrEqual(body().getBoundingClientRect().right + 1));
+      });
+    }
+
+    for (const [width, height] of [[320, 568], [844, 390]]) {
+      it(`keeps the ✕ and "¡A jugar!" on screen at ${width}×${height}, the text scrolling between them`, () => {
+        viewport.set(width, height);
+        render();
+        expect(onScreen(howTo().querySelector('header > button')!)).withContext('✕').toBeTrue();
+        expect(onScreen(howTo().querySelector('#howto-play-button')!)).withContext('¡A jugar!').toBeTrue();
+        expect(getComputedStyle(body()).overflowY).toMatch(/auto|scroll/);
+        // The last line is reachable by scrolling the body.
+        body().scrollTop = body().scrollHeight;
+        const closing = body().querySelector('.label-howto-closing')!.getBoundingClientRect();
+        expect(closing.bottom).withContext('closing line after scrolling')
+          .toBeLessThanOrEqual(body().getBoundingClientRect().bottom + 1);
+      });
+    }
+  });
 });
+
