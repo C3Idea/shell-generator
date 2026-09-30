@@ -1,0 +1,395 @@
+{
+  "pass": 1,
+  "pr_number": 34,
+  "pr_title": "feat: initial-screen control guide (#5)",
+  "copilot_review_summary": "Copilot review: skipped by config/flag (no .vt/vt.config.yaml in this repo, so review.copilot_integration is not enabled). Visual E2E: covered by the local harness (validaciones/shell_generator/5: real Chromium, mouse and touch at 8 sizes incl. short phone screens, 146/146) and the owner's manual pass §1–§6. Verification pass: not run (no C/S findings); the M findings were checked against the code before posting. Security reviewer: no C/S findings (static strings by interpolation, hardcoded selectors and ids, no new dependency). Reviewers: 3 role-scoped `reviewer` instances (security, quality, documentation). Reviewed head: 9eab9a1.",
+  "findings": [
+    {
+      "id": "M1",
+      "title": "Viewport test helper restores the wrong size when a spec calls it twice",
+      "severity": "Major",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/callout.component.spec.ts",
+      "lines": "271-285",
+      "description": "`setViewport()` records `before` from the iframe's *current* size and overwrites `restoreViewport` on each call. The guide-mode `beforeEach` sets 390×844 and 're-places the bubbles when the window is resized' sets 1280×800, so `afterEach` restores 390×844, not the original. The sandbox #5 block does the same (390→844×390, plus nested `beforeEach` calls). With Jasmine's random order, the leaked iframe size can make unrelated layout specs (modal, game, panel layout) depend on the seed.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Capture the original size only once per spec (first call), and always apply the new size.",
+          "rationale": "Smallest correct fix: `afterEach` always restores the true original."
+        },
+        "B": {
+          "approach": "Leave it and reset the iframe in a global `afterEach`.",
+          "rationale": "Hides the bug instead of fixing the helper."
+        }
+      }
+    },
+    {
+      "id": "M2",
+      "title": "The Karma-iframe viewport helper is copy-pasted into several specs",
+      "severity": "Major",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/sandbox/sandbox.component.spec.ts",
+      "lines": "387, 533",
+      "description": "The same resize + `pending()` + restore closure exists at sandbox.component.spec.ts:387 and :533, callout.component.spec.ts:271 and game.component.spec.ts (from #6). A fix to one copy (M1) doesn't reach the others. `src/testing/frame-pump.ts` already holds shared test helpers.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Add `src/testing/viewport.ts` exporting `useViewport()` (a `set(width, height)` that captures the original once, restored by an `afterEach` it registers) and use it in every spec.",
+          "rationale": "One place to fix and reason about, next to the existing frame pump."
+        },
+        "B": {
+          "approach": "Dedupe only the two new #5 copies.",
+          "rationale": "Less churn, but leaves the older copies with the bug."
+        }
+      }
+    },
+    {
+      "id": "M3",
+      "title": "Geometry constants and `clamp` duplicated between the callout and layoutGuide, with a type-only import cycle",
+      "severity": "Major",
+      "fix_group": "FG-2",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/layout-guide.ts",
+      "lines": "1, 37-57",
+      "description": "layout-guide.ts imports `Box`/`Size` from callout.component.ts, which imports `layoutGuide` back. It's type-only today, but breaks as soon as either becomes a value import. `GAP = 10`, `MARGIN = 8`, `ARROW_INSET = 14` and `clamp` are redefined in both files: if #6's spacing changes, the guide silently diverges from the single bubble.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Add `src/app/callout/geometry.ts` exporting `Box`, `Size`, `GAP`, `MARGIN`, `ARROW_INSET`, `clamp` and `overlaps`; import it from the component, layoutGuide and the specs.",
+          "rationale": "Removes the cycle and the duplicated constants without changing behaviour."
+        },
+        "B": {
+          "approach": "Export the constants from layout-guide.ts and import them in the component.",
+          "rationale": "Smaller, but makes #6 code depend on the guide module."
+        }
+      }
+    },
+    {
+      "id": "M4",
+      "title": "The 'reaches the shell with a line' spec asserts nothing when no line is drawn",
+      "severity": "Major",
+      "fix_group": "FG-1",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/layout-guide.spec.ts",
+      "lines": "213",
+      "description": "Its real assertions sit inside `if (view.leader) { … }`. With the fake measure at 360×640 the 3D view's bubble fits beside the shell, so `placeFar()` (column search, line start below covering boxes, line-vs-bubble collision) has no guaranteed coverage; the spec would still pass if `placeFar()` were deleted.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Build an item set that provably forces `placeFar()` (a staircase covering the region and a control right under it) and assert the line unconditionally: defined, starts on the region, ends at the arrow, crosses nothing.",
+          "rationale": "Fails if the far-placement path stops being exercised."
+        },
+        "B": {
+          "approach": "Also add specs for the `above` branch and the fallback clamp.",
+          "rationale": "More coverage, more fixture code."
+        }
+      }
+    },
+    {
+      "id": "m1",
+      "title": "Every window resize lays the guide out twice",
+      "severity": "Minor",
+      "fix_group": "FG-3",
+      "source": "Quality reviewer",
+      "file": "src/app/sandbox/sandbox.component.ts",
+      "lines": "41",
+      "description": "On resize the sandbox's handler moves `#shell-region` and calls `guide.refresh()` (a new array → `ngOnChanges` → a full `place()`), and the callout's own `window:resize` handler places too. Each pass forces reflows per bubble and may run `placeFar()`'s scan; dragging a desktop window edge does this twice per event.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "On the resize path, only move `#shell-region`; let the callout's own resize handler re-place (the sandbox's listener, registered first, runs before it).",
+          "rationale": "One layout pass per resize, on the updated region."
+        },
+        "B": {
+          "approach": "Throttle the callout's resize handler with requestAnimationFrame.",
+          "rationale": "Fewer passes but still two per frame."
+        }
+      }
+    },
+    {
+      "id": "m2",
+      "title": "`shellScreenBox()` isn't clipped to the canvas and projects points behind the camera",
+      "severity": "Minor",
+      "fix_group": "FG-4",
+      "source": "Quality reviewer",
+      "file": "src/app/shell-viewer.ts",
+      "lines": "286",
+      "description": "Zoomed in close with the wheel, vertices behind the camera project to mirrored coordinates, and even valid ones aren't clamped to the canvas. After a drag, `followShell()` can then make `#shell-region` bigger than the screen, no side fits, and the 3D view's bubble falls back to a clamped spot pointing at nothing.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Skip points outside the view frustum's depth (`z` outside [-1, 1]) and intersect the box with the canvas; return null if nothing is left.",
+          "rationale": "Keeps the region on the visible part of the shell."
+        },
+        "B": {
+          "approach": "Clamp only in `followShell()`.",
+          "rationale": "Simpler, but leaves the viewer returning bogus boxes."
+        }
+      }
+    },
+    {
+      "id": "m3",
+      "title": "A right-click counts as a tap, and a lost pointerup can block taps",
+      "severity": "Minor",
+      "fix_group": "FG-3",
+      "source": "Quality reviewer",
+      "file": "src/app/sandbox/sandbox.component.ts",
+      "lines": "190-210",
+      "description": "`canvasPointerUp` treats any button as a tap, so a right-click or middle-click (OrbitControls pan) without movement closes the guide. And `presses` is only cleared on pointerup/cancel: if one never arrives, the next press sees two pointers, `pinching` sticks at true, and taps never close the guide again until reload (Esc and the \"?\" still do).",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Count a tap only for the primary button (`button === 0`), and start fresh when a primary pointer goes down (`isPrimary`); add specs for both.",
+          "rationale": "Small change that closes both holes."
+        },
+        "B": {
+          "approach": "Track pointers through capture events and add pointercancel specs.",
+          "rationale": "Stronger, more code."
+        }
+      }
+    },
+    {
+      "id": "m4",
+      "title": "Run-on line in the layoutGuide doc comment",
+      "severity": "Minor",
+      "fix_group": "FG-2",
+      "source": "Quality reviewer",
+      "file": "src/app/callout/layout-guide.ts",
+      "lines": "68",
+      "description": "One line joins two sentences and runs past the file's ~80-column wrapping. Same place as D8.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Rewrap the comment (fixed with D8).",
+          "rationale": "Consistency."
+        }
+      }
+    },
+    {
+      "id": "D1",
+      "title": "Issue #5 still sends the game screen's reuse to #10",
+      "severity": "Documentation",
+      "fix_group": "FG-6",
+      "source": "Documentation reviewer",
+      "file": "issue #5 body",
+      "lines": "Suggested direction, Out of scope, Related",
+      "description": "The body says '#10 then reuses it', lists 'The game screen's guide and the how-to text (#10)' as out of scope and '#10: reuses this guide'. #10 is now the how-to text rewrite; the game's guide is #35. The spec already says #35.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Replace #10 with #35 where it means the game's guide; keep #10 for the how-to text.",
+          "rationale": "The issue is what the PR closes; it should match the spec."
+        },
+        "B": {
+          "approach": "Add a comment instead of editing the body.",
+          "rationale": "Leaves the wrong link in the body."
+        }
+      }
+    },
+    {
+      "id": "D2",
+      "title": "Issue #5's 'Suggested direction' still puts the \"?\" in the toolbar",
+      "severity": "Documentation",
+      "fix_group": "FG-6",
+      "source": "Documentation reviewer",
+      "file": "issue #5 body",
+      "lines": "Suggested direction",
+      "description": "'Add a \"?\" button to the toolbar' contradicts 'Chosen values' in the same body (alone in the top-right corner) and the code.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Reword: 'Add a \"?\" button alone in the top-right corner, level with the toolbar'.",
+          "rationale": "Removes the contradiction."
+        }
+      }
+    },
+    {
+      "id": "D3",
+      "title": "The spec's conventions still give the guide the 80 % background",
+      "severity": "Documentation",
+      "fix_group": "FG-5",
+      "source": "Documentation reviewer",
+      "file": "specs/005-x_marks_the_controls/spec.md",
+      "lines": "167",
+      "description": "'Reuse … the #6 callout look (80 % background, teal border/arrow)'. The guide's bubbles are 95 % (`.callout-guide`); only the ⓘ bubble stays at 80 %. The 95 % decision (owner, `c3d3133`) isn't among the spec's decisions.",
+      "recommended": "B",
+      "options": {
+        "A": {
+          "approach": "Fix the conventions line.",
+          "rationale": "Matches the CSS."
+        },
+        "B": {
+          "approach": "Fix the line and add decision 17 for the 95 % background.",
+          "rationale": "Decisions 14–16 record the other owner changes; this one is missing."
+        }
+      }
+    },
+    {
+      "id": "D4",
+      "title": "The spec's Key Entities describe a layout signature and a type that don't exist",
+      "severity": "Documentation",
+      "fix_group": "FG-5",
+      "source": "Documentation reviewer",
+      "file": "specs/005-x_marks_the_controls/spec.md",
+      "lines": "113-115",
+      "description": "'a pure function taking the anchors' boxes, the bubbles' sizes and the viewport': it's `layoutGuide(items: GuideItem[], measure, viewport)` with a measuring callback. 'GuideCallout … extends the #6 Callout': no such type; `Callout` gained an optional `region`, and the line lives in `GuidePlacement.leader`.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Describe the as-built entities: `GuideItem {anchor, region?}`, the `measure` callback, `GuidePlacement.leader`, `Callout.region`.",
+          "rationale": "Matches the code and the PR's account."
+        },
+        "B": {
+          "approach": "Add 'as built: see layout-guide.ts'.",
+          "rationale": "Cheaper but leaves the stale text."
+        }
+      }
+    },
+    {
+      "id": "D5",
+      "title": "The PR still calls the guide's text 'draft'",
+      "severity": "Documentation",
+      "fix_group": "FG-6",
+      "source": "Documentation reviewer",
+      "file": "PR #34 body",
+      "lines": "Files Changed, Test Plan",
+      "description": "The app-strings.ts row says 'draft text' and the last checkbox bundles the approved text with the pending screenshots.",
+      "recommended": "B",
+      "options": {
+        "A": {
+          "approach": "Change 'draft text' to 'owner-approved text'.",
+          "rationale": "Matches the code."
+        },
+        "B": {
+          "approach": "That, and split the checkbox: text approved (ticked), screenshots approved (open).",
+          "rationale": "Shows exactly what is still pending."
+        }
+      }
+    },
+    {
+      "id": "D6",
+      "title": "ControlGuide's comment leaves the \"?\" out of the reading order",
+      "severity": "Documentation",
+      "fix_group": "FG-5",
+      "source": "Documentation reviewer",
+      "file": "src/app/control-guide.ts",
+      "lines": "6",
+      "description": "'in reading order (the toolbar left to right, the 3D view, the pencil)', but the array has the \"?\" (now in the top-right corner) between the book and the 3D view.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "'(the toolbar left to right, the \"?\" in the top-right corner, the 3D view, the pencil)'.",
+          "rationale": "Describes the array and the order a screen reader hears."
+        }
+      }
+    },
+    {
+      "id": "D7",
+      "title": "Callout comments still describe only the #6 ⓘ bubble",
+      "severity": "Documentation",
+      "fix_group": "FG-2",
+      "source": "Documentation reviewer",
+      "file": "src/app/callout/callout.component.ts",
+      "lines": "4",
+      "description": "'One help bubble (#6), shown for the ⓘ that was clicked'; the CSS header says the background is 80 % and the arrow 'points back at the ⓘ'. Guide bubbles point at controls and the shell region, at 95 %.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Mention the guide in the `Callout` and arrow comments, and '80 % for the ⓘ bubble, 95 % for the guide's' in the CSS header.",
+          "rationale": "Stops the header contradicting `.callout-guide`."
+        }
+      }
+    },
+    {
+      "id": "D8",
+      "title": "'sits beside it instead' has no referent",
+      "severity": "Documentation",
+      "fix_group": "FG-2",
+      "source": "Documentation reviewer",
+      "file": "src/app/callout/layout-guide.ts",
+      "lines": "79",
+      "description": "The doc comment says the rightmost row control's bubble 'sits beside it instead' without saying it skips the staircase.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "'Where there's room to its right, the rightmost control's bubble goes there and skips the staircase', rewrapped (with m4).",
+          "rationale": "Says what the bubble is spared."
+        }
+      }
+    },
+    {
+      "id": "D9",
+      "title": "The deploy-time plan reads as current design with nothing marking it as superseded",
+      "severity": "Documentation",
+      "fix_group": "FG-5",
+      "source": "Documentation reviewer",
+      "file": "specs/005-x_marks_the_controls/plan.md",
+      "lines": "11, 34, 41, 45",
+      "description": "plan.md states the \"?\" after the book, an 80 % background, `layoutGuide(anchors, bubbles, viewport)` and a zero-size canvas marker as design; tasks.md/tasks.json repeat them (generated; not to be hand-edited). Expected for a snapshot, but nothing says so.",
+      "recommended": "A",
+      "options": {
+        "A": {
+          "approach": "Add a note under plan.md's title: deploy-time plan, superseded in places by spec decisions 14–17 and the as-built `layoutGuide(items, measure, viewport)`.",
+          "rationale": "Cheap; the generated task files stay untouched."
+        },
+        "B": {
+          "approach": "Leave it.",
+          "rationale": "Both are snapshots; the issue and spec are current."
+        }
+      }
+    }
+  ],
+  "fix_groups": [
+    {
+      "id": "FG-1",
+      "primary_files": "`src/testing/viewport.ts` (new), `src/app/callout/callout.component.spec.ts`, `src/app/sandbox/sandbox.component.spec.ts`, `src/app/game/game.component.spec.ts`, `src/app/callout/layout-guide.spec.ts`",
+      "finding_ids": "M1, M2, M4",
+      "boundary": "Soft boundary with FG-2 (layout-guide.spec.ts imports)",
+      "advisory": "One shared viewport helper that captures the original size once; every spec uses it; the far-placement spec forced and asserted unconditionally. RED first: the helper's once-only restore and the forced placeFar.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-2",
+      "primary_files": "`src/app/callout/geometry.ts` (new), `src/app/callout/callout.component.{ts,css}`, `src/app/callout/layout-guide.ts`",
+      "finding_ids": "M3, D7, D8, m4",
+      "boundary": "Soft boundary with FG-1",
+      "advisory": "Move the shared geometry out of the component, break the import cycle; fix the callout and layout comments. Behaviour unchanged; existing specs are the guard.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-3",
+      "primary_files": "`src/app/sandbox/sandbox.component.{ts,spec.ts}`",
+      "finding_ids": "m1, m3",
+      "boundary": "Hard boundary",
+      "advisory": "Primary-button taps, a fresh start on a primary press, one layout pass per resize. RED first: right-click and stale-press specs.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-4",
+      "primary_files": "`src/app/shell-viewer.{ts,spec.ts}`",
+      "finding_ids": "m2",
+      "boundary": "Hard boundary",
+      "advisory": "Clip the projected box to the canvas and drop points behind the camera. RED first: a zoomed-in camera spec.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-5",
+      "primary_files": "`specs/005-x_marks_the_controls/{spec,plan}.md`, `src/app/control-guide.ts`",
+      "finding_ids": "D3, D4, D6, D9",
+      "boundary": "Hard boundary",
+      "advisory": "Spec conventions + decision 17 (95 %), as-built entities, plan snapshot note, ControlGuide comment; the spec comment on #5 too.",
+      "recommended_disposition": "Fix"
+    },
+    {
+      "id": "FG-6",
+      "primary_files": "issue #5 body, PR #34 body",
+      "finding_ids": "D1, D2, D5",
+      "boundary": "Hard boundary (GitHub text only)",
+      "advisory": "#10 → #35 for the game's guide, the \"?\" in the corner, text approved vs screenshots pending.",
+      "recommended_disposition": "Fix"
+    }
+  ]
+}
