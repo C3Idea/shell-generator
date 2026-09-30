@@ -228,6 +228,11 @@
       <strong>{{AppStrings.LABEL_HOWTO_WHERE_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_WHERE}}
     </p>
     <p class="label-howto-closing">{{AppStrings.LABEL_HOWTO_CLOSING}}</p>
+    <footer modal-footer>
+      <button type="button" id="howto-play-button" (click)="this.howToPlayButtonClick()">
+        {{AppStrings.LABEL_HOWTO_PLAY}}
+      </button>
+    </footer>
   </app-modal>
   <app-modal id="modal-victory" class="modal-centered" titleId="label-success-title" [open]="this.victoryOpen"
     (closed)="this.victoryOpen = false">

@@ -1749,4 +1749,56 @@ describe('GameComponent how-to pop-up (#10)', () => {
       expect(Object.keys(AppStrings).filter(k => k.startsWith('LABEL_HOWTO_WINDOW_LINE'))).toEqual([]);
     });
   });
+
+  describe('¡A jugar!', () => {
+    const play = () => howTo().querySelector('#howto-play-button') as HTMLButtonElement;
+    const guideBubbles = () => el.querySelectorAll('.callout-guide').length;
+
+    it('sits in the pop-up\'s footer, the only button there', () => {
+      expect(play().tagName).toBe('BUTTON');
+      expect(play().type).toBe('button');
+      expect(squash(play().textContent)).toBe('¡A jugar!');
+      const footer = play().closest('footer')!;
+      expect(footer).not.toBeNull();
+      expect(Array.from(footer.querySelectorAll('button')).map(b => squash(b.textContent))).toEqual(['¡A jugar!']);
+    });
+
+    it('closes the pop-up and leaves the game ready to play', () => {
+      const target = { ...component.targetParameters };
+      play().click();
+      render();
+      expect(component.howToOpen).toBeFalse();
+      expect(howTo().open).toBeFalse();
+      expect(component.victoryOpen).toBeFalse();
+      expect(component.newGameOpen).toBeFalse();
+      expect({ ...component.targetParameters }).withContext('same game').toEqual(target);
+    });
+
+    it('keeps the first focus on the ✕, like every other pop-up', () => {
+      component.howToOpen = false;
+      render();
+      component.howToButtonClick(new Event('click'));
+      render();
+      expect(document.activeElement).toBe(howTo().querySelector('header > button'));
+    });
+
+    it('comes back with the same sections from the book button, turning the "?" guide off', () => {
+      play().click();
+      render();
+      (el.querySelector('#help-button') as HTMLButtonElement).click();
+      render();
+      expect(guideBubbles()).withContext('guide on').toBeGreaterThan(0);
+      (el.querySelector('#howto-button') as HTMLButtonElement).click();
+      render();
+      expect(howTo().open).toBeTrue();
+      expect(component.guide.on).toBeFalse();
+      expect(guideBubbles()).toBe(0);
+      expect(sections().map(titleOf)).toEqual([
+        AppStrings.GUIDE_GAME_PARAMETERS_TITLE, AppStrings.GUIDE_GAME_SWITCH_TITLE,
+        AppStrings.GUIDE_GAME_HEAT_TITLE, AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE,
+        AppStrings.LABEL_HOWTO_WHERE_TITLE,
+      ]);
+      expect(play()).not.toBeNull();
+    });
+  });
 });
