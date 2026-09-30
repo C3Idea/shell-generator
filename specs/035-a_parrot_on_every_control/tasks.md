@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T21:22:56-06:00
+**Generated**: 2026-09-29T21:28:39-06:00
 
 ---
 
@@ -44,9 +44,9 @@
 
 **Purpose**: Close rules, keep-on actions, switch flip, resize
 
-- [ ] T006 [W3] [TDD] [US3] Game close rules and keep-on actions: turning the guide on closes the gear menu and any ⓘ (and pop-ups in code); opening the menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.
+- [x] T006 [W3] [TDD] [US3] Game close rules and keep-on actions: turning the guide on closes the gear menu and any ⓘ (and pop-ups in code); opening the menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -75,10 +75,10 @@
 ## Summary
 
 - **Total Tasks**: 10
-- **Completed**: 5
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 50%
+- **Progress**: 60%
 
 ---
 

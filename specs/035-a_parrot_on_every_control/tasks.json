@@ -14,19 +14,20 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 3,
+    "currentWave": 4,
     "completedWaves": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "totalTasks": 10,
-    "completedTasks": 5,
+    "completedTasks": 6,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T21:24:15-06:00",
+    "lastCheckpoint": "2026-09-29T21:30:00-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T21:22:56-06:00"
+    "lastUpdated": "2026-09-29T21:28:39-06:00"
   },
   "waves": [
     {
@@ -68,7 +69,8 @@
       "tasks": [
         "T006"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:28:39-06:00"
     },
     {
       "number": 4,
@@ -250,7 +252,7 @@
       "id": "T006",
       "wave": 3,
       "description": "Game close rules and keep-on actions: turning the guide on closes the gear menu and any ⓘ (and pop-ups in code); opening the menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! closes it; save image, Compartir (alert stubbed) and a switch flip keep it, the flip re-aims #shell-region at the newly visible shell; window resize re-follows the shell with one layout pass. Specs first.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -265,7 +267,22 @@
       "dependencies": [
         "T005"
       ],
-      "story": "US3"
+      "story": "US3",
+      "completion": {
+        "timestamp": "2026-09-29T21:28:39-06:00",
+        "commitSha": "027a2041f45d621662b8b9bf42184c8a81e59e7c",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "10 FAILED (close rules, pop-up safeguard, flip re-aim, resize), 3 regression guards already passing (menu+ⓘ on turn-on, save, Compartir)",
+          "greenResult": "141 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
     },
     "T007": {
       "id": "T007",
