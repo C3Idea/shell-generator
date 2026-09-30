@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T21:16:30-06:00
+**Generated**: 2026-09-29T21:22:56-06:00
 
 ---
 
@@ -34,9 +34,9 @@
 
 **Purpose**: The "?", ids, both canvases, on/off
 
-- [ ] T005 [W2] [TDD] [US1] Game: the "?" button alone in the top-right corner (inline SVG like #5, 44x44, name Mostrar ayuda, aria-pressed, aria-controls), ids on the toolbar buttons, heat bar, Nuevo juego and Compartir; <app-callout [guide]>; #shell-region over the VISIBLE viewer; pointer handlers on both canvases. Toggle on/off, Esc, a canvas tap closes, drag/pinch/wheel keep it. Specs first in game.component.spec.ts.
+- [x] T005 [W2] [TDD] [US1] Game: the "?" button alone in the top-right corner (inline SVG like #5, 44x44, name Mostrar ayuda, aria-pressed, aria-controls), ids on the toolbar buttons, heat bar, Nuevo juego and Compartir; <app-callout [guide]>; #shell-region over the VISIBLE viewer; pointer handlers on both canvases. Toggle on/off, Esc, a canvas tap closes, drag/pinch/wheel keep it. Specs first in game.component.spec.ts.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -75,10 +75,10 @@
 ## Summary
 
 - **Total Tasks**: 10
-- **Completed**: 4
+- **Completed**: 5
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 40%
+- **Progress**: 50%
 
 ---
 

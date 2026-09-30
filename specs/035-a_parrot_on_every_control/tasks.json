@@ -14,18 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 2,
+    "currentWave": 3,
     "completedWaves": [
       0,
-      1
+      1,
+      2
     ],
     "totalTasks": 10,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-29T21:17:34-06:00",
+    "lastCheckpoint": "2026-09-29T21:24:15-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T21:16:30-06:00"
+    "lastUpdated": "2026-09-29T21:22:56-06:00"
   },
   "waves": [
     {
@@ -57,7 +58,8 @@
       "tasks": [
         "T005"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-29T21:22:56-06:00"
     },
     {
       "number": 3,
@@ -209,7 +211,7 @@
       "id": "T005",
       "wave": 2,
       "description": "Game: the \"?\" button alone in the top-right corner (inline SVG like #5, 44x44, name Mostrar ayuda, aria-pressed, aria-controls), ids on the toolbar buttons, heat bar, Nuevo juego and Compartir; <app-callout [guide]>; #shell-region over the VISIBLE viewer; pointer handlers on both canvases. Toggle on/off, Esc, a canvas tap closes, drag/pinch/wheel keep it. Specs first in game.component.spec.ts.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -225,7 +227,24 @@
       "dependencies": [
         "T004"
       ],
-      "story": "US1"
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-09-29T21:22:56-06:00",
+        "commitSha": "7c4afe7a350b447850b1c19916ae862a630989ff",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.css",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "22 FAILED (every #35 spec), 106 SUCCESS",
+          "greenResult": "128 SUCCESS; full suite 350/350"
+        },
+        "satisfaction": "full"
+      }
     },
     "T006": {
       "id": "T006",
