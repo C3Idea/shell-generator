@@ -106,7 +106,7 @@
   }
 }
 
-/* The game's guide has ten bubbles and three rows of controls at the
+/* The game's guide has nine bubbles and three rows of controls at the
    bottom on a phone, so its bubbles are the compact ones on phone widths
    too (owner, #35). The game opts in with class="guide-compact-narrow". */
 @media (max-width: 560px) {

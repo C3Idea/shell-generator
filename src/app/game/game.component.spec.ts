@@ -1455,7 +1455,7 @@ describe('GameComponent control guide (#35)', () => {
       });
     }
 
-    it('uses the compact bubbles on phone widths, where ten bubbles need the room (owner, #35)', () => {
+    it('uses the compact bubbles on phone widths, where nine bubbles need the room (owner, #35)', () => {
       const fontSize = () => parseFloat(getComputedStyle(guideBubbles()[0]).fontSize);
       viewport.set(390, 844);
       toggleGuide();
@@ -1489,7 +1489,7 @@ describe('GameComponent control guide (#35)', () => {
       }
     }
 
-    // Short phones (a phone inside its browser): ten bubbles don't fit
+    // Short phones (a phone inside its browser): nine bubbles don't fit
     // under the toolbar's staircase and the game's three bottom rows, so
     // these are best effort (owner, #35): every bubble still shows, on
     // screen.
