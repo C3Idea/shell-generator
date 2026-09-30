@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { useViewport } from '../../testing/viewport';
 
 import { Callout, CalloutComponent, placeCallout } from './callout.component';
 
@@ -252,7 +253,6 @@ class GuideHostComponent {
 describe('CalloutComponent guide mode (#5)', () => {
   let fixture: ComponentFixture<GuideHostComponent>;
   let host: GuideHostComponent;
-  let restoreViewport: (() => void) | null = null;
 
   const guide: Callout[] = [
     { id: 'guide-g1', title: 'Uno', text: 'El primer botón de la fila.', anchor: '#g1' },
@@ -268,21 +268,8 @@ describe('CalloutComponent guide mode (#5)', () => {
   const overlaps = (a: DOMRect, b: DOMRect) =>
     a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
 
-  function setViewport(width: number, height: number) {
-    const frame = window.frameElement as HTMLIFrameElement | null;
-    if (!frame) {
-      pending('needs the Karma iframe to set the viewport size');
-      return;
-    }
-    const before = { width: frame.style.width, height: frame.style.height };
-    frame.style.width = `${width}px`;
-    frame.style.height = `${height}px`;
-    window.dispatchEvent(new Event('resize'));
-    restoreViewport = () => {
-      frame.style.width = before.width;
-      frame.style.height = before.height;
-    };
-  }
+  const viewport = useViewport();
+  const setViewport = (width: number, height: number) => viewport.set(width, height);
 
   function show(callouts: Callout[] | null) {
     host.guide = callouts;
@@ -299,10 +286,6 @@ describe('CalloutComponent guide mode (#5)', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    restoreViewport?.();
-    restoreViewport = null;
-  });
 
   it('shows one bubble per callout, in the given order, each with its id, title, text and arrow', () => {
     show(guide);

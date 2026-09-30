@@ -201,19 +201,43 @@ describe('layoutGuide (#5)', () => {
     });
   });
 
-  it("reaches the shell with a line when the bubbles above leave no room beside it", () => {
-    // A short phone: the staircase covers the shell's lower half.
-    const viewport = { width: 360, height: 640 };
-    const items = initialScreen(viewport);
-    const placements = layoutGuide(items, TEXT, viewport);
-    const rects = placements.map((p, i) => rect(p, i, TEXT));
-    const view = placements[6];
-    const shell = items[6].anchor;
-    rects.forEach((r, i) => i !== 6 && expect(overlaps(r, rects[6])).withContext(`bubble ${i}`).toBeFalse());
-    if (view.leader) {
-      expect(inside({ x: view.leader.x1, y: view.leader.y1 }, shell)).withContext('line starts on the shell').toBeTrue();
-      rects.forEach((r, i) => i !== 6 && expect(overlaps(lineBox(view.leader!), r)).withContext(`line across ${i}`).toBeFalse());
-    }
+  it('reaches the shell with a line when nothing fits beside it', () => {
+    // A row whose staircase covers the shell region, and a control right
+    // under the region: no side is free, so the bubble sits further out and
+    // a line joins it to the shell through a gap.
+    const viewport = { width: 400, height: 400 };
+    const shell = box(100, 60, 200, 100);
+    const items: GuideItem[] = [
+      { anchor: box(10, 10, 40, 40) },
+      { anchor: box(60, 10, 40, 40) },
+      { anchor: box(170, 168, 60, 60) },
+      { anchor: shell, region: true },
+    ];
+    const measure: Measure = (index, maxWidth) => {
+      const natural = [300, 300, 150, 150][index];
+      return { width: Math.min(natural, maxWidth), height: 40 };
+    };
+    const placements = layoutGuide(items, measure, viewport);
+    const rects = placements.map((p, i) => rect(p, i, measure));
+    const view = placements[3];
+    expect(view.leader).withContext('joined by a line').toBeDefined();
+    const line = view.leader!;
+    expect(inside({ x: line.x1, y: line.y1 }, shell)).withContext('line starts on the shell').toBeTrue();
+    const tip = arrowTip(view, rects[3]);
+    expect(line.x2).toBeCloseTo(tip.x, 0);
+    expect(line.y2).toBeCloseTo(tip.y, 0);
+    rects.forEach((r, i) => {
+      if (i !== 3) {
+        expect(overlaps(r, rects[3])).withContext(`bubble ${i}`).toBeFalse();
+        expect(overlaps(lineBox(line), r)).withContext(`line across bubble ${i}`).toBeFalse();
+      }
+    });
+    items.forEach((item, i) => {
+      if (!item.region) {
+        expect(overlaps(lineBox(line), item.anchor)).withContext(`line across control ${i}`).toBeFalse();
+        expect(overlaps(rects[3], item.anchor)).withContext(`bubble over control ${i}`).toBeFalse();
+      }
+    });
   });
 
   it('gives the same result whether the 3D view is listed before or after the pencil', () => {

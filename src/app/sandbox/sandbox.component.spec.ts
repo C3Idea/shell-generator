@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { provideRouter, Router } from '@angular/router';
+import { useViewport } from '../../testing/viewport';
 
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
@@ -376,7 +377,6 @@ describe('SandboxComponent panel layout (#6)', () => {
   let fixture: ComponentFixture<SandboxComponent>;
   let component: SandboxComponent;
   let el: HTMLElement;
-  let restoreViewport: (() => void) | null = null;
 
   const render = () => fixture.detectChanges();
   const shellMenu = () => el.querySelector('#parameters-menu') as HTMLElement;
@@ -384,20 +384,8 @@ describe('SandboxComponent panel layout (#6)', () => {
     .filter(row => row.querySelector('.parameter-icon')) as HTMLElement[];
   const viewportHeight = () => document.documentElement.clientHeight;
 
-  function setViewport(width: number, height: number) {
-    const frame = window.frameElement as HTMLIFrameElement | null;
-    if (!frame) {
-      pending('needs the Karma iframe to set the viewport size');
-      return;
-    }
-    const before = { width: frame.style.width, height: frame.style.height };
-    frame.style.width = `${width}px`;
-    frame.style.height = `${height}px`;
-    restoreViewport = () => {
-      frame.style.width = before.width;
-      frame.style.height = before.height;
-    };
-  }
+  const viewport = useViewport();
+  const setViewport = (width: number, height: number) => viewport.set(width, height);
 
   beforeEach(async () => {
     installFramePump();
@@ -416,8 +404,6 @@ describe('SandboxComponent panel layout (#6)', () => {
 
   afterEach(() => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
-    restoreViewport?.();
-    restoreViewport = null;
   });
 
   it('shows each parameter\'s name as text next to its icon, labelling its slider', () => {
@@ -510,7 +496,6 @@ describe('SandboxComponent control guide (#5)', () => {
   let fixture: ComponentFixture<SandboxComponent>;
   let component: SandboxComponent;
   let el: HTMLElement;
-  let restoreViewport: (() => void) | null = null;
   let frames: FramePump;
 
   const render = () => fixture.detectChanges();
@@ -530,21 +515,8 @@ describe('SandboxComponent control guide (#5)', () => {
     ['guide-visualization', AppStrings.GUIDE_VISUALIZATION_TITLE],
   ];
 
-  function setViewport(width: number, height: number) {
-    const frame = window.frameElement as HTMLIFrameElement | null;
-    if (!frame) {
-      pending('needs the Karma iframe to set the viewport size');
-      return;
-    }
-    const before = { width: frame.style.width, height: frame.style.height };
-    frame.style.width = `${width}px`;
-    frame.style.height = `${height}px`;
-    window.dispatchEvent(new Event('resize'));
-    restoreViewport = () => {
-      frame.style.width = before.width;
-      frame.style.height = before.height;
-    };
-  }
+  const viewport = useViewport();
+  const setViewport = (width: number, height: number) => viewport.set(width, height);
 
   function toggleGuide() {
     helpButton().click();
@@ -569,8 +541,6 @@ describe('SandboxComponent control guide (#5)', () => {
 
   afterEach(() => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
-    restoreViewport?.();
-    restoreViewport = null;
   });
 
   describe('the "?" button', () => {

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { useViewport } from '../../testing/viewport';
 
 import { ShellParameters } from '../shell-parameters';
 import { GameComponent } from './game.component';
@@ -1104,22 +1105,9 @@ describe('GameComponent parameters menu fit (#6)', () => {
   let fixture: ComponentFixture<GameComponent>;
   let component: GameComponent;
   let el: HTMLElement;
-  let restoreViewport: (() => void) | null = null;
 
-  function setViewport(width: number, height: number) {
-    const frame = window.frameElement as HTMLIFrameElement | null;
-    if (!frame) {
-      pending('needs the Karma iframe to set the viewport size');
-      return;
-    }
-    const before = { width: frame.style.width, height: frame.style.height };
-    frame.style.width = `${width}px`;
-    frame.style.height = `${height}px`;
-    restoreViewport = () => {
-      frame.style.width = before.width;
-      frame.style.height = before.height;
-    };
-  }
+  const viewport = useViewport();
+  const setViewport = (width: number, height: number) => viewport.set(width, height);
 
   beforeEach(async () => {
     installFramePump();
@@ -1132,8 +1120,6 @@ describe('GameComponent parameters menu fit (#6)', () => {
 
   afterEach(() => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
-    restoreViewport?.();
-    restoreViewport = null;
   });
 
   it('shows no forced scrollbar on a 360 px phone', () => {
