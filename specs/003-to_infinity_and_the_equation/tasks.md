@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:46:45-06:00
+**Generated**: 2026-09-30T11:49:47-06:00
 
 ---
 
@@ -72,7 +72,7 @@
 
 **Purpose**: No regressions, verification, owner approval
 
-- [ ] T007 [W6] [US5] US5 + polish: #5 guide's Bienvenida bubble/layout unchanged (existing specs green), #31 modal specs green; full Karma suite on 2 cores, lint, tsc, production build; update PR body with results.
+- [x] T007 [W6] [US5] US5 + polish: #5 guide's Bienvenida bubble/layout unchanged (existing specs green), #31 modal specs green; full Karma suite on 2 cores, lint, tsc, production build; update PR body with results.
 - [ ] T008 [W6] Owner approval: post the copy + ⓘ wording and screenshots (390 and 1280 px, collapsed and expanded) on #3 for approval (FR-011, SC-005, SC-007).
 
 **Wave Gate**: pending
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 6
+- **Completed**: 7
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 75%
+- **Progress**: 87%
 
 ---
 

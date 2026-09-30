@@ -24,12 +24,12 @@
       5
     ],
     "totalTasks": 8,
-    "completedTasks": 6,
+    "completedTasks": 7,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-30T11:48:29-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:46:45-06:00"
+    "lastUpdated": "2026-09-30T11:49:47-06:00"
   },
   "waves": [
     {
@@ -309,7 +309,7 @@
       "id": "T007",
       "wave": 6,
       "description": "US5 + polish: #5 guide's Bienvenida bubble/layout unchanged (existing specs green), #31 modal specs green; full Karma suite on 2 cores, lint, tsc, production build; update PR body with results.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -322,7 +322,19 @@
         "T005",
         "T006"
       ],
-      "story": "US5"
+      "story": "US5",
+      "completion": {
+        "timestamp": "2026-09-30T11:49:47-06:00",
+        "commitSha": "e1d84d468e42f9426d3968b4b0631d2bfc126316",
+        "agents": "claude(inline)",
+        "files": [
+          "none (verification: 445/445",
+          "lint",
+          "tsc app+spec",
+          "prod build; #5 guide/callout/modal untouched vs dev; PR body updated)"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T008": {
       "id": "T008",
