@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:00:15-06:00
+**Generated**: 2026-09-30T11:02:59-06:00
 
 ---
 
@@ -22,9 +22,9 @@
 
 **Purpose**: New intro labels and copy
 
-- [ ] T002 [W1] Strings in src/app/app-strings.ts: rewrite LABEL_INTRO_LINE1/2/4/5 per #3's Text table (short, accents, names the game), remove LABEL_INTRO_LINE3, add LABEL_INTRO_EQUATION_CAPTION / _SHOW / _HIDE / _ALT, LABEL_INTRO_MORE / _MORE_ARIA / _MORE_URL, LABEL_INTRO_PLAY.
+- [x] T002 [W1] Strings in src/app/app-strings.ts: rewrite LABEL_INTRO_LINE1/2/4/5 per #3's Text table (short, accents, names the game), remove LABEL_INTRO_LINE3, add LABEL_INTRO_EQUATION_CAPTION / _SHOW / _HIDE / _ALT, LABEL_INTRO_MORE / _MORE_ARIA / _MORE_URL, LABEL_INTRO_PLAY.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 1
+- **Completed**: 2
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 12%
+- **Progress**: 25%
 
 ---
 

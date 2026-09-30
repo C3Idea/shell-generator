@@ -14,17 +14,18 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1
     ],
     "totalTasks": 8,
-    "completedTasks": 1,
+    "completedTasks": 2,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T11:01:43-06:00",
+    "lastCheckpoint": "2026-09-30T11:04:23-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:00:15-06:00"
+    "lastUpdated": "2026-09-30T11:02:59-06:00"
   },
   "waves": [
     {
@@ -44,7 +45,8 @@
       "tasks": [
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:02:59-06:00"
     },
     {
       "number": 2,
@@ -120,7 +122,7 @@
       "id": "T002",
       "wave": 1,
       "description": "Strings in src/app/app-strings.ts: rewrite LABEL_INTRO_LINE1/2/4/5 per #3's Text table (short, accents, names the game), remove LABEL_INTRO_LINE3, add LABEL_INTRO_EQUATION_CAPTION / _SHOW / _HIDE / _ALT, LABEL_INTRO_MORE / _MORE_ARIA / _MORE_URL, LABEL_INTRO_PLAY.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -131,7 +133,17 @@
       ],
       "dependencies": [
         "T001"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T11:02:59-06:00",
+        "commitSha": "8e4fcdd95bf798f5cd25285d943e6bd9d8f4297e",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts"
+        ],
+        "satisfaction": "partial",
+        "notes": "strings only; markup in T003"
+      }
     },
     "T003": {
       "id": "T003",
