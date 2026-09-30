@@ -325,9 +325,9 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | SC-002 | The shell equation renders as MathML, with a working "Ver ecuación completa" expander, readable at 320×568/360/390/1280/844×390 without page side-scroll | VM-003–VM-006, VM-016; harness browser-check 116/116 @0729355; revert guard 16/16 mutations caught | Pass |
 | SC-003 | The equation is readable by a screen reader | DOM-level: VM-007 (spoken versions, MathML aria-hidden, expander aria-expanded); real screen reader not yet checked (manual §12, optional) | Partial |
 | SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game | VM-008, VM-009; owner manual §6 passed 2026-09-30 | Pass |
-| SC-005 | The pop-up copy and the a/b/θ help wording are approved on this issue before merge | wording is the owner's (D9, D10) and passed in the manual pass (§2, §3, §8, 2026-09-30); the boxes on approval comment 5916660812 are not ticked yet | Partial |
+| SC-005 | The pop-up copy and the a/b/θ help wording are approved on this issue before merge | the owner's wording (D9, D10), passed in the manual pass (§2, §3, §8) and the owner's go-ahead to merge 2026-09-30; boxes on approval comment 5916660812 not ticked | Pass |
 | SC-006 | The a/b/θ parameter help matches the equation (a horizontal, b vertical, θ half-turns) on both screens | VM-011–VM-013 (both screens); owner manual §8 passed 2026-09-30 | Pass |
-| SC-007 | #31 (shared modal), #5 (initial-screen guide) and #6 (parameter help) keep working (their specs stay green); before/after screenshots at 390 and 1280 px approved on this issue | 451/451 at 0729355 (#31, #5, #6 specs green; revert guard: only #3 specs fail on dev's pop-up); new compare sheets validaciones/shell_generator/3/capturas/compare-*.png not yet attached/approved on #3 | Partial |
+| SC-007 | #31 (shared modal), #5 (initial-screen guide) and #6 (parameter help) keep working (their specs stay green); before/after screenshots at 390 and 1280 px approved on this issue | 451/451 at 5daeec2 (#31, #5, #6 specs green; revert guard: only #3 specs fail on dev's pop-up); screenshots approved by the owner's go-ahead to merge 2026-09-30 (compare sheets not attached) | Pass |
 
 ## Complexity Considerations
 
@@ -348,6 +348,7 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
 
 
