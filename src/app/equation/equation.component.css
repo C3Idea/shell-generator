@@ -10,6 +10,13 @@ app-equation[hidden] {
   display: none;
 }
 
+/* Too wide for the screen (narrow phones): the equation scrolls sideways
+   inside itself, never the pop-up or the page (#3 FR-005). */
+app-equation .equation-math {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 app-equation math {
   font-size: 1.1em;
   margin: 0.5rem 0;

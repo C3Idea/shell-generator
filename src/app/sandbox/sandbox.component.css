@@ -217,10 +217,10 @@ label {
   flex-shrink: 0;
 }
 
-/* Welcome pop-up: the shell equation (#3). Long rows scroll sideways inside
-   this box only, never the pop-up or the page. */
+/* Welcome pop-up: the shell equation (#3), its button between the short form
+   and the full system. Each equation scrolls sideways on its own when too
+   wide (app-equation); this block, and the button, never do. */
 #intro-equation {
-  overflow-x: auto;
   max-width: 100%;
   margin-bottom: var(--modal-spacing);
 }

@@ -1242,7 +1242,15 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
             const dialog = intro().getBoundingClientRect();
             expect(dialog.right).toBeLessThanOrEqual(window.innerWidth + 1);
             expect(box().getBoundingClientRect().width).toBeLessThanOrEqual(dialog.width);
-            expect(getComputedStyle(box()).overflowX).toBe('auto');
+            // Each equation scrolls on its own; the block around them, with
+            // the button, never does (#3 browser check: the button slid away).
+            for (const math of [short(), full()]) {
+              expect(getComputedStyle(math.querySelector('.equation-math')!).overflowX).toBe('auto');
+            }
+            noSideScroll(box(), 'the equation block');
+            const button = toggle().getBoundingClientRect();
+            expect(button.left).toBeGreaterThanOrEqual(dialog.left);
+            expect(button.right).toBeLessThanOrEqual(dialog.right);
           });
         }
       }
