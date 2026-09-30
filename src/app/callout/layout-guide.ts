@@ -39,7 +39,7 @@ const MARGIN = 8;          // kept between a bubble and the viewport edge
 const ARROW_INSET = 14;    // the arrow never sits closer than this to a corner
 const ARROW_TIP = 9;       // how far the arrow's point sits outside the bubble
 const MAX_WIDTH = 320;     // a guide bubble's widest
-const STACK_GAP = 6;       // between two bubbles in a staircase
+const STACK_GAP = 6;       // between a stacked bubble and what it clears
 const LINE_CLEARANCE = 12; // between a leader line and the bubble to its right
 const ROW_TOLERANCE = 4;   // controls this close in top and height share a row
 const SLIDE_STEP = 2;      // how far a region's bubble moves per try
@@ -63,7 +63,8 @@ const lineBox = (l: Leader) =>
 // bubbles, so theirs stack in a staircase away from the row (below it at the
 // top of the screen, above it at the bottom), the rightmost control's bubble
 // nearest the row, each joined to its control by a leader line that passes
-// left of the bubbles above it. Where it fits, the rightmost control's bubble
+// left of the bubbles above it. A bubble drops only below the bubbles and
+// lines actually in its way, so far-apart controls keep theirs near the row. Where it fits, the rightmost control's bubble
 // sits beside it instead. Every other bubble sits beside its control on the
 // first side where it fits and covers nothing, controls before regions; a
 // region's bubble may move into the region to find room.
@@ -137,7 +138,7 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
     }
     const first = items[row[0]].anchor;
     const downward = first.top + first.height / 2 < viewport.height / 2;
-    let cursor = downward ? first.bottom + GAP : first.top - GAP;
+    const start = downward ? first.bottom + GAP : first.top - GAP;
     order.forEach((index, k) => {
       const anchor = items[index].anchor;
       const centreX = centre(index);
@@ -146,12 +147,17 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
       const maxWidth = Math.min(widest, viewport.width - MARGIN - leftBound);
       const size = measure(index, maxWidth);
       const left = Math.max(leftBound, Math.min(centreX - size.width / 2, viewport.width - MARGIN - size.width));
-      const top = downward ? cursor : cursor - size.height;
+      // Nearest the row, past whatever is already placed in its way (the
+      // bubbles and lines of the controls to its right).
+      const inWay = taken.filter(t => t.left < left + size.width && left < t.right
+        && (downward ? t.bottom > start : t.top < start));
+      const top = downward
+        ? Math.max(start, ...inWay.map(t => t.bottom + STACK_GAP))
+        : Math.min(start, ...inWay.map(t => t.top - STACK_GAP)) - size.height;
       const leader = downward
         ? { x1: centreX, y1: anchor.bottom, x2: centreX, y2: top - ARROW_TIP }
         : { x1: centreX, y1: anchor.top, x2: centreX, y2: top + size.height + ARROW_TIP };
       accept(index, { side: downward ? 'below' : 'above', left, top, arrow: centreX - left, maxWidth, leader }, size);
-      cursor = downward ? top + size.height + STACK_GAP : top - STACK_GAP;
     });
   };
 
@@ -177,8 +183,8 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
   return result;
 }
 
-// Controls (not regions) of the same top and height, each within one
-// control's width of the next: two or more make a row.
+// Controls (not regions) of the same top and height, however far apart
+// (the toolbar and the "?" in the opposite corner): two or more make a row.
 function findRows(items: GuideItem[]): number[][] {
   const rows: number[][] = [];
   const seen = new Set<number>();
@@ -197,8 +203,7 @@ function findRows(items: GuideItem[]): number[][] {
         const a = other.anchor;
         const near = row.some(k => {
           const b = items[k].anchor;
-          return Math.abs(a.top - b.top) <= ROW_TOLERANCE && Math.abs(a.height - b.height) <= ROW_TOLERANCE
-            && Math.max(a.left - b.right, b.left - a.right) <= Math.max(a.width, b.width);
+          return Math.abs(a.top - b.top) <= ROW_TOLERANCE && Math.abs(a.height - b.height) <= ROW_TOLERANCE;
         });
         if (near) {
           row.push(j);

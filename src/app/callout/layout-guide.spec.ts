@@ -15,11 +15,15 @@ function centralRegion(area: Box): Box {
   return box(area.left + (area.width - side) / 2, area.top + (area.height - side) / 2, side, side);
 }
 
+// The icons are 64 px, 56 px under 356 px wide; the toolbar (gear, camera,
+// gamepad, book) is at the top left and the "?" alone in the top-right corner.
 function initialScreen(viewport: Size): GuideItem[] {
-  const toolbar = [0, 1, 2, 3, 4].map(i => ({ anchor: box(7 + 68 * i, 7, 64, 64) }));
-  const pencil = { anchor: box(7, viewport.height - 71, 64, 64) };
+  const icon = viewport.width < 356 ? 56 : 64;
+  const toolbar = [0, 1, 2, 3].map(i => ({ anchor: box(7 + (icon + 4) * i, 7, icon, icon) }));
+  const help = { anchor: box(viewport.width - 7 - icon, 7, icon, icon) };
+  const pencil = { anchor: box(7, viewport.height - 7 - icon, icon, icon) };
   const view = { anchor: centralRegion(box(0, 0, viewport.width, viewport.height)), region: true };
-  return [...toolbar, pencil, view];
+  return [...toolbar, help, pencil, view];
 }
 
 // A stand-in for the browser: each bubble holds `chars` characters at 7 px
@@ -41,7 +45,9 @@ const PHONE = { width: 390, height: 844 };
 const SMALL_PHONE = { width: 360, height: 800 };
 const DESKTOP = { width: 1280, height: 800 };
 const LANDSCAPE = { width: 844, height: 390 };
-const SIZES = [SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE];
+// The owner's DevTools size: under 356 px wide, so 56 px icons.
+const NARROW = { width: 338, height: 643 };
+const SIZES = [NARROW, SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE];
 
 function rect(p: GuidePlacement, index: number, measure: Measure): Box {
   const size = measure(index, p.maxWidth);
@@ -144,23 +150,36 @@ describe('layoutGuide (#5)', () => {
     });
   }
 
-  it('on a phone, stacks the toolbar bubbles in a staircase: the rightmost icon nearest the toolbar', () => {
-    const placements = layoutGuide(initialScreen(PHONE), TEXT, PHONE);
+  it('on a phone, stacks the top row\'s bubbles in a staircase, the corner "?" included: the rightmost icon nearest the top', () => {
+    const items = initialScreen(PHONE);
+    const placements = layoutGuide(items, TEXT, PHONE);
     const toolbar = placements.slice(0, 5);
     toolbar.forEach((p, i) => {
       expect(p.side).withContext(`bubble ${i}`).toBe('below');
       expect(p.leader).withContext(`bubble ${i} line`).toBeDefined();
-      expect(p.leader!.x1).withContext(`bubble ${i} line x`).toBe(7 + 68 * i + 32);
+      expect(p.leader!.x1).withContext(`bubble ${i} line x`).toBe(items[i].anchor.left + items[i].anchor.width / 2);
     });
     for (let i = 0; i < 4; i++) {
       expect(toolbar[i].top).withContext(`bubble ${i} below bubble ${i + 1}`).toBeGreaterThan(toolbar[i + 1].top);
     }
   });
 
-  it('on a wide screen, puts the rightmost toolbar bubble beside its icon, with no line', () => {
-    const placements = layoutGuide(initialScreen(DESKTOP), TEXT, DESKTOP);
-    expect(placements[4].side).toBe('right');
-    expect(placements[4].leader).toBeUndefined();
+  it('on a wide screen, keeps the corner "?"\'s bubble under it and the book\'s up top: a bubble drops only below what is in its way', () => {
+    const items = initialScreen(DESKTOP);
+    const placements = layoutGuide(items, TEXT, DESKTOP);
+    const help = placements[4];
+    expect(help.side).toBe('below');
+    expect(help.top).toBe(items[4].anchor.bottom + 10);
+    expect(help.left + TEXT(4, help.maxWidth).width).toBeLessThanOrEqual(DESKTOP.width - 8);
+    // The book's bubble is far from the "?"'s, so it isn't pushed down.
+    expect(placements[3].top).toBe(items[3].anchor.bottom + 10);
+  });
+
+  it('counts controls level with each other as one row, however far apart', () => {
+    const viewport = DESKTOP;
+    const row = [box(7, 7, 64, 64), box(75, 7, 64, 64), box(1209, 7, 64, 64)].map(anchor => ({ anchor }));
+    const placements = layoutGuide(row, fakeMeasure([30, 30, 30]), viewport);
+    placements.forEach((p, i) => expect(p.leader).withContext(`bubble ${i} in the staircase`).toBeDefined());
   });
 
   it('puts a lone control\'s bubble beside it, as the parameter help does', () => {

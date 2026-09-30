@@ -574,14 +574,17 @@ describe('SandboxComponent control guide (#5)', () => {
   });
 
   describe('the "?" button', () => {
-    it('sits in the toolbar after the book, drawn like the other toolbar icons', () => {
+    it('sits on its own in the upper-right corner, drawn like the toolbar icons', () => {
       const buttons = Array.from(el.querySelectorAll('#toolbar button')) as HTMLButtonElement[];
-      expect(buttons.map(b => b.id)).toEqual(
-        ['parameters-button', 'save-image-button', 'game-button', 'intro-button', 'help-button']);
+      expect(buttons.map(b => b.id)).toEqual(['parameters-button', 'save-image-button', 'game-button', 'intro-button']);
+      expect(el.querySelector('#toolbar #help-button')).withContext('not in the toolbar').toBeNull();
       const gear = rectOf(buttons[0]);
       const help = rectOf(helpButton());
       expect(help.width).toBe(gear.width);
       expect(help.height).toBe(gear.height);
+      expect(help.top).withContext('level with the toolbar').toBe(gear.top);
+      // As far from the right edge as the gear is from the left one.
+      expect(document.documentElement.clientWidth - help.right).toBeCloseTo(gear.left, 0);
       expect(helpButton().classList).toContain('toolbar-button');
       expect(helpButton().querySelector('svg rect.svg-border')).not.toBeNull();
       expect(helpButton().querySelector('svg path.svg-content')).not.toBeNull();
@@ -862,7 +865,7 @@ describe('SandboxComponent control guide (#5)', () => {
       });
     }
 
-    for (const [width, height] of [[360, 800], [390, 844], [1280, 800], [844, 390]]) {
+    for (const [width, height] of [[320, 568], [338, 643], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
       it(`shows the "?" on screen, clear of the other icons, at ${width}×${height}`, () => {
         setViewport(width, height);
         render();
@@ -873,10 +876,17 @@ describe('SandboxComponent control guide (#5)', () => {
         expect(help.bottom).toBeLessThanOrEqual(height);
         controls.filter(c => c !== '#help-button').forEach(c =>
           expect(overlaps(help, rectOf(el.querySelector(c)!))).withContext(c).toBeFalse());
-        // Same row as the rest of the toolbar.
-        expect(help.top).toBe(rectOf(el.querySelector('#parameters-button')!).top);
+        // One row: the toolbar and the "?" all level with the gear.
+        const top = rectOf(el.querySelector('#parameters-button')!).top;
+        controls.filter(c => c !== '#visualization-button').forEach(c =>
+          expect(rectOf(el.querySelector(c)!).top).withContext(`${c} on the top row`).toBe(top));
+        // Still a comfortable hit area on the narrowest phones.
+        controls.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(c).toBeGreaterThanOrEqual(44));
       });
 
+    }
+
+    for (const [width, height] of [[338, 643], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
       it(`keeps every bubble on screen, apart, off the controls and clear of the lines at ${width}×${height}`, () => {
         setViewport(width, height);
         toggleGuide();
