@@ -1,0 +1,8 @@
+vt.idd:task: T004
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/equation/shell-equation.ts,src/app/equation/equation.component.ts,src/app/equation/equation.component.css,src/app/equation/equation.component.spec.ts,src/app/app.module.ts,src/app/sandbox/sandbox.component.html,src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.css,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=20 FAILED, 87 SUCCESS (new equation/expander/a11y/layout specs; fullEquationOpen stub only), green=108/108 sandbox; full suite 434/434 before the reset-on-open spec; lint clean
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-30T11:27:10-06:00
