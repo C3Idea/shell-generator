@@ -80,9 +80,9 @@ As a user of assistive technology or reduced motion, I want the guide to be anno
 
 ### Key Entities
 
-- **GuideCallout** — a callout with an anchor selector, title and text, plus (in staircase layout) a computed leader-line path. Extends the #6 `Callout`.
-- **ControlGuide** — the initial screen's guide state: whether it is on, and the list of `GuideCallout`s. Owns toggle/close, mirrors the `ParameterHelp` pattern from #6.
-- **Multi-callout layout** — a pure function taking the anchors' boxes, the bubbles' sizes and the viewport, returning each bubble's placement and (when stacked) its leader line — the reusable core #35 consumes.
+- **Callout** (the #6 type, `callout.component.ts`) — an anchor selector, id, title and text; the guide adds an optional `region` flag for an anchor that is an area (the 3D view's `#shell-region`) rather than a button.
+- **ControlGuide** (`control-guide.ts`) — the initial screen's guide state: whether it is on, and its list of `Callout`s in reading order; toggle/close/refresh, mirroring the `ParameterHelp` pattern from #6.
+- **Multi-callout layout** (`layoutGuide(items, measure, viewport)`, `layout-guide.ts`) — a pure function taking `GuideItem`s (`{anchor: Box, region?}`), a `measure(index, maxWidth)` callback (a staircase bubble's height depends on the width it's given) and the viewport; it returns a `GuidePlacement` per bubble (side, position, arrow, max-width and, when it can't sit beside its control, a `leader` line). Shared geometry lives in `geometry.ts`. The reusable core #35 consumes.
 
 ### Architecture
 
@@ -164,7 +164,7 @@ The existing `CalloutComponent` renders one bubble from an `@Input() active: Cal
 ### Applicable Conventions
 
 - Angular 17.3 NgModule app; declare any new component in `app.module.ts`.
-- Reuse the `--modal-*` CSS tokens and the #6 callout look (80 % background, teal border/arrow).
+- Reuse the `--modal-*` CSS tokens and the #6 callout look (teal border/arrow); the guide's bubbles use a 95 % background (decision 17), the ⓘ bubble stays at 80 %.
 - UI strings live in `app-strings.ts` (Spanish).
 - Tests: Karma/Jasmine in ChromeHeadless; resize the context iframe for viewport specs; ESLint clean; 2-core runs.
 - Branch from `dev` (0 behind `main`).
@@ -191,10 +191,12 @@ Medium. One new reusable layout mode on an existing component, one screen wired 
 14. **The "?" in the top-right corner, not after the book** (owner, 2026-09-29, after a 338×643 report). *Rationale:* in the toolbar the five icons wrapped to two rows under 345 px; the gear's line ran through the "?" and Ayuda fell back onto Introducción. `findRows()` now counts level controls as one row however far apart, and a stacked bubble drops only below what is in its way.
 15. **56 px corner icons under 356 px wide** (vs letting the toolbar wrap, vs teaching the layout two rows). *Rationale:* one row down to 320 px keeps the staircase valid; 56 px is still well over the 44 px hit area.
 16. **Short screens: compact bubbles under 700 px tall, and the 3D view's bubble further out with a line** (vs a two-step guide, vs best effort). *Rationale:* phones inside a browser lose 100–150 px; 360×640, 360×560, 375×553 and 320×568 now fit. 320×454 and 667×320 stay best effort.
+17. **Guide bubbles 95 % opaque** (vs the ⓘ bubble's 80 %) (owner, 2026-09-29, browser review, `c3d3133`). *Rationale:* only the 3D view lies under the guide, and at 80 % the dense wireframe showed through the text; the ⓘ bubble keeps 80 % so its sliders stay visible.
 
 ### Post-Mortem
 
 _(filled after merge)_
+
 
 
 

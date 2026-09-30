@@ -2,7 +2,8 @@ import { AppStrings } from './app-strings';
 import { Callout } from './callout/callout.component';
 
 // The initial screen's guide (#5): a callout beside every control, in
-// reading order (the toolbar left to right, the 3D view, the pencil). The
+// reading order (the toolbar left to right, the "?" in the top-right corner,
+// the 3D view, the pencil); a screen reader hears them in this order. The
 // anchors are the controls' ids; the 3D view's is #shell-region, an
 // invisible box the screen keeps over the drawn shell, so its bubble points
 // at the shell.

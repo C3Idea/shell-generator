@@ -2,6 +2,8 @@
 <!-- vt.idd:plan -->
 ## Implementation Plan
 
+> **Deploy-time snapshot (2026-09-29).** Superseded in places by the spec's decisions 14–17: the "?" is alone in the top-right corner (not after the book), 56 px corner icons under 356 px, compact bubbles and a line for the 3D view on short screens, a 95 % guide background; and by the as-built `layoutGuide(items, measure, viewport)` with `geometry.ts` and a `#shell-region` anchor (not a zero-size canvas marker). `tasks.md`/`tasks.json` are generated from this plan and carry the same snapshot. The spec is the current record.
+
 **Feature:** Initial-screen control guide (#5) — a "?" button opening a callout beside every visible control
 **Branch base:** `dev` (0 behind `main`)
 
