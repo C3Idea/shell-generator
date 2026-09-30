@@ -14,20 +14,21 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 4,
+    "currentWave": 5,
     "completedWaves": [
       0,
       1,
       2,
-      3
+      3,
+      4
     ],
     "totalTasks": 8,
-    "completedTasks": 4,
+    "completedTasks": 5,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-09-30T11:28:43-06:00",
+    "lastCheckpoint": "2026-09-30T11:40:18-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-30T11:27:10-06:00"
+    "lastUpdated": "2026-09-30T11:38:23-06:00"
   },
   "waves": [
     {
@@ -77,7 +78,8 @@
       "tasks": [
         "T005"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:38:23-06:00"
     },
     {
       "number": 5,
@@ -235,7 +237,7 @@
       "id": "T005",
       "wave": 4,
       "description": "US3 links: \"Conoce más\" <a> (href LABEL_INTRO_MORE_URL, target=_blank, rel=noopener, aria-label) and \"Jugar\" button (closes the pop-up, navigateToGame()) in #modal-intro; specs for href/target/rel/name, Jugar closes + navigates, and close button + Jugar reachable by scrolling inside the pop-up at 320x568 and 844x390.",
-      "status": "pending",
+      "status": "completed",
       "tdd": true,
       "parallel": false,
       "domain": "frontend",
@@ -251,7 +253,24 @@
       "dependencies": [
         "T004"
       ],
-      "story": "US3"
+      "story": "US3",
+      "completion": {
+        "timestamp": "2026-09-30T11:38:23-06:00",
+        "commitSha": "980a48d28f723e02adf412139712908d1e1f43f8",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "6 FAILED, 108 SUCCESS (link, Jugar, short-screen specs)",
+          "greenResult": "441/441 full suite; lint clean"
+        },
+        "satisfaction": "full"
+      }
     },
     "T006": {
       "id": "T006",

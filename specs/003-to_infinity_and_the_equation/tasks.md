@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:27:10-06:00
+**Generated**: 2026-09-30T11:38:23-06:00
 
 ---
 
@@ -52,9 +52,9 @@
 
 **Purpose**: Conoce más link, Jugar button, short screens
 
-- [ ] T005 [W4] [TDD] [US3] US3 links: "Conoce más" <a> (href LABEL_INTRO_MORE_URL, target=_blank, rel=noopener, aria-label) and "Jugar" button (closes the pop-up, navigateToGame()) in #modal-intro; specs for href/target/rel/name, Jugar closes + navigates, and close button + Jugar reachable by scrolling inside the pop-up at 320x568 and 844x390.
+- [x] T005 [W4] [TDD] [US3] US3 links: "Conoce más" <a> (href LABEL_INTRO_MORE_URL, target=_blank, rel=noopener, aria-label) and "Jugar" button (closes the pop-up, navigateToGame()) in #modal-intro; specs for href/target/rel/name, Jugar closes + navigates, and close button + Jugar reachable by scrolling inside the pop-up at 320x568 and 844x390.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 4
+- **Completed**: 5
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 50%
+- **Progress**: 62%
 
 ---
 
