@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { useViewport } from '../../testing/viewport';
@@ -1330,6 +1331,134 @@ describe('GameComponent control guide (#35)', () => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
       render();
       expectGuideOff();
+    });
+  });
+
+  describe('one kind of help at a time', () => {
+    const menu = () => el.querySelector('#parameters-menu') as HTMLElement;
+    const info = (key: string) => el.querySelector(`#${key}-help-button`) as HTMLInputElement;
+    const singleCallout = () => el.querySelector('.callout:not(.callout-guide)');
+    const click = (id: string) => {
+      (el.querySelector(id) as HTMLButtonElement).click();
+      render();
+    };
+
+    it('closes the gear menu and its open ⓘ when it turns on', () => {
+      click('#parameters-button');
+      info('A').click();
+      render();
+      expect(menu().style.display).withContext('menu open first').toBe('block');
+      expect(singleCallout()).withContext('ⓘ open first').not.toBeNull();
+      guideOn();
+      expect(menu().style.display).toBe('none');
+      expect(component.menuVisible).toBeFalse();
+      expect(component.help.key).toBeNull();
+      expect(singleCallout()).toBeNull();
+    });
+
+    // A pop-up covers the "?", so this can't happen from the screen; the
+    // rule still holds in code.
+    for (const popup of ['howToOpen', 'newGameOpen', 'victoryOpen'] as const) {
+      it(`closes an open pop-up (${popup}) when it turns on`, () => {
+        component[popup] = true;
+        render();
+        component.helpButtonClick(new Event('click'));
+        render();
+        expect(component[popup]).toBeFalse();
+        expect(component.guide.on).toBeTrue();
+      });
+    }
+
+    it('turns off when the gear menu opens', () => {
+      guideOn();
+      click('#parameters-button');
+      expectGuideOff();
+      expect(menu().style.display).toBe('block');
+    });
+
+    it('turns off when a parameter ⓘ opens', () => {
+      guideOn();
+      info('A').click();
+      render();
+      expectGuideOff();
+      expect(component.help.key).toBe('A');
+    });
+
+    it('turns off when the how-to opens', () => {
+      guideOn();
+      click('#howto-button');
+      expectGuideOff();
+      expect(component.howToOpen).toBeTrue();
+    });
+
+    it('turns off when Nuevo juego opens', () => {
+      guideOn();
+      click('#new-game-button');
+      expectGuideOff();
+      expect(component.newGameOpen).toBeTrue();
+    });
+
+    it('turns off when ¡Victoria! opens', () => {
+      guideOn();
+      spyOn(component, 'checkParametersAreSimilar').and.returnValue(true);
+      component.checkGameIsOver();
+      render();
+      expectGuideOff();
+      expect(component.victoryOpen).toBeTrue();
+    });
+  });
+
+  describe('using the screen while the guide is on', () => {
+    it('stays on while an image is saved', () => {
+      spyOn(HTMLAnchorElement.prototype, 'click');
+      guideOn();
+      (el.querySelector('#save-image-button') as HTMLButtonElement).click();
+      render();
+      expect(HTMLAnchorElement.prototype.click).withContext('image saved').toHaveBeenCalled();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+
+    it('stays on while Compartir copies the link', async () => {
+      const copy = spyOn(navigator.clipboard, 'writeText').and.resolveTo();
+      guideOn();
+      (el.querySelector('#share-button') as HTMLButtonElement).click();
+      await fixture.whenStable();
+      render();
+      expect(copy).withContext('link copied').toHaveBeenCalled();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+    });
+
+    it("stays on when the switch flips, and the 3D view's bubble moves to the shell now shown", () => {
+      viewport.set(390, 844);
+      spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 20, top: 150, width: 100, height: 100 });
+      spyOn(component.targetViewer, 'shellScreenBox').and.returnValue({ left: 250, top: 500, width: 100, height: 100 });
+      guideOn();
+      expect(rectOf(marker()).left).withContext('on yours first').toBeLessThan(150);
+      flipSwitch();
+      expect(component.targetVisible).toBeTrue();
+      expect(component.guide.on).toBeTrue();
+      expect(guideBubbles().length).toBe(expected.length);
+      expect(rectOf(marker()).left).withContext('on the target').toBeGreaterThan(250);
+      const tip = arrowTip(el.querySelector('#guide-game-view') as HTMLElement);
+      expect(tip.x).toBeGreaterThanOrEqual(250 - 1);
+      expect(tip.x).toBeLessThanOrEqual(350 + 1);
+      expect(tip.y).toBeGreaterThanOrEqual(500 - 1);
+      expect(tip.y).toBeLessThanOrEqual(600 + 1);
+    });
+
+    it('moves the shell marker when the window is resized, laying the guide out once', () => {
+      viewport.set(390, 844);
+      guideOn();
+      const box = spyOn(component.viewer, 'shellScreenBox').and.returnValue({ left: 60, top: 200, width: 100, height: 100 });
+      const callout = fixture.debugElement.query(By.directive(CalloutComponent)).componentInstance as CalloutComponent;
+      const passes = spyOn(callout as unknown as { placeGuide(): void }, 'placeGuide').and.callThrough();
+      window.dispatchEvent(new Event('resize'));
+      render();
+      expect(box).toHaveBeenCalled();
+      expect(rectOf(marker()).left).toBeCloseTo(60 + 100 * 0.15, 0);
+      expect(passes).toHaveBeenCalledTimes(1);
     });
   });
 

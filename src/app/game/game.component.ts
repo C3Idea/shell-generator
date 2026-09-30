@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
-import { ParameterHelp } from '../parameter-help';
+import { HelpKey, ParameterHelp } from '../parameter-help';
 import { ControlGuide, GAME_GUIDE } from '../control-guide';
 import { CanvasTap, followShell } from '../shell-region';
 import { random } from 'src/util';
@@ -63,6 +63,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const height = window.innerHeight;
     this.viewer.resize(width, height);
     this.targetViewer.resize(width, height);
+    // Only move the shell region: the callout's own resize listener, which
+    // runs after this one, lays the guide out again (once).
+    this.followShell(false);
   }
 
   private get canvas(): HTMLCanvasElement {
@@ -282,9 +285,11 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.help.close();
   }
 
+  // Opening the gear menu ends the guide (#35): one kind of help at a time.
   private showMenu() {
     this.menu.style.display = 'block';
     this.menuVisible = true;
+    this.guide.close();
   }
 
   private setShellVisibility() {
@@ -304,13 +309,17 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // Flipping the switch keeps the guide on (#35); its 3D view's bubble
+  // moves to the shell now shown.
   switchButtonClick(event: Event) {
-    this.setShellVisibility(); 
+    this.setShellVisibility();
+    this.followShell();
   }
 
   checkGameIsOver(): void {
     const result = this.checkParametersAreSimilar();
     if (result) {
+      this.guide.close();
       this.victoryOpen = true;
     }
   }
@@ -372,6 +381,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   // #23: the pop-up always opens on its two choices, with the key field
   // hidden and empty.
   private openNewGamePopup() {
+    this.guide.close();
     this.gameKeyInput.value = '';
     this.keyEntryRow.style.display = 'none';
     this.newGameOpen = true;
@@ -495,19 +505,25 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parameterHelpAButtonClick(event: Event) {
-    this.help.toggle('A');
+    this.toggleHelp('A');
   }
 
   parameterHelpAlphaButtonClick(event: Event) {
-    this.help.toggle('alpha');
+    this.toggleHelp('alpha');
   }
 
   parameterHelpBetaButtonClick(event: Event) {
-    this.help.toggle('beta');
+    this.toggleHelp('beta');
   }
 
   parameterHelpA1ButtonClick(event: Event) {
-    this.help.toggle('a');
+    this.toggleHelp('a');
+  }
+
+  // A parameter ⓘ ends the guide (#35).
+  private toggleHelp(key: HelpKey) {
+    this.guide.close();
+    this.help.toggle(key);
   }
 
   @HostListener('document:keydown.escape')
@@ -516,13 +532,17 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.guide.close();
   }
 
-  // Turning the guide on closes the gear menu and any ⓘ help first.
+  // Turning the guide on closes the gear menu, any ⓘ help and any pop-up
+  // first (a pop-up covers the "?", so that last one is only a safeguard).
   helpButtonClick(event: Event) {
     if (!this.guide.on) {
       this.help.close();
       if (this.menuVisible) {
         this.hideMenu();
       }
+      this.howToOpen = false;
+      this.newGameOpen = false;
+      this.victoryOpen = false;
     }
     this.guide.toggle();
     this.followShell();
@@ -532,7 +552,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showHowToWindow();
   }
 
+  // The how-to ends the guide (#35).
   private showHowToWindow() {
+    this.guide.close();
     this.howToOpen = true;
   }
 
