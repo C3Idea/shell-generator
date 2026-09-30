@@ -63,6 +63,19 @@ describe('EquationComponent (#3)', () => {
     ]);
   });
 
+  // Heard, "coseno de s más phi" is cos(s) + φ: the spoken versions name each
+  // sum inside a function, and r_e as the formula shows it (#3 review, m1).
+  it('says what each function applies to, as the formulas show it', () => {
+    const full = AppStrings.LABEL_INTRO_EQUATION_FULL_ALT;
+    for (const sum of ['coseno de la suma de s y phi', 'seno de la suma de s y phi',
+                       'coseno de la suma de theta y omega', 'seno de la suma de theta y omega']) {
+      expect(full).withContext(sum).toContain(sum);
+    }
+    expect(full).not.toMatch(/(seno|coseno) de (s más phi|theta más omega)/);
+    expect(AppStrings.LABEL_INTRO_EQUATION_ALT)
+      .toContain('coseno al cuadrado de s entre a al cuadrado, más seno al cuadrado de s entre b al cuadrado');
+  });
+
   for (const form of ['short', 'full'] as const) {
     describe(form, () => {
       beforeEach(() => render(form));
