@@ -4,7 +4,7 @@
 # Tasks: How-to pop-up in short sections
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T16:01:06-06:00
+**Generated**: 2026-09-30T16:10:32-06:00
 
 ---
 
@@ -62,19 +62,19 @@
 
 **Purpose**: Full suite, lint, build, screenshots
 
-- [ ] T006 [W5] Full Karma suite (2 cores), lint and build green; after screenshots at 390 and 1280 px for the owner's approval on #10 (FR-010).
+- [x] T006 [W5] Full Karma suite (2 cores), lint and build green; after screenshots at 390 and 1280 px for the owner's approval on #10 (FR-010).
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 6
-- **Completed**: 5
+- **Completed**: 6
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 83%
+- **Progress**: 100%
 
 ---
 
