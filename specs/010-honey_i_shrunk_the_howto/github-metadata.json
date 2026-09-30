@@ -1,0 +1,19 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 10,
+    "title": "[Game] Rearrange the how-to pop-up text into short sections",
+    "url": "https://github.com/C3Idea/shell-generator/issues/10",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5919851072",
+  "spec_comment_id": "5919834790",
+  "pr": {
+    "number": 38,
+    "url": "https://github.com/C3Idea/shell-generator/pull/38",
+    "status": "draft",
+    "createdAt": "2026-09-30T21:30:44Z"
+  },
+  "deployed_at": "2026-09-30T21:30:24Z",
+  "cached_from": "github"
+}
