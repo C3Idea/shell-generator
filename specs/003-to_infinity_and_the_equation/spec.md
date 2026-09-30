@@ -237,6 +237,12 @@ a11y pattern in the app), full control over the label swap ("Ver"/"Ocultar") and
 honouring `prefers-reduced-motion` (FR-012); `<details>`'s default marker and open
 animation would need overriding anyway. FR-004 already specifies this pattern.
 
+**D9 — Lines after the equation, and "Conoce más" last (owner, 2026-09-30, during validation).**
+The owner reworded the two lines after the equation button: "Mueve los sliders y diseña todos los
+caracoles que imagines." and "¿Listo para el siguiente nivel? En el modo juego te retamos a
+reconstruir un caracol ¿te animas?", and moved the "Conoce más" link to the end of the text (it was
+right under the equation). "Jugar" stays in the footer. Done in 10821e2; specs pin the wording and the order.
+
 ## Risk Assessments
 
 ### Security & Vulnerabilities
