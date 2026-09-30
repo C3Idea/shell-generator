@@ -246,26 +246,26 @@ Regression: #31 modal specs, #35 guide specs, the ¡Victoria! and Nuevo juego po
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1 — on load the how-to shows the goal, the five sections in order, then the closing line | [pending] | Pending |
-| VM-002 | US1 — each section opens with a bold title; three titles match the "?" guide | [pending] | Pending |
-| VM-003 | US2 — the text covers goal, ⚙, switch + blanco/dorado, heat bar, winning, Nuevo juego, Compartir, "?" | [pending] | Pending |
-| VM-004 | US2 — no text locates a control by position; the target is never "amarillo" | [pending] | Pending |
-| VM-005 | US3 — "¡A jugar!" closes the pop-up | [pending] | Pending |
-| VM-006 | US3 — ✕, Esc and the backdrop still close it (#31) | [pending] | Pending |
-| VM-007 | US3 — the book button reopens it with the same sections and turns the "?" guide off | [pending] | Pending |
-| VM-008 | US4 — no horizontal scroll of the pop-up or page at 320×568, 360, 390, 1280 px and 844×390 | [pending] | Pending |
-| VM-009 | US4 — at 320×568 and 844×390, ✕ and "¡A jugar!" are reachable by scrolling inside the pop-up | [pending] | Pending |
+| VM-001 | US1 — on load the how-to shows the goal, the five sections in order, then the closing line | ✅ `how-to pop-up (#10) › opens on load with the goal, the five sections in order, then the closing line` (c1ae293) | Pass |
+| VM-002 | US1 — each section opens with a bold title; three titles match the "?" guide | ✅ `… opens each section with a bold title; three are the "?" guide's` (c1ae293) | Pass |
+| VM-003 | US2 — the text covers goal, ⚙, switch + blanco/dorado, heat bar, winning, Nuevo juego, Compartir, "?" | ✅ `… explains the goal, ⚙, the switch and its colours, the bar, winning, Nuevo juego, Compartir and "?"` (c1ae293) | Pass |
+| VM-004 | US2 — no text locates a control by position; the target is never "amarillo" | ✅ `… never locates a control by screen position, and never calls the target "amarillo"` (c1ae293) | Pass |
+| VM-005 | US3 — "¡A jugar!" closes the pop-up | ✅ `… ¡A jugar! › closes the pop-up and leaves the game ready to play` (c1ae293) | Pass |
+| VM-006 | US3 — ✕, Esc and the backdrop still close it (#31) | ✅ #31 block `how-to › closes with the ✕ / Esc / a click on the backdrop` (game.component.spec.ts:904-925, c1ae293) | Pass |
+| VM-007 | US3 — the book button reopens it with the same sections and turns the "?" guide off | ✅ `… comes back with the same sections from the book button, turning the "?" guide off` (c1ae293) | Pass |
+| VM-008 | US4 — no horizontal scroll of the pop-up or page at 320×568, 360, 390, 1280 px and 844×390 | ✅ `… never scrolls the pop-up or the page sideways at 320×568/360×800/390×844/1280×800/844×390` (c1ae293) | Pass |
+| VM-009 | US4 — at 320×568 and 844×390, ✕ and "¡A jugar!" are reachable by scrolling inside the pop-up | ✅ `… keeps the ✕ and "¡A jugar!" on screen at 320×568 / 844×390, the text scrolling between them` (overflow asserted, c1ae293) | Pass |
 
 ## Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | A player finds each control's instruction in its own short, titled section | [pending] | Pending |
-| SC-002 | The how-to explains the whole game, including how to change the shell, how to win, Compartir and the "?" guide | [pending] | Pending |
-| SC-003 | The how-to names controls consistently with the "?" guide and never locates them by position | [pending] | Pending |
-| SC-004 | "¡A jugar!" closes the pop-up, and the pop-up fits every listed screen size without sideways scrolling | [pending] | Pending |
+| SC-001 | A player finds each control's instruction in its own short, titled section | ✅ VM-001/VM-002: five titled sections (c1ae293) | Pass |
+| SC-002 | The how-to explains the whole game, including how to change the shell, how to win, Compartir and the "?" guide | ✅ VM-003 (c1ae293) | Pass |
+| SC-003 | The how-to names controls consistently with the "?" guide and never locates them by position | ✅ VM-002 titles = GUIDE_GAME_*_TITLE, VM-004 no position words (c1ae293) | Pass |
+| SC-004 | "¡A jugar!" closes the pop-up, and the pop-up fits every listed screen size without sideways scrolling | ✅ VM-005, VM-008, VM-009 (c1ae293) | Pass |
 | SC-005 | The wording and before/after screenshots at 390 and 1280 px are approved on this issue before merge | [pending] | Pending |
-| SC-006 | #31 (shared pop-up) and #35 ("?" guide) keep working; their specs stay green | [pending] | Pending |
+| SC-006 | #31 (shared pop-up) and #35 ("?" guide) keep working; their specs stay green | ✅ 470/470 incl. the #31 pop-up and #35 guide blocks, lint, build (6f80672) | Pass |
 
 ## Complexity Considerations
 
