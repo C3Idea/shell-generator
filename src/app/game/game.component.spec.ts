@@ -657,11 +657,11 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       expect(range().getAttribute('aria-label')).toBe('Qué tan cerca estás del objetivo');
     });
 
-    it('the welcome text points at the bottom of the screen', () => {
-      const line3 = el.querySelectorAll('.label-howto-line')[2] as HTMLLabelElement;
-      expect(AppStrings.LABEL_HOWTO_WINDOW_LINE3).toBe(
-        'En la parte inferior de la pantalla encontrarás una barra de calor que te indica qué tan cerca estás de lograrlo.');
-      expect(line3.textContent?.trim()).toBe(AppStrings.LABEL_HOWTO_WINDOW_LINE3);
+    // The how-to names the bar by its guide title, not by where it sits (#10).
+    it('the how-to explains the bar in its Progreso section', () => {
+      const progress = el.querySelector('#howto-progress') as HTMLElement;
+      expect(progress.querySelector('strong')?.textContent?.trim()).toBe(AppStrings.GUIDE_GAME_HEAT_TITLE);
+      expect(progress.textContent).toContain(AppStrings.LABEL_HOWTO_PROGRESS);
     });
   });
 });
@@ -833,12 +833,10 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
   });
 
   it('keeps the how-to text as paragraphs', () => {
-    const lines = Array.from(howTo().querySelectorAll('.label-howto-line'));
-    expect(lines.map(l => l.tagName)).toEqual(['P', 'P', 'P', 'P']);
-    expect(lines.map(l => l.textContent?.trim())).toEqual([
-      AppStrings.LABEL_HOWTO_WINDOW_LINE1, AppStrings.LABEL_HOWTO_WINDOW_LINE2,
-      AppStrings.LABEL_HOWTO_WINDOW_LINE3, AppStrings.LABEL_HOWTO_WINDOW_LINE4,
-    ]);
+    const body = howTo().querySelector('.modal-body')!;
+    const paragraphs = Array.from(body.children);
+    expect(paragraphs.length).toBe(7);
+    paragraphs.forEach(p => expect(p.tagName).toBe('P'));
   });
 
   describe('¡Victoria!', () => {
@@ -1645,6 +1643,110 @@ describe('GameComponent control guide (#35)', () => {
       expect(component.guide.on).toBeTrue();
       expect(guideBubbles().length).toBe(expected.length);
       expect(before.distanceTo(camera.position)).withContext('camera moved').toBeGreaterThan(0.01);
+    });
+  });
+});
+
+// #10: the how-to in short sections, one per control or concept, each opening
+// with its title in bold. The first three titles are the "?" guide's (#35).
+describe('GameComponent how-to pop-up (#10)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const howTo = () => el.querySelector('#modal-howto > dialog') as HTMLDialogElement;
+  const body = () => howTo().querySelector('.modal-body') as HTMLElement;
+  const render = () => fixture.detectChanges();
+  const squash = (s: string | null | undefined) => (s ?? '').replace(/\s+/g, ' ').trim();
+  const sections = () => Array.from(body().querySelectorAll('.label-howto-section')) as HTMLElement[];
+  const titleOf = (p: HTMLElement) => squash(p.querySelector('strong')?.textContent);
+  // What a screen reader reads: the text without anything aria-hidden.
+  const spoken = (e: HTMLElement) => {
+    const copy = e.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('[aria-hidden="true"]').forEach(h => h.remove());
+    return squash(copy.textContent);
+  };
+
+  beforeEach(async () => {
+    installFramePump();
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('sections', () => {
+    it('opens on load with the goal, the five sections in order, then the closing line', () => {
+      expect(howTo().open).toBeTrue();
+      const paragraphs = Array.from(body().children) as HTMLElement[];
+      expect(paragraphs.map(p => p.id || p.className)).toEqual([
+        'label-howto-goal', 'howto-parameters', 'howto-switch', 'howto-progress',
+        'howto-new-game-share', 'howto-where', 'label-howto-closing',
+      ]);
+      expect(squash(paragraphs[0].textContent)).toBe(AppStrings.LABEL_HOWTO_GOAL);
+      expect(squash(paragraphs[6].textContent)).toBe(AppStrings.LABEL_HOWTO_CLOSING);
+    });
+
+    it('opens each section with a bold title; three are the "?" guide\'s', () => {
+      expect(sections().map(titleOf)).toEqual([
+        AppStrings.GUIDE_GAME_PARAMETERS_TITLE, AppStrings.GUIDE_GAME_SWITCH_TITLE,
+        AppStrings.GUIDE_GAME_HEAT_TITLE, AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE,
+        AppStrings.LABEL_HOWTO_WHERE_TITLE,
+      ]);
+      sections().forEach(p => {
+        expect(p.firstElementChild?.tagName).withContext(p.id).toBe('STRONG');
+        expect(getComputedStyle(p.querySelector('strong')!).fontWeight).withContext(p.id).toBe('700');
+      });
+    });
+
+    // The " · " stays in the spoken text: screen readers pause on it without
+    // reading it, so the title doesn't run into the sentence.
+    it('uses the owner\'s wording (2026-09-30)', () => {
+      expect(sections().map(spoken)).toEqual([
+        'Parámetros · Abre y mueve los sliders para cambiar tu caracol.',
+        'Usuario / Objetivo · Cambia la vista entre tu caracol (blanco) y el objetivo (dorado).',
+        'Progreso · La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas!',
+        'Nuevo juego y Compartir · Empieza otra partida, o copia el enlace para retar a alguien con este caracol.',
+        '¿Dónde está cada cosa? · Toca ? para verlo en la pantalla.',
+      ]);
+      expect(AppStrings.LABEL_HOWTO_GOAL).toBe('Te mostramos un caracol objetivo. ¿Puedes reconstruirlo?');
+      expect(AppStrings.LABEL_HOWTO_CLOSING).toBe('¡Suerte y diviértete!');
+      expect(squash(howTo().querySelector('#label-howto-title')?.textContent)).toBe('¡Bienvenido al juego!');
+    });
+
+    it('shows the gear as a text glyph between "Abre" and the rest, hidden from screen readers', () => {
+      const parameters = el.querySelector('#howto-parameters') as HTMLElement;
+      const gear = parameters.querySelector('.howto-gear') as HTMLElement;
+      expect(gear.getAttribute('aria-hidden')).toBe('true');
+      expect(gear.textContent).toBe('\u2699\uFE0E');
+      expect(squash(parameters.textContent)).toBe(
+        'Parámetros · Abre \u2699\uFE0E y mueve los sliders para cambiar tu caracol.');
+    });
+  });
+
+  describe('what it covers', () => {
+    it('explains the goal, ⚙, the switch and its colours, the bar, winning, Nuevo juego, Compartir and "?"', () => {
+      const text = squash(body().textContent);
+      for (const words of ['caracol objetivo', '\u2699', 'sliders', 'blanco', 'dorado', 'barra', '✓',
+                           '¡ganas!', 'otra partida', 'enlace', 'Toca ?']) {
+        expect(text).withContext(words).toContain(words);
+      }
+    });
+
+    it('never locates a control by screen position, and never calls the target "amarillo"', () => {
+      const text = squash(body().textContent).toLowerCase();
+      for (const words of ['parte inferior', 'parte superior', 'abajo', 'arriba', 'izquierda', 'derecha',
+                           'esquina', 'amarillo']) {
+        expect(text).withContext(words).not.toContain(words);
+      }
+    });
+
+    it('leaves none of the old four paragraphs behind', () => {
+      expect(body().querySelector('.label-howto-line')).toBeNull();
+      expect(Object.keys(AppStrings).filter(k => k.startsWith('LABEL_HOWTO_WINDOW_LINE'))).toEqual([]);
     });
   });
 });

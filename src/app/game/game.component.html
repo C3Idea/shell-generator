@@ -207,10 +207,27 @@
   <app-modal id="modal-howto" titleId="label-howto-title" [open]="this.howToOpen"
     (closed)="this.howToOpen = false">
     <h2 modal-title id="label-howto-title">{{AppStrings.LABEL_HOWTO_WINDOW_TITLE}}</h2>
-    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE1}}</p>
-    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE2}}</p>
-    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE3}}</p>
-    <p class="label-howto-line">{{AppStrings.LABEL_HOWTO_WINDOW_LINE4}}</p>
+    <!-- #10: one short section per control, each opening with its title in
+         bold. The first three titles are the "?" guide's (#35). -->
+    <p class="label-howto-goal">{{AppStrings.LABEL_HOWTO_GOAL}}</p>
+    <p class="label-howto-section" id="howto-parameters">
+      <strong>{{AppStrings.GUIDE_GAME_PARAMETERS_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_PARAMETERS_BEFORE}}
+      <span class="howto-gear" aria-hidden="true">{{AppStrings.LABEL_HOWTO_GEAR}}</span>
+      {{AppStrings.LABEL_HOWTO_PARAMETERS_AFTER}}
+    </p>
+    <p class="label-howto-section" id="howto-switch">
+      <strong>{{AppStrings.GUIDE_GAME_SWITCH_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_SWITCH}}
+    </p>
+    <p class="label-howto-section" id="howto-progress">
+      <strong>{{AppStrings.GUIDE_GAME_HEAT_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_PROGRESS}}
+    </p>
+    <p class="label-howto-section" id="howto-new-game-share">
+      <strong>{{AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_NEW_GAME_SHARE}}
+    </p>
+    <p class="label-howto-section" id="howto-where">
+      <strong>{{AppStrings.LABEL_HOWTO_WHERE_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_WHERE}}
+    </p>
+    <p class="label-howto-closing">{{AppStrings.LABEL_HOWTO_CLOSING}}</p>
   </app-modal>
   <app-modal id="modal-victory" class="modal-centered" titleId="label-success-title" [open]="this.victoryOpen"
     (closed)="this.victoryOpen = false">
