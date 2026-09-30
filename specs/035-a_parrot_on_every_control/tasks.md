@@ -4,7 +4,7 @@
 # Tasks: Game control guide: a "?" button pointing a callout at every game control
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-29T22:07:39-06:00
+**Generated**: 2026-09-29T22:17:22-06:00
 
 ---
 
@@ -65,7 +65,7 @@
 
 **Purpose**: Verification and owner approval
 
-- [ ] T009 [W5] Verify: full suite x3 on 2 cores, lint, tsc, build; revert check (dev game templates/css make the #35 specs fail and nothing else); confirm no copied gesture/layout code (grep TAP_SLOP/SHELL_REGION_SCALE only in shell-region.ts).
+- [x] T009 [W5] Verify: full suite x3 on 2 cores, lint, tsc, build; revert check (dev game templates/css make the #35 specs fail and nothing else); confirm no copied gesture/layout code (grep TAP_SLOP/SHELL_REGION_SCALE only in shell-region.ts).
 - [ ] T010 [W5] Browser check at the listed sizes on Usuario and Objetivo; post the draft wording table and screenshots on #35 for the owner's approval (SC-005, SC-006).
 
 **Wave Gate**: pending
@@ -75,10 +75,10 @@
 ## Summary
 
 - **Total Tasks**: 10
-- **Completed**: 8
+- **Completed**: 9
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 80%
+- **Progress**: 90%
 
 ---
 

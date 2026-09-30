@@ -23,12 +23,12 @@
       4
     ],
     "totalTasks": 10,
-    "completedTasks": 8,
+    "completedTasks": 9,
     "blockedTasks": 0,
     "skippedTasks": 0,
     "lastCheckpoint": "2026-09-29T22:09:23-06:00",
     "contextHint": "",
-    "lastUpdated": "2026-09-29T22:07:39-06:00"
+    "lastUpdated": "2026-09-29T22:17:22-06:00"
   },
   "waves": [
     {
@@ -362,7 +362,7 @@
       "id": "T009",
       "wave": 5,
       "description": "Verify: full suite x3 on 2 cores, lint, tsc, build; revert check (dev game templates/css make the #35 specs fail and nothing else); confirm no copied gesture/layout code (grep TAP_SLOP/SHELL_REGION_SCALE only in shell-region.ts).",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "config",
@@ -373,7 +373,21 @@
       "dependencies": [
         "T007",
         "T008"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-09-29T22:17:22-06:00",
+        "commitSha": "c83c4801fdcfb7f7229a57687f9a13ebf362dec2",
+        "agents": "claude(inline)",
+        "files": [
+          "none (verification: 403/403 x3",
+          "lint",
+          "tsc app+spec",
+          "build; revert: dev game html/css -> 57 FAILED",
+          "all #35",
+          "none else; gesture code only in shell-region.ts)"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T010": {
       "id": "T010",
