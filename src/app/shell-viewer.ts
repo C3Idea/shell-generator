@@ -281,8 +281,11 @@ export class ShellViewer {
   }
 
   // Where the shell is drawn (#5): the box around a sample of its vertices,
-  // projected through the camera, in CSS px from the canvas's top left. The
-  // guide's 3D-view bubble points into it. Null while there is no shell.
+  // projected through the camera, in CSS px from the canvas's top left,
+  // clipped to the canvas. Vertices behind the camera (or past its far
+  // plane) are left out: projected, they'd land mirrored far off screen. The
+  // guide's 3D-view bubble points into it. Null while there is no shell, or
+  // none of it is on screen.
   shellScreenBox(): { left: number; top: number; width: number; height: number } | null {
     if (!this.surfaceMesh || !this.camera) {
       return null;
@@ -296,12 +299,22 @@ export class ShellViewer {
     let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity;
     for (let i = 0; i < positions.count; i += step) {
       point.fromBufferAttribute(positions, i).applyMatrix4(this.surfaceMesh.matrixWorld).project(this.camera);
+      if (point.z < -1 || point.z > 1) {
+        continue;
+      }
       const x = (point.x + 1) / 2 * canvas.clientWidth;
       const y = (1 - point.y) / 2 * canvas.clientHeight;
       left = Math.min(left, x);
       right = Math.max(right, x);
       top = Math.min(top, y);
       bottom = Math.max(bottom, y);
+    }
+    left = Math.max(left, 0);
+    top = Math.max(top, 0);
+    right = Math.min(right, canvas.clientWidth);
+    bottom = Math.min(bottom, canvas.clientHeight);
+    if (!(right > left && bottom > top)) {
+      return null;
     }
     return { left, top, width: right - left, height: bottom - top };
   }

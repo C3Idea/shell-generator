@@ -144,6 +144,31 @@ describe('ShellViewer shellScreenBox (#5)', () => {
     expect(box.top + box.height).toBeGreaterThan(150);
   });
 
+  // Reaches into the viewer: specs only, to put the camera where a user's
+  // wheel or drag could.
+  const camera = () => (viewer as unknown as { camera: import('three').PerspectiveCamera }).camera;
+
+  it('stays inside the canvas when the camera is zoomed in close to the shell', () => {
+    viewer.createGraph(ShellParameters.Shell1());
+    camera().position.multiplyScalar(0.02);
+    camera().lookAt(0, 0, 0);
+    const box = viewer.shellScreenBox();
+    if (box) {
+      expect(box.left).toBeGreaterThanOrEqual(0);
+      expect(box.top).toBeGreaterThanOrEqual(0);
+      expect(box.left + box.width).toBeLessThanOrEqual(400);
+      expect(box.top + box.height).toBeLessThanOrEqual(300);
+    }
+    expect(box === null || box.width > 0).toBeTrue();
+  });
+
+  it('is null when the shell is behind the camera', () => {
+    viewer.createGraph(ShellParameters.Shell1());
+    const p = camera().position;
+    camera().lookAt(p.x * 2, p.y * 2, p.z * 2);
+    expect(viewer.shellScreenBox()).toBeNull();
+  });
+
   it('follows the canvas size', () => {
     viewer.createGraph(ShellParameters.Shell1());
     const small = viewer.shellScreenBox()!;
