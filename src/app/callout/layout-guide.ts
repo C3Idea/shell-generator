@@ -203,6 +203,8 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
     }
     const anchors = row.map(i => items[i].anchor);
     const first = anchors[0];
+    // Every member of a row is in the same half of the screen (findRows), so
+    // the first one says which way the staircase goes.
     const downward = first.top + first.height / 2 < viewport.height / 2;
     // A row can be controls stacked one above the other (#35): the bubbles
     // start past the whole stack.
@@ -222,6 +224,13 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
       const anchor = items[index].anchor;
       const lineAt = lineX.get(index)!;
       const next = order[k + 1];
+      // Too narrow to keep the lines LINE_SPACING apart (the clamp above held
+      // the next line inside its control): the bubble would sit on that line
+      // with its arrow at its corner, so place it like a lone control.
+      if (next !== undefined && lineAt - lineX.get(next)! < LINE_SPACING) {
+        leftOver.push(index);
+        return;
+      }
       const leftBound = next === undefined ? MARGIN : lineX.get(next)! + LINE_CLEARANCE;
       const maxWidth = Math.min(widest, viewport.width - MARGIN - leftBound);
       // The limit can be fractional and the browser rounds the measured width

@@ -1,4 +1,4 @@
-import { Box, box, overlaps, Size } from './geometry';
+import { Box, box, GAP, overlaps, Size } from './geometry';
 import { GuideItem, GuidePlacement, layoutGuide, lineBox, Measure } from './layout-guide';
 
 // The guide's layout (#5), without a DOM. The anchors copy the initial
@@ -249,9 +249,9 @@ describe('layoutGuide (#5)', () => {
 // The game screen (#35): the toolbar (gear, camera, home, book) at the top
 // left and the "?" in the top-right corner, as on the initial screen; at the
 // bottom the Usuario/Objetivo switch (left), the heat bar (centre) and
-// Nuevo juego / Compartir (right). No bubble for the 3D view there. On one bottom row on wide screens; the
-// heat bar goes up a row at 800 px and less, the two buttons at 560 px and
-// less (game.component.css).
+// Nuevo juego / Compartir (right), all on one row on wide screens. The heat
+// bar goes up a row at 800 px and less, the two buttons at 560 px and less
+// (game.component.css). The 3D view has no bubble on the game (D8).
 function gameScreen(viewport: Size): GuideItem[] {
   const { width, height } = viewport;
   const icon = width < 356 ? 56 : 64;
@@ -277,7 +277,9 @@ const gameText = (viewport: Size): Measure => viewport.width <= 560 || viewport.
   : fakeMeasure(GAME_CHARS, 6, 18.5, 14);
 
 // The rules every guide layout keeps: on screen, apart, off the controls,
-// no line across a bubble or a control, every bubble pointing at its item.
+// no line across a bubble, every bubble pointing at its item. (A stacked
+// row's lines may pass over the controls stacked above them: the switch's
+// line crosses the heat bar on a phone, accepted by the owner.)
 function expectTidyLayout(items: GuideItem[], measure: Measure, viewport: Size) {
   const placements = layoutGuide(items, measure, viewport);
   const rects = placements.map((p, i) => rect(p, i, measure));
@@ -324,10 +326,12 @@ describe('layoutGuide on the game screen (#35)', () => {
     });
   }
 
-  // Short phones: best effort (owner, #35): each bubble is still placed, on
-  // screen.
+  // Short phones: best effort (owner, #35). The bottom controls' bubbles don't
+  // fit their staircase there and fall back beside their controls, so all
+  // this can check is that each bubble is placed, on screen (which the final
+  // clamp guarantees); the tall sizes above are the real layout checks.
   for (const viewport of [{ width: 320, height: 568 }, NARROW, { width: 360, height: 560 }, SHORT, { width: 375, height: 553 }]) {
-    it(`still places all nine bubbles on screen at ${viewport.width}×${viewport.height} (best effort)`, () => {
+    it(`gives each bubble a place on screen at ${viewport.width}×${viewport.height} (best effort)`, () => {
       const measure = gameText(viewport);
       const placements = layoutGuide(gameScreen(viewport), measure, viewport);
       expect(placements.length).toBe(9);
@@ -354,7 +358,7 @@ describe('layoutGuide on the game screen (#35)', () => {
     // sits 10 px above (the rightmost may go beside its control instead).
     const above = [3, 4].filter(i => placements[i].side === 'above');
     expect(above.length).withContext('one stacked above the row').toBeGreaterThan(0);
-    expect(Math.max(...above.map(i => rect(placements[i], i, measure).bottom))).toBeCloseTo(rowTop - 10, 0);
+    expect(Math.max(...above.map(i => rect(placements[i], i, measure).bottom))).toBeCloseTo(rowTop - GAP, 0);
     placements.slice(3).forEach((p, k) =>
       expect(rect(p, 3 + k, measure).top).withContext(`bottom bubble ${k}`).toBeGreaterThan(viewport.height / 2));
   });
@@ -417,5 +421,26 @@ describe('layoutGuide with rounded measurements (#35)', () => {
     const r = rect(p, 1, measure);
     expect(overlaps(r, share.anchor)).withContext('off the buttons').toBeFalse();
     expect(overlaps(r, newGame.anchor)).withContext('off the buttons').toBeFalse();
+  });
+});
+
+// #35 review (m2): two narrow controls stacked almost on the same x can't
+// keep their lines LINE_SPACING apart; the one whose bubble would sit on the
+// other's line is placed like a lone control instead of with its arrow off the
+// bubble's corner.
+describe('layoutGuide with narrow stacked controls (#35 review)', () => {
+  it("keeps every arrow within its bubble, away from the corners", () => {
+    const viewport = { width: 390, height: 844 };
+    // At the right edge, so neither bubble fits beside its control.
+    const upper = { anchor: box(350, 734, 20, 30) };
+    const lower = { anchor: box(355, 774, 20, 30) };
+    const measure = fakeMeasure([30, 30]);
+    const placements = layoutGuide([upper, lower], measure, viewport);
+    placements.forEach((p, i) => {
+      const r = rect(p, i, measure);
+      const edge = p.side === 'left' || p.side === 'right' ? r.height : r.width;
+      expect(p.arrow).withContext(`bubble ${i} arrow`).toBeGreaterThanOrEqual(14);
+      expect(p.arrow).withContext(`bubble ${i} arrow`).toBeLessThanOrEqual(edge - 14);
+    });
   });
 });
