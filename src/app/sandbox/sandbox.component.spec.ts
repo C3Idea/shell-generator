@@ -243,6 +243,20 @@ describe('SandboxComponent parameter help callouts (#6)', () => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
   });
 
+  // #3: the help agrees with the equation now on screen: a scales cos s (the
+  // horizontal axis), b scales sin s (the vertical one), and the θ slider
+  // counts half-turns (it draws θ up to theta·π).
+  for (const [key, words, wrong] of [['a', 'horizontal', 'vertical'], ['b', 'vertical', 'horizontal'],
+                                     ['theta', 'medias vueltas', 'total de vueltas']]) {
+    it(`ⓘ ${key} describes ${words} (#3)`, () => {
+      openPanel('shell');
+      clickInfo(key);
+      const shown = el.querySelector('.callout')?.textContent ?? '';
+      expect(shown).toContain(words);
+      expect(shown).not.toContain(wrong);
+    });
+  }
+
   for (const [key, panel, title, text] of helpButtons) {
     it(`ⓘ ${key} shows its own title and text in a callout, not a pop-up`, () => {
       openPanel(panel);

@@ -51,12 +51,14 @@ export class AppStrings {
   static LABEL_PARAM_ALPHA_HELP_CONTENT = "Este parámetro controla que tan cerrado o abierto es el ángulo del espiral que guía el crecimiento del caracol.";
   static LABEL_PARAM_BETA_HELP_TITLE = "Parámetro beta (ángulo con el eje zeta)";
   static LABEL_PARAM_BETA_HELP_CONTENT = "Este parámetro controla el ángulo vertical con el que crece el caracol.";
-  static LABEL_PARAM_A1_HELP_TITLE = "Parámetro a (eje vertical de la elipse)";
-  static LABEL_PARAM_A1_HELP_CONTENT = "Este parámetro controla el tamaño del eje vertical de la elipse que le da forma al caracol.";
-  static LABEL_PARAM_B_HELP_TITLE = "Parámetro b (eje horizontal de la elipse)";
-  static LABEL_PARAM_B_HELP_CONTENT = "Este parámetro controla el tamaño del eje horizontal de la elipse que le da forma al caracol.";
-  static LABEL_PARAM_THETA_HELP_TITLE = "Parámetro theta (total de vueltas)";
-  static LABEL_PARAM_THETA_HELP_CONTENT = "Este parámetro controla el número de vueltas que da el caracol.";
+  // a scales cos s (horizontal), b scales sin s (vertical); the θ slider
+  // counts half-turns (#3).
+  static LABEL_PARAM_A1_HELP_TITLE = "Parámetro a (eje horizontal de la elipse)";
+  static LABEL_PARAM_A1_HELP_CONTENT = "Este parámetro controla el tamaño del eje horizontal de la elipse que le da forma al caracol.";
+  static LABEL_PARAM_B_HELP_TITLE = "Parámetro b (eje vertical de la elipse)";
+  static LABEL_PARAM_B_HELP_CONTENT = "Este parámetro controla el tamaño del eje vertical de la elipse que le da forma al caracol.";
+  static LABEL_PARAM_THETA_HELP_TITLE = "Parámetro theta (medias vueltas)";
+  static LABEL_PARAM_THETA_HELP_CONTENT = "Este parámetro controla cuántas medias vueltas da el caracol.";
   static LABEL_PARAM_QUAL_TITLE   = "Resolución";
   static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superficie del caracol.";
   // Parameter names shown next to their icons in the shell panel (#6).

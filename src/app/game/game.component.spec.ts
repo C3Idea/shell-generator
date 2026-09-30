@@ -996,6 +996,15 @@ describe('GameComponent parameter help callouts (#6)', () => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
   });
 
+  // #3: the shared help for a names the ellipse's horizontal axis.
+  it('ⓘ a describes the horizontal axis (#3)', () => {
+    openMenu();
+    clickInfo('a');
+    const shown = callout()?.textContent ?? '';
+    expect(shown).toContain('horizontal');
+    expect(shown).not.toContain('vertical');
+  });
+
   for (const [key, title, text] of helpButtons) {
     it(`ⓘ ${key} shows its own title and text in a callout, not a pop-up`, () => {
       openMenu();
