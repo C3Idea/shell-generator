@@ -11,10 +11,10 @@ button alone in the top-right corner that turns on a set of callouts, one beside
 every control, each with a short title and line. The game has ten controls or
 areas with no on-screen labels (only mouse-only `title` tooltips), so on a phone
 a new player has no way to learn what the gear, the switch, the heat bar or the
-two action buttons do. The guide reuses #5's callout guide mode, `layoutGuide()`,
-tap-vs-drag handling and shell-region anchoring — extracted into shared pieces so
-no code is copied — and adds the game's own control ids, anchors and Spanish
-text.
+two action buttons do. The guide reuses #5's callout guide mode, `layoutGuide()`
+and tap-vs-drag handling — extracted into shared pieces so no code is copied —
+and adds the game's own control ids, anchors and Spanish text. **Amended
+2026-09-30 (D8):** no bubble for the 3D view, so nine bubbles.
 
 ## User Stories
 
@@ -24,17 +24,17 @@ A player on the game screen wants to know what each control does without hoverin
 a mouse.
 
 - **Given** the game screen with the guide off, **When** the player taps the "?"
-  in the top-right corner, **Then** one callout appears beside each of the ten
-  controls (gear, camera, home, book, "?", 3D view, Usuario/Objetivo switch, heat
-  bar, Nuevo juego, Compartir), each pointing at its control and showing its own
+  in the top-right corner, **Then** one callout appears beside each of the nine
+  controls (gear, camera, home, book, "?", Usuario/Objetivo switch, heat bar,
+  Nuevo juego, Compartir), each pointing at its control and showing its own
   title and short line.
 - **Given** the guide is on, **When** a screen reader reads the page, **Then** the
-  callouts are read in on-screen order (toolbar left to right, the "?", the 3D
-  view, then the bottom controls).
-- **Given** the switch is on **Usuario** (the user's shell visible), **When** the
-  guide turns on, **Then** the 3D-view callout points at the visible user shell.
+  callouts are read in on-screen order (toolbar left to right, the "?", then the
+  bottom controls).
+- **Given** the switch is on **Usuario**, **When** the guide turns on, **Then**
+  there is no callout for the 3D view (D8).
 - **Given** the switch is on **Objetivo** (the target visible), **When** the guide
-  turns on, **Then** the 3D-view callout points at the visible target shell.
+  turns on, **Then** the same nine callouts show, laid out as on Usuario.
 
 ### US2 — Dismiss the guide (P1)
 
@@ -57,8 +57,7 @@ A player wants to keep exploring while the guide is visible.
   **Then** the view zooms and the guide stays on.
 - **Given** the guide is on, **When** the player saves an image, flips the
   Usuario/Objetivo switch, or taps Compartir, **Then** that action happens and the
-  guide stays on; after a flip the 3D-view callout re-aims at the newly visible
-  shell.
+  guide stays on.
 - **Given** the guide is on, **When** the player opens the gear menu, a parameter
   ⓘ, the how-to pop-up, Nuevo juego or the ¡Victoria! pop-up, **Then** the guide
   turns off (one kind of help at a time).
@@ -100,10 +99,10 @@ A player on a small or short phone wants the guide readable and unobstructed.
   toolbar icons in size, border and hover colours). It never overlaps another
   icon, and the toolbar plus the "?" stay on one row at every one of those sizes.
 - **FR-002** (MUST): Tapping the "?" turns on a **guide**: one callout for each of
-  the ten controls, each pointing at its control (arrow, or a leader line in the
+  the nine controls, each pointing at its control (arrow, or a leader line in the
   staircase) with its own title and one short line, read in on-screen order.
-- **FR-003** (MUST): The 3D-view callout points at the shell **currently visible**
-  (the user's on Usuario, the target on Objetivo), on either canvas.
+- **FR-003** (withdrawn 2026-09-30, D8): ~~The 3D-view callout points at the shell
+  currently visible.~~ There is no 3D-view callout on the game.
 - **FR-004** (MUST): Turning the guide on **closes** the gear menu, any open
   parameter ⓘ callout, and any open pop-up (how-to, Nuevo juego, ¡Victoria!).
 - **FR-005** (MUST): The guide **turns off** when: the player taps the "?" again;
@@ -113,7 +112,7 @@ A player on a small or short phone wants the guide readable and unobstructed.
 - **FR-006** (MUST): While the guide is on, **every control still works**: the
   callouts and leader lines take no pointer. Dragging rotates and wheel/pinch
   zooms, both leaving the guide on (mouse and touch). Saving an image, flipping the
-  switch and Compartir leave the guide on; a flip re-aims the 3D-view callout.
+  switch and Compartir leave the guide on.
 - **FR-007** (MUST): The "?" has a hit area of at least 44×44 px, an accessible
   name ("Mostrar ayuda"), `aria-pressed` matching the guide's state and
   `aria-controls` pointing at the guide's bubbles.
@@ -141,16 +140,16 @@ A player on a small or short phone wants the guide readable and unobstructed.
 ### Key Entities
 
 - **`ControlGuide` (parameterised)**: the guide-state class from #5, changed to
-  take its callout list as a constructor parameter so the game supplies its own ten
+  take its callout list as a constructor parameter so the game supplies its own nine
   callouts. On/off, `callouts`, `refresh()`, `toggle()`, `close()` unchanged.
 - **Shared shell-region + tap-vs-drag helper**: the pointer gesture handling
   (TAP_SLOP tap vs drag/pinch) and the `#shell-region` follow-the-shell logic,
   today inline in `SandboxComponent`, extracted so both screens call the same code.
 - **Game control ids**: ids added to the game's four toolbar buttons, the two
   `#game-actions` buttons and the heat bar, plus the new "?"; the switch is
-  anchored through its existing `#toggle-switch`, the 3D view through a
-  `#shell-region` box over the visible canvas.
-- **Guide callouts (game)**: ten `Callout`s in reading order, with new
+  anchored through its existing `#toggle-switch`. (No `#shell-region` on the
+  game: no 3D-view callout, D8.)
+- **Guide callouts (game)**: nine `Callout`s in reading order, with new
   `GUIDE_GAME_*` strings in `app-strings.ts`.
 
 ## Approach / Architecture
@@ -166,8 +165,8 @@ FR-010 forbids copying, these move into a small shared helper (a class or
 directive) that both the sandbox and the game use. `ControlGuide` gains a
 constructor parameter for its callout list. The game component then wires: the
 "?" button, control ids, the two canvases' pointer handlers, a window-resize
-handler that re-follows the shell, switch/menu/pop-up close rules, and a `<div
-#shellRegion id="shell-region">` over whichever canvas is visible.
+handler, and the switch/menu/pop-up close rules. (Amended by D8: the game has no
+3D-view callout, so no `#shell-region` and nothing following the shell.)
 
 ### Architecture
 
@@ -222,14 +221,14 @@ Options: (A) one callout each for Nuevo juego and Compartir *(selected)* — **t
 bubbles total; (B) one shared callout for the pair — nine bubbles, easier on short
 screens. Rationale: clearer per-control help; the extra bubble is accepted with
 the best-effort clause of FR-008. (The issue body's "nine controls" count predates
-this; the guide has ten bubbles.)
+this; the guide has ten bubbles.) **Amended 2026-09-30 (D8):** nine, with no 3D-view bubble.
 
 **D3 — Reuse vs game-specific wording (owner, 2026-09-29).**
 Options: (A) game-specific text for the controls that mean something different in
 the game (gear, book), reuse for the "?" and 3D view *(selected)*; (B) reuse every
 shared control's string. Rationale: the gear means "match the target" in the game
-and the book is "how to play", so shared strings would mislead. Draft wording (all
-owner-approved on this issue before merge):
+and the book is "how to play", so shared strings would mislead. Wording approved by
+the owner on 2026-09-30 (with "Progreso" and the new Compartir line):
 | Control | Title | Line |
 |---|---|---|
 | Gear | Parámetros | Ajusta tu caracol para acercarlo al objetivo. |
@@ -238,10 +237,9 @@ owner-approved on this issue before merge):
 | Book | Cómo jugar | Abre las instrucciones del juego. |
 | "?" | Ayuda | Toca de nuevo para cerrar. |
 | Switch | Usuario / Objetivo | Tu caracol (blanco) o el objetivo (dorado). |
-| Heat bar | Cercanía | Qué tan cerca estás del objetivo. |
+| Heat bar | Progreso | Qué tan cerca estás del objetivo. |
 | Nuevo juego | Nuevo juego | Empieza otra partida, al azar o con una clave. |
-| Compartir | Compartir | Copia un enlace para retar a alguien con tu caracol. |
-| 3D view | Vista 3D | Arrastra para girar; rueda o pellizca para acercar. |
+| Compartir | Compartir | Copia el enlace con el caracol que estás adivinando, reta a alguien más. |
 
 **D4 — Extract the shell-region + gesture code (spec).**
 Options: (A) extract the inline Sandbox code into a shared helper *(selected)*; (B)
@@ -263,10 +261,18 @@ pages on phones (toolbar bubbles, then the rest); (C) fewer bubbles on phones.
 Rationale: smallest change; tall phones, desktop and landscape fit cleanly. Built
 with fixes to the shared `layoutGuide()` on paths the initial screen never used
 (a row's staircase steps only past what it would cover, controls stacked within
-12 px make a row, a crowded control can sit further out with a line, a region's
-bubble slides along the side's own length and may point off-centre); #5's layout
-specs pass unchanged. The switch's line was shortened from "Cambia entre tu
+12 px make a row, a crowded control can sit further out with a line); #5's layout
+specs pass unchanged. (The region changes made for the 3D-view bubble — sliding
+along a tall shell, off-centre arrows — were reverted with D8.) The switch's line was shortened from "Cambia entre tu
 caracol (blanco) y el objetivo (dorado)." to fit the 52-character limit.
+
+**D8 — No bubble for the 3D view; heat bar "Progreso"; new Compartir line (owner, 2026-09-30).**
+After seeing the guide in the browser: the 3D view's bubble made the screen too
+crowded, so it's omitted (nine bubbles; FR-003 withdrawn). The heat bar's title is
+"Progreso". Compartir's line is the owner's "Copia el enlace con el caracol que
+estás adivinando, reta a alguien más." (72 characters; the game's spec limit goes
+to 75 for it). With no 3D-view bubble the game needs no `#shell-region` and no code
+following the shell; tap vs drag on both canvases stays. All other wording approved.
 
 **D6 — "Pop-up closes the guide" is a code-level check.**
 While a pop-up is open it sits in front of the "?", so a user cannot toggle the
@@ -287,7 +293,7 @@ on closes a pop-up) is kept and unit-tested, not reachable as a manual UI step.
 |------|----------|------------------|------------|
 | Extracting Sandbox's gesture/shell-region code breaks #5 | High | `SandboxComponent`, initial-screen guide | Extract behind a helper with unchanged behaviour; #5's specs must stay green (FR-010). |
 | Ten bubbles can't fit the shortest phones | Medium | Guide layout on 320–360 px-wide, short screens | FR-008 best-effort clause; owner approves which sizes are exempt. |
-| Two canvases / switch flips mis-aim the 3D-view bubble | Medium | `#shell-region`, `shellScreenBox()` | Follow the visible canvas; re-follow on flip and resize; covered by specs. |
+| Two canvases / switch flips mis-aim the 3D-view bubble | Medium | — | Withdrawn with D8: no 3D-view bubble on the game. |
 | The game gains a resize handler it lacked | Medium | Game layout, render | Mirror #5: resize follows the shell without an extra layout pass. |
 | Compartir still uses native alert/prompt until #25 | Low | Share flow | Tests stub the alert; note #25 must also leave the guide on. |
 
@@ -308,16 +314,16 @@ specs stay green.
 
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1 — tap "?" shows one callout per control (10), each labelled and pointing at its control | [pending] | Pending |
+| VM-001 | US1 — tap "?" shows one callout per control (9), each labelled and pointing at its control | [pending] | Pending |
 | VM-002 | US1 — screen reader reads callouts in on-screen order | [pending] | Pending |
-| VM-003 | US1 — 3D-view callout points at the user shell on Usuario | [pending] | Pending |
-| VM-004 | US1 — 3D-view callout points at the target on Objetivo | [pending] | Pending |
+| VM-003 | US1 — on Usuario there is no 3D-view callout (D8) | [pending] | Pending |
+| VM-004 | US1 — on Objetivo the same nine callouts show, laid out as on Usuario | [pending] | Pending |
 | VM-005 | US2 — tap "?" again turns the guide off; "?" not pressed | [pending] | Pending |
 | VM-006 | US2 — Esc turns the guide off | [pending] | Pending |
 | VM-007 | US2 — a tap (<~10 px) on either canvas turns the guide off | [pending] | Pending |
 | VM-008 | US3 — dragging rotates and keeps the guide on (mouse and touch) | [pending] | Pending |
 | VM-009 | US3 — wheel/pinch zoom keeps the guide on | [pending] | Pending |
-| VM-010 | US3 — save image, switch flip, Compartir keep the guide on; flip re-aims the 3D-view bubble | [pending] | Pending |
+| VM-010 | US3 — save image, switch flip, Compartir keep the guide on | [pending] | Pending |
 | VM-011 | US3 — opening the gear menu, a ⓘ, how-to, Nuevo juego or ¡Victoria! turns the guide off | [pending] | Pending |
 | VM-012 | US3 — turning the guide on closes an open menu, ⓘ or pop-up | [pending] | Pending |
 | VM-013 | US3 — every control works with the guide on; callouts/lines take no pointer | [pending] | Pending |
@@ -361,3 +367,4 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
