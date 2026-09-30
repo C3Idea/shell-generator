@@ -1,15 +1,12 @@
 <!-- vt.idd:spec -->
 ## Specification
 
-<!-- vt.idd:spec -->
-## Specification
-
 ## Summary
 
 Give the **game screen** the same "?" guide the initial screen got in #5: a
 button alone in the top-right corner that turns on a set of callouts, one beside
-every control, each with a short title and line. The game has ten controls or
-areas with no on-screen labels (only mouse-only `title` tooltips), so on a phone
+every control, each with a short title and line. The game has nine controls and
+the 3D view, none with an on-screen label (only mouse-only `title` tooltips), so on a phone
 a new player has no way to learn what the gear, the switch, the heat bar or the
 two action buttons do. The guide reuses #5's callout guide mode, `layoutGuide()`
 and tap-vs-drag handling — extracted into shared pieces so no code is copied —
@@ -142,9 +139,10 @@ A player on a small or short phone wants the guide readable and unobstructed.
 - **`ControlGuide` (parameterised)**: the guide-state class from #5, changed to
   take its callout list as a constructor parameter so the game supplies its own nine
   callouts. On/off, `callouts`, `refresh()`, `toggle()`, `close()` unchanged.
-- **Shared shell-region + tap-vs-drag helper**: the pointer gesture handling
-  (TAP_SLOP tap vs drag/pinch) and the `#shell-region` follow-the-shell logic,
-  today inline in `SandboxComponent`, extracted so both screens call the same code.
+- **Shared tap-vs-drag helper and shell-region follow** (`src/app/shell-region.ts`):
+  `CanvasTap` (TAP_SLOP tap vs drag/pinch), used by both screens, and `followShell`
+  (keeping `#shell-region` over the shell), used by the initial screen only since
+  D8; both extracted from `SandboxComponent`.
 - **Game control ids**: ids added to the game's four toolbar buttons, the two
   `#game-actions` buttons and the heat bar, plus the new "?"; the switch is
   anchored through its existing `#toggle-switch`. (No `#shell-region` on the
@@ -176,7 +174,7 @@ graph TD
     LG["layoutGuide() + geometry.ts"]
     CO["app-callout ([guide] mode)"]
     CG["ControlGuide (callouts as parameter)"]
-    GH["shell-region + tap-vs-drag helper (extracted from Sandbox)"]
+    GH["shell-region.ts: CanvasTap (both screens) + followShell (initial screen), extracted from Sandbox"]
     SV["ShellViewer.shellScreenBox()"]
   end
   SB["SandboxComponent (#5)"] --> CG & CO & GH & SV & LG
@@ -217,15 +215,15 @@ wrapped to a second row under 345 px; the game must match. #13's thumbnails were
 re-homed off the top-right corner (issue edited 2026-09-29) so the "?" can own it.
 
 **D2 — One bubble per action button (owner, 2026-09-29).**
-Options: (A) one callout each for Nuevo juego and Compartir *(selected)* — **ten**
-bubbles total; (B) one shared callout for the pair — nine bubbles, easier on short
-screens. Rationale: clearer per-control help; the extra bubble is accepted with
-the best-effort clause of FR-008. (The issue body's "nine controls" count predates
-this; the guide has ten bubbles.) **Amended 2026-09-30 (D8):** nine, with no 3D-view bubble.
+Options: (A) one callout each for Nuevo juego and Compartir *(selected)* — ten
+bubbles then, **nine since D8** (no 3D-view bubble); (B) one shared callout for the
+pair — one fewer. Rationale: clearer per-control help; the extra bubble is accepted
+with the best-effort clause of FR-008.
 
 **D3 — Reuse vs game-specific wording (owner, 2026-09-29).**
 Options: (A) game-specific text for the controls that mean something different in
-the game (gear, book), reuse for the "?" and 3D view *(selected)*; (B) reuse every
+the game (gear, book), reuse for the "?" and the camera *(selected; the 3D view's
+bubble, also reused then, was withdrawn with D8)*; (B) reuse every
 shared control's string. Rationale: the gear means "match the target" in the game
 and the book is "how to play", so shared strings would mislead. Wording approved by
 the owner on 2026-09-30 (with "Progreso" and the new Compartir line):
@@ -264,7 +262,8 @@ with fixes to the shared `layoutGuide()` on paths the initial screen never used
 12 px make a row, a crowded control can sit further out with a line); #5's layout
 specs pass unchanged. (The region changes made for the 3D-view bubble — sliding
 along a tall shell, off-centre arrows — were reverted with D8.) The switch's line was shortened from "Cambia entre tu
-caracol (blanco) y el objetivo (dorado)." to fit the 52-character limit.
+caracol (blanco) y el objetivo (dorado)." to fit the then 52-character limit (75
+since D8, for Compartir's line).
 
 **D8 — No bubble for the 3D view; heat bar "Progreso"; new Compartir line (owner, 2026-09-30).**
 After seeing the guide in the browser: the 3D view's bubble made the screen too
@@ -292,7 +291,7 @@ on closes a pop-up) is kept and unit-tested, not reachable as a manual UI step.
 | Risk | Severity | Affected Systems | Mitigation |
 |------|----------|------------------|------------|
 | Extracting Sandbox's gesture/shell-region code breaks #5 | High | `SandboxComponent`, initial-screen guide | Extract behind a helper with unchanged behaviour; #5's specs must stay green (FR-010). |
-| Ten bubbles can't fit the shortest phones | Medium | Guide layout on 320–360 px-wide, short screens | FR-008 best-effort clause; owner approves which sizes are exempt. |
+| The bubbles can't all fit the shortest phones (D7: best effort) | Medium | Guide layout on 320–360 px-wide, short screens | FR-008 best-effort clause; owner approves which sizes are exempt. |
 | Two canvases / switch flips mis-aim the 3D-view bubble | Medium | — | Withdrawn with D8: no 3D-view bubble on the game. |
 | The game gains a resize handler it lacked | Medium | Game layout, render | Mirror #5: resize follows the shell without an extra layout pass. |
 | Compartir still uses native alert/prompt until #25 | Low | Share flow | Tests stub the alert; note #25 must also leave the guide on. |
@@ -303,8 +302,8 @@ Karma/Jasmine unit + component specs, ChromeHeadless, pinned viewport via
 `src/testing/viewport.ts`. Cover: the "?" (presence, corner, aria, 44×44, 56 px
 under 356 px); guide on/off (tap, Esc, canvas tap on both canvases); close rules
 (menu, ⓘ, each pop-up) and the reverse (turning on closes them); keep-on actions
-(drag, wheel/pinch, save, switch flip, Compartir); the 3D-view bubble aims at the
-visible shell and re-aims on flip; layout at the nine listed sizes (no overlap, on
+(drag, wheel/pinch, save, switch flip, Compartir); no 3D-view bubble on either
+shell (D8); layout at the nine listed sizes (no overlap, on
 screen, lines don't cross callouts, nothing covers a control); resize/rotate
 re-places; live region + reduced motion; `ControlGuide` parameterisation; the
 shared helper's own spec. Regression: #5's sandbox specs and #6's parameter-help
@@ -367,4 +366,5 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
