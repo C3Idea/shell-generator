@@ -64,6 +64,16 @@ label {
   cursor: pointer;
 }
 
+/* Narrow phones (#35, as on the initial screen): 56 px icons keep the
+   toolbar and the corner "?" on one row down to 320 px, still above the
+   44 px hit area. */
+@media only screen and (max-width: 355px) {
+  .toolbar-button {
+    width:  56px;
+    height: 56px;
+  }
+}
+
 .svg-content {
   /*fill: #e6e6e6;*/
   fill: #f4e9cd;

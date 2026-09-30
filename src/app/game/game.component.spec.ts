@@ -1151,6 +1151,7 @@ describe('GameComponent parameters menu fit (#6)', () => {
 // every control. The shared pieces are #5's; these specs cover the game's
 // wiring.
 describe('GameComponent control guide (#35)', () => {
+  const TARGET = ShellParameters.randomParameters('guide-35');
   let fixture: ComponentFixture<GameComponent>;
   let component: GameComponent;
   let el: HTMLElement;
@@ -1206,6 +1207,22 @@ describe('GameComponent control guide (#35)', () => {
       : { x: r.right + 9, y: r.top + arrow };
   }
 
+  // Whether a bubble points into `area`: its arrow's tip is in it, or a
+  // leader line runs from inside it to the tip.
+  function pointsInto(bubble: HTMLElement, area: DOMRect): boolean {
+    const tip = arrowTip(bubble);
+    const within = (x: number, y: number) =>
+      x >= area.left - 1 && x <= area.right + 1 && y >= area.top - 1 && y <= area.bottom + 1;
+    if (within(tip.x, tip.y)) {
+      return true;
+    }
+    return (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+      .filter(l => getComputedStyle(l).display !== 'none')
+      .map(l => rectOf(l))
+      .some(l => Math.abs(l.left - tip.x) <= 1 && (within(l.left, l.top) || within(l.left, l.bottom))
+        && (Math.abs(l.top - tip.y) <= 1 || Math.abs(l.bottom - tip.y) <= 1));
+  }
+
   // Flips the Usuario/Objetivo switch the way a player does.
   function flipSwitch() {
     const input = el.querySelector('#shell-switch input') as HTMLInputElement;
@@ -1217,6 +1234,9 @@ describe('GameComponent control guide (#35)', () => {
     frames = installFramePump();
     spyOn(window, 'prompt').and.returnValue(null);
     spyOn(window, 'alert');
+    // The same target every run, so the shell on Objetivo (and so the
+    // layout) doesn't change between runs.
+    spyOn(ShellParameters, 'randomParameters').and.returnValue(TARGET);
     fixture = await renderGame();
     component = fixture.componentInstance;
     el = fixture.nativeElement;
@@ -1441,11 +1461,8 @@ describe('GameComponent control guide (#35)', () => {
       expect(component.guide.on).toBeTrue();
       expect(guideBubbles().length).toBe(expected.length);
       expect(rectOf(marker()).left).withContext('on the target').toBeGreaterThan(250);
-      const tip = arrowTip(el.querySelector('#guide-game-view') as HTMLElement);
-      expect(tip.x).toBeGreaterThanOrEqual(250 - 1);
-      expect(tip.x).toBeLessThanOrEqual(350 + 1);
-      expect(tip.y).toBeGreaterThanOrEqual(500 - 1);
-      expect(tip.y).toBeLessThanOrEqual(600 + 1);
+      expect(pointsInto(el.querySelector('#guide-game-view') as HTMLElement, rectOf(marker())))
+        .withContext("the 3D view's bubble reaches the target").toBeTrue();
     });
 
     it('moves the shell marker when the window is resized, laying the guide out once', () => {
@@ -1459,6 +1476,116 @@ describe('GameComponent control guide (#35)', () => {
       expect(box).toHaveBeenCalled();
       expect(rectOf(marker()).left).toBeCloseTo(60 + 100 * 0.15, 0);
       expect(passes).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('layout', () => {
+    const toolbarRow = ['#parameters-button', '#save-image-button', '#home-button', '#howto-button', '#help-button'];
+    const controls = [...toolbarRow, '#toggle-switch', '#result-container', '#new-game-button', '#share-button'];
+    const overlaps = (a: DOMRect, b: DOMRect) =>
+      a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+    const shownLines = () => (Array.from(el.querySelectorAll('.callout-leader')) as HTMLElement[])
+      .filter(l => getComputedStyle(l).display !== 'none');
+
+    function expectTidy(width: number, height: number) {
+      const bubbles = guideBubbles().map(b => ({ id: b.id, r: rectOf(b) }));
+      expect(bubbles.length).withContext('guide on').toBe(expected.length);
+      const controlRects = controls.map(c => ({ id: c, r: rectOf(el.querySelector(c)!) }));
+      bubbles.forEach(({ id, r }, i) => {
+        expect(r.left).withContext(`${id} left`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.top).withContext(`${id} top`).toBeGreaterThanOrEqual(8 - 0.5);
+        expect(r.right).withContext(`${id} right`).toBeLessThanOrEqual(width - 8 + 0.5);
+        expect(r.bottom).withContext(`${id} bottom`).toBeLessThanOrEqual(height - 8 + 0.5);
+        bubbles.slice(i + 1).forEach(other =>
+          expect(overlaps(r, other.r)).withContext(`${id} and ${other.id}`).toBeFalse());
+        controlRects.forEach(c => expect(overlaps(r, c.r)).withContext(`${id} over ${c.id}`).toBeFalse());
+      });
+      shownLines().forEach(line => {
+        const l = rectOf(line);
+        bubbles.forEach(({ id, r }) => expect(overlaps(l, r)).withContext(`a line across ${id}`).toBeFalse());
+      });
+    }
+
+    for (const [width, height] of [[320, 568], [338, 643], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`shows the "?" on screen, clear of the other icons, with the toolbar on one row at ${width}×${height}`, () => {
+        viewport.set(width, height);
+        render();
+        const help = rectOf(helpButton());
+        expect(help.left).toBeGreaterThanOrEqual(0);
+        expect(help.top).toBeGreaterThanOrEqual(0);
+        expect(help.right).toBeLessThanOrEqual(width);
+        expect(help.bottom).toBeLessThanOrEqual(height);
+        controls.filter(c => c !== '#help-button').forEach(c =>
+          expect(overlaps(help, rectOf(el.querySelector(c)!))).withContext(c).toBeFalse());
+        const top = rectOf(el.querySelector('#parameters-button')!).top;
+        toolbarRow.forEach(c =>
+          expect(rectOf(el.querySelector(c)!).top).withContext(`${c} on the top row`).toBe(top));
+        toolbarRow.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(c).toBeGreaterThanOrEqual(44));
+      });
+    }
+
+    it('uses the compact bubbles on phone widths, where ten bubbles need the room (owner, #35)', () => {
+      const fontSize = () => parseFloat(getComputedStyle(guideBubbles()[0]).fontSize);
+      viewport.set(390, 844);
+      toggleGuide();
+      expect(fontSize()).withContext('390×844').toBe(12);
+      viewport.set(1280, 800);
+      render();
+      expect(fontSize()).withContext('1280×800').toBe(13);
+    });
+
+    it('shrinks the toolbar icons and the "?" to 56 px under 356 px wide, and keeps 64 px above', () => {
+      viewport.set(355, 640);
+      render();
+      toolbarRow.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(`${c} at 355`).toBe(56));
+      viewport.set(356, 640);
+      render();
+      toolbarRow.forEach(c => expect(rectOf(el.querySelector(c)!).width).withContext(`${c} at 356`).toBe(64));
+    });
+
+    // Tall phones, a desktop and a phone on its side, with each shell shown.
+    for (const [width, height] of [[360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      for (const objetivo of [false, true]) {
+        it(`keeps every bubble on screen, apart, off the controls and clear of the lines at ${width}×${height} on ${objetivo ? 'Objetivo' : 'Usuario'}`, () => {
+          viewport.set(width, height);
+          render();
+          if (objetivo) {
+            flipSwitch();
+          }
+          toggleGuide();
+          expectTidy(width, height);
+        });
+      }
+    }
+
+    // Short phones (a phone inside its browser): ten bubbles don't fit
+    // under the toolbar's staircase and the game's three bottom rows, so
+    // these are best effort (owner, #35): every bubble still shows, on
+    // screen.
+    for (const [width, height] of [[320, 568], [338, 643], [360, 560], [360, 640], [375, 553]]) {
+      it(`still shows every bubble on screen at ${width}×${height} (best effort)`, () => {
+        viewport.set(width, height);
+        render();
+        toggleGuide();
+        const bubbles = guideBubbles();
+        expect(bubbles.length).toBe(expected.length);
+        bubbles.forEach(b => {
+          const r = rectOf(b);
+          expect(r.left).withContext(`${b.id} left`).toBeGreaterThanOrEqual(8 - 0.5);
+          expect(r.top).withContext(`${b.id} top`).toBeGreaterThanOrEqual(8 - 0.5);
+          expect(r.right).withContext(`${b.id} right`).toBeLessThanOrEqual(width - 8 + 0.5);
+          expect(r.bottom).withContext(`${b.id} bottom`).toBeLessThanOrEqual(height - 8 + 0.5);
+        });
+      });
+    }
+
+    it('re-places the bubbles when the phone turns, still tidy', () => {
+      viewport.set(390, 844);
+      toggleGuide();
+      expectTidy(390, 844);
+      viewport.set(844, 390);
+      render();
+      expectTidy(844, 390);
     });
   });
 

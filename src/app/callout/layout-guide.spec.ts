@@ -23,15 +23,16 @@ function initialScreen(viewport: Size): GuideItem[] {
   return [...toolbar, help, pencil, view];
 }
 
-// A stand-in for the browser: each bubble holds `chars` characters at 7 px
-// each, wrapped to the width it is given, below a 17.5 px title line; plus
-// 14 px of padding and border.
-function fakeMeasure(chars: number[]): Measure {
+// A stand-in for the browser: each bubble holds `chars` characters at
+// `perChar` px each (7 by default), wrapped to the width it is given, below
+// a title line; `line` px a line (17.5 by default) plus `padding` px of
+// padding and border (14).
+function fakeMeasure(chars: number[], perChar = 7, line = 17.5, padding = 14): Measure {
   return (index, maxWidth) => {
-    const natural = chars[index] * 7;
+    const natural = chars[index] * perChar;
     const width = Math.min(natural, maxWidth);
     const lines = Math.ceil(natural / width);
-    return { width, height: 14 + 17.5 * (1 + lines) };
+    return { width, height: padding + line * (1 + lines) };
   };
 }
 
@@ -242,5 +243,150 @@ describe('layoutGuide (#5)', () => {
       expect([b[0], b[1], b[2], b[3], b[4], b[6], b[5]])
         .withContext(`${viewport.width}×${viewport.height}`).toEqual(a);
     }
+  });
+});
+
+// The game screen (#35): the toolbar (gear, camera, home, book) at the top
+// left and the "?" in the top-right corner, as on the initial screen; at the
+// bottom the Usuario/Objetivo switch (left), the heat bar (centre) and
+// Nuevo juego / Compartir (right). On one bottom row on wide screens; the
+// heat bar goes up a row at 800 px and less, the two buttons at 560 px and
+// less (game.component.css).
+function gameScreen(viewport: Size): GuideItem[] {
+  const { width, height } = viewport;
+  const icon = width < 356 ? 56 : 64;
+  const toolbar = [0, 1, 2, 3].map(i => ({ anchor: box(7 + (icon + 4) * i, 7, icon, icon) }));
+  const help = { anchor: box(width - 7 - icon, 7, icon, icon) };
+  const view = { anchor: centralRegion(box(0, 0, width, height)), region: true };
+  const bottom = (up: number) => height - 47 - up;
+  const heatUp = width <= 560 ? 98 : width <= 800 ? 49 : 0;
+  const buttonsUp = width <= 560 ? 49 : 0;
+  const toggle = { anchor: box(7, bottom(0), 230, 40) };
+  const heat = { anchor: box(width / 2 - 130, bottom(heatUp), 260, 40) };
+  const newGame = { anchor: box(width - 241, bottom(buttonsUp), 124, 40) };
+  const share = { anchor: box(width - 109, bottom(buttonsUp), 104, 40) };
+  return [...toolbar, help, view, toggle, heat, newGame, share];
+}
+
+// The game guide's text lengths, in the same order, as the browser renders
+// them: 6 px a character and 18.5 px lines (the gear's 45-character line is
+// 271×51 px at 1280×800); the compact bubbles of phone widths and short
+// screens take 5.5 px and 16 px lines (247×41 px).
+const GAME_CHARS = [45, 29, 29, 33, 26, 51, 43, 33, 46, 52];
+const gameText = (viewport: Size): Measure => viewport.width <= 560 || viewport.height < 700
+  ? fakeMeasure(GAME_CHARS, 5.5, 16, 9)
+  : fakeMeasure(GAME_CHARS, 6, 18.5, 14);
+
+// The rules every guide layout keeps: on screen, apart, off the controls,
+// no line across a bubble or a control, every bubble pointing at its item.
+function expectTidyLayout(items: GuideItem[], measure: Measure, viewport: Size) {
+  const placements = layoutGuide(items, measure, viewport);
+  const rects = placements.map((p, i) => rect(p, i, measure));
+  const at = `${viewport.width}×${viewport.height}`;
+  expect(placements.length).withContext(at).toBe(items.length);
+  rects.forEach((r, i) => {
+    expect(r.left).withContext(`${at} bubble ${i} left`).toBeGreaterThanOrEqual(8);
+    expect(r.top).withContext(`${at} bubble ${i} top`).toBeGreaterThanOrEqual(8);
+    expect(r.right).withContext(`${at} bubble ${i} right`).toBeLessThanOrEqual(viewport.width - 8);
+    expect(r.bottom).withContext(`${at} bubble ${i} bottom`).toBeLessThanOrEqual(viewport.height - 8);
+    rects.slice(i + 1).forEach((other, k) =>
+      expect(overlaps(r, other)).withContext(`${at} bubbles ${i} and ${i + 1 + k}`).toBeFalse());
+    items.forEach((item, j) => {
+      if (!item.region) {
+        expect(overlaps(r, item.anchor)).withContext(`${at} bubble ${i} over control ${j}`).toBeFalse();
+      }
+    });
+  });
+  placements.forEach((p, i) => {
+    const tip = arrowTip(p, rects[i]);
+    if (p.leader) {
+      const line = lineBox(p.leader);
+      rects.forEach((r, j) => {
+        if (j !== i) {
+          expect(overlaps(line, r)).withContext(`${at} line ${i} across bubble ${j}`).toBeFalse();
+        }
+      });
+      expect(inside({ x: p.leader.x1, y: p.leader.y1 }, items[i].anchor)).withContext(`${at} line ${i} start`).toBeTrue();
+      expect(p.leader.x2).withContext(`${at} line ${i} end x`).toBeCloseTo(tip.x, 0);
+      expect(p.leader.y2).withContext(`${at} line ${i} end y`).toBeCloseTo(tip.y, 0);
+    } else if (items[i].region) {
+      expect(inside(tip, items[i].anchor)).withContext(`${at} arrow ${i} on the shell`).toBeTrue();
+    } else {
+      const a = items[i].anchor;
+      expect(inside(tip, box(a.left - 2, a.top - 2, a.width + 4, a.height + 4))).withContext(`${at} arrow ${i} at its control`).toBeTrue();
+    }
+  });
+}
+
+describe('layoutGuide on the game screen (#35)', () => {
+  for (const viewport of [SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE]) {
+    it(`keeps all ten bubbles tidy at ${viewport.width}×${viewport.height}`, () => {
+      expectTidyLayout(gameScreen(viewport), gameText(viewport), viewport);
+    });
+  }
+
+  // Short phones: ten bubbles don't fit (owner, #35: best effort), but each
+  // one is still placed, on screen.
+  for (const viewport of [{ width: 320, height: 568 }, NARROW, { width: 360, height: 560 }, SHORT, { width: 375, height: 553 }]) {
+    it(`still places all ten bubbles on screen at ${viewport.width}×${viewport.height} (best effort)`, () => {
+      const measure = gameText(viewport);
+      const placements = layoutGuide(gameScreen(viewport), measure, viewport);
+      expect(placements.length).toBe(10);
+      placements.forEach((p, i) => {
+        const r = rect(p, i, measure);
+        expect(r.left).withContext(`bubble ${i} left`).toBeGreaterThanOrEqual(8);
+        expect(r.top).withContext(`bubble ${i} top`).toBeGreaterThanOrEqual(8);
+        expect(r.right).withContext(`bubble ${i} right`).toBeLessThanOrEqual(viewport.width - 8);
+        expect(r.bottom).withContext(`bubble ${i} bottom`).toBeLessThanOrEqual(viewport.height - 8);
+      });
+    });
+  }
+
+  it("keeps a bottom row's staircase near its row: bubbles placed up top aren't in its way", () => {
+    // A top row already stacked down the left side, and a bottom row below
+    // it: the bottom row's bubbles sit just above their row.
+    const viewport = PHONE;
+    const top = [0, 1, 2].map(i => ({ anchor: box(7 + 68 * i, 7, 64, 64) }));
+    const bottom = [0, 1].map(i => ({ anchor: box(7 + 68 * i, viewport.height - 71, 64, 64) }));
+    const measure = fakeMeasure([40, 40, 40, 20, 20]);
+    const placements = layoutGuide([...top, ...bottom], measure, viewport);
+    const rowTop = viewport.height - 71;
+    // Nothing is in their way near the row, so the one stacked above it
+    // sits 10 px above (the rightmost may go beside its control instead).
+    const above = [3, 4].filter(i => placements[i].side === 'above');
+    expect(above.length).withContext('one stacked above the row').toBeGreaterThan(0);
+    expect(Math.max(...above.map(i => rect(placements[i], i, measure).bottom))).toBeCloseTo(rowTop - 10, 0);
+    placements.slice(3).forEach((p, k) =>
+      expect(rect(p, 3 + k, measure).top).withContext(`bottom bubble ${k}`).toBeGreaterThan(viewport.height / 2));
+  });
+
+  it("keeps a row's bubbles off the other controls, stacking past them", () => {
+    // A bottom row with another control right above it, where its bubbles
+    // would go.
+    const viewport = PHONE;
+    const row = [0, 1].map(i => ({ anchor: box(100 + 130 * i, viewport.height - 50, 120, 40) }));
+    const above = { anchor: box(60, viewport.height - 100, 260, 40) };
+    const measure = fakeMeasure([30, 30, 30]);
+    const placements = layoutGuide([...row, above], measure, viewport);
+    placements.slice(0, 2).forEach((p, i) =>
+      expect(overlaps(rect(p, i, measure), above.anchor)).withContext(`bubble ${i}`).toBeFalse());
+  });
+
+  it("puts a crowded control's bubble further out, joined by a line that crosses no control", () => {
+    // A wide control in the bottom-left corner under another one (too far
+    // apart to be a row): no side has room, so its bubble goes above both,
+    // with a line past the other.
+    const viewport = { width: 390, height: 500 };
+    const corner = { anchor: box(7, 453, 230, 40) };
+    const over = { anchor: box(65, 393, 260, 40) };
+    const measure = fakeMeasure([43, 33]);
+    const placements = layoutGuide([corner, over], measure, viewport);
+    const p = placements[0];
+    expect(p.leader).withContext('joined by a line').toBeDefined();
+    const r = rect(p, 0, measure);
+    expect(overlaps(r, corner.anchor)).toBeFalse();
+    expect(overlaps(r, over.anchor)).toBeFalse();
+    expect(overlaps(lineBox(p.leader!), over.anchor)).withContext('line past the other control').toBeFalse();
+    expect(inside({ x: p.leader!.x1, y: p.leader!.y1 }, corner.anchor)).withContext('line starts on its control').toBeTrue();
   });
 });

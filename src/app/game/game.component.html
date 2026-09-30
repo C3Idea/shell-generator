@@ -180,8 +180,8 @@
   </div>
   <!-- Parameter help (#6): one callout beside the ⓘ that was clicked, outside
        the menu so its opacity doesn't fade it; or, while the guide is on
-       (#35), one beside every control. -->
-  <app-callout [active]="this.help.callout" [guide]="this.guide.callouts"></app-callout>
+       (#35), one beside every control, compact on phone widths. -->
+  <app-callout class="guide-compact-narrow" [active]="this.help.callout" [guide]="this.guide.callouts"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. ¡Victoria! comes last so it
        lands on top when it opens together with the how-to. -->
   <app-modal id="modal-new-game" titleId="label-new-game-title" [open]="this.newGameOpen"
