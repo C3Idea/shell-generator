@@ -10,6 +10,7 @@ import { SandboxComponent } from './sandbox/sandbox.component';
 import { GameComponent } from './game/game.component';
 import { ModalComponent } from './modal/modal.component';
 import { CalloutComponent } from './callout/callout.component';
+import { EquationComponent } from './equation/equation.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { CalloutComponent } from './callout/callout.component';
     GameComponent,
     ModalComponent,
     CalloutComponent,
+    EquationComponent,
   ],
   imports: [
     BrowserModule,

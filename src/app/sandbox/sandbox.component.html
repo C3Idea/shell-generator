@@ -285,13 +285,33 @@
        panels, so their opacity doesn't fade it. -->
   <app-callout [active]="this.help.callout" [guide]="this.guide.callouts"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. -->
-  <app-modal id="modal-intro" titleId="label-intro-welcome" [open]="this.introOpen"
-    (closed)="this.introOpen = false">
+  <!-- Centred like ¡Victoria! (#3, owner): title, text and "Jugar". -->
+  <app-modal id="modal-intro" class="modal-centered" titleId="label-intro-welcome" [open]="this.introOpen"
+    (closed)="this.closeIntro()">
     <h2 modal-title id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</h2>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE2}}</p>
-    <img id="img-intro-equation" />
+    <!-- The shell equation (#3): the short form, and the full system
+         behind "Ver ecuación completa". -->
+    <div id="intro-equation">
+      <app-equation id="intro-equation-short" form="short"></app-equation>
+      <button type="button" id="intro-equation-toggle"
+        [attr.aria-expanded]="this.fullEquationOpen" aria-controls="intro-equation-full"
+        (click)="this.fullEquationButtonClick()">
+        {{this.fullEquationOpen ? AppStrings.LABEL_INTRO_EQUATION_HIDE : AppStrings.LABEL_INTRO_EQUATION_SHOW}}
+      </button>
+      <app-equation id="intro-equation-full" form="full" [hidden]="!this.fullEquationOpen"></app-equation>
+    </div>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</p>
+    <!-- Credit (#3), last in the text: the model is Atractor's; their shells
+         pages from the start. -->
+    <p class="label-intro-more">
+      <a id="intro-more-link" [href]="AppStrings.LABEL_INTRO_MORE_URL" target="_blank" rel="noopener"
+        [attr.aria-label]="AppStrings.LABEL_INTRO_MORE_ARIA">{{AppStrings.LABEL_INTRO_MORE}}</a>
+    </p>
+    <footer modal-footer>
+      <button type="button" id="intro-play-button" (click)="this.playButtonClick()">{{AppStrings.LABEL_INTRO_PLAY}}</button>
+    </footer>
   </app-modal>
 </div>

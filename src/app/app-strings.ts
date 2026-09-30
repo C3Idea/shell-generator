@@ -31,23 +31,34 @@ export class AppStrings {
   static LABEL_LINK_COPIED = "Enlace copiado al portapapeles.";
   static LABEL_LINK_PROMPT = "Comparte este enlace";
   static LABEL_INTRO_WELCOME_TEXT = "¡Bienvenido!";
-  static LABEL_INTRO_LINE1 = "Los moluscos construyen sus casas con una precisión única. ¿Sabías que todos ellos utilizan el mismo sistema y las mismas reglas? ¿Cómo es que existe la inmensa variedad de caracoles y conchas?";
-  static LABEL_INTRO_LINE2 = "Los investigadores se han preguntado esto durante años. Con ayuda de las matemáticas se construyó un modelo que permite generar muchisimos caracoles en la naturaleza tomando en cuenta las leyes de la fisica que participan en su construcción.";
-  static LABEL_INTRO_LINE3 = "/* Mostrar ecuación */";
-  static LABEL_INTRO_LINE4 = "¡Te invitamos a ver esta ecuación en acción!";
-  static LABEL_INTRO_LINE5 = "Reta a tu creatividad y dale vida a todos los caracoles que puedas imaginar";
+  // Welcome pop-up (#3). LINE2 introduces the equation shown right after it.
+  static LABEL_INTRO_LINE1 = "Los caracoles y las conchas tienen formas muy distintas, pero todos crecen siguiendo las mismas reglas.";
+  static LABEL_INTRO_LINE2 = "Con matemáticas podemos describir esas reglas en una sola ecuación:";
+  static LABEL_INTRO_LINE4 = "Mueve los sliders y diseña todos los caracoles que imagines.";
+  static LABEL_INTRO_LINE5 = "¿Listo para el siguiente nivel? En el modo juego te retamos a reconstruir un caracol ¿te\u00a0animas?";  // no-break space: "¿te animas?" stays on one line
+  // What a screen reader reads instead of the MathML (#3, D7).
+  static LABEL_INTRO_EQUATION_ALT      = "C de theta y s es igual a H de theta más E de theta y s. H de theta, la espiral, es A por e elevado a theta por cotangente de alfa, por el vector: seno de beta por coseno de theta, seno de beta por seno de theta, menos coseno de beta. E de theta y s, la elipse, es e elevado a theta por cotangente de alfa, por r sub e de s, por el vector: coseno de s por coseno de theta, coseno de s por seno de theta, seno de s. r sub e de s es 1 entre la raíz cuadrada de: coseno al cuadrado de s entre a al cuadrado, más seno al cuadrado de s entre b al cuadrado.";
+  static LABEL_INTRO_EQUATION_FULL_ALT = "La ecuación completa también gira la elipse con los ángulos phi, omega y mu. x es igual a: A por seno de beta por coseno de theta, más r sub e de s por coseno de la suma de s y phi por coseno de la suma de theta y omega, menos r sub e de s por seno de la suma de s y phi por seno de mu por seno de la suma de theta y omega; todo por e elevado a theta por cotangente de alfa. y es igual a: A por seno de beta por seno de theta, más r sub e de s por coseno de la suma de s y phi por seno de la suma de theta y omega, más r sub e de s por seno de la suma de s y phi por seno de mu por coseno de la suma de theta y omega; todo por e elevado a theta por cotangente de alfa. z es igual a: menos A por coseno de beta, más r sub e de s por seno de la suma de s y phi por coseno de mu; todo por e elevado a theta por cotangente de alfa.";
+  static LABEL_INTRO_EQUATION_SHOW = "Ver ecuación completa";
+  static LABEL_INTRO_EQUATION_HIDE = "Ocultar ecuación completa";
+  static LABEL_INTRO_MORE      = "Conoce más";
+  static LABEL_INTRO_MORE_ARIA = "Conoce más sobre el modelo en Atractor (se abre en una pestaña nueva)";
+  static LABEL_INTRO_MORE_URL  = "https://www.atractor.pt/mat/conchas/texto1-_en.html";
+  static LABEL_INTRO_PLAY      = "Jugar";
   static LABEL_PARAM_A_HELP_TITLE = "Parámetro A (amplitud inicial del espiral)";
   static LABEL_PARAM_A_HELP_CONTENT = "Este parámetro controla la apertura inicial del espiral que guía el crecimiento del caracol.";
   static LABEL_PARAM_ALPHA_HELP_TITLE = "Parámetro alpha (ángulo del espiral)";
   static LABEL_PARAM_ALPHA_HELP_CONTENT = "Este parámetro controla que tan cerrado o abierto es el ángulo del espiral que guía el crecimiento del caracol.";
   static LABEL_PARAM_BETA_HELP_TITLE = "Parámetro beta (ángulo con el eje zeta)";
   static LABEL_PARAM_BETA_HELP_CONTENT = "Este parámetro controla el ángulo vertical con el que crece el caracol.";
-  static LABEL_PARAM_A1_HELP_TITLE = "Parámetro a (eje vertical de la elipse)";
-  static LABEL_PARAM_A1_HELP_CONTENT = "Este parámetro controla el tamaño del eje vertical de la elipse que le da forma al caracol.";
-  static LABEL_PARAM_B_HELP_TITLE = "Parámetro b (eje horizontal de la elipse)";
-  static LABEL_PARAM_B_HELP_CONTENT = "Este parámetro controla el tamaño del eje horizontal de la elipse que le da forma al caracol.";
-  static LABEL_PARAM_THETA_HELP_TITLE = "Parámetro theta (total de vueltas)";
-  static LABEL_PARAM_THETA_HELP_CONTENT = "Este parámetro controla el número de vueltas que da el caracol.";
+  // a scales cos s (horizontal), b scales sin s (vertical); the θ slider
+  // counts half-turns (#3).
+  static LABEL_PARAM_A1_HELP_TITLE = "Parámetro a (eje horizontal de la elipse)";
+  static LABEL_PARAM_A1_HELP_CONTENT = "Este parámetro controla el tamaño del eje horizontal de la elipse que le da forma al caracol.";
+  static LABEL_PARAM_B_HELP_TITLE = "Parámetro b (eje vertical de la elipse)";
+  static LABEL_PARAM_B_HELP_CONTENT = "Este parámetro controla el tamaño del eje vertical de la elipse que le da forma al caracol.";
+  static LABEL_PARAM_THETA_HELP_TITLE = "Parámetro theta (medias vueltas)";
+  static LABEL_PARAM_THETA_HELP_CONTENT = "Este parámetro controla cuántas medias vueltas da el caracol.";
   static LABEL_PARAM_QUAL_TITLE   = "Resolución";
   static LABEL_PARAM_QUAL_CONTENT = "Este parámetro controla el número de rectángulos que se usan para aproximar la superficie del caracol.";
   // Parameter names shown next to their icons in the shell panel (#6).

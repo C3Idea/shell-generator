@@ -7,6 +7,7 @@ import { useViewport } from '../../testing/viewport';
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
 import { CalloutComponent } from '../callout/callout.component';
+import { EquationComponent } from '../equation/equation.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -17,7 +18,7 @@ describe('SandboxComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     })
     .compileComponents();
@@ -47,7 +48,7 @@ describe('SandboxComponent render loop (#21)', () => {
     frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
   });
@@ -91,7 +92,7 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -118,7 +119,7 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
     expect(component.introOpen).toBeTrue();
   });
 
-  it('keeps the welcome text as paragraphs and the equation image for #3', () => {
+  it('keeps the welcome text as paragraphs', () => {
     expect(title(intro()).textContent?.trim()).toBe(AppStrings.LABEL_INTRO_WELCOME_TEXT);
     const lines = Array.from(intro().querySelectorAll('.label-intro-line'));
     expect(lines.map(l => l.tagName)).toEqual(['P', 'P', 'P', 'P']);
@@ -126,7 +127,6 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
       AppStrings.LABEL_INTRO_LINE1, AppStrings.LABEL_INTRO_LINE2,
       AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5,
     ]);
-    expect(intro().querySelector('img#img-intro-equation')).not.toBeNull();
   });
 
   for (const [name, { open, flag }] of Object.entries(popups)) {
@@ -170,9 +170,11 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
         expect(closeX(d).getAttribute('aria-label')).toBe(AppStrings.LABEL_CLOSE);
       });
 
-      it('has no footer', () => {
+      // It closes with the ✕ only; its footer holds just "Jugar" (#3).
+      it('has no Cerrar button, and only "Jugar" in its footer', () => {
         const d = open();
-        expect(d.querySelector('footer')).toBeNull();
+        const footer = Array.from(d.querySelectorAll('footer button')).map(b => b.textContent?.trim());
+        expect(footer).toEqual([AppStrings.LABEL_INTRO_PLAY]);
         const texts = Array.from(d.querySelectorAll('button')).map(b => b.textContent?.trim());
         expect(texts).not.toContain(AppStrings.LABEL_CLOSE);
       });
@@ -225,7 +227,7 @@ describe('SandboxComponent parameter help callouts (#6)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -240,6 +242,20 @@ describe('SandboxComponent parameter help callouts (#6)', () => {
   afterEach(() => {
     el.querySelectorAll('dialog').forEach(d => d.open && d.close());
   });
+
+  // #3: the help agrees with the equation now on screen: a scales cos s (the
+  // horizontal axis), b scales sin s (the vertical one), and the θ slider
+  // counts half-turns (it draws θ up to theta·π).
+  for (const [key, words, wrong] of [['a', 'horizontal', 'vertical'], ['b', 'vertical', 'horizontal'],
+                                     ['theta', 'medias vueltas', 'total de vueltas']]) {
+    it(`ⓘ ${key} describes ${words} (#3)`, () => {
+      openPanel('shell');
+      clickInfo(key);
+      const shown = el.querySelector('.callout')?.textContent ?? '';
+      expect(shown).toContain(words);
+      expect(shown).not.toContain(wrong);
+    });
+  }
 
   for (const [key, panel, title, text] of helpButtons) {
     it(`ⓘ ${key} shows its own title and text in a callout, not a pop-up`, () => {
@@ -392,7 +408,7 @@ describe('SandboxComponent panel layout (#6)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -528,7 +544,7 @@ describe('SandboxComponent control guide (#5)', () => {
     frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -978,6 +994,316 @@ describe('SandboxComponent control guide (#5)', () => {
       expect(m.bottom).toBeLessThanOrEqual(shell.top + shell.height + 0.5);
       expect(marker.getAttribute('aria-hidden')).toBe('true');
       expect(getComputedStyle(marker).pointerEvents).toBe('none');
+    });
+  });
+});
+
+// #3: the welcome pop-up's new copy, the shell equation, the credit link and
+// the way into the game.
+describe('SandboxComponent welcome pop-up (#3)', () => {
+  let fixture: ComponentFixture<SandboxComponent>;
+  let component: SandboxComponent;
+  let el: HTMLElement;
+
+  const intro = () => el.querySelector('#modal-intro > dialog') as HTMLDialogElement;
+  const render = () => fixture.detectChanges();
+  const text = () => intro().textContent ?? '';
+
+  beforeEach(async () => {
+    installFramePump();
+    await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
+      providers: [ provideRouter([]) ]
+    }).compileComponents();
+    fixture = TestBed.createComponent(SandboxComponent);
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+    render();
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('copy', () => {
+    it('opens on load with the new copy, which names the game', () => {
+      expect(intro().open).toBeTrue();
+      for (const line of [AppStrings.LABEL_INTRO_LINE1, AppStrings.LABEL_INTRO_LINE2,
+                          AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5]) {
+        expect(text()).toContain(line);
+      }
+      expect(AppStrings.LABEL_INTRO_LINE5).toContain('modo juego');
+    });
+
+    it('uses the owner\'s wording for the lines after the equation (2026-09-30)', () => {
+      expect(AppStrings.LABEL_INTRO_LINE4).toBe('Mueve los sliders y diseña todos los caracoles que imagines.');
+      // "¿te animas?" never splits over two lines: a no-break space joins it.
+      expect(AppStrings.LABEL_INTRO_LINE5).toBe(
+        '¿Listo para el siguiente nivel? En el modo juego te retamos a reconstruir un caracol ¿te\u00a0animas?');
+    });
+
+    // Owner, 2026-09-30: centred, like ¡Victoria! (the shared .modal-centered).
+    it('is centred: title, text and "Jugar", with the ✕ still at the right', () => {
+      expect(el.querySelector('#modal-intro')!.classList).toContain('modal-centered');
+      expect(getComputedStyle(intro().querySelector('header > h2')!).textAlign).toBe('center');
+      expect(getComputedStyle(intro().querySelector('.modal-body')!).textAlign).toBe('center');
+      expect(getComputedStyle(intro().querySelector('footer')!).justifyContent).toBe('center');
+      const box = intro().getBoundingClientRect();
+      const close = intro().querySelector('header > button')!.getBoundingClientRect();
+      const play = intro().querySelector('#intro-play-button')!.getBoundingClientRect();
+      // The ✕ sits in the header's right padding (within 60 px of the edge);
+      // "Jugar" is centred to 2 px (sub-pixel rounding).
+      expect(close.right).toBeGreaterThan(box.right - 60);
+      expect(Math.abs((play.left + play.right) / 2 - (box.left + box.right) / 2)).toBeLessThan(2);
+    });
+
+    it('has no equation placeholder and no empty equation image left', () => {
+      expect(text()).not.toContain('Mostrar ecuación');
+      expect((AppStrings as unknown as Record<string, unknown>)['LABEL_INTRO_LINE3']).toBeUndefined();
+      expect(intro().querySelector('img')).toBeNull();
+      expect(el.querySelector('#img-intro-equation')).toBeNull();
+    });
+
+    it('spells the copy with its accents', () => {
+      expect(text()).not.toMatch(/muchisimos|fisica/);
+      expect(AppStrings.LABEL_INTRO_LINE2).toContain('matemáticas');
+      expect(AppStrings.LABEL_INTRO_LINE2).toContain('ecuación');
+    });
+
+    it('opens again from the book button after it was closed', () => {
+      (intro().querySelector('header > button') as HTMLButtonElement).click();
+      render();
+      expect(intro().open).toBeFalse();
+      (el.querySelector('#intro-button') as HTMLButtonElement).click();
+      render();
+      expect(intro().open).toBeTrue();
+      expect(text()).toContain(AppStrings.LABEL_INTRO_LINE1);
+    });
+  });
+
+  describe('Conoce más and Jugar', () => {
+    const viewport = useViewport();
+    const link = () => intro().querySelector('#intro-more-link') as HTMLAnchorElement;
+    const play = () => intro().querySelector('#intro-play-button') as HTMLButtonElement;
+    const onScreen = (e: Element) => {
+      const r = e.getBoundingClientRect();
+      return r.width > 0 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight + 1 && r.right <= window.innerWidth + 1;
+    };
+
+    // Owner, 2026-09-30: after the equation, the two lines, then the link last.
+    it('credits Atractor with a "Conoce más" link at the end of the text, after the two lines', () => {
+      expect(link().tagName).toBe('A');
+      expect(link().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_MORE);
+      const after: Element[] = [];
+      for (let e = intro().querySelector('#intro-equation')?.nextElementSibling; e; e = e.nextElementSibling) {
+        after.push(e);
+      }
+      expect(after.map(e => e.textContent?.trim())).toEqual([
+        AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5, AppStrings.LABEL_INTRO_MORE,
+      ]);
+      expect(after[2]).toBe(link().closest('p')!);
+    });
+
+    it('opens the start of Atractor\'s shells pages in a new tab, safely', () => {
+      expect(link().getAttribute('href')).toBe('https://www.atractor.pt/mat/conchas/texto1-_en.html');
+      expect(link().getAttribute('target')).toBe('_blank');
+      expect(link().getAttribute('rel')?.split(' ')).toContain('noopener');
+      expect(link().getAttribute('aria-label')).toBe(AppStrings.LABEL_INTRO_MORE_ARIA);
+    });
+
+    it('has a "Jugar" button in the pop-up\'s footer', () => {
+      expect(play().tagName).toBe('BUTTON');
+      expect(play().type).toBe('button');
+      expect(play().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_PLAY);
+      expect(play().closest('footer')).not.toBeNull();
+    });
+
+    it('"Jugar" closes the pop-up and opens the game', () => {
+      const router = TestBed.inject(Router);
+      const navigate = spyOn(router, 'navigate').and.resolveTo(true);
+      play().click();
+      render();
+      expect(component.introOpen).toBeFalse();
+      expect(intro().open).toBeFalse();
+      expect(navigate).toHaveBeenCalledWith(['game']);
+    });
+
+    for (const [width, height] of [[320, 568], [844, 390]]) {
+      it(`keeps the ✕ and "Jugar" on screen at ${width}×${height}, the text scrolling between them`, () => {
+        viewport.set(width, height);
+        render();
+        expect(onScreen(intro().querySelector('header > button')!)).withContext('✕').toBeTrue();
+        expect(onScreen(play())).withContext('Jugar').toBeTrue();
+        const body = intro().querySelector('.modal-body') as HTMLElement;
+        expect(getComputedStyle(body).overflowY).toMatch(/auto|scroll/);
+      });
+    }
+  });
+
+  describe('the equation', () => {
+    const MATHML = 'http://www.w3.org/1998/Math/MathML';
+    const viewport = useViewport();
+    const box = () => intro().querySelector('#intro-equation') as HTMLElement;
+    const short = () => intro().querySelector('#intro-equation-short') as HTMLElement;
+    const full = () => intro().querySelector('#intro-equation-full') as HTMLElement;
+    const toggle = () => intro().querySelector('#intro-equation-toggle') as HTMLButtonElement;
+    const shown = (e: HTMLElement) => !e.hidden && e.getBoundingClientRect().height > 0;
+    // Collapsed means hidden AND drawing nothing: app-equation's display: block
+    // would beat the browser's [hidden] rule without app-equation[hidden].
+    const collapsed = (e: HTMLElement) => e.hidden && e.getBoundingClientRect().height === 0;
+    // The MathML's text, without its invisible operators (function
+    // application, invisible times).
+    const mathText = (e: HTMLElement) =>
+      Array.from(e.querySelectorAll('math')).map(m => m.textContent ?? '').join(' ')
+        .replace(/[\u2061\u2062]/g, '');
+
+    it('sits right after the line that introduces it', () => {
+      const lines = Array.from(intro().querySelectorAll('.label-intro-line'));
+      expect(lines[1].nextElementSibling).toBe(box());
+    });
+
+    it('is written in MathML, no image and no library', () => {
+      const maths = short().querySelectorAll('math');
+      expect(maths.length).toBeGreaterThan(0);
+      maths.forEach(m => {
+        expect(m.namespaceURI).toBe(MATHML);
+        expect(typeof MathMLElement !== 'undefined' && m instanceof MathMLElement)
+          .withContext('laid out as MathML').toBeTrue();
+      });
+      expect(box().querySelector('img, svg, canvas')).toBeNull();
+    });
+
+    it('shows the helix + ellipse form: C = H + E, H(θ), E(θ,s) and r_e(s)', () => {
+      expect(shown(short())).toBeTrue();
+      const math = mathText(short()).replace(/\s+/g, '');
+      for (const piece of ['C(θ,s)', 'H(θ)', 'E(θ,s)', 'cotα', 'β', 'a', 'b']) {
+        expect(math).withContext(piece).toContain(piece);
+      }
+      expect(math).toMatch(/r\s*e\(s\)|re\(s\)/);
+    });
+
+    it('keeps the full system collapsed at first', () => {
+      expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_SHOW);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
+      expect(toggle().getAttribute('aria-controls')).toBe('intro-equation-full');
+      expect(collapsed(full())).toBeTrue();
+      expect(component.fullEquationOpen).toBeFalse();
+    });
+
+    it('"Ver ecuación completa" shows the full Model IV system, with φ, Ω and μ and no D', () => {
+      toggle().click();
+      render();
+      expect(shown(full())).toBeTrue();
+      expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_HIDE);
+      expect(toggle().getAttribute('aria-expanded')).toBe('true');
+      const math = mathText(full()).replace(/\s+/g, '');
+      for (const piece of ['x(θ,s)', 'y(θ,s)', 'z(θ,s)', 'φ', 'Ω', 'μ', 'cotα']) {
+        expect(math).withContext(piece).toContain(piece);
+      }
+      expect(math).not.toContain('D');
+    });
+
+    it('"Ocultar ecuación completa" collapses it again', () => {
+      toggle().click();
+      render();
+      toggle().click();
+      render();
+      expect(collapsed(full())).toBeTrue();
+      expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_SHOW);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('starts collapsed again each time the pop-up opens', () => {
+      toggle().click();
+      render();
+      (intro().querySelector('header > button') as HTMLButtonElement).click();
+      render();
+      (el.querySelector('#intro-button') as HTMLButtonElement).click();
+      render();
+      expect(collapsed(full())).toBeTrue();
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('collapses when the pop-up closes, however it closes', () => {
+      toggle().click();
+      render();
+      (intro().querySelector('header > button') as HTMLButtonElement).click();
+      render();
+      expect(component.fullEquationOpen).withContext('✕').toBeFalse();
+      component.introButtonClick(new Event('click'));
+      render();
+      toggle().click();
+      render();
+      spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+      (intro().querySelector('#intro-play-button') as HTMLButtonElement).click();
+      render();
+      expect(component.fullEquationOpen).withContext('Jugar').toBeFalse();
+    });
+
+    it('is a real button', () => {
+      expect(toggle().tagName).toBe('BUTTON');
+      expect(toggle().type).toBe('button');
+    });
+
+    describe('for a screen reader', () => {
+      it('reads a spoken version instead of the MathML', () => {
+        short().querySelectorAll('math').forEach(m => expect(m.getAttribute('aria-hidden')).toBe('true'));
+        const alt = short().querySelector('.visually-hidden') as HTMLElement;
+        expect(alt.textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_ALT);
+        expect(alt.getBoundingClientRect().width).toBeLessThanOrEqual(1);
+      });
+
+      it('reads the full system\'s spoken version once expanded', () => {
+        toggle().click();
+        render();
+        full().querySelectorAll('math').forEach(m => expect(m.getAttribute('aria-hidden')).toBe('true'));
+        expect(full().querySelector('.visually-hidden')?.textContent?.trim())
+          .toBe(AppStrings.LABEL_INTRO_EQUATION_FULL_ALT);
+      });
+    });
+
+    it('expands without animation', () => {
+      toggle().click();
+      render();
+      const style = getComputedStyle(full());
+      expect(style.animationName).toBe('none');
+      expect(parseFloat(style.transitionDuration)).toBe(0);
+    });
+
+    describe('layout', () => {
+      const sizes: Array<[number, number]> = [[320, 568], [360, 640], [390, 844], [1280, 800], [844, 390]];
+      const noSideScroll = (e: Element, what: string) =>
+        expect(e.scrollWidth).withContext(`${what} scrolls sideways`).toBeLessThanOrEqual(e.clientWidth + 1);
+
+      for (const expanded of [false, true]) {
+        for (const [width, height] of sizes) {
+          it(`never scrolls the pop-up or the page sideways at ${width}×${height}` +
+             (expanded ? ', expanded' : ''), () => {
+            viewport.set(width, height);
+            if (expanded) {
+              toggle().click();
+            }
+            render();
+            noSideScroll(document.documentElement, 'the page');
+            noSideScroll(intro(), 'the pop-up');
+            noSideScroll(intro().querySelector('article')!, 'the pop-up box');
+            noSideScroll(intro().querySelector('.modal-body')!, 'the pop-up body');
+            const dialog = intro().getBoundingClientRect();
+            expect(dialog.right).toBeLessThanOrEqual(window.innerWidth + 1);
+            expect(box().getBoundingClientRect().width).toBeLessThanOrEqual(dialog.width);
+            // Each equation scrolls on its own; the block around them, with
+            // the button, never does (#3 browser check: the button slid away).
+            for (const math of [short(), full()]) {
+              expect(getComputedStyle(math.querySelector('.equation-math')!).overflowX).toBe('auto');
+            }
+            noSideScroll(box(), 'the equation block');
+            const button = toggle().getBoundingClientRect();
+            expect(button.left).toBeGreaterThanOrEqual(dialog.left);
+            expect(button.right).toBeLessThanOrEqual(dialog.right);
+          });
+        }
+      }
     });
   });
 });

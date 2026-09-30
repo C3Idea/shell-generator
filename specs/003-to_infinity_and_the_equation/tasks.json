@@ -1,0 +1,369 @@
+{
+  "meta": {
+    "feature": "003-to_infinity_and_the_equation",
+    "featureName": "Welcome pop-up: new copy mentioning the game + the shell equation",
+    "version": "2.0",
+    "createdAt": "2026-09-30T16:57:06Z",
+    "lastUpdated": "2026-09-30T16:57:06Z",
+    "specHash": "74d5757c9885bb2bf2d6fbafaabce01d",
+    "planHash": "59e2e6176d80b0b7523ed0e556a282d3"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 6,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "totalTasks": 8,
+    "completedTasks": 8,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-30T11:52:05-06:00",
+    "contextHint": "",
+    "lastUpdated": "2026-09-30T11:50:21-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Setup",
+      "description": "Baseline",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:00:15-06:00"
+    },
+    {
+      "number": 1,
+      "name": "Foundational: strings",
+      "description": "New intro labels and copy",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:02:59-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US1: copy that mentions the game",
+      "description": "New paragraphs, empty image removed",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:07:46-06:00"
+    },
+    {
+      "number": 3,
+      "name": "US2: the shell equation",
+      "description": "MathML short + full form, expander",
+      "tasks": [
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:27:10-06:00"
+    },
+    {
+      "number": 4,
+      "name": "US3: learn more and play",
+      "description": "Conoce más link, Jugar button, short screens",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:38:23-06:00"
+    },
+    {
+      "number": 5,
+      "name": "US4: correct parameter help",
+      "description": "a/b/θ help texts",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:46:45-06:00"
+    },
+    {
+      "number": 6,
+      "name": "Polish",
+      "description": "No regressions, verification, owner approval",
+      "tasks": [
+        "T007",
+        "T008"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T11:50:21-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "package.json",
+      "satisfies": [],
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-30T11:00:15-06:00",
+        "commitSha": "6b0443e94c40684102fdad3c9ce3f9f0a1222855",
+        "agents": "claude(inline)",
+        "files": [
+          "none (baseline: 402/402",
+          "lint clean",
+          "build OK)"
+        ]
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Strings in src/app/app-strings.ts: rewrite LABEL_INTRO_LINE1/2/4/5 per #3's Text table (short, accents, names the game), remove LABEL_INTRO_LINE3, add LABEL_INTRO_EQUATION_CAPTION / _SHOW / _HIDE / _ALT, LABEL_INTRO_MORE / _MORE_ARIA / _MORE_URL, LABEL_INTRO_PLAY.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/app-strings.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T11:02:59-06:00",
+        "commitSha": "8e4fcdd95bf798f5cd25285d943e6bd9d8f4297e",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts"
+        ],
+        "satisfaction": "partial",
+        "notes": "No LABEL_INTRO_EQUATION_CAPTION: LABEL_INTRO_LINE2 is the caption. LABEL_INTRO_EQUATION_FULL_ALT added (the full system, spoken). Lines 4-5 later reworded by the owner (D9, 10821e2); no-break space in LINE5 (D10, a44d0e5). Review pass 1 (D4)."
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "US1 copy in #modal-intro (src/app/sandbox/sandbox.component.html): new paragraphs in order, remove the empty <img id=\"img-intro-equation\"> and its CSS rule; replace the <img> assertion in sandbox.component.spec.ts with specs for the new copy (game named, LINE3 gone) and for opening on load and from the book button.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.html",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-013",
+        "VM-001",
+        "VM-002",
+        "VM-014"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-09-30T11:07:46-06:00",
+        "commitSha": "c78355fea1e23fcbcc9bed82c59f4ae22795e733",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 3,
+      "description": "US2 equation: native MathML in #modal-intro — helix + ellipse form always shown, full Model IV (no D, lines split by hand) in a block behind a button with aria-expanded/aria-controls (fullEquationOpen + toggle in sandbox.component.ts, label Ver/Ocultar), visually-hidden text alternative; CSS: equation box scrolls sideways inside itself only, no animation under reduced motion. Specs: MathML present, expander toggles label/aria/visibility, no pop-up/page sideways scroll at 320x568, 360, 390, 1280, 844x390 collapsed and expanded, text alternative present.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.html",
+      "satisfies": [
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-009",
+        "FR-012",
+        "FR-014",
+        "VM-003",
+        "VM-004",
+        "VM-005",
+        "VM-006",
+        "VM-007"
+      ],
+      "dependencies": [
+        "T003"
+      ],
+      "story": "US2",
+      "completion": {
+        "timestamp": "2026-09-30T11:27:10-06:00",
+        "commitSha": "7a903e7c267c7fc6eb6605cfc98d74275b1bf87e",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/equation/shell-equation.ts",
+          "src/app/equation/equation.component.ts",
+          "src/app/equation/equation.component.css",
+          "src/app/equation/equation.component.spec.ts",
+          "src/app/app.module.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "20 FAILED, 87 SUCCESS (new equation/expander/a11y/layout specs; fullEquationOpen stub only)",
+          "greenResult": "108/108 sandbox; full suite 434/434 before the reset-on-open spec; lint clean"
+        },
+        "satisfaction": "full",
+        "notes": "Built as <app-equation> (src/app/equation/: shell-equation.ts, equation.component.*), MathML set through [innerHTML] from constants because Angular 17.3.4 gives template <math> the wrong namespace; no math font needed. Sideways scroll moved from #intro-equation to each .equation-math (f179581). Review pass 1 (D8)."
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 4,
+      "description": "US3 links: \"Conoce más\" <a> (href LABEL_INTRO_MORE_URL, target=_blank, rel=noopener, aria-label) and \"Jugar\" button (closes the pop-up, navigateToGame()) in #modal-intro; specs for href/target/rel/name, Jugar closes + navigates, and close button + Jugar reachable by scrolling inside the pop-up at 320x568 and 844x390.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "satisfies": [
+        "FR-006",
+        "FR-007",
+        "FR-008",
+        "VM-008",
+        "VM-009",
+        "VM-010"
+      ],
+      "dependencies": [
+        "T004"
+      ],
+      "story": "US3",
+      "completion": {
+        "timestamp": "2026-09-30T11:38:23-06:00",
+        "commitSha": "980a48d28f723e02adf412139712908d1e1f43f8",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.ts",
+          "src/app/sandbox/sandbox.component.css",
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "6 FAILED, 108 SUCCESS (link, Jugar, short-screen specs)",
+          "greenResult": "441/441 full suite; lint clean"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 5,
+      "description": "US4 help: fix LABEL_PARAM_A1_HELP_* (horizontal), LABEL_PARAM_B_HELP_* (vertical), LABEL_PARAM_THETA_HELP_* (medias vueltas) in app-strings.ts per #3's table; specs on the initial screen (a, b, θ ⓘ) and the game (a ⓘ) in game.component.spec.ts.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": true,
+      "domain": "frontend",
+      "filePath": "src/app/app-strings.ts",
+      "satisfies": [
+        "FR-010",
+        "VM-011",
+        "VM-012",
+        "VM-013"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "story": "US4",
+      "completion": {
+        "timestamp": "2026-09-30T11:46:45-06:00",
+        "commitSha": "f4d68400b574befd6307d1af4a904ab0db291232",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts",
+          "src/app/sandbox/sandbox.component.spec.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T007": {
+      "id": "T007",
+      "wave": 6,
+      "description": "US5 + polish: #5 guide's Bienvenida bubble/layout unchanged (existing specs green), #31 modal specs green; full Karma suite on 2 cores, lint, tsc, production build; update PR body with results.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.spec.ts",
+      "satisfies": [
+        "FR-013",
+        "VM-015"
+      ],
+      "dependencies": [
+        "T005",
+        "T006"
+      ],
+      "story": "US5",
+      "completion": {
+        "timestamp": "2026-09-30T11:49:47-06:00",
+        "commitSha": "e1d84d468e42f9426d3968b4b0631d2bfc126316",
+        "agents": "claude(inline)",
+        "files": [
+          "none (verification: 445/445",
+          "lint",
+          "tsc app+spec",
+          "prod build; #5 guide/callout/modal untouched vs dev; PR body updated)"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T008": {
+      "id": "T008",
+      "wave": 6,
+      "description": "Owner approval: post the copy + ⓘ wording and screenshots (390 and 1280 px, collapsed and expanded) on #3 for approval (FR-011, SC-005, SC-007).",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/003-to_infinity_and_the_equation/spec.md",
+      "satisfies": [
+        "FR-011"
+      ],
+      "dependencies": [
+        "T007"
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T11:50:21-06:00",
+        "commitSha": "06d6c3b4fa40f6479652b3312f336c51efc7dc97",
+        "agents": "claude(inline)",
+        "files": [
+          "none (approval request issuecomment-5916660812; screenshots in validaciones/shell_generator/3/capturas)"
+        ],
+        "satisfaction": "partial",
+        "notes": "request posted; owner approval of copy, notation, ⓘ wording and screenshots pending"
+      }
+    }
+  }
+}
