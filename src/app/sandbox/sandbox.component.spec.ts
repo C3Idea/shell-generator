@@ -886,7 +886,10 @@ describe('SandboxComponent control guide (#5)', () => {
 
     }
 
-    for (const [width, height] of [[338, 643], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+    // Full phone screens and what's left of them inside a browser (its bars
+    // take 100-150 px): 360×640 / 360×560 small Android, 375×553 iPhone SE in
+    // Safari, 320×568 the first iPhone SE, 338×643 the owner's report.
+    for (const [width, height] of [[320, 568], [338, 643], [360, 560], [360, 640], [375, 553], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
       it(`keeps every bubble on screen, apart, off the controls and clear of the lines at ${width}×${height}`, () => {
         setViewport(width, height);
         toggleGuide();

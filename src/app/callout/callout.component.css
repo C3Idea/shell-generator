@@ -90,6 +90,20 @@
   margin-bottom: 0.125rem;
 }
 
+/* On short screens (a phone inside its browser) the guide's bubbles are
+   smaller still, so all of them fit (#5). */
+@media (max-height: 699px) {
+  .callout-guide {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .callout-guide .callout-title {
+    margin-bottom: 0;
+  }
+}
+
 /* Joins a bubble that can't sit beside its control to it, ending at the
    bubble's arrow. Positioned and sized by the component. */
 .callout-leader {

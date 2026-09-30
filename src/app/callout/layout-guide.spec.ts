@@ -47,7 +47,8 @@ const DESKTOP = { width: 1280, height: 800 };
 const LANDSCAPE = { width: 844, height: 390 };
 // The owner's DevTools size: under 356 px wide, so 56 px icons.
 const NARROW = { width: 338, height: 643 };
-const SIZES = [NARROW, SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE];
+const SHORT = { width: 360, height: 640 };
+const SIZES = [NARROW, SHORT, SMALL_PHONE, PHONE, DESKTOP, LANDSCAPE];
 
 function rect(p: GuidePlacement, index: number, measure: Measure): Box {
   const size = measure(index, p.maxWidth);
@@ -198,6 +199,21 @@ describe('layoutGuide (#5)', () => {
       expect(p.side).withContext(`bubble ${i}`).toBe('above');
       expect(rect(p, i, measure).bottom).withContext(`bubble ${i}`).toBeLessThan(viewport.height - 71);
     });
+  });
+
+  it("reaches the shell with a line when the bubbles above leave no room beside it", () => {
+    // A short phone: the staircase covers the shell's lower half.
+    const viewport = { width: 360, height: 640 };
+    const items = initialScreen(viewport);
+    const placements = layoutGuide(items, TEXT, viewport);
+    const rects = placements.map((p, i) => rect(p, i, TEXT));
+    const view = placements[6];
+    const shell = items[6].anchor;
+    rects.forEach((r, i) => i !== 6 && expect(overlaps(r, rects[6])).withContext(`bubble ${i}`).toBeFalse());
+    if (view.leader) {
+      expect(inside({ x: view.leader.x1, y: view.leader.y1 }, shell)).withContext('line starts on the shell').toBeTrue();
+      rects.forEach((r, i) => i !== 6 && expect(overlaps(lineBox(view.leader!), r)).withContext(`line across ${i}`).toBeFalse());
+    }
   });
 
   it('gives the same result whether the 3D view is listed before or after the pencil', () => {

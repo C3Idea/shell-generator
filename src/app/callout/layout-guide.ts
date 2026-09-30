@@ -43,6 +43,7 @@ const STACK_GAP = 6;       // between a stacked bubble and what it clears
 const LINE_CLEARANCE = 12; // between a leader line and the bubble to its right
 const ROW_TOLERANCE = 4;   // controls this close in top and height share a row
 const SLIDE_STEP = 2;      // how far a region's bubble moves per try
+const COLUMN_STEP = 4;     // between the columns tried for a region's line
 
 const box = (left: number, top: number, width: number, height: number): Box =>
   ({ left, top, width, height, right: left + width, bottom: top + height });
@@ -67,7 +68,8 @@ const lineBox = (l: Leader) =>
 // lines actually in its way, so far-apart controls keep theirs near the row. Where it fits, the rightmost control's bubble
 // sits beside it instead. Every other bubble sits beside its control on the
 // first side where it fits and covers nothing, controls before regions; a
-// region's bubble may move into the region to find room.
+// region's bubble may move into the region to find room or, failing that,
+// sit further out, joined to the region by a line through a gap.
 export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size): GuidePlacement[] {
   const result: GuidePlacement[] = new Array(items.length);
   const taken: Box[] = [];
@@ -130,6 +132,54 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
     return false;
   };
 
+  // A region's bubble further out, when nothing fits beside it: below (or
+  // above) it, as near as possible, joined by a vertical line that starts on
+  // the region, below whatever already covers it there, and crosses no
+  // bubble. Tries columns from the region's middle outwards.
+  const placeFar = (index: number): boolean => {
+    const region = items[index].anchor;
+    const size = measure(index, widest);
+    const centreX = region.left + region.width / 2;
+    const columns: number[] = [];
+    for (let d = 0; d <= region.width / 2; d += COLUMN_STEP) {
+      columns.push(centreX + d);
+      if (d > 0) {
+        columns.push(centreX - d);
+      }
+    }
+    for (const side of ['below', 'above'] as const) {
+      const from = side === 'below' ? region.bottom + ARROW_TIP : region.top - ARROW_TIP - size.height;
+      const to = side === 'below' ? viewport.height - MARGIN - size.height : MARGIN;
+      const step = side === 'below' ? SLIDE_STEP : -SLIDE_STEP;
+      for (let top = from; side === 'below' ? top <= to : top >= to; top += step) {
+        for (const x of columns) {
+          const left = clamp(x - size.width / 2, MARGIN, viewport.width - MARGIN - size.width);
+          if (x < left + ARROW_INSET || x > left + size.width - ARROW_INSET) {
+            continue;
+          }
+          const r = box(left, top, size.width, size.height);
+          if (!fits(r) || blocks(r, index)) {
+            continue;
+          }
+          const end = side === 'below' ? top - ARROW_TIP : top + size.height + ARROW_TIP;
+          const column = taken.filter(t => t.left <= x && x <= t.right);
+          const start = side === 'below'
+            ? Math.max(region.top, ...column.filter(t => t.top < end).map(t => t.bottom + 1))
+            : Math.min(region.bottom, ...column.filter(t => t.bottom > end).map(t => t.top - 1));
+          const onRegion = start >= region.top && start <= region.bottom;
+          const clear = side === 'below' ? start < end : start > end;
+          const line = { x1: x, y1: start, x2: x, y2: end };
+          if (onRegion && clear && !taken.some(t => overlaps(lineBox(line), t))
+            && !items.some((item, j) => j !== index && !item.region && overlaps(lineBox(line), item.anchor))) {
+            accept(index, { side, left, top, arrow: x - left, maxWidth: widest, leader: line }, size);
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  };
+
   const placeRow = (row: number[]) => {
     const centre = (i: number) => items[i].anchor.left + items[i].anchor.width / 2;
     const order = [...row].sort((a, b) => centre(b) - centre(a));
@@ -171,7 +221,7 @@ export function layoutGuide(items: GuideItem[], measure: Measure, viewport: Size
   inOrder.forEach(index => {
     const item = items[index];
     const sides: Side[] = item.region ? ['below', 'right', 'above', 'left'] : ['right', 'below', 'above', 'left'];
-    if (!placeBeside(index, sides)) {
+    if (!placeBeside(index, sides) && !(item.region && placeFar(index))) {
       // Nowhere free: the first side, clamped inside the screen.
       const size = measure(index, widest);
       const p = beside(item.anchor, size, sides[0], GAP);
