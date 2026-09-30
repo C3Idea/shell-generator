@@ -7,6 +7,7 @@ import { useViewport } from '../../testing/viewport';
 import { SandboxComponent } from './sandbox.component';
 import { ModalComponent } from '../modal/modal.component';
 import { CalloutComponent } from '../callout/callout.component';
+import { EquationComponent } from '../equation/equation.component';
 import { AppStrings } from '../app-strings';
 import { FramePump, installFramePump } from '../../testing/frame-pump';
 
@@ -17,7 +18,7 @@ describe('SandboxComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     })
     .compileComponents();
@@ -47,7 +48,7 @@ describe('SandboxComponent render loop (#21)', () => {
     frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
   });
@@ -91,7 +92,7 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -224,7 +225,7 @@ describe('SandboxComponent parameter help callouts (#6)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -391,7 +392,7 @@ describe('SandboxComponent panel layout (#6)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -527,7 +528,7 @@ describe('SandboxComponent control guide (#5)', () => {
     frames = installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -996,7 +997,7 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
     installFramePump();
     await TestBed.configureTestingModule({
       imports: [ FormsModule ],
-      declarations: [ SandboxComponent, ModalComponent, CalloutComponent ],
+      declarations: [ SandboxComponent, ModalComponent, CalloutComponent, EquationComponent ],
       providers: [ provideRouter([]) ]
     }).compileComponents();
     fixture = TestBed.createComponent(SandboxComponent);
@@ -1040,6 +1041,144 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       render();
       expect(intro().open).toBeTrue();
       expect(text()).toContain(AppStrings.LABEL_INTRO_LINE1);
+    });
+  });
+
+  describe('the equation', () => {
+    const MATHML = 'http://www.w3.org/1998/Math/MathML';
+    const viewport = useViewport();
+    const box = () => intro().querySelector('#intro-equation') as HTMLElement;
+    const short = () => intro().querySelector('#intro-equation-short') as HTMLElement;
+    const full = () => intro().querySelector('#intro-equation-full') as HTMLElement;
+    const toggle = () => intro().querySelector('#intro-equation-toggle') as HTMLButtonElement;
+    const shown = (e: HTMLElement) => !e.hidden && e.getBoundingClientRect().height > 0;
+    // The MathML's text, without its invisible operators (function
+    // application, invisible times).
+    const mathText = (e: HTMLElement) =>
+      Array.from(e.querySelectorAll('math')).map(m => m.textContent ?? '').join(' ')
+        .replace(/[\u2061\u2062]/g, '');
+
+    it('sits right after the line that introduces it', () => {
+      const lines = Array.from(intro().querySelectorAll('.label-intro-line'));
+      expect(lines[1].nextElementSibling).toBe(box());
+    });
+
+    it('is written in MathML, no image and no library', () => {
+      const maths = short().querySelectorAll('math');
+      expect(maths.length).toBeGreaterThan(0);
+      maths.forEach(m => {
+        expect(m.namespaceURI).toBe(MATHML);
+        expect(m instanceof MathMLElement).withContext('laid out as MathML').toBeTrue();
+      });
+      expect(box().querySelector('img, svg, canvas')).toBeNull();
+    });
+
+    it('shows the helix + ellipse form: C = H + E, H(θ), E(θ,s) and r_e(s)', () => {
+      expect(shown(short())).toBeTrue();
+      const math = mathText(short()).replace(/\s+/g, '');
+      for (const piece of ['C(θ,s)', 'H(θ)', 'E(θ,s)', 'cotα', 'β', 'a', 'b']) {
+        expect(math).withContext(piece).toContain(piece);
+      }
+      expect(math).toMatch(/r\s*e\(s\)|re\(s\)/);
+    });
+
+    it('keeps the full system collapsed at first', () => {
+      expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_SHOW);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
+      expect(toggle().getAttribute('aria-controls')).toBe('intro-equation-full');
+      expect(full().hidden).toBeTrue();
+      expect(component.fullEquationOpen).toBeFalse();
+    });
+
+    it('"Ver ecuación completa" shows the full Model IV system, with φ, Ω and μ and no D', () => {
+      toggle().click();
+      render();
+      expect(shown(full())).toBeTrue();
+      expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_HIDE);
+      expect(toggle().getAttribute('aria-expanded')).toBe('true');
+      const math = mathText(full()).replace(/\s+/g, '');
+      for (const piece of ['x(θ,s)', 'y(θ,s)', 'z(θ,s)', 'φ', 'Ω', 'μ', 'cotα']) {
+        expect(math).withContext(piece).toContain(piece);
+      }
+      expect(math).not.toContain('D');
+    });
+
+    it('"Ocultar ecuación completa" collapses it again', () => {
+      toggle().click();
+      render();
+      toggle().click();
+      render();
+      expect(full().hidden).toBeTrue();
+      expect(toggle().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_SHOW);
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('starts collapsed again each time the pop-up opens', () => {
+      toggle().click();
+      render();
+      (intro().querySelector('header > button') as HTMLButtonElement).click();
+      render();
+      (el.querySelector('#intro-button') as HTMLButtonElement).click();
+      render();
+      expect(full().hidden).toBeTrue();
+      expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('is a real button', () => {
+      expect(toggle().tagName).toBe('BUTTON');
+      expect(toggle().type).toBe('button');
+    });
+
+    describe('for a screen reader', () => {
+      it('reads a spoken version instead of the MathML', () => {
+        short().querySelectorAll('math').forEach(m => expect(m.getAttribute('aria-hidden')).toBe('true'));
+        const alt = short().querySelector('.visually-hidden') as HTMLElement;
+        expect(alt.textContent?.trim()).toBe(AppStrings.LABEL_INTRO_EQUATION_ALT);
+        expect(alt.getBoundingClientRect().width).toBeLessThanOrEqual(1);
+      });
+
+      it('reads the full system\'s spoken version once expanded', () => {
+        toggle().click();
+        render();
+        full().querySelectorAll('math').forEach(m => expect(m.getAttribute('aria-hidden')).toBe('true'));
+        expect(full().querySelector('.visually-hidden')?.textContent?.trim())
+          .toBe(AppStrings.LABEL_INTRO_EQUATION_FULL_ALT);
+      });
+    });
+
+    it('expands without animation', () => {
+      toggle().click();
+      render();
+      const style = getComputedStyle(full());
+      expect(style.animationName).toBe('none');
+      expect(parseFloat(style.transitionDuration)).toBe(0);
+    });
+
+    describe('layout', () => {
+      const sizes: Array<[number, number]> = [[320, 568], [360, 640], [390, 844], [1280, 800], [844, 390]];
+      const noSideScroll = (e: Element, what: string) =>
+        expect(e.scrollWidth).withContext(`${what} scrolls sideways`).toBeLessThanOrEqual(e.clientWidth + 1);
+
+      for (const expanded of [false, true]) {
+        for (const [width, height] of sizes) {
+          it(`never scrolls the pop-up or the page sideways at ${width}×${height}` +
+             (expanded ? ', expanded' : ''), () => {
+            viewport.set(width, height);
+            if (expanded) {
+              toggle().click();
+            }
+            render();
+            noSideScroll(document.documentElement, 'the page');
+            noSideScroll(intro(), 'the pop-up');
+            noSideScroll(intro().querySelector('article')!, 'the pop-up box');
+            noSideScroll(intro().querySelector('.modal-body')!, 'the pop-up body');
+            const dialog = intro().getBoundingClientRect();
+            expect(dialog.right).toBeLessThanOrEqual(window.innerWidth + 1);
+            expect(box().getBoundingClientRect().width).toBeLessThanOrEqual(dialog.width);
+            expect(getComputedStyle(box()).overflowX).toBe('auto');
+          });
+        }
+      }
     });
   });
 });

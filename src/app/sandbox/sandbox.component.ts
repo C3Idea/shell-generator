@@ -56,6 +56,8 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   // Pop-up state (#31), bound to the <app-modal>'s [open] and reset by its
   // (closed): Esc, a click on the backdrop or the ✕.
   introOpen = false;
+  // The welcome pop-up's full equation (#3): collapsed until asked for.
+  fullEquationOpen = false;
 
   // Parameter help (#6): the ⓘ whose callout is open, if any. Its ⓘ toggles
   // it; Esc, a click on the canvas or closing its panel clears it. Moving a
@@ -310,12 +312,18 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.followShell();
   }
 
+  // "Ver / Ocultar ecuación completa" in the welcome pop-up (#3).
+  fullEquationButtonClick() {
+    this.fullEquationOpen = !this.fullEquationOpen;
+  }
+
   introButtonClick(event: Event) {
     this.showIntroWindow();
   }
 
   private showIntroWindow() {
     this.guide.close();
+    this.fullEquationOpen = false;
     this.introOpen = true;
   }
 

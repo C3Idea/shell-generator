@@ -290,6 +290,17 @@
     <h2 modal-title id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</h2>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE2}}</p>
+    <!-- The shell equation (#3): the short form, and the full system
+         behind "Ver ecuación completa". -->
+    <div id="intro-equation">
+      <app-equation id="intro-equation-short" form="short"></app-equation>
+      <button type="button" id="intro-equation-toggle"
+        [attr.aria-expanded]="this.fullEquationOpen" aria-controls="intro-equation-full"
+        (click)="this.fullEquationButtonClick()">
+        {{this.fullEquationOpen ? AppStrings.LABEL_INTRO_EQUATION_HIDE : AppStrings.LABEL_INTRO_EQUATION_SHOW}}
+      </button>
+      <app-equation id="intro-equation-full" form="full" [hidden]="!this.fullEquationOpen"></app-equation>
+    </div>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE4}}</p>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE5}}</p>
   </app-modal>

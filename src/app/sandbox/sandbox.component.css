@@ -217,6 +217,34 @@ label {
   flex-shrink: 0;
 }
 
+/* Welcome pop-up: the shell equation (#3). Long rows scroll sideways inside
+   this box only, never the pop-up or the page. */
+#intro-equation {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-bottom: var(--modal-spacing);
+}
+
+#intro-equation-toggle {
+  min-height: 44px;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--modal-primary);
+  border-radius: var(--modal-border-radius);
+  background: transparent;
+  color: var(--modal-color);
+  font: inherit;
+  cursor: pointer;
+}
+
+#intro-equation-toggle:hover {
+  background: var(--modal-divider);
+}
+
+#intro-equation-toggle:focus-visible {
+  outline: 2px solid var(--modal-primary-hover);
+  outline-offset: 2px;
+}
+
 /* Narrow phones: nearly full width. It scrolls only when taller than the
    screen (the base rule's overflow-y: auto, #6), with no forced scrollbar. */
 @media only screen and (max-width: 380px) {

@@ -1,0 +1,59 @@
+/* The shell equation (#3). Unencapsulated (the MathML comes in through
+   innerHTML, which encapsulated styles don't reach), so every rule starts at
+   app-equation: keep that prefix on new rules, or they leak to the app. */
+
+app-equation {
+  display: block;
+}
+
+app-equation[hidden] {
+  display: none;
+}
+
+app-equation math {
+  font-size: 1.1em;
+  margin: 0.5rem 0;
+}
+
+/* No MathML auto-italic (it needs a math font's italic letters); variables
+   are italicised from the text font instead. */
+app-equation mi {
+  text-transform: none;
+  font-style: normal;
+}
+
+app-equation mi.v {
+  font-style: italic;
+}
+
+/* Rows align on their "=": name right, "=" centred, formula left. */
+app-equation mtd {
+  padding: 0.2em 0.1em;
+  text-align: left;
+  math-style: normal;  /* full-size fractions, as in the text around them */
+}
+
+app-equation mtd:first-child {
+  text-align: right;
+}
+
+/* Phones: a little smaller, so the rows fit a 390 px screen without
+   scrolling sideways (narrower phones scroll the box, #3 FR-005). */
+@media (max-width: 400px) {
+  app-equation math {
+    font-size: 0.92em;
+  }
+}
+
+/* Read by screen readers, not shown. */
+app-equation .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
