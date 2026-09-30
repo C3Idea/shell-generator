@@ -1,9 +1,10 @@
 import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ARROW_INSET, Box, clamp, GAP, MARGIN, Size } from './geometry';
 import { GuidePlacement, layoutGuide } from './layout-guide';
 
-// One help bubble (#6), shown for the ⓘ that was clicked. `anchor` is a CSS
-// selector for that ⓘ; `id` is the bubble's id, which the ⓘ points at with
-// aria-controls.
+// One help bubble: for the ⓘ that was clicked (#6), or for one control in
+// the guide (#5). `anchor` is a CSS selector for that ⓘ or control; `id` is
+// the bubble's id, which the ⓘ or the "?" points at with aria-controls.
 export interface Callout {
   id: string;
   title: string;
@@ -22,15 +23,6 @@ export interface CalloutPlacement {
   // above) or its top edge (right): the anchor's centre.
   arrow: number;
 }
-
-export interface Box { left: number; top: number; right: number; bottom: number; width: number; height: number; }
-export interface Size { width: number; height: number; }
-
-const GAP = 10;         // between the anchor and the bubble; room for the arrow
-const MARGIN = 8;       // kept between the bubble and the viewport edge
-const ARROW_INSET = 14; // the arrow never sits closer than this to a corner
-
-const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
 
 // Where the bubble goes, in viewport coordinates: to the right of the anchor
 // when all of it fits there, otherwise below it, or above it when only that

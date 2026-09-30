@@ -1,13 +1,10 @@
-import { Box, Size } from './callout.component';
-import { GuideItem, GuidePlacement, layoutGuide, Measure } from './layout-guide';
+import { Box, box, overlaps, Size } from './geometry';
+import { GuideItem, GuidePlacement, layoutGuide, lineBox, Measure } from './layout-guide';
 
 // The guide's layout (#5), without a DOM. The anchors copy the initial
 // screen: five 64 px toolbar buttons in a row at the top left (gear, camera,
 // gamepad, book, "?"), the pencil at the bottom left, and the 3D view as the
 // region where the shell is drawn.
-
-const box = (left: number, top: number, width: number, height: number): Box =>
-  ({ left, top, width, height, right: left + width, bottom: top + height });
 
 // Stands in for the shell: the middle of the screen, half its shorter side across.
 function centralRegion(area: Box): Box {
@@ -55,12 +52,7 @@ function rect(p: GuidePlacement, index: number, measure: Measure): Box {
   return box(p.left, p.top, size.width, size.height);
 }
 
-const overlaps = (a: Box, b: Box) =>
-  a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
 
-// A vertical or horizontal leader line, as a 1 px box.
-const lineBox = (l: { x1: number; y1: number; x2: number; y2: number }) =>
-  box(Math.min(l.x1, l.x2), Math.min(l.y1, l.y2), Math.abs(l.x2 - l.x1) || 1, Math.abs(l.y2 - l.y1) || 1);
 
 // The point of the arrow: 9 px out from the bubble's edge, at --callout-arrow.
 function arrowTip(p: GuidePlacement, r: Box): { x: number; y: number } {

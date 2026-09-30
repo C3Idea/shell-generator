@@ -1,4 +1,4 @@
-import { Box, Size } from './callout.component';
+import { ARROW_INSET, Box, box, clamp, GAP, MARGIN, overlaps, Size } from './geometry';
 
 // The guide (#5): a bubble beside every control at once. layoutGuide() places
 // the whole set together, so no two bubbles overlap. Pure, so it can be
@@ -34,9 +34,7 @@ export type Measure = (index: number, maxWidth: number) => Size;
 
 type Side = GuidePlacement['side'];
 
-const GAP = 10;            // between a control and its bubble; room for the arrow
-const MARGIN = 8;          // kept between a bubble and the viewport edge
-const ARROW_INSET = 14;    // the arrow never sits closer than this to a corner
+// GAP, MARGIN and ARROW_INSET are shared with the ⓘ bubble (geometry.ts).
 const ARROW_TIP = 9;       // how far the arrow's point sits outside the bubble
 const MAX_WIDTH = 320;     // a guide bubble's widest
 const STACK_GAP = 6;       // between a stacked bubble and what it clears
@@ -45,18 +43,11 @@ const ROW_TOLERANCE = 4;   // controls this close in top and height share a row
 const SLIDE_STEP = 2;      // how far a region's bubble moves per try
 const COLUMN_STEP = 4;     // between the columns tried for a region's line
 
-const box = (left: number, top: number, width: number, height: number): Box =>
-  ({ left, top, width, height, right: left + width, bottom: top + height });
-
-const overlaps = (a: Box, b: Box) =>
-  a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
-
 const inside = (x: number, y: number, b: Box) =>
   x >= b.left && x <= b.right && y >= b.top && y <= b.bottom;
 
-const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
-
-const lineBox = (l: Leader) =>
+// A vertical or horizontal line as a box at least 1 px across.
+export const lineBox = (l: Leader) =>
   box(Math.min(l.x1, l.x2), Math.min(l.y1, l.y2), Math.abs(l.x2 - l.x1) || 1, Math.abs(l.y2 - l.y1) || 1);
 
 // Places a bubble beside every item: the order of `items` is the order of
@@ -65,8 +56,9 @@ const lineBox = (l: Leader) =>
 // top of the screen, above it at the bottom), the rightmost control's bubble
 // nearest the row, each joined to its control by a leader line that passes
 // left of the bubbles above it. A bubble drops only below the bubbles and
-// lines actually in its way, so far-apart controls keep theirs near the row. Where it fits, the rightmost control's bubble
-// sits beside it instead. Every other bubble sits beside its control on the
+// lines actually in its way, so far-apart controls keep theirs near the row.
+// Where there's room to its right, the rightmost control's bubble goes there
+// and skips the staircase. Every other bubble sits beside its control on the
 // first side where it fits and covers nothing, controls before regions; a
 // region's bubble may move into the region to find room or, failing that,
 // sit further out, joined to the region by a line through a gap.

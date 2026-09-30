@@ -1,8 +1,9 @@
-/* The help bubble (#6). Text colour, font, border colour, rounding and fade
-   duration come from the --modal-* tokens in src/styles.css, so it matches
-   the pop-ups (#31). Two parts differ on purpose: the background is the
-   token mixed to 80 % (below), and the shadow is its own, since the
-   pop-ups' faint Pico shadow barely shows over the 3D view. */
+/* The help bubbles: the ⓘ's (#6) and the guide's (#5). Text colour, font,
+   border colour, rounding and fade duration come from the --modal-* tokens
+   in src/styles.css, so they match the pop-ups (#31). Two parts differ on
+   purpose: the background is the token mixed to 80 % for the ⓘ bubble
+   (below) and 95 % for the guide's (.callout-guide), and the shadow is its
+   own, since the pop-ups' faint Pico shadow barely shows over the 3D view. */
 
 /* Covers the viewport without taking the pointer: the sliders and buttons
    under it keep working while a bubble is open. */
@@ -45,9 +46,10 @@
   margin: 0;
 }
 
-/* The arrow points back at the ⓘ; --callout-arrow is the ⓘ's centre along
-   the bubble's edge, measured from its outer edge. The arrow is positioned
-   inside the 1 px border, hence 9 px (8 px half-arrow + the border). */
+/* The arrow points back at the ⓘ or, in the guide, its control;
+   --callout-arrow is that anchor's centre along the bubble's edge, measured
+   from its outer edge. The arrow is positioned inside the 1 px border,
+   hence 9 px (8 px half-arrow + the border). */
 .callout-arrow {
   position: absolute;
   width: 0;
