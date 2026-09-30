@@ -1,0 +1,8 @@
+vt.idd:task: T006
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.ts,src/app/game/game.component.spec.ts
+vt.idd:tdd: red=10 FAILED (close rules, pop-up safeguard, flip re-aim, resize), 3 regression guards already passing (menu+ⓘ on turn-on, save, Compartir), green=141 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 3
+vt.idd:timestamp: 2026-09-29T21:28:39-06:00
