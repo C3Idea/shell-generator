@@ -10,9 +10,9 @@
 
 ### Summary
 
-The initial screen shows six controls (gear, camera, gamepad, book, pencil, and the 3D view) with no labels, so a first-time user has to guess what each does. This feature adds a **"?" button** to the toolbar. Tapping it turns on a **guide**: one callout bubble beside each visible control, each with a short line saying what the control does. Tapping "?" again, pressing Esc, or a tap on the 3D view turns the guide off.
+The initial screen shows six controls (gear, camera, gamepad, book, pencil, and the 3D view) with no labels, so a first-time user has to guess what each does. This feature adds a **"?" button** alone in the top-right corner, level with the toolbar. Tapping it turns on a **guide**: one callout bubble beside each visible control, each with a short line saying what the control does. Tapping "?" again, pressing Esc, or a tap on the 3D view turns the guide off.
 
-The guide is built as a **reusable multi-callout mode** of the #6 `CalloutComponent`, so the game screen (#10) can reuse it without copying code. The single-callout parameter help from #6 is unchanged. On screens too narrow for the bubbles to sit beside their controls (phones), the toolbar's bubbles stack in a **staircase** below the toolbar, each joined to its icon by a thin leader line.
+The guide is built as a **reusable multi-callout mode** of the #6 `CalloutComponent`, so the game screen (#35) can reuse it without copying code. The single-callout parameter help from #6 is unchanged. On screens too narrow for the bubbles to sit beside their controls (phones), the toolbar's bubbles stack in a **staircase** below the toolbar, each joined to its icon by a thin leader line.
 
 ### User Stories
 
@@ -20,7 +20,7 @@ The guide is built as a **reusable multi-callout mode** of the #6 `CalloutCompon
 As a first-time visitor to the initial screen, I want to reveal a short explanation of every on-screen control at once, so that I understand what I can do without opening each menu to find out.
 
 - **Acceptance 1.1** — *Given* the initial screen with the guide off, *When* I tap the "?" button, *Then* a callout appears beside each of the six controls (gear, camera, gamepad, book, pencil, 3D view) plus the "?" itself, each showing its own title and one short line.
-- **Acceptance 1.2** — *Given* the guide is on at 390 px, *When* the bubbles cannot fit beside their toolbar icons, *Then* they stack in a staircase below the toolbar, each joined to its icon by a leader line, with no two bubbles overlapping and no line crossing a bubble.
+- **Acceptance 1.2** — *Given* the guide is on at 390 px, *When* the bubbles cannot fit beside their icons, *Then* the top row's bubbles (the toolbar and the corner "?") stack in a staircase below it, each joined to its icon by a leader line, with no two bubbles overlapping and no line crossing a bubble.
 - **Acceptance 1.3** — *Given* the guide is on, *When* I read the 3D-view bubble, *Then* it sits in open space and its arrow (or line) points at the shell.
 
 **US2 — Turn the guide off (P1)**
@@ -39,7 +39,7 @@ As a user exploring the screen, I want the controls to keep working while the gu
 - **Acceptance 3.2** — *Given* the guide is on, *When* I drag on the 3D view to rotate, or zoom with the wheel or a pinch, *Then* the shell rotates/zooms and the guide stays on.
 
 **US4 — Reuse on the game screen (P2)**
-As the developer of #10, I want the multi-callout guide to be a reusable mode of the shared callout, so that the game screen adds its own guide without duplicating placement or a11y code.
+As the developer of #35 (the game's guide), I want the multi-callout guide to be a reusable mode of the shared callout, so that the game screen adds its own guide without duplicating placement or a11y code.
 
 - **Acceptance 4.1** — *Given* the shared callout component, *When* the guide passes it several callouts with anchors, *Then* it places and shows them all together, and the placement is a pure function unit-tested without a DOM.
 - **Acceptance 4.2** — *Given* the #6 single-callout parameter help, *When* this feature ships, *Then* every parameter ⓘ still opens its one callout exactly as before.
@@ -53,14 +53,14 @@ As a user of assistive technology or reduced motion, I want the guide to be anno
 
 ### Requirements (Functional)
 
-- **FR-001** The toolbar MUST include a new "?" button, drawn as an inline SVG matching the other toolbar icons (rounded-square border, same content colour and hover colours), sized like them.
-- **FR-002** The "?" button MUST be visible without opening any menu at 360 px, 390 px, 1280 px and 844×390, and MUST NOT overlap another icon.
+- **FR-001** The initial screen MUST include a new "?" button alone in the top-right corner, level with the toolbar and as far from the right edge as the gear is from the left, drawn as an inline SVG matching the toolbar icons (rounded-square border, same content colour and hover colours), sized like them. *(Amended 2026-09-29, decision 14: it was "in the toolbar, after the book".)*
+- **FR-002** The "?" button MUST be visible without opening any menu at 320 px, 338 px, 360 px, 390 px, 1280 px and 844×390, MUST NOT overlap another icon, and the toolbar and the "?" MUST stay on one row at those sizes (56 px corner icons under 356 px wide, decision 15).
 - **FR-003** The "?" button's hit area MUST be at least 44×44 px.
 - **FR-004** Tapping the "?" button MUST toggle the guide on and off.
 - **FR-005** When on, the guide MUST show one callout for each of: gear, camera, gamepad, book, pencil, the 3D view, and the "?" button, each with its own title and text.
 - **FR-006** Each callout MUST point at its control: with the #6 arrow when it sits beside/adjacent, or with a thin leader line in the staircase layout.
 - **FR-007** The 3D-view callout MUST sit in open space with its pointer aimed at the shell.
-- **FR-008** Where callouts cannot fit beside their controls, the toolbar's callouts MUST stack in a staircase below the toolbar (rightmost icon's bubble nearest the toolbar), with no two callouts overlapping, no leader line crossing a callout, and none covering its own control — at 360 px, 390 px, 1280 px and 844×390.
+- **FR-008** Where callouts cannot fit beside their controls, the top row's callouts (the toolbar and the corner "?") MUST stack in a staircase below it (rightmost icon's bubble nearest the row, each dropping only below what is in its way), with no two callouts overlapping, no leader line crossing a callout, and none covering a control — at 360×800, 390×844, 1280×800 and 844×390, and on short phone screens 320×568, 338×643, 360×560, 360×640 and 375×553 (decision 16). 320×454 and 667×320 are best effort.
 - **FR-009** The guide MUST turn off on: a second tap of "?", the Esc key, or a tap (press-release without drag) on the 3D view.
 - **FR-010** A drag on the 3D view (rotate) and a wheel/pinch zoom MUST work and MUST leave the guide on.
 - **FR-011** Opening the parameters panel, the pencil (visualization) panel, a parameter ⓘ, or the welcome pop-up MUST turn the guide off.
@@ -70,11 +70,11 @@ As a user of assistive technology or reduced motion, I want the guide to be anno
 - **FR-015** The guide MUST be announced through a polite live region when it turns on, in on-screen order.
 - **FR-016** Under `prefers-reduced-motion: reduce`, callouts MUST appear without animation.
 - **FR-017** The "?" button MUST expose an accessible name ("Mostrar ayuda"), `aria-pressed` reflecting the guide state, and `aria-controls` referencing the guide.
-- **FR-018** The guide MUST be implemented as a reusable multi-callout mode of the shared `CalloutComponent`, with its placement/layout as a pure, unit-tested function, so #10 can reuse it.
+- **FR-018** The guide MUST be implemented as a reusable multi-callout mode of the shared `CalloutComponent`, with its placement/layout as a pure, unit-tested function, so #35 can reuse it.
 - **FR-019** The #6 single-callout parameter help MUST keep working unchanged on both screens.
-- **FR-020** Each callout's text MUST be a title plus one short line (about 45 characters or less), stored in `app-strings.ts`, so all callouts fit at 844×390.
-- **FR-021** The "?" callout MUST tell the user how to dismiss the guide (draft: "Toca de nuevo para cerrar").
-- **FR-022** The full set of callouts MUST fit without overlap at every supported size; at 844×390 the toolbar callouts MAY sit beside their icons (using the wide axis) rather than stacking, and the layout function MUST guarantee the no-overlap rule by choosing per-callout placement.
+- **FR-020** Each callout's text MUST be a title plus one short line (about 45 characters, at most 52), stored in `app-strings.ts`, so all callouts fit at 844×390. The wording is the owner's (approved 2026-09-29; the book's bubble is "Bienvenida").
+- **FR-021** The "?" callout MUST tell the user how to dismiss the guide ("Toca de nuevo para cerrar", approved).
+- **FR-022** The full set of callouts MUST fit without overlap at every supported size; at 844×390 the toolbar callouts MAY sit beside their icons (using the wide axis) rather than stacking, and the layout function MUST guarantee the no-overlap rule by choosing per-callout placement. On short screens (under 700 px tall) the bubbles are more compact, and the 3D view's bubble MAY sit further from the shell, joined by a line through a gap (decision 16).
 - **FR-023** On the 3D view, a press-release whose pointer movement stays under a small threshold (≈10 px) and produces no rotation MUST count as a tap (closes the guide); any larger movement is a drag handled by OrbitControls (guide stays on).
 - **FR-024** Actions that do not open a competing help surface (e.g. saving the image with the camera) MUST leave the guide on; only opening a panel, a parameter ⓘ, or a pop-up turns it off (FR-011).
 
@@ -82,7 +82,7 @@ As a user of assistive technology or reduced motion, I want the guide to be anno
 
 - **GuideCallout** — a callout with an anchor selector, title and text, plus (in staircase layout) a computed leader-line path. Extends the #6 `Callout`.
 - **ControlGuide** — the initial screen's guide state: whether it is on, and the list of `GuideCallout`s. Owns toggle/close, mirrors the `ParameterHelp` pattern from #6.
-- **Multi-callout layout** — a pure function taking the anchors' boxes, the bubbles' sizes and the viewport, returning each bubble's placement and (when stacked) its leader line — the reusable core #10 consumes.
+- **Multi-callout layout** — a pure function taking the anchors' boxes, the bubbles' sizes and the viewport, returning each bubble's placement and (when stacked) its leader line — the reusable core #35 consumes.
 
 ### Architecture
 
@@ -113,11 +113,11 @@ The existing `CalloutComponent` renders one bubble from an `@Input() active: Cal
 
 | Risk | Severity | Mitigation |
 |------|----------|------------|
-| Six-plus bubbles overlap or run off-screen on small/landscape phones | High | Staircase layout + no-overlap assertions at 360/390/1280/844×390; layout is a pure unit-tested function |
+| Six-plus bubbles overlap or run off-screen on small/landscape phones | High | Staircase layout + no-overlap assertions at 9 sizes incl. short phone screens; layout is a pure unit-tested function; 320×454 and 667×320 best effort |
 | Tap-to-close conflicts with drag-to-rotate on the 3D view; canvas listens for `mousedown` today, which touch drags may not fire | High | Distinguish tap (press-release, no move) from drag; verify tap AND drag on touch, not only mouse |
 | Generalising `CalloutComponent` regresses the #6 single-callout help | Medium | Keep the single `active` input working; #6 specs stay green (FR-019) |
 | Leader lines capture pointer events and block controls | Medium | Layer stays `pointer-events: none`; hit-test a control through a line in tests |
-| "?" crowds the toolbar at 360 px (five 68 px icons ≈ 345 px) | Medium | Assert the "?" visible and non-overlapping at 360 px |
+| "?" crowds the toolbar on narrow phones (five 68 px icons ≈ 345 px) | Medium | Realised at 338 px (owner's report): the "?" moved to the top-right corner and the corner icons are 56 px under 356 px; one-row assertions at 320/338 px |
 
 ### Testing Strategy
 
@@ -130,9 +130,9 @@ The existing `CalloutComponent` renders one bubble from an `@Input() active: Cal
 
 | ID | Requirement(s) | Acceptance scenario | Evidence | Status |
 |----|----------------|---------------------|----------|--------|
-| VM-001 | FR-001,002,003 | "?" visible, 44 px, non-overlapping at 360/390/1280/844×390 | sandbox `the "?" button` (3) + `shows the "?" on screen, clear of the other icons` at 360/390/1280/844×390 | Pass |
+| VM-001 | FR-001,002,003 | "?" alone in the top-right corner, 44 px, one top row, non-overlapping at 320/338/360/390/1280/844×390 | sandbox `the "?" button` (3, incl. `sits on its own in the upper-right corner`) + `shows the "?" on screen, clear of the other icons` ×6 sizes | Pass |
 | VM-002 | FR-004,005 | Tapping "?" shows a callout for all seven anchors with title+text | sandbox `shows a bubble beside each control, in reading order, and reports the "?" as pressed` | Pass |
-| VM-003 | FR-006,008 | Staircase at 390 px: leader lines, no overlap, no line crossing a bubble | sandbox `stacks the toolbar's bubbles in a staircase on a phone` + `…clear of the lines` ×4 sizes; layoutGuide staircase spec | Pass |
+| VM-003 | FR-006,008 | Staircase at 390 px: leader lines, no overlap, no line crossing a bubble | sandbox `stacks the toolbar's bubbles in a staircase on a phone` + `…clear of the lines` ×9 sizes; layoutGuide staircase + `counts controls level with each other as one row` + `a bubble drops only below what is in its way` | Pass |
 | VM-004 | FR-007 | 3D-view bubble in open space, pointer at the shell | sandbox `points the 3D view's bubble at the shell` (ShellViewer.shellScreenBox, #shell-region) | Pass |
 | VM-005 | FR-004,009,017 | Second "?" tap closes; aria-pressed flips | sandbox `turns off when the "?" is tapped again` | Pass |
 | VM-006 | FR-009 | Esc closes the guide | sandbox `turns off with Esc` | Pass |
@@ -147,19 +147,19 @@ The existing `CalloutComponent` renders one bubble from an `@Input() active: Cal
 | VM-015 | FR-018 | `layoutGuide()` places a set of callouts; pure, DOM-free unit test | `src/app/callout/layout-guide.spec.ts`: DOM-free, 4 sizes + staircase, beside, bottom row, order | Pass |
 | VM-016 | FR-019 | #6 single-callout parameter help unchanged (specs green) | #6 sandbox/game ⓘ specs unchanged (git diff dev: no line removed) and green | Pass |
 | VM-017 | FR-020,021 | Text is title + one short line in app-strings; "?" bubble says how to close | `control-guide.spec.ts` (title+short line, "?" says cerrar); text in app-strings, owner approval → SC-006 | Pass |
-| VM-018 | FR-022 | The whole callout set fits with no overlap at 844×390 (toolbar callouts beside their icons) | sandbox `keeps every bubble on screen, apart…at 844×390` + layoutGuide 844×390 | Pass |
+| VM-018 | FR-022 | The whole callout set fits with no overlap at 844×390, and on short phone screens (the 3D view's bubble may use a line) | sandbox `keeps every bubble on screen, apart…` at 844×390, 320×568, 338×643, 360×560, 360×640, 375×553; layoutGuide `reaches the shell with a line…` | Pass |
 | VM-019 | FR-023,024 | Tap under threshold closes; drag rotates and keeps guide on; camera save leaves guide on | sandbox tap / drag specs + `stays on while an image is saved` | Pass |
 
 ### Success Criteria
 
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | A first-time user can see what every visible control does from one tap, without opening a menu | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
-| SC-002 | The guide reads cleanly (no overlaps, all on-screen) at 360 px, 390 px, 1280 px and 844×390 | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
-| SC-003 | Every control still works while the guide is on, including rotate/zoom on the 3D view | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
-| SC-004 | The multi-callout guide is reusable by #10 (shared component, pure layout) with #6 help unchanged | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
-| SC-005 | The guide is keyboard-dismissable, screen-reader announced, and respects reduced motion | VM rows above; 282/282 ×3 on 2 cores, lint, tsc, build; revert check 42 #5 specs fail on dev templates | Pass |
-| SC-006 | Owner approves the guide's Spanish text and the screenshots at all four sizes | [pending] | Pending |
+| SC-001 | A first-time user can see what every visible control does from one tap, without opening a menu | VM rows above; 305/305 on 2 cores, lint, tsc, build; revert check 50 #5 specs fail on dev templates, 8/8 mutations caught; browser 146/146 | Pass |
+| SC-002 | The guide reads cleanly (no overlaps, all on-screen) at 360 px, 390 px, 1280 px and 844×390, and on short phone screens | VM rows above; 305/305 on 2 cores, lint, tsc, build; revert check 50 #5 specs fail on dev templates, 8/8 mutations caught; browser 146/146 (real input, 8 sizes); owner manual §1–§6 | Pass |
+| SC-003 | Every control still works while the guide is on, including rotate/zoom on the 3D view | VM rows above; 305/305 on 2 cores, lint, tsc, build; revert check 50 #5 specs fail on dev templates, 8/8 mutations caught; browser 146/146 | Pass |
+| SC-004 | The multi-callout guide is reusable by #35 (shared component, pure layout) with #6 help unchanged | VM rows above; 305/305 on 2 cores, lint, tsc, build; revert check 50 #5 specs fail on dev templates, 8/8 mutations caught; browser 146/146 | Pass |
+| SC-005 | The guide is keyboard-dismissable, screen-reader announced, and respects reduced motion | VM rows above; 305/305 on 2 cores, lint, tsc, build; revert check 50 #5 specs fail on dev templates, 8/8 mutations caught; browser 146/146 | Pass |
+| SC-006 | Owner approves the guide's Spanish text and the screenshots | Text approved 2026-09-29 (owner's wording, `cb0a60a`, pinned by `uses the owner's wording`); screenshots pending on issuecomment-5899391235 | Pending |
 
 ### Applicable Conventions
 
@@ -176,14 +176,14 @@ Medium. One new reusable layout mode on an existing component, one screen wired 
 ### Decisions Made
 
 1. **Help model — callouts pointing at each control** (vs a single pop-up with sections). *Rationale:* the owner's choice; reuses #6 and points directly at each control. (Agreed 2026-09-29.)
-2. **Entry point — a new "?" toolbar icon**, the book stays for the welcome text (vs repurposing the book). *Rationale:* the book already opens the intro; a dedicated affordance is clearer.
+2. **Entry point — a new "?" icon**, the book stays for the welcome text (vs repurposing the book). *Rationale:* the book already opens the intro; a dedicated affordance is clearer. *(Its place moved from "in the toolbar, after the book" to the top-right corner: decision 14.)*
 3. **Phone layout — staircase with leader lines** (vs titles-only side by side, vs numbers + legend). *Rationale:* keeps a real sentence and a clear pointer per control where side-by-side bubbles would collide.
 4. **3D-view pointer — at the shell** (vs a plain bottom-centre bubble). *Rationale:* gives the arrow a concrete target.
 5. **3D view while guide on — tap closes, drag/zoom keep it** (vs any touch closes). *Rationale:* lets the user try "drag to rotate" without dismissing the guide.
 6. **"?" icon — drawn inline to match the toolbar** (vs waiting for a designer asset). *Rationale:* unblocks the work; approved with the screenshots.
 7. **Text — title + one short line ≤~45 chars.** *Rationale:* all callouts must fit at 844×390.
-8. **Sizes — add 360 px** to 390/1280/844×390. *Rationale:* the owner's phone; the toolbar is tightest there with the "?" added.
-9. **Reuse — generalise `CalloutComponent` to a multi-callout mode with a pure layout function.** *Rationale:* #10 reuses it without copying placement/a11y code.
+8. **Sizes — add 360 px** to 390/1280/844×390. *Rationale:* the owner's phone; the toolbar is tightest there with the "?" added. *(Extended by decisions 14–16: 320 and 338 px wide, and short phone screens.)*
+9. **Reuse — generalise `CalloutComponent` to a multi-callout mode with a pure layout function.** *Rationale:* #35 (the game's guide) reuses it without copying placement/a11y code.
 10. **Fit at 844×390 — per-callout placement, beside-when-it-fits, staircase only when narrow** (vs always stacking). *Rationale:* landscape has horizontal room; stacking seven bubbles in 390 px of height would overflow. The layout function guarantees no overlap by choosing placement per callout. (CLARIFY, 2026-09-29.)
 11. **Tap vs drag — a press-release under ≈10 px with no rotation is a tap; more is a drag** (vs any touch closing). *Rationale:* the canvas listens for `mousedown` today, and touch drags may not fire it, so the build distinguishes tap from drag and verifies both on touch. (CLARIFY, 2026-09-29.)
 12. **Guide persistence — only help-competing surfaces close the guide; a camera save leaves it on** (vs any control action closing it). *Rationale:* the user may act on a bubble (save an image) and keep reading. (CLARIFY, 2026-09-29.)
@@ -195,5 +195,6 @@ Medium. One new reusable layout mode on an existing component, one screen wired 
 ### Post-Mortem
 
 _(filled after merge)_
+
 
 
