@@ -1,0 +1,7 @@
+vt.idd:task: T007
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: none (verification: 445/445, lint, tsc app+spec, prod build; #5 guide/callout/modal untouched vs dev; PR body updated)
+vt.idd:satisfies: full
+vt.idd:wave: 6
+vt.idd:timestamp: 2026-09-30T11:49:47-06:00
