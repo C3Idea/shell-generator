@@ -1,0 +1,8 @@
+vt.idd:task: T005
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.html,src/app/sandbox/sandbox.component.ts,src/app/sandbox/sandbox.component.css,src/app/sandbox/sandbox.component.spec.ts
+vt.idd:tdd: red=6 FAILED, 108 SUCCESS (link, Jugar, short-screen specs), green=441/441 full suite; lint clean
+vt.idd:satisfies: full
+vt.idd:wave: 4
+vt.idd:timestamp: 2026-09-30T11:38:23-06:00
