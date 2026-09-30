@@ -1036,6 +1036,12 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       expect(AppStrings.LABEL_INTRO_LINE5).toContain('modo juego');
     });
 
+    it('uses the owner\'s wording for the lines after the equation (2026-09-30)', () => {
+      expect(AppStrings.LABEL_INTRO_LINE4).toBe('Mueve los sliders y diseña todos los caracoles que imagines.');
+      expect(AppStrings.LABEL_INTRO_LINE5).toBe(
+        '¿Listo para el siguiente nivel? En el modo juego te retamos a reconstruir un caracol ¿te animas?');
+    });
+
     it('has no equation placeholder and no empty equation image left', () => {
       expect(text()).not.toContain('Mostrar ecuación');
       expect((AppStrings as unknown as Record<string, unknown>)['LABEL_INTRO_LINE3']).toBeUndefined();
@@ -1069,10 +1075,18 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       return r.width > 0 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight + 1 && r.right <= window.innerWidth + 1;
     };
 
-    it('credits Atractor with a "Conoce más" link right after the equation', () => {
+    // Owner, 2026-09-30: after the equation, the two lines, then the link last.
+    it('credits Atractor with a "Conoce más" link at the end of the text, after the two lines', () => {
       expect(link().tagName).toBe('A');
       expect(link().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_MORE);
-      expect(intro().querySelector('#intro-equation')?.nextElementSibling).toBe(link().closest('p'));
+      const after: Element[] = [];
+      for (let e = intro().querySelector('#intro-equation')?.nextElementSibling; e; e = e.nextElementSibling) {
+        after.push(e);
+      }
+      expect(after.map(e => e.textContent?.trim())).toEqual([
+        AppStrings.LABEL_INTRO_LINE4, AppStrings.LABEL_INTRO_LINE5, AppStrings.LABEL_INTRO_MORE,
+      ]);
+      expect(after[2]).toBe(link().closest('p')!);
     });
 
     it('opens the start of Atractor\'s shells pages in a new tab, safely', () => {
