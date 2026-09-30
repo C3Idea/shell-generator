@@ -85,8 +85,9 @@ without reading long paragraphs.
 - **FR-010** (MUST): The owner approves the wording plus before/after screenshots at
   390 and 1280 px on this issue before merge.
 - **FR-011** (SHOULD): The ⚙ glyph renders as text, not as a colour emoji (U+2699 with
-  the text variation selector U+FE0E), and is hidden from screen readers, which read
-  the section title instead.
+  the text variation selector U+FE0E), and screen readers read it as "Parámetros"
+  (`role="img"` + `aria-label` = `GUIDE_GAME_PARAMETERS_TITLE`), so "Abre … y mueve…"
+  still says what to open (D6, amended in review).
 
 ### Text
 
@@ -195,6 +196,10 @@ Options: (A) U+2699 plus U+FE0E inside the string, `aria-hidden` *(selected)*;
 (B) inline the toolbar button's SVG; (C) no icon, the word only. Rationale: keeps
 the sentence in one string; U+FE0E stops phones drawing a colour emoji; the section
 title already names the control for screen readers.
+*Amended in review (PR #38 M1, 2026-09-30):* `aria-hidden` left screen readers with
+"Abre y mueve los sliders…", which never says what to open. The gear is now
+`role="img"` labelled with `GUIDE_GAME_PARAMETERS_TITLE`, read as "Abre Parámetros y
+mueve…"; the visible text is unchanged.
 
 **D7 — Left-aligned, focus stays on ✕ (CLARIFY, autonomous, 2026-09-30).**
 Options: (A) left-aligned, first focus on ✕ as in every other pop-up *(selected)*;

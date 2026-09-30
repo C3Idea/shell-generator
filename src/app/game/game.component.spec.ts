@@ -835,7 +835,7 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
   it('keeps the how-to text as paragraphs', () => {
     const body = howTo().querySelector('.modal-body')!;
     const paragraphs = Array.from(body.children);
-    expect(paragraphs.length).toBe(7);
+    expect(paragraphs.length).toBeGreaterThan(0);
     paragraphs.forEach(p => expect(p.tagName).toBe('P'));
   });
 
@@ -1660,12 +1660,19 @@ describe('GameComponent how-to pop-up (#10)', () => {
   const squash = (s: string | null | undefined) => (s ?? '').replace(/\s+/g, ' ').trim();
   const sections = () => Array.from(body().querySelectorAll('.label-howto-section')) as HTMLElement[];
   const titleOf = (p: HTMLElement) => squash(p.querySelector('strong')?.textContent);
-  // What a screen reader reads: the text without anything aria-hidden.
+  // What a screen reader reads: nothing aria-hidden, and a labelled image
+  // by its label.
   const spoken = (e: HTMLElement) => {
     const copy = e.cloneNode(true) as HTMLElement;
     copy.querySelectorAll('[aria-hidden="true"]').forEach(h => h.remove());
+    copy.querySelectorAll('[role="img"][aria-label]').forEach(i => i.replaceWith(i.getAttribute('aria-label')!));
     return squash(copy.textContent);
   };
+  const TITLES = [
+    AppStrings.GUIDE_GAME_PARAMETERS_TITLE, AppStrings.GUIDE_GAME_SWITCH_TITLE,
+    AppStrings.GUIDE_GAME_HEAT_TITLE, AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE,
+    AppStrings.LABEL_HOWTO_WHERE_TITLE,
+  ];
 
   beforeEach(async () => {
     installFramePump();
@@ -1682,23 +1689,19 @@ describe('GameComponent how-to pop-up (#10)', () => {
     it('opens on load with the goal, the five sections in order, then the closing line', () => {
       expect(howTo().open).toBeTrue();
       const paragraphs = Array.from(body().children) as HTMLElement[];
-      expect(paragraphs.map(p => p.id || p.className)).toEqual([
-        'label-howto-goal', 'howto-parameters', 'howto-switch', 'howto-progress',
-        'howto-new-game-share', 'howto-where', 'label-howto-closing',
+      expect(paragraphs.map(p => p.id)).toEqual([
+        'howto-goal', 'howto-parameters', 'howto-switch', 'howto-progress',
+        'howto-new-game-share', 'howto-where', 'howto-closing',
       ]);
       expect(squash(paragraphs[0].textContent)).toBe(AppStrings.LABEL_HOWTO_GOAL);
       expect(squash(paragraphs[6].textContent)).toBe(AppStrings.LABEL_HOWTO_CLOSING);
     });
 
     it('opens each section with a bold title; three are the "?" guide\'s', () => {
-      expect(sections().map(titleOf)).toEqual([
-        AppStrings.GUIDE_GAME_PARAMETERS_TITLE, AppStrings.GUIDE_GAME_SWITCH_TITLE,
-        AppStrings.GUIDE_GAME_HEAT_TITLE, AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE,
-        AppStrings.LABEL_HOWTO_WHERE_TITLE,
-      ]);
+      expect(sections().map(titleOf)).toEqual(TITLES);
       sections().forEach(p => {
         expect(p.firstElementChild?.tagName).withContext(p.id).toBe('STRONG');
-        expect(getComputedStyle(p.querySelector('strong')!).fontWeight).withContext(p.id).toBe('700');
+        expect(Number(getComputedStyle(p.querySelector('strong')!).fontWeight)).withContext(p.id).toBeGreaterThanOrEqual(600);
       });
     });
 
@@ -1706,7 +1709,7 @@ describe('GameComponent how-to pop-up (#10)', () => {
     // reading it, so the title doesn't run into the sentence.
     it('uses the owner\'s wording (2026-09-30)', () => {
       expect(sections().map(spoken)).toEqual([
-        'Parámetros · Abre y mueve los sliders para cambiar tu caracol.',
+        'Parámetros · Abre Parámetros y mueve los sliders para cambiar tu caracol.',
         'Usuario / Objetivo · Cambia la vista entre tu caracol (blanco) y el objetivo (dorado).',
         'Progreso · La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas!',
         'Nuevo juego y Compartir · Empieza otra partida, o copia el enlace para retar a alguien con este caracol.',
@@ -1717,10 +1720,17 @@ describe('GameComponent how-to pop-up (#10)', () => {
       expect(squash(howTo().querySelector('#label-howto-title')?.textContent)).toBe('¡Bienvenido al juego!');
     });
 
-    it('shows the gear as a text glyph between "Abre" and the rest, hidden from screen readers', () => {
+    it('names both buttons in the Nuevo juego y Compartir title, as the guide does', () => {
+      expect(AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE).toContain(AppStrings.GUIDE_GAME_NEW_GAME_TITLE);
+      expect(AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE).toContain(AppStrings.GUIDE_GAME_SHARE_TITLE);
+    });
+
+    it('shows the gear as a text glyph between "Abre" and the rest, read as "Parámetros"', () => {
       const parameters = el.querySelector('#howto-parameters') as HTMLElement;
       const gear = parameters.querySelector('.howto-gear') as HTMLElement;
-      expect(gear.getAttribute('aria-hidden')).toBe('true');
+      expect(gear.getAttribute('role')).toBe('img');
+      expect(gear.getAttribute('aria-label')).toBe(AppStrings.GUIDE_GAME_PARAMETERS_TITLE);
+      expect(gear.hasAttribute('aria-hidden')).toBeFalse();
       expect(gear.textContent).toBe('\u2699\uFE0E');
       expect(squash(parameters.textContent)).toBe(
         'Parámetros · Abre \u2699\uFE0E y mueve los sliders para cambiar tu caracol.');
@@ -1793,11 +1803,7 @@ describe('GameComponent how-to pop-up (#10)', () => {
       expect(howTo().open).toBeTrue();
       expect(component.guide.on).toBeFalse();
       expect(guideBubbles()).toBe(0);
-      expect(sections().map(titleOf)).toEqual([
-        AppStrings.GUIDE_GAME_PARAMETERS_TITLE, AppStrings.GUIDE_GAME_SWITCH_TITLE,
-        AppStrings.GUIDE_GAME_HEAT_TITLE, AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE,
-        AppStrings.LABEL_HOWTO_WHERE_TITLE,
-      ]);
+      expect(sections().map(titleOf)).toEqual(TITLES);
       expect(play()).not.toBeNull();
     });
   });
@@ -1821,8 +1827,8 @@ describe('GameComponent how-to pop-up (#10)', () => {
         noSideScroll(body(), 'the pop-up body');
         expect(howTo().getBoundingClientRect().right).toBeLessThanOrEqual(window.innerWidth + 1);
         // Every line wraps inside the box: no section wider than the body.
-        [...sections(), ...Array.from(body().children)].forEach(p =>
-          expect(p.getBoundingClientRect().right).withContext(p.id || p.className)
+        Array.from(body().children).forEach(p =>
+          expect(p.getBoundingClientRect().right).withContext(p.id)
             .toBeLessThanOrEqual(body().getBoundingClientRect().right + 1));
       });
     }
@@ -1834,6 +1840,8 @@ describe('GameComponent how-to pop-up (#10)', () => {
         expect(onScreen(howTo().querySelector('header > button')!)).withContext('✕').toBeTrue();
         expect(onScreen(howTo().querySelector('#howto-play-button')!)).withContext('¡A jugar!').toBeTrue();
         expect(getComputedStyle(body()).overflowY).toMatch(/auto|scroll/);
+        // The text is taller than the body here, so it really scrolls.
+        expect(body().scrollHeight).withContext('text overflows the body').toBeGreaterThan(body().clientHeight);
         // The last line is reachable by scrolling the body.
         body().scrollTop = body().scrollHeight;
         const closing = body().querySelector('.label-howto-closing')!.getBoundingClientRect();

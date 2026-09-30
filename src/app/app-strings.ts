@@ -72,8 +72,8 @@ export class AppStrings {
   // The how-to in short sections (#10). Parámetros, Usuario / Objetivo and
   // Progreso take their titles from the "?" guide (GUIDE_GAME_*_TITLE).
   static LABEL_HOWTO_GOAL = "Te mostramos un caracol objetivo. ¿Puedes reconstruirlo?";
-  // The gear sits between two strings so it can be hidden from screen
-  // readers; U+FE0E keeps phones from drawing it as a colour emoji.
+  // The gear sits between two strings so screen readers can read it as
+  // "Parámetros"; U+FE0E keeps phones from drawing it as a colour emoji.
   static LABEL_HOWTO_PARAMETERS_BEFORE = "Abre";
   static LABEL_HOWTO_GEAR              = "⚙︎";
   static LABEL_HOWTO_PARAMETERS_AFTER  = "y mueve los sliders para cambiar tu caracol.";

@@ -208,11 +208,13 @@
     (closed)="this.howToOpen = false">
     <h2 modal-title id="label-howto-title">{{AppStrings.LABEL_HOWTO_WINDOW_TITLE}}</h2>
     <!-- #10: one short section per control, each opening with its title in
-         bold. The first three titles are the "?" guide's (#35). -->
-    <p class="label-howto-goal">{{AppStrings.LABEL_HOWTO_GOAL}}</p>
+         bold. The first three titles are the "?" guide's (#35). The gear is
+         read as "Parámetros" so "Abre …" still says what to open. -->
+    <p class="label-howto-goal" id="howto-goal">{{AppStrings.LABEL_HOWTO_GOAL}}</p>
     <p class="label-howto-section" id="howto-parameters">
       <strong>{{AppStrings.GUIDE_GAME_PARAMETERS_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_PARAMETERS_BEFORE}}
-      <span class="howto-gear" aria-hidden="true">{{AppStrings.LABEL_HOWTO_GEAR}}</span>
+      <span class="howto-gear" role="img"
+        [attr.aria-label]="AppStrings.GUIDE_GAME_PARAMETERS_TITLE">{{AppStrings.LABEL_HOWTO_GEAR}}</span>
       {{AppStrings.LABEL_HOWTO_PARAMETERS_AFTER}}
     </p>
     <p class="label-howto-section" id="howto-switch">
@@ -227,7 +229,7 @@
     <p class="label-howto-section" id="howto-where">
       <strong>{{AppStrings.LABEL_HOWTO_WHERE_TITLE}}</strong> · {{AppStrings.LABEL_HOWTO_WHERE}}
     </p>
-    <p class="label-howto-closing">{{AppStrings.LABEL_HOWTO_CLOSING}}</p>
+    <p class="label-howto-closing" id="howto-closing">{{AppStrings.LABEL_HOWTO_CLOSING}}</p>
     <footer modal-footer>
       <button type="button" id="howto-play-button" (click)="this.howToPlayButtonClick()">
         {{AppStrings.LABEL_HOWTO_PLAY}}
