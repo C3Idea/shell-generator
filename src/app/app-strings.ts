@@ -75,16 +75,16 @@ export class AppStrings {
   static LABEL_START_KEYED_GAME = "Jugar";
   static PLACEHOLDER_GAME_KEY = "Escribe una clave";
   // The guide (#5): the "?" button and a callout per control on the initial
-  // screen. Draft text, to be approved on #5.
+  // screen. Wording approved by the owner on #5 (2026-09-29).
   static BUTTON_HELP_TITLE = "Mostrar ayuda";
   static GUIDE_PARAMETERS_TITLE    = "Parámetros";
-  static GUIDE_PARAMETERS_TEXT     = "Cambia la forma del caracol.";
+  static GUIDE_PARAMETERS_TEXT     = "Controla la forma del caracol.";
   static GUIDE_SAVE_IMAGE_TITLE    = "Guardar imagen";
   static GUIDE_SAVE_IMAGE_TEXT     = "Descarga el caracol como PNG.";
   static GUIDE_GAME_TITLE          = "Juego";
-  static GUIDE_GAME_TEXT           = "Intenta igualar un caracol objetivo.";
-  static GUIDE_INTRO_TITLE         = "Introducción";
-  static GUIDE_INTRO_TEXT          = "Qué es este generador y su ecuación.";
+  static GUIDE_GAME_TEXT           = "Juega a reconstruir un caracol objetivo.";
+  static GUIDE_INTRO_TITLE         = "Bienvenida";
+  static GUIDE_INTRO_TEXT          = "Las matemáticas que dan forma a los caracoles.";
   static GUIDE_HELP_TITLE          = "Ayuda";
   static GUIDE_HELP_TEXT           = "Toca de nuevo para cerrar.";
   static GUIDE_VIEW_TITLE          = "Vista 3D";

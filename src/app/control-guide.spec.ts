@@ -41,6 +41,19 @@ describe('ControlGuide (#5)', () => {
     callouts.forEach(c => expect(c.id).toMatch(/^guide-/));
   });
 
+  it("uses the owner's wording (approved on #5, 2026-09-29)", () => {
+    guide.toggle();
+    expect(guide.callouts!.map(c => [c.title, c.text])).toEqual([
+      ['Parámetros', 'Controla la forma del caracol.'],
+      ['Guardar imagen', 'Descarga el caracol como PNG.'],
+      ['Juego', 'Juega a reconstruir un caracol objetivo.'],
+      ['Bienvenida', 'Las matemáticas que dan forma a los caracoles.'],
+      ['Ayuda', 'Toca de nuevo para cerrar.'],
+      ['Vista 3D', 'Arrastra para girar; rueda o pellizca para acercar.'],
+      ['Apariencia', 'Resolución, esqueleto y colores.'],
+    ]);
+  });
+
   it('keeps each callout short: a title and one short line', () => {
     guide.toggle();
     guide.callouts!.forEach(c => {
