@@ -1,0 +1,374 @@
+{
+ "pass": 1,
+ "pr_number": 37,
+ "pr_title": "feat: welcome pop-up copy and shell equation (#3)",
+ "copilot_review_summary": "Copilot review: skipped by config/flag (no .vt/vt.config.yaml in this repo, so review.copilot_integration is not enabled). Visual E2E: covered by the local harness (validaciones/shell_generator/3: real Chromium at 7 sizes collapsed/expanded, 125 % window, mouse/keyboard/touch; 109/109 on f179581) and the owner's manual pass §1–§10. Verification pass: not run (no C/S findings). Security reviewer: no C/S findings (only compile-time constants reach innerHTML; rel=noopener on the one external link; no new dependency). Reviewers: 3 role-scoped `reviewer` instances (security, quality, documentation). Reviewed head: 9cdd55d.",
+ "findings": [
+  {
+   "id": "M1",
+   "title": "Collapse specs check the hidden flag, not that the full system is really hidden",
+   "severity": "Major",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/sandbox/sandbox.component.spec.ts",
+   "lines": "1205",
+   "description": "The three collapse specs ('keeps the full system collapsed at first', 'Ocultar… collapses it again', 'starts collapsed again each time the pop-up opens') assert `full().hidden` only. `app-equation { display: block }` overrides the browser's `[hidden]` rule, so if `app-equation[hidden] { display: none }` is lost the full system stays on screen and all three still pass. The harness's `hidden-shows` mutation targets exactly this gap.",
+   "recommended": "B",
+   "options": {
+    "A": {
+     "approach": "In the three specs also assert the full system takes no space (`shown(full())` false / computed display none).",
+     "rationale": "Guards what the user sees, not just the attribute."
+    },
+    "B": {
+     "approach": "A shared `collapsed()` helper that checks the attribute and that the element renders nothing, used by all three specs.",
+     "rationale": "One definition of collapsed keeps the three specs consistent."
+    },
+    "C": {
+     "approach": "Drop `display: block` from `app-equation` so the browser's `[hidden]` always wins.",
+     "rationale": "Removes the trap, but the block layout is what gives each equation its own scroll box."
+    }
+   }
+  },
+  {
+   "id": "M2",
+   "title": "Equation content specs can't catch a wrong sign or function",
+   "severity": "Major",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/sandbox/sandbox.component.spec.ts",
+   "lines": "1222",
+   "description": "The specs only check that pieces such as `x(θ,s)`, `φ`, `Ω`, `μ`, `cotα` appear, and that there's no `D`; `a` and `b` are trivially present. A swapped `sen`/`cos`, a lost `−` or a dropped term would still pass, so 'what is shown is what is drawn' (the heart of #3) isn't pinned. The current MathML does match `surfaceFunction` (checked by hand).",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Pin the exact text of both forms (invisible operators stripped) in equation.component.spec.ts, row by row, with a comment mapping each row to surfaceFunction.",
+     "rationale": "Any sign, function or term change fails; cheap and deterministic."
+    },
+    "B": {
+     "approach": "Evaluate the rows numerically against surfaceFunction.",
+     "rationale": "Stronger, but the MathML is markup, so this means writing a small parser."
+    }
+   }
+  },
+  {
+   "id": "m1",
+   "title": "Spoken full system is ambiguous about what the trig functions apply to",
+   "severity": "Minor",
+   "fix_group": "FG-2",
+   "source": "Quality reviewer",
+   "file": "src/app/app-strings.ts",
+   "lines": "41",
+   "description": "LABEL_INTRO_EQUATION_FULL_ALT says 'coseno de s más phi por coseno de theta más omega', which a listener can hear as cos(s) + φ·cos(θ) + Ω, not cos(s+φ)·cos(θ+Ω). The MathML has the parentheses; the spoken version loses them.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Say 'coseno de la suma de s y phi' (and likewise for each sum inside a function).",
+     "rationale": "Unambiguous when heard, still natural Spanish."
+    },
+    "B": {
+     "approach": "Say 'coseno de, abre paréntesis, s más phi, cierra paréntesis'.",
+     "rationale": "Mirrors the notation but is long and robotic."
+    }
+   }
+  },
+  {
+   "id": "m2",
+   "title": "`instanceof MathMLElement` throws where MathML is missing",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/equation/equation.component.spec.ts",
+   "lines": "38",
+   "description": "In a browser without MathML, `MathMLElement` is undefined, so the spec fails with a ReferenceError rather than a readable assertion. Same pattern in the sandbox spec.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Guard it: `typeof MathMLElement !== 'undefined' && m instanceof MathMLElement`, next to the namespace check.",
+     "rationale": "Keeps the 'laid out as MathML' check and fails with a clear message."
+    },
+    "B": {
+     "approach": "Check only `namespaceURI`.",
+     "rationale": "Simpler, but a right namespace doesn't prove the browser laid it out."
+    }
+   }
+  },
+  {
+   "id": "m3",
+   "title": "Centring spec uses unexplained tolerances",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/sandbox/sandbox.component.spec.ts",
+   "lines": "1130",
+   "description": "`close.right > box.right - 60` and the `< 2` px centre tolerance aren't explained. (The a/b/θ help specs in the sandbox plus the a-only spec in the game are intentional: a is the shared string.)",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Name the tolerances with a short comment (the ✕ sits in the header's right padding; 2 px for sub-pixel rounding).",
+     "rationale": "Readers see why the numbers are what they are."
+    },
+    "B": {
+     "approach": "Leave as is.",
+     "rationale": "Works, but the next reader has to guess."
+    }
+   }
+  },
+  {
+   "id": "m4",
+   "title": "Spoken text's absolutely positioned span has no positioned ancestor in the component",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/equation/equation.component.css",
+   "lines": "56",
+   "description": "`.visually-hidden` is `position: absolute` inside an unpositioned `app-equation`, so its containing block is whichever ancestor is positioned (the dialog). It's 1 px and clipped, so harmless today, but it depends on markup outside the component.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Add `position: relative` to `app-equation`.",
+     "rationale": "Keeps the hidden text inside the component that owns it."
+    },
+    "B": {
+     "approach": "Leave as is.",
+     "rationale": "Harmless at 1 px, but an implicit dependency."
+    }
+   }
+  },
+  {
+   "id": "m5",
+   "title": "Expander reset lives only in showIntroWindow",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/sandbox/sandbox.component.ts",
+   "lines": "330",
+   "description": "`fullEquationOpen` is reset when the pop-up opens through showIntroWindow; closing (✕, Esc, backdrop, Jugar) leaves it expanded until then, and any future path that sets `introOpen = true` directly would skip the reset.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "One `closeIntro()` used by the modal's (closed) and by Jugar, which resets the expander; keep the reset on open too.",
+     "rationale": "The pop-up's state has one owner; any way in or out leaves it collapsed."
+    },
+    "B": {
+     "approach": "Leave as is.",
+     "rationale": "Covered today by the reset on open and its spec."
+    }
+   }
+  },
+  {
+   "id": "D1",
+   "title": "Spec's Key Entities / Project Structure still call the component a 'candidate' and list parameter-help.ts",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/spec.md",
+   "lines": "132",
+   "description": "Key Entities, Technical Summary and Project Structure Impact describe the equation as a candidate component or inline block and say the a/b/θ fix touches parameter-help.ts. The PR adds `<app-equation>` + `shell-equation.ts` (required by the Angular namespace bug), declares it in app.module.ts, adds handlers to sandbox.component.ts, and changes only app-strings.ts for the help.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Rewrite those sections to what was built, on the issue's spec comment and the archive.",
+     "rationale": "The spec then matches the merged code."
+    },
+    "B": {
+     "approach": "Add a decision noting the component instead of editing the body.",
+     "rationale": "Keeps history but leaves the body contradicting the code."
+    }
+   }
+  },
+  {
+   "id": "D2",
+   "title": "'Equation box' scrolling wording predates f179581",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/spec.md",
+   "lines": "47",
+   "description": "US2, FR-005, D2, VM-006, the MathML risk row and Testing Strategy say the 'equation box' is the only sideways scroller. Since f179581 each `<app-equation>` scrolls on its own and the block with the button never does; the spec doesn't say the button must stay put.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Reword each place to 'each equation scrolls sideways inside itself; the pop-up, the page, the block around them and the button never do'.",
+     "rationale": "Matches the behaviour and the spec that pins it."
+    },
+    "B": {
+     "approach": "Only edit FR-005 and note f179581 in D2.",
+     "rationale": "Smaller, but the other rows stay loose."
+    }
+   }
+  },
+  {
+   "id": "D3",
+   "title": "Stale line reference to the old <img> assertion",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/spec.md",
+   "lines": "265",
+   "description": "The risk row cites `sandbox.component.spec.ts:129` (and plan.md `:121-129`) for the <img> assertion, which was replaced by the 'no equation placeholder and no empty equation image left' spec.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Name the spec instead of a line number, in spec and plan.",
+     "rationale": "Names survive edits; line numbers rot."
+    },
+    "B": {
+     "approach": "Update the line numbers.",
+     "rationale": "Rots again on the next edit."
+    }
+   }
+  },
+  {
+   "id": "D4",
+   "title": "Plan and T002 list LABEL_INTRO_EQUATION_CAPTION, which was never added",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/plan.md",
+   "lines": "48",
+   "description": "The plan's Data Model and T002 add a CAPTION string; LABEL_INTRO_LINE2 is the caption, and LABEL_INTRO_EQUATION_FULL_ALT (added) isn't listed.",
+   "recommended": "B",
+   "options": {
+    "A": {
+     "approach": "Rewrite plan and T002's description.",
+     "rationale": "Clean, but rewrites a completed task's record."
+    },
+    "B": {
+     "approach": "Note the deviation: in the plan (CAPTION dropped, LINE2 is the caption, FULL_ALT added) and as T002's completion note in tasks.json, re-rendering tasks.md.",
+     "rationale": "Keeps the task record honest without rewriting history."
+    }
+   }
+  },
+  {
+   "id": "D5",
+   "title": "Plan says inline markup by default; a component was built",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/plan.md",
+   "lines": "97",
+   "description": "Project Structure and Wave 2 call the component a candidate ('default is inline template markup'); the scroll rule is described on #intro-equation; the link placement from D9 isn't there.",
+   "recommended": "B",
+   "options": {
+    "A": {
+     "approach": "Rewrite Project Structure and Wave 2.",
+     "rationale": "Plan matches code, loses the original plan."
+    },
+    "B": {
+     "approach": "Add a 'Deviations from the plan' section: component (namespace bug), no CAPTION, per-equation scroll, D9/D10.",
+     "rationale": "Keeps the plan as planned and makes the drift explicit."
+    }
+   }
+  },
+  {
+   "id": "D6",
+   "title": "Plan names decisions D1–D8; the spec has D1–D10",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/plan.md",
+   "lines": "15",
+   "description": "D9 (lines after the equation, Conoce más last) and D10 (centred, no-break space) change the markup the plan describes.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Say D1–D10 and point to the deviations section.",
+     "rationale": "Readers don't apply the older layout."
+    },
+    "B": {
+     "approach": "Leave as is.",
+     "rationale": "The plan predates D9/D10 by design."
+    }
+   }
+  },
+  {
+   "id": "D7",
+   "title": "Plan claims the pop-up shows the model's ranges; it doesn't",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/plan.md",
+   "lines": "24",
+   "description": "Research says 'the pop-up shows the model ranges (0≤s≤2π, θ≥0)'; neither form nor the spoken versions show ranges, and no FR asks for them.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Say the code's ranges (s 0..4π, θ up to theta·π) and that the pop-up shows none.",
+     "rationale": "True to what shipped."
+    },
+    "B": {
+     "approach": "Add the ranges to the equation.",
+     "rationale": "Scope change the owner didn't ask for."
+    }
+   }
+  },
+  {
+   "id": "D8",
+   "title": "T004's record doesn't mention the component or the per-equation scroll",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/tasks.json",
+   "lines": "194",
+   "description": "T004 describes an 'equation box' and inline MathML; the work added src/app/equation/* and, after f179581, per-equation scrolling. The plan also cites drifted line numbers (sandbox.component.html:142, sandbox.component.ts:254).",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Add a completion note to T004 (component, per-equation scroll) and drop the plan's line numbers.",
+     "rationale": "Task record points at what implements it."
+    },
+    "B": {
+     "approach": "Leave as is.",
+     "rationale": "History, but misleading to a reader."
+    }
+   }
+  },
+  {
+   "id": "D9",
+   "title": "'Collapsed again each time it opens' is built and tested but not specified",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/003-to_infinity_and_the_equation/spec.md",
+   "lines": "118",
+   "description": "showIntroWindow resets the expander and a spec pins it, but FR-004/US2 never say so.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Add it to FR-004 and as a US2 scenario with its VM row (VM-016).",
+     "rationale": "Documents behaviour a spec already asserts; keeps VM rows = scenarios."
+    },
+    "B": {
+     "approach": "Record it as a decision instead.",
+     "rationale": "Lower churn, still traceable."
+    }
+   }
+  }
+ ],
+ "fix_groups": [
+  {
+   "id": "FG-1",
+   "primary_files": "`src/app/sandbox/sandbox.component.spec.ts`, `src/app/equation/equation.component.spec.ts`, `src/app/equation/equation.component.css`, `src/app/sandbox/sandbox.component.ts`/`.html`",
+   "finding_ids": "M1, M2, m2, m3, m4, m5",
+   "boundary": "Hard boundary (no file shared with other groups)",
+   "advisory": "Specs first: M1 and M2 tighten what is checked (the harness's hidden-shows mutation should then be caught); m5 is the only behaviour change (a closeIntro() that also collapses the expander); m2/m3/m4 are small.",
+   "recommended_disposition": "Fix"
+  },
+  {
+   "id": "FG-2",
+   "primary_files": "`src/app/app-strings.ts`",
+   "finding_ids": "m1",
+   "boundary": "Hard boundary",
+   "advisory": "Spoken text only; nothing on screen changes.",
+   "recommended_disposition": "Fix"
+  },
+  {
+   "id": "FG-3",
+   "primary_files": "`specs/003-to_infinity_and_the_equation/spec.md`, `plan.md`, `tasks.json`/`tasks.md` (+ spec comment 5915732075 on #3)",
+   "finding_ids": "D1, D2, D3, D4, D5, D6, D7, D8, D9",
+   "boundary": "Hard boundary",
+   "advisory": "Docs only; the spec edits go to the issue comment and the archive together. D9 adds a US2 scenario and VM-016.",
+   "recommended_disposition": "Fix"
+  }
+ ]
+}
