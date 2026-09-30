@@ -243,6 +243,11 @@ caracoles que imagines." and "¿Listo para el siguiente nivel? En el modo juego 
 reconstruir un caracol ¿te animas?", and moved the "Conoce más" link to the end of the text (it was
 right under the equation). "Jugar" stays in the footer. Done in 10821e2; specs pin the wording and the order.
 
+**D10 — Centred pop-up; "¿te animas?" on one line (owner, 2026-09-30, during validation).**
+After a preview of left-aligned vs centred, the owner chose centred with the title too, and "Jugar"
+centred: the welcome pop-up uses the shared `.modal-centered` variant that ¡Victoria! uses (no new CSS;
+the ✕ stays at the right). A no-break space keeps "¿te animas?" together at every width. Done in a44d0e5.
+
 ## Risk Assessments
 
 ### Security & Vulnerabilities
@@ -327,4 +332,5 @@ _Filled after merge. Do not complete during specification._
 | Review findings the risk assessment missed | |
 | Template sections that were not useful | |
 | Process improvements for next feature | |
+
 
