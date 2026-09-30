@@ -1038,8 +1038,22 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
 
     it('uses the owner\'s wording for the lines after the equation (2026-09-30)', () => {
       expect(AppStrings.LABEL_INTRO_LINE4).toBe('Mueve los sliders y diseña todos los caracoles que imagines.');
+      // "¿te animas?" never splits over two lines: a no-break space joins it.
       expect(AppStrings.LABEL_INTRO_LINE5).toBe(
-        '¿Listo para el siguiente nivel? En el modo juego te retamos a reconstruir un caracol ¿te animas?');
+        '¿Listo para el siguiente nivel? En el modo juego te retamos a reconstruir un caracol ¿te\u00a0animas?');
+    });
+
+    // Owner, 2026-09-30: centred, like ¡Victoria! (the shared .modal-centered).
+    it('is centred: title, text and "Jugar", with the ✕ still at the right', () => {
+      expect(el.querySelector('#modal-intro')!.classList).toContain('modal-centered');
+      expect(getComputedStyle(intro().querySelector('header > h2')!).textAlign).toBe('center');
+      expect(getComputedStyle(intro().querySelector('.modal-body')!).textAlign).toBe('center');
+      expect(getComputedStyle(intro().querySelector('footer')!).justifyContent).toBe('center');
+      const box = intro().getBoundingClientRect();
+      const close = intro().querySelector('header > button')!.getBoundingClientRect();
+      const play = intro().querySelector('#intro-play-button')!.getBoundingClientRect();
+      expect(close.right).toBeGreaterThan(box.right - 60);
+      expect(Math.abs((play.left + play.right) / 2 - (box.left + box.right) / 2)).toBeLessThan(2);
     });
 
     it('has no equation placeholder and no empty equation image left', () => {

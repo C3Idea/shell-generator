@@ -285,7 +285,8 @@
        panels, so their opacity doesn't fade it. -->
   <app-callout [active]="this.help.callout" [guide]="this.guide.callouts"></app-callout>
   <!-- Pop-ups (#31): the shared <app-modal>. -->
-  <app-modal id="modal-intro" titleId="label-intro-welcome" [open]="this.introOpen"
+  <!-- Centred like ¡Victoria! (#3, owner): title, text and "Jugar". -->
+  <app-modal id="modal-intro" class="modal-centered" titleId="label-intro-welcome" [open]="this.introOpen"
     (closed)="this.introOpen = false">
     <h2 modal-title id="label-intro-welcome">{{AppStrings.LABEL_INTRO_WELCOME_TEXT}}</h2>
     <p class="label-intro-line">{{AppStrings.LABEL_INTRO_LINE1}}</p>
