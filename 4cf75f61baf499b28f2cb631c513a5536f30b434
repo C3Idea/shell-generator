@@ -1,0 +1,7 @@
+vt.idd:task: T010
+vt.idd:domain: documentation
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/035-a_parrot_on_every_control/spec.md
+vt.idd:satisfies: partial (Wording posted for approval (issuecomment-5903946552); screenshots not taken: live instances only on the owner's request)
+vt.idd:wave: 5
+vt.idd:timestamp: 2026-09-29T22:18:35-06:00
