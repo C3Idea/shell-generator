@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T10:57:06-06:00
+**Generated**: 2026-09-30T11:00:15-06:00
 
 ---
 
@@ -12,9 +12,9 @@
 
 **Purpose**: Baseline
 
-- [ ] T001 [W0] Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.
+- [x] T001 [W0] Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -82,10 +82,10 @@
 ## Summary
 
 - **Total Tasks**: 8
-- **Completed**: 0
+- **Completed**: 1
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 0%
+- **Progress**: 12%
 
 ---
 
