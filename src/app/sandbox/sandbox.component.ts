@@ -4,7 +4,7 @@ import { ShellParameters } from '../shell-parameters';
 import { ShellViewer } from '../shell-viewer';
 import { AppStrings } from '../app-strings';
 import { HelpKey, ParameterHelp } from '../parameter-help';
-import { ControlGuide } from '../control-guide';
+import { ControlGuide, SANDBOX_GUIDE } from '../control-guide';
 
 // How far a press may move and still count as a tap on the 3D view (#5).
 const TAP_SLOP = 10;
@@ -68,7 +68,7 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
   help = new ParameterHelp();
 
   // The guide (#5): the "?" button shows a callout beside every control.
-  guide = new ControlGuide();
+  guide = new ControlGuide(SANDBOX_GUIDE);
 
   // Pointers down on the 3D view, where each went down; and whether two
   // were down at once (a pinch).
