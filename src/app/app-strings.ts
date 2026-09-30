@@ -73,6 +73,22 @@ export class AppStrings {
   static LABEL_HOWTO_WINDOW_LINE2 = "En la parte inferior puedes encontrar cómo cambiar la vista entre el caracol (amarillo) que tienes que reproducir y el caracol (blanco) que puedes modificar hasta que sea idéntico al objetivo.";
   static LABEL_HOWTO_WINDOW_LINE3 = "En la parte inferior de la pantalla encontrarás una barra de calor que te indica qué tan cerca estás de lograrlo.";
   static LABEL_HOWTO_WINDOW_LINE4 = "¡Suerte y diviértete!";
+  // The how-to in short sections (#10). Parámetros, Usuario / Objetivo and
+  // Progreso take their titles from the "?" guide (GUIDE_GAME_*_TITLE).
+  static LABEL_HOWTO_GOAL = "Te mostramos un caracol objetivo. ¿Puedes reconstruirlo?";
+  // The gear sits between two strings so it can be hidden from screen
+  // readers; U+FE0E keeps phones from drawing it as a colour emoji.
+  static LABEL_HOWTO_PARAMETERS_BEFORE = "Abre";
+  static LABEL_HOWTO_GEAR              = "⚙︎";
+  static LABEL_HOWTO_PARAMETERS_AFTER  = "y mueve los sliders para cambiar tu caracol.";
+  static LABEL_HOWTO_SWITCH   = "Cambia la vista entre tu caracol (blanco) y el objetivo (dorado).";
+  static LABEL_HOWTO_PROGRESS = "La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas!";
+  static LABEL_HOWTO_NEW_GAME_SHARE_TITLE = "Nuevo juego y Compartir";
+  static LABEL_HOWTO_NEW_GAME_SHARE       = "Empieza otra partida, o copia el enlace para retar a alguien con este caracol.";
+  static LABEL_HOWTO_WHERE_TITLE = "¿Dónde está cada cosa?";
+  static LABEL_HOWTO_WHERE       = "Toca ? para verlo en la pantalla.";
+  static LABEL_HOWTO_CLOSING = "¡Suerte y diviértete!";
+  static LABEL_HOWTO_PLAY    = "¡A jugar!";
   static LABEL_CLOSE = "Cerrar";
   static LABEL_USER  = "Usuario";
   static LABEL_TARGET = "Objetivo";
