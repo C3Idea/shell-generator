@@ -121,9 +121,10 @@ A player on a small or short phone wants the guide readable and unobstructed.
   screens (320×568, 338×643, 360×640, 360×560, 375×553), every callout is fully on
   screen, no two overlap, no leader line crosses another callout, and none covers a
   control (including the switch, heat bar, Nuevo juego and Compartir). Resizing or
-  rotating re-places every callout, keeping these rules. If the ten bubbles cannot
-  fit the shortest of these, the owner decides which sizes are best effort (as #5
-  did for 320×454 and 667×320).
+  rotating re-places every callout, keeping these rules. **Amended 2026-09-30
+  (D7):** the short phones (320×568, 338×643, 360×560, 360×640, 375×553) are best
+  effort: every callout still shows, fully on screen. The game's guide uses the
+  compact bubbles on phone widths (560 px and less).
 - **FR-009** (MUST): A screen reader announces the guide's text when it turns on
   (a polite live region), in on-screen order; the leader lines are hidden from it.
   Under `prefers-reduced-motion: reduce`, the callouts appear without animation.
@@ -236,7 +237,7 @@ owner-approved on this issue before merge):
 | Home | Inicio | Vuelve a la pantalla inicial. |
 | Book | Cómo jugar | Abre las instrucciones del juego. |
 | "?" | Ayuda | Toca de nuevo para cerrar. |
-| Switch | Usuario / Objetivo | Cambia entre tu caracol (blanco) y el objetivo (dorado). |
+| Switch | Usuario / Objetivo | Tu caracol (blanco) o el objetivo (dorado). |
 | Heat bar | Cercanía | Qué tan cerca estás del objetivo. |
 | Nuevo juego | Nuevo juego | Empieza otra partida, al azar o con una clave. |
 | Compartir | Compartir | Copia un enlace para retar a alguien con tu caracol. |
@@ -252,6 +253,20 @@ The game stacks three rows of controls at the bottom under 560 px (heat bar, the
 two buttons, the switch). #5's `layoutGuide()` already supports stacking upward
 from a bottom row, but that path has not run in production. The spec accepts that
 the shortest phones may need the FR-008 best-effort clause.
+
+**D7 — Phones: compact bubbles + best effort (owner, 2026-09-30, during /vt.build).**
+With #5's full-size bubbles, ten bubbles don't fit a phone: the toolbar's staircase
+plus the game's three bottom rows leave about 40 px too little at 390×844, and
+short phones (under ~700 px tall) can't fit ten at any size. Options: (A) compact
+bubbles on the game's phone widths, short phones best effort *(selected)*; (B) two
+pages on phones (toolbar bubbles, then the rest); (C) fewer bubbles on phones.
+Rationale: smallest change; tall phones, desktop and landscape fit cleanly. Built
+with fixes to the shared `layoutGuide()` on paths the initial screen never used
+(a row's staircase steps only past what it would cover, controls stacked within
+12 px make a row, a crowded control can sit further out with a line, a region's
+bubble slides along the side's own length and may point off-centre); #5's layout
+specs pass unchanged. The switch's line was shortened from "Cambia entre tu
+caracol (blanco) y el objetivo (dorado)." to fit the 52-character limit.
 
 **D6 — "Pop-up closes the guide" is a code-level check.**
 While a pop-up is open it sits in front of the "?", so a user cannot toggle the
