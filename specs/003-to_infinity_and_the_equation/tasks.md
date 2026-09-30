@@ -4,7 +4,7 @@
 # Tasks: Welcome pop-up: new copy mentioning the game + the shell equation
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-09-30T11:50:21-06:00
+**Generated**: 2026-09-30T13:19:29-06:00
 
 ---
 

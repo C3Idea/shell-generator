@@ -44,9 +44,12 @@ A visitor wants to see the equation that generates the shells, readable on a pho
   false.
 - **Given** the equation collapsed and expanded, **When** the pop-up renders at
   320×568, 360, 390, 1280 px and 844×390, **Then** the equation is fully readable and
-  neither the pop-up nor the page scrolls sideways (only the equation's own box may).
+  neither the pop-up nor the page scrolls sideways (only each equation may, inside
+  itself; the block around them and the button stay put).
 - **Given** a screen reader is active, **When** it reaches the equation, **Then** it
   reads it (MathML semantics or an equivalent text alternative).
+- **Given** the full system is expanded, **When** the pop-up closes (✕, Esc, backdrop
+  or "Jugar") and opens again, **Then** it is collapsed.
 
 ### US3 — Learn more and start playing (P2)
 
@@ -92,11 +95,13 @@ equation now on screen.
   system — x, y, z as in `shell-viewer.ts` (with φ, Ω, μ; D omitted, since the app
   fixes D = 1) — and collapses it again. It carries `aria-expanded` and
   `aria-controls`, and its label switches to **"Ocultar ecuación completa"** while
-  expanded.
+  expanded. It is collapsed every time the pop-up opens, and closing the pop-up any
+  way collapses it (review m5).
 - **FR-005** (MUST): Collapsed and expanded, at 320×568, 360, 390, 1280 px and
   844×390, the equation is fully readable and neither the pop-up nor the page scrolls
-  horizontally; only the equation's own container may scroll sideways. The pop-up may
-  scroll vertically on short screens.
+  horizontally; only each equation (each `<app-equation>`'s `.equation-math`) may scroll
+  sideways, inside itself. The block around the equations and the "Ver/Ocultar" button
+  never scroll (fixed in f179581). The pop-up may scroll vertically on short screens.
 - **FR-006** (MUST): A **"Conoce más"** link opens
   `https://www.atractor.pt/mat/conchas/texto1-_en.html` in a new tab
   (`target="_blank" rel="noopener"`) with the accessible name "Conoce más sobre el
@@ -109,8 +114,9 @@ equation now on screen.
 - **FR-009** (MUST): The screen reader reads the equation — either through MathML
   semantics or an equivalent text alternative — and the expander announces its state.
 - **FR-010** (MUST): The parameter ⓘ help texts are corrected: `a` = horizontal axis,
-  `b` = vertical axis, `θ` = half-turns, per the Text table. The `a` text is shared
-  with the game (`parameter-help.ts`), so it changes there too.
+  `b` = vertical axis, `θ` = half-turns, per the Text table. The strings live in
+  `app-strings.ts`; `parameter-help.ts` shares the `a` text with the game, so it changes
+  there too.
 - **FR-011** (MUST): The owner approves the pop-up copy and the ⓘ help wording on this
   issue before merge.
 - **FR-012** (SHOULD): Under `prefers-reduced-motion: reduce`, expanding the full
@@ -129,21 +135,27 @@ equation now on screen.
 - **`LABEL_INTRO_*`** (`app-strings.ts`): the pop-up copy. `LINE3` removed; `LINE1`,
   `LINE2`, `LINE4`, `LINE5` rewritten; new strings for the equation labels, the
   expander, the credit link and the "Jugar" button.
-- **Equation view**: a MathML fragment (static). Candidate: a small presentational
-  component or an inline template block; it holds the helix + ellipse form and the
-  full Model IV system behind the expander.
-- **`parameter-help.ts` / `LABEL_PARAM_*_HELP_*`**: the shared ⓘ help texts for a, b, θ.
+- **`<app-equation form="short|full">`** (`src/app/equation/`): the equation. Its MathML
+  is built as constant strings in `shell-equation.ts` and set through `[innerHTML]`
+  (trusted constants only), because Angular 17.3.4 gives template `<math>` the wrong
+  namespace. Written to need no math font (CSS italics, one-line tuples, slashes);
+  a visually-hidden spoken version for screen readers. Unencapsulated CSS, every rule
+  prefixed `app-equation`.
+- **`fullEquationOpen`** (`SandboxComponent`): the expander's state; `closeIntro()`
+  and opening the pop-up reset it.
+- **`LABEL_PARAM_*_HELP_*`** (`app-strings.ts`): the ⓘ help texts for a, b, θ, mapped by
+  `parameter-help.ts` (unchanged) on both screens.
 
 ## Approach / Architecture
 
 ### Technical Summary
 
-Content and markup change on one existing pop-up, plus a small new MathML fragment
-and string edits. No new dependency, no service-worker change (MathML is inline
+Content and markup change on one existing pop-up, plus a small new `<app-equation>`
+component (MathML from constant strings, see Key Entities) and string edits. No new dependency, no service-worker change (MathML is inline
 markup, styled by existing `--modal-*` tokens). The expander reuses the
 `aria-expanded`/`aria-controls` pattern already used by the parameter ⓘ buttons. The
 "Jugar" button reuses `SandboxComponent.navigateToGame()`. The a/b/θ fix is a
-string-only change in `parameter-help.ts` / `app-strings.ts`.
+string-only change in `app-strings.ts`.
 
 ### Architecture
 
@@ -155,7 +167,7 @@ flowchart TD
   exp["Ver ecuación completa (aria-expanded)"]
   link["Conoce más -> atractor.pt (new tab)"]
   jugar["Jugar -> navigateToGame()"]
-  help["a/b/θ ⓘ help (parameter-help.ts)"]
+  help["a/b/θ ⓘ help (app-strings.ts)"]
   intro --> copy --> eq --> exp
   intro --> link
   intro --> jugar
@@ -170,14 +182,16 @@ Angular 17, TypeScript, standalone-free NgModule app. No new deps. Native MathML
 
 ### Project Structure Impact
 
-- **Modified**: `src/app/sandbox/sandbox.component.html` (equation MathML, expander,
-  Conoce más, Jugar; remove `<img>`), `sandbox.component.css` (remove
-  `#img-intro-equation`; style the equation box + expander), `app-strings.ts` (copy +
-  new labels; a/b/θ help), `parameter-help.ts` (a/b/θ titles/text if held there),
-  `sandbox.component.spec.ts` (replace the `<img>` assertion; new equation/expander/
-  link/Jugar/help specs), `game.component.spec.ts` (the shared `a` help text).
-- **Added (candidate)**: a small equation component under `src/app/` if a fragment is
-  cleaner than inline template markup (decided in PLAN).
+- **Modified**: `src/app/sandbox/sandbox.component.html` (`.modal-centered`, the two
+  `<app-equation>`s, expander, lines, Conoce más last, Jugar in the footer; `<img>`
+  removed), `sandbox.component.ts` (`fullEquationOpen`, `fullEquationButtonClick`,
+  `playButtonClick`, `closeIntro`), `sandbox.component.css` (`#img-intro-equation`
+  removed; the block, button and link styles), `app-strings.ts` (copy, spoken
+  versions, labels; a/b/θ help), `app.module.ts` (declares `EquationComponent`),
+  `sandbox.component.spec.ts` (the `<img>` assertion replaced; #3 specs; #31's
+  "no footer" restated), `game.component.spec.ts` (the shared `a` help text).
+- **Added**: `src/app/equation/shell-equation.ts`, `equation.component.ts`, `.css`,
+  `.spec.ts` (required: Angular's template `<math>` namespace bug).
 - **Removed**: `LABEL_INTRO_LINE3`, the empty equation `<img>` and its CSS.
 
 ### Applicable Conventions
@@ -199,7 +213,8 @@ Options: (A) native MathML *(selected)*; (B) KaTeX (~270 KB + fonts); (C) SVG im
 Rationale: no dependency, scales with the text, screen-reader readable, works offline,
 and #14 can later bind live values into the same markup. Trade-off: Chromium's MathML
 doesn't line-break long rows, so the full system's lines are split by hand and the
-equation box may scroll sideways at narrow widths (FR-005).
+equations may scroll sideways, each inside itself, at narrow widths (FR-005; since f179581
+the scroll is on each `<app-equation>`, not the block around them).
 
 **D3 — Credit link target (owner, 2026-09-30).**
 Options: (A) `texto1-_en.html`, the shells series' Model I start *(selected)*; (B)
@@ -261,8 +276,8 @@ the ✕ stays at the right). A no-break space keeps "¿te animas?" together at e
 
 | Risk | Severity | Affected Systems | Mitigation |
 |------|----------|------------------|------------|
-| MathML doesn't line-break on Chromium; full system overflows | Medium | Equation box at 320–390 px | Split lines by hand; the equation's own box scrolls sideways, never the pop-up/page (FR-005); verified at the listed sizes. |
-| Existing intro spec asserts the `<img>` | Medium | `sandbox.component.spec.ts:129` | Replace the assertion with the MathML/equation checks in the same PR. |
+| MathML doesn't line-break on Chromium; full system overflows | Medium | Equations at 320–390 px | Split lines by hand; each equation scrolls sideways, never the pop-up/page (FR-005); verified at the listed sizes. |
+| Existing intro spec asserts the `<img>` | Medium | `sandbox.component.spec.ts` (#31 welcome-text spec) | Replace the assertion with the MathML/equation checks in the same PR. |
 | Shared `a` help text change ripples to the game | Medium | `GameComponent` ⓘ, #6 specs | Update the game spec's expected `a` text; keep #6 parameter-help specs green. |
 | Taller pop-up pushes close/Jugar off short screens | Medium | 320×568, 844×390 | #31's in-pop-up vertical scroll; FR-008 checks both stay reachable. |
 | Copy/wording not yet owner-approved | Medium | Merge gate | FR-011; approval recorded on this issue before merge (SC-005). |
@@ -273,7 +288,7 @@ the ✕ stays at the right). A no-break space keeps "¿te animas?" together at e
 Karma/Jasmine unit + component specs, ChromeHeadless, viewport pinned via
 `src/testing/viewport.ts`. Cover: the new copy is present and `LINE3`/`<img>` are gone;
 the MathML equation renders; the expander toggles the full system with correct
-`aria-expanded` and label; the equation box (not the pop-up/page) is the only sideways
+`aria-expanded` and label; each equation (not the block, button, pop-up or page) is the only sideways
 scroller at the listed sizes; "Conoce más" has the right href, `target`, `rel` and
 accessible name; "Jugar" closes the pop-up and calls `navigateToGame()`; the a/b/θ help
 texts read correctly on the initial screen and (for `a`) in the game; the pop-up still
@@ -290,7 +305,7 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | VM-003 | US2 — helix + ellipse form renders as MathML where the image was | [pending] | Pending |
 | VM-004 | US2 — "Ver ecuación completa" expands the full system; label + aria-expanded flip to expanded | [pending] | Pending |
 | VM-005 | US2 — "Ocultar ecuación completa" collapses it; aria-expanded false | [pending] | Pending |
-| VM-006 | US2 — no horizontal scroll of pop-up/page (only the equation box) at 320×568, 360, 390, 1280, 844×390, collapsed and expanded | [pending] | Pending |
+| VM-006 | US2 — no horizontal scroll of pop-up/page (only each equation, never the block or button) at 320×568, 360, 390, 1280, 844×390, collapsed and expanded | [pending] | Pending |
 | VM-007 | US2 — a screen reader reads the equation (MathML semantics or text alternative) | [pending] | Pending |
 | VM-008 | US3 — "Conoce más" opens the Atractor URL in a new tab with rel=noopener and the accessible name | [pending] | Pending |
 | VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game | [pending] | Pending |
@@ -300,6 +315,7 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | VM-013 | US4 — the `θ` ⓘ help says half-turns | [pending] | Pending |
 | VM-014 | US5 — the pop-up opens on load and from the book button and closes as before (#31) | [pending] | Pending |
 | VM-015 | US5 — the #5 "Bienvenida" guide bubble and layout are unchanged | [pending] | Pending |
+| VM-016 | US2 — expanded, then closed (✕, Esc, backdrop, Jugar) and reopened: collapsed | [pending] | Pending |
 
 ## Success Criteria
 

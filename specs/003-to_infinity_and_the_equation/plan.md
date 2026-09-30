@@ -13,7 +13,9 @@ pop-up is `#modal-intro`, a shared `<app-modal>` (#31) in
 `src/app/sandbox/sandbox.component.html`, opened on `ngOnInit` and from the intro
 (book) button. Styling uses the `--modal-*` tokens from `src/styles.css`. **No new
 runtime dependency** — the equation is native MathML markup. Decisions D1–D8 from the
-spec are fixed inputs.
+spec were the fixed inputs; D9 (lines after the equation, "Conoce más" last) and D10
+(centred pop-up, "¿te animas?" on one line) came later, during validation. See
+[Deviations from the plan](#deviations-from-the-plan) for what changed while building.
 
 ### Research Findings
 
@@ -21,21 +23,21 @@ spec are fixed inputs.
   Atractor Shell Model IV. `x = d·[A·sinβ·cosθ + r_e·cos(s+φ)·cos(θ+Ω) −
   r_e·sin(s+φ)·sinμ·sin(θ+Ω)]·e^(θcotα)`, etc.; `r_e = 1/√((cos s/a)²+(sin s/b)²)`.
   `d` (= D) is fixed at 1 for every preset and the random shell, so the displayed full
-  form omits D. `s` is drawn over 0..4π and θ up to `theta·π` in code; the pop-up shows
-  the model ranges (0≤s≤2π, θ≥0).
+  form omits D. `s` is drawn over 0..4π and θ up to `theta·π` in code; the pop-up
+  shows no ranges.
 - **a/b/θ help are string-only**: `parameter-help.ts` maps `a`→`LABEL_PARAM_A1_*`,
   `b`→`LABEL_PARAM_B_*`, `theta`→`LABEL_PARAM_THETA_*`. Fixing the wording touches only
   `app-strings.ts`; the map and the game wiring are unchanged. The `a` help is shared
   with `GameComponent`, so `game.component.spec.ts` must expect the new `a` text.
 - **Expander pattern**: the parameter ⓘ buttons already use
-  `[attr.aria-expanded]`/`[attr.aria-controls]` (`sandbox.component.html:142` etc.).
+  `[attr.aria-expanded]`/`[attr.aria-controls]` (the a, b, θ ⓘ in `sandbox.component.html`).
   The equation expander reuses that pattern (D8) with a boolean field on
   `SandboxComponent` (e.g. `fullEquationOpen`).
-- **"Jugar"**: `SandboxComponent.navigateToGame()` (`sandbox.component.ts:254`) already
+- **"Jugar"**: the private `SandboxComponent.navigateToGame()` already
   does `router.navigate(['game'])`; the button closes the pop-up then calls it.
 - **MathML**: MathML Core is baseline in the app's target evergreen browsers (D7); a
   visually-hidden text alternative covers AT and the no-MathML case (FR-009, FR-014).
-- **Current intro spec** (`sandbox.component.spec.ts:121-129`) asserts
+- **Current intro spec** (#31's welcome-text spec in `sandbox.component.spec.ts`) asserts
   `img#img-intro-equation` — that assertion is replaced.
 
 ### Data Model
@@ -127,3 +129,24 @@ markup. Watch points: MathML line-breaking at 320–390 px (contain the sideways
 the equation box), the shared `a` help text rippling into the game spec, and replacing
 the existing `<img>` assertion.
 
+### Deviations from the plan
+
+Recorded after /vt.review pass 1 (the plan above is kept as planned):
+
+- **A component, not inline markup.** Angular 17.3.4 gives template `<math>` the wrong
+  namespace (`http://www.w3.org/1998/MathML/`), so the browser wouldn't lay it out.
+  The equation is `<app-equation form="short|full">` (`src/app/equation/`): MathML built
+  as constant strings in `shell-equation.ts`, set through `[innerHTML]` (trusted
+  constants only), unencapsulated CSS prefixed `app-equation`, declared in `app.module.ts`.
+- **No math font needed.** Without one, MathML's auto-italic letters draw as empty boxes
+  and brackets don't stretch: variables are italic from CSS, vectors are one-line
+  tuples, r_e(s) uses slashes, `math-style: normal` keeps fractions full size.
+- **No `LABEL_INTRO_EQUATION_CAPTION`.** `LABEL_INTRO_LINE2` is the caption.
+  `LABEL_INTRO_EQUATION_FULL_ALT` (the full system, spoken) was added.
+- **Each equation scrolls on its own** (`app-equation .equation-math`), not the block
+  around them (browser-check bug, f179581): the button never slides away.
+- **Owner changes during validation:** D9 (lines 3–4 reworded; "Conoce más" last, after
+  them) and D10 (the shared `.modal-centered`, "Jugar" centred; a no-break space in
+  "¿te animas?").
+- **Review pass 1:** `closeIntro()` collapses the full system on every way out; the
+  spoken versions name each sum inside a function.

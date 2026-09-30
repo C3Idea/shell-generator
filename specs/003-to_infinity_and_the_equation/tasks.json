@@ -152,7 +152,7 @@
           "src/app/app-strings.ts"
         ],
         "satisfaction": "partial",
-        "notes": "strings only; markup in T003"
+        "notes": "No LABEL_INTRO_EQUATION_CAPTION: LABEL_INTRO_LINE2 is the caption. LABEL_INTRO_EQUATION_FULL_ALT added (the full system, spoken). Lines 4-5 later reworded by the owner (D9, 10821e2); no-break space in LINE5 (D10, a44d0e5). Review pass 1 (D4)."
       }
     },
     "T003": {
@@ -234,7 +234,8 @@
           "redResult": "20 FAILED, 87 SUCCESS (new equation/expander/a11y/layout specs; fullEquationOpen stub only)",
           "greenResult": "108/108 sandbox; full suite 434/434 before the reset-on-open spec; lint clean"
         },
-        "satisfaction": "full"
+        "satisfaction": "full",
+        "notes": "Built as <app-equation> (src/app/equation/: shell-equation.ts, equation.component.*), MathML set through [innerHTML] from constants because Angular 17.3.4 gives template <math> the wrong namespace; no math font needed. Sideways scroll moved from #intro-equation to each .equation-math (f179581). Review pass 1 (D8)."
       }
     },
     "T005": {
