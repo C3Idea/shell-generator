@@ -1135,9 +1135,13 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       expect(navigate).not.toHaveBeenCalled();
       expect(navigateByUrl).not.toHaveBeenCalled();
       expect(JSON.stringify(component.parameters)).withContext('sliders untouched').toBe(before);
+      expect(router.url).withContext('route').toBe('/');
+      expect(component.guide.on).withContext('the "?" guide stays closed').toBeFalse();
     });
 
-    it('doesn\'t take the focus when the pop-up opens (#40)', () => {
+    // Owner, 2026-10-01: focus on open stays the browser default, the ✕.
+    it('leaves the focus on the ✕ when the pop-up opens, not on "Comenzar" (#40)', () => {
+      expect(document.activeElement).toBe(intro().querySelector('header > button'));
       expect(document.activeElement).not.toBe(start());
     });
 
