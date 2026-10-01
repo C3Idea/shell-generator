@@ -4,7 +4,7 @@
 # Tasks: Compartir shares the objetivo shell
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-10-01T12:24:44-06:00
+**Generated**: 2026-10-01T12:29:18-06:00
 
 ---
 
@@ -22,9 +22,9 @@
 
 **Purpose**: Specs pin the target link, round trip and new wording
 
-- [ ] T002 [W1] [US2] In src/app/game/game.component.spec.ts: rewrite the 'sharing' spec to assert the link equals the target (2 decimals) and is unchanged after moving the sliders; make the clipboard and prompt specs check the objetivo values, not only the '#/game?target=' prefix; add a round-trip spec (second GameComponent built from the link has the same target to 2 decimals and a non-winning start); tooltip spec expects the new text (drop the 'not objetivo' assertion, reword its title); update the pinned how-to text (~line 1715); reword the #12 spec comments. Revert check: restoring this.parameters fails the new specs and nothing else.
+- [x] T002 [W1] [US2] In src/app/game/game.component.spec.ts: rewrite the 'sharing' spec to assert the link equals the target (2 decimals) and is unchanged after moving the sliders; make the clipboard and prompt specs check the objetivo values, not only the '#/game?target=' prefix; add a round-trip spec (second GameComponent built from the link has the same target to 2 decimals and a non-winning start); tooltip spec expects the new text (drop the 'not objetivo' assertion, reword its title); update the pinned how-to text (~line 1715); reword the #12 spec comments. Revert check: restoring this.parameters fails the new specs and nothing else.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
@@ -32,19 +32,19 @@
 
 **Purpose**: Amend #12's archive; lint, test, build
 
-- [ ] T003 [W2] Amend specs/012-no_instant_snap_wins/ spec.md and plan.md (and any other archive text) that say the link shares the player's shell so they point to #39 as reversing that decision. Run lint, tests (taskset -c 0,1) and build.
+- [x] T003 [W2] Amend specs/012-no_instant_snap_wins/ spec.md and plan.md (and any other archive text) that say the link shares the player's shell so they point to #39 as reversing that decision. Run lint, tests (taskset -c 0,1) and build.
 
-**Wave Gate**: pending
+**Wave Gate**: passed
 
 ---
 
 ## Summary
 
 - **Total Tasks**: 3
-- **Completed**: 1
+- **Completed**: 3
 - **Skipped**: 0
 - **Blocked**: 0
-- **Progress**: 33%
+- **Progress**: 100%
 
 ---
 

@@ -14,17 +14,19 @@
     "maxTasksPerWave": 8
   },
   "state": {
-    "currentWave": 1,
+    "currentWave": 2,
     "completedWaves": [
-      0
+      0,
+      1,
+      2
     ],
     "totalTasks": 3,
-    "completedTasks": 1,
+    "completedTasks": 3,
     "blockedTasks": 0,
     "skippedTasks": 0,
-    "lastCheckpoint": "2026-10-01T12:26:53-06:00",
+    "lastCheckpoint": "2026-10-01T12:31:22-06:00",
     "contextHint": "Encode this.targetParameters in getShareableGameLink; strings 'caracol objetivo'. Reverses #12's shared-shell decision; keep #12's random start, clamping, clearTargetFromUrl. Run tests/builds pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
-    "lastUpdated": "2026-10-01T12:24:44-06:00"
+    "lastUpdated": "2026-10-01T12:29:18-06:00"
   },
   "waves": [
     {
@@ -46,7 +48,8 @@
       "tasks": [
         "T002"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T12:26:59-06:00"
     },
     {
       "number": 2,
@@ -55,7 +58,8 @@
       "tasks": [
         "T003"
       ],
-      "gateStatus": "pending"
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T12:29:18-06:00"
     }
   ],
   "tasks": {
@@ -98,7 +102,7 @@
       "id": "T002",
       "wave": 1,
       "description": "In src/app/game/game.component.spec.ts: rewrite the 'sharing' spec to assert the link equals the target (2 decimals) and is unchanged after moving the sliders; make the clipboard and prompt specs check the objetivo values, not only the '#/game?target=' prefix; add a round-trip spec (second GameComponent built from the link has the same target to 2 decimals and a non-winning start); tooltip spec expects the new text (drop the 'not objetivo' assertion, reword its title); update the pinned how-to text (~line 1715); reword the #12 spec comments. Revert check: restoring this.parameters fails the new specs and nothing else.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "frontend",
@@ -112,13 +116,22 @@
       "dependencies": [
         "T001"
       ],
-      "story": "US2"
+      "story": "US2",
+      "completion": {
+        "timestamp": "2026-10-01T12:26:59-06:00",
+        "commitSha": "b531fde698181a64ce8e61ca508a5d9afaaae45b",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
     },
     "T003": {
       "id": "T003",
       "wave": 2,
       "description": "Amend specs/012-no_instant_snap_wins/ spec.md and plan.md (and any other archive text) that say the link shares the player's shell so they point to #39 as reversing that decision. Run lint, tests (taskset -c 0,1) and build.",
-      "status": "pending",
+      "status": "completed",
       "tdd": false,
       "parallel": false,
       "domain": "documentation",
@@ -128,7 +141,17 @@
       ],
       "dependencies": [
         "T002"
-      ]
+      ],
+      "completion": {
+        "timestamp": "2026-10-01T12:29:18-06:00",
+        "commitSha": "dce0026bb957176b68c65a2df09ef451df4d83df",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/012-no_instant_snap_wins/spec.md",
+          "specs/012-no_instant_snap_wins/plan.md"
+        ],
+        "satisfaction": "full"
+      }
     }
   }
 }
