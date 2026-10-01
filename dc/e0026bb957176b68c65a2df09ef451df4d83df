@@ -1,0 +1,7 @@
+vt.idd:task: T003
+vt.idd:domain: documentation
+vt.idd:agents: claude(inline)
+vt.idd:files: specs/012-no_instant_snap_wins/spec.md,specs/012-no_instant_snap_wins/plan.md
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-10-01T12:29:18-06:00
