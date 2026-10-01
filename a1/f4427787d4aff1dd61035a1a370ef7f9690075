@@ -1,0 +1,7 @@
+vt.idd:task: T002
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/sandbox/sandbox.component.spec.ts
+vt.idd:satisfies: full
+vt.idd:wave: 1
+vt.idd:timestamp: 2026-10-01T13:35:18-06:00
