@@ -317,13 +317,13 @@ export class SandboxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fullEquationOpen = !this.fullEquationOpen;
   }
 
-  // "Jugar" in the welcome pop-up (#3): straight into the game.
-  playButtonClick() {
+  // "Comenzar" in the welcome pop-up (#40, was #3's "Jugar"): close it and
+  // start exploring here. The toolbar's game button leads to the game.
+  startButtonClick() {
     this.closeIntro();
-    this.navigateToGame();
   }
 
-  // Every way out of the welcome pop-up (✕, Esc, backdrop, "Jugar") ends here,
+  // Every way out of the welcome pop-up (✕, Esc, backdrop, "Comenzar") ends here,
   // so it never stays expanded behind the scenes (#3).
   closeIntro() {
     this.introOpen = false;

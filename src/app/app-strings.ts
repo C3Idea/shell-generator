@@ -44,7 +44,7 @@ export class AppStrings {
   static LABEL_INTRO_MORE      = "Conoce más";
   static LABEL_INTRO_MORE_ARIA = "Conoce más sobre el modelo en Atractor (se abre en una pestaña nueva)";
   static LABEL_INTRO_MORE_URL  = "https://www.atractor.pt/mat/conchas/texto1-_en.html";
-  static LABEL_INTRO_PLAY      = "Jugar";
+  static LABEL_INTRO_START     = "Comenzar";
   static LABEL_PARAM_A_HELP_TITLE = "Parámetro A (amplitud inicial del espiral)";
   static LABEL_PARAM_A_HELP_CONTENT = "Este parámetro controla la apertura inicial del espiral que guía el crecimiento del caracol.";
   static LABEL_PARAM_ALPHA_HELP_TITLE = "Parámetro alpha (ángulo del espiral)";

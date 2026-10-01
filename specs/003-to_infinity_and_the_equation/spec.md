@@ -11,9 +11,11 @@ blank space. The app draws Atractor's **Shell Model IV** (*Conchas e Matemática
 `surfaceFunction()` in `shell-viewer.ts` matches it term for term. The pop-up shows
 the equation as **native MathML** — the short helix + ellipse form by default, with
 a **"Ver ecuación completa"** expander for the full system — plus a **"Conoce más"**
-link crediting Atractor (new tab) and a **"Jugar"** button that opens the game. The
+link crediting Atractor (new tab) and a **"Jugar"** button that opens the game. The *(#40: now "Comenzar", which closes and stays)*
 same pass fixes the parameter ⓘ help texts, which swap the ellipse's `a`/`b` axes
 and mis-describe `θ`. *(Merged from #4.)*
+
+> **Superseded by #40 (2026-10-01, owner decision):** the welcome pop-up's footer button is now **"Comenzar"** (`#intro-start-button`, `startButtonClick()` → `closeIntro()` only), which closes the pop-up and leaves the visitor in the sandbox. It no longer navigates to the game; the toolbar's game button does. Read every "Jugar" below (D4, US3, FR-007, FR-008, VM-009, VM-010, VM-016, SC-004) with that in mind. The copy that mentions the game, the equation and "Conoce más" are unchanged.
 
 ## User Stories
 
@@ -49,16 +51,16 @@ A visitor wants to see the equation that generates the shells, readable on a pho
 - **Given** a screen reader is active, **When** it reaches the equation, **Then** it
   reads it (MathML semantics or an equivalent text alternative).
 - **Given** the full system is expanded, **When** the pop-up closes (✕, Esc, backdrop
-  or "Jugar") and opens again, **Then** it is collapsed.
+  or "Jugar") and opens again, **Then** it is collapsed. *(#40: now "Comenzar", which closes and stays)*
 
-### US3 — Learn more and start playing (P2)
+### US3 — Learn more and start playing (P2) *(#40: the button now starts exploring, see the note at the top)*
 
 - **Given** the pop-up is open, **When** the visitor taps **"Conoce más"**, **Then**
   Atractor's shells page opens in a new tab (`rel="noopener"`).
-- **Given** the pop-up is open, **When** the visitor taps **"Jugar"**, **Then** the
-  pop-up closes and the game opens (the same route as the toolbar's game button).
+- **Given** the pop-up is open, **When** the visitor taps **"Jugar"**, **Then** the *(#40: now "Comenzar", which closes and stays)*
+  pop-up closes and the game opens (the same route as the toolbar's game button). *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)*
 - **Given** a short screen where the pop-up is taller than the viewport, **When** the
-  visitor scrolls inside the pop-up, **Then** the close button and **"Jugar"** are
+  visitor scrolls inside the pop-up, **Then** the close button and **"Jugar"** are *(#40: now "Comenzar", which closes and stays)*
   reachable.
 
 ### US4 — Correct parameter help (P2)
@@ -106,10 +108,10 @@ equation now on screen.
   `https://www.atractor.pt/mat/conchas/texto1-_en.html` in a new tab
   (`target="_blank" rel="noopener"`) with the accessible name "Conoce más sobre el
   modelo en Atractor (se abre en una pestaña nueva)".
-- **FR-007** (MUST): A **"Jugar"** button in the pop-up closes it and navigates to the
-  game route (`['game']`), the same navigation as `#game-button`.
+- **FR-007** (MUST): A **"Jugar"** button in the pop-up closes it and navigates to the *(#40: now "Comenzar", which closes and stays)*
+  game route (`['game']`), the same navigation as `#game-button`. *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)*
 - **FR-008** (MUST): On a screen shorter than the pop-up, the pop-up scrolls
-  vertically inside itself (from #31) so the close button and **"Jugar"** stay
+  vertically inside itself (from #31) so the close button and **"Jugar"** stay *(#40: now "Comenzar", which closes and stays)*
   reachable at 320×568 and 844×390.
 - **FR-009** (MUST): The screen reader reads the equation — either through MathML
   semantics or an equivalent text alternative — and the expander announces its state.
@@ -134,7 +136,7 @@ equation now on screen.
   `<app-modal>` instance holding this content.
 - **`LABEL_INTRO_*`** (`app-strings.ts`): the pop-up copy. `LINE3` removed; `LINE1`,
   `LINE2`, `LINE4`, `LINE5` rewritten; new strings for the equation labels, the
-  expander, the credit link and the "Jugar" button.
+  expander, the credit link and the "Jugar" button. *(#40: now "Comenzar", which closes and stays)*
 - **`<app-equation form="short|full">`** (`src/app/equation/`): the equation. Its MathML
   is built as constant strings in `shell-equation.ts` and set through `[innerHTML]`
   (trusted constants only), because Angular 17.3.4 gives template `<math>` the wrong
@@ -154,7 +156,7 @@ Content and markup change on one existing pop-up, plus a small new `<app-equatio
 component (MathML from constant strings, see Key Entities) and string edits. No new dependency, no service-worker change (MathML is inline
 markup, styled by existing `--modal-*` tokens). The expander reuses the
 `aria-expanded`/`aria-controls` pattern already used by the parameter ⓘ buttons. The
-"Jugar" button reuses `SandboxComponent.navigateToGame()`. The a/b/θ fix is a
+"Jugar" button reuses `SandboxComponent.navigateToGame()`. The a/b/θ fix is a *(#40: now "Comenzar", which closes and stays)*
 string-only change in `app-strings.ts`.
 
 ### Architecture
@@ -166,7 +168,7 @@ flowchart TD
   eq["MathML equation fragment"]
   exp["Ver ecuación completa (aria-expanded)"]
   link["Conoce más -> atractor.pt (new tab)"]
-  jugar["Jugar -> navigateToGame()"]
+  jugar["Jugar -> navigateToGame() — #40: now Comenzar, closes only"]
   help["a/b/θ ⓘ help (app-strings.ts)"]
   intro --> copy --> eq --> exp
   intro --> link
@@ -183,7 +185,7 @@ Angular 17, TypeScript, standalone-free NgModule app. No new deps. Native MathML
 ### Project Structure Impact
 
 - **Modified**: `src/app/sandbox/sandbox.component.html` (`.modal-centered`, the two
-  `<app-equation>`s, expander, lines, Conoce más last, Jugar in the footer; `<img>`
+  `<app-equation>`s, expander, lines, Conoce más last, Jugar in the footer; `<img>` *(#40: now "Comenzar", which closes and stays)*
   removed), `sandbox.component.ts` (`fullEquationOpen`, `fullEquationButtonClick`,
   `playButtonClick`, `closeIntro`), `sandbox.component.css` (`#img-intro-equation`
   removed; the block, button and link styles), `app-strings.ts` (copy, spoken
@@ -222,7 +224,7 @@ Options: (A) `texto1-_en.html`, the shells series' Model I start *(selected)*; (
 Portuguese original. Rationale: the owner asked for the shells "home" so a reader can
 start from the beginning; Atractor has no Spanish version. Label: "Conoce más".
 
-**D4 — Mention the game with copy AND a "Jugar" button (owner, 2026-09-30).**
+**D4 — Mention the game with copy AND a "Jugar" button (owner, 2026-09-30).** *(button part superseded by #40, 2026-10-01: "Comenzar" closes and stays; the copy still mentions the game)*
 Options: (A) copy + button *(selected)*; (B) copy only. Rationale: a button lets a
 visitor jump straight into the game from the first screen they see.
 
@@ -256,10 +258,10 @@ animation would need overriding anyway. FR-004 already specifies this pattern.
 The owner reworded the two lines after the equation button: "Mueve los sliders y diseña todos los
 caracoles que imagines." and "¿Listo para el siguiente nivel? En el modo juego te retamos a
 reconstruir un caracol ¿te animas?", and moved the "Conoce más" link to the end of the text (it was
-right under the equation). "Jugar" stays in the footer. Done in 10821e2; specs pin the wording and the order.
+right under the equation). "Jugar" stays in the footer. Done in 10821e2; specs pin the wording and the order. *(#40: now "Comenzar", which closes and stays)*
 
 **D10 — Centred pop-up; "¿te animas?" on one line (owner, 2026-09-30, during validation).**
-After a preview of left-aligned vs centred, the owner chose centred with the title too, and "Jugar"
+After a preview of left-aligned vs centred, the owner chose centred with the title too, and "Jugar" *(#40: now "Comenzar", which closes and stays)*
 centred: the welcome pop-up uses the shared `.modal-centered` variant that ¡Victoria! uses (no new CSS;
 the ✕ stays at the right). A no-break space keeps "¿te animas?" together at every width. Done in a44d0e5.
 
@@ -279,7 +281,7 @@ the ✕ stays at the right). A no-break space keeps "¿te animas?" together at e
 | MathML doesn't line-break on Chromium; full system overflows | Medium | Equations at 320–390 px | Split lines by hand; each equation scrolls sideways, never the pop-up/page (FR-005); verified at the listed sizes. |
 | Existing intro spec asserts the `<img>` | Medium | `sandbox.component.spec.ts` (#31 welcome-text spec) | Replace the assertion with the MathML/equation checks in the same PR. |
 | Shared `a` help text change ripples to the game | Medium | `GameComponent` ⓘ, #6 specs | Update the game spec's expected `a` text; keep #6 parameter-help specs green. |
-| Taller pop-up pushes close/Jugar off short screens | Medium | 320×568, 844×390 | #31's in-pop-up vertical scroll; FR-008 checks both stay reachable. |
+| Taller pop-up pushes close/Jugar off short screens *(now "Comenzar", #40)* | Medium | 320×568, 844×390 | #31's in-pop-up vertical scroll; FR-008 checks both stay reachable. |
 | Copy/wording not yet owner-approved | Medium | Merge gate | FR-011; approval recorded on this issue before merge (SC-005). |
 | Screen reader can't parse MathML on some AT | Low | Accessibility | MathML semantics + a text alternative fallback (FR-009). |
 
@@ -290,7 +292,7 @@ Karma/Jasmine unit + component specs, ChromeHeadless, viewport pinned via
 the MathML equation renders; the expander toggles the full system with correct
 `aria-expanded` and label; each equation (not the block, button, pop-up or page) is the only sideways
 scroller at the listed sizes; "Conoce más" has the right href, `target`, `rel` and
-accessible name; "Jugar" closes the pop-up and calls `navigateToGame()`; the a/b/θ help
+accessible name; "Jugar" closes the pop-up and calls `navigateToGame()`; the a/b/θ help *(#40: now "Comenzar", which closes and stays)*
 texts read correctly on the initial screen and (for `a`) in the game; the pop-up still
 opens on load and from the book button (#31); the #5 "Bienvenida" bubble is unchanged.
 Manual: screenshots at 390 and 1280 px (collapsed + expanded); a real screen-reader
@@ -307,15 +309,15 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | VM-005 | US2 — "Ocultar ecuación completa" collapses it; aria-expanded false | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › \"Ocultar ecuación completa\" collapses it again" (collapsed = hidden + draws nothing, 6d3e53e) | Pass |
 | VM-006 | US2 — no horizontal scroll of pop-up/page (only each equation, never the block or button) at 320×568, 360, 390, 1280, 844×390, collapsed and expanded | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › layout › never scrolls the pop-up or the page sideways…" (5 sizes × collapsed/expanded, per-equation scroll); harness browser-check 116/116 @0729355 (7 sizes + 125 % window, touch swipe) | Pass |
 | VM-007 | US2 — a screen reader reads the equation (MathML semantics or text alternative) | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › for a screen reader › …" + `equation.component.spec.ts` "EquationComponent (#3) › says what each function applies to…" (d959406); real screen reader not run (manual §12) | Partial |
-| VM-008 | US3 — "Conoce más" opens the Atractor URL in a new tab with rel=noopener and the accessible name | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › opens the start of Atractor's shells pages in a new tab, safely"; harness browser-check 116/116 @0729355 (new tab, no opener) | Pass |
-| VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › \"Jugar\" closes the pop-up and opens the game"; harness browser-check 116/116 @0729355 | Pass |
-| VM-010 | US3 — on a short screen the close button and "Jugar" stay reachable by scrolling inside the pop-up | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › keeps the ✕ and \"Jugar\" on screen at 320×568 / 844×390…"; harness browser-check 116/116 @0729355 | Pass |
+| VM-008 | US3 — "Conoce más" opens the Atractor URL in a new tab with rel=noopener and the accessible name | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › opens the start of Atractor's shells pages in a new tab, safely"; harness browser-check 116/116 @0729355 (new tab, no opener) · *#40 renamed these specs (describe "Conoce más and Comenzar"); this evidence is the #3-era behaviour, see #40's VM-002/VM-004* | Pass |
+| VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)* | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › \"Jugar\" closes the pop-up and opens the game"; harness browser-check 116/116 @0729355 · *#40 renamed these specs (describe "Conoce más and Comenzar"); this evidence is the #3-era behaviour, see #40's VM-002/VM-004* | Pass |
+| VM-010 | US3 — on a short screen the close button and "Jugar" stay reachable by scrolling inside the pop-up *(now "Comenzar", #40)* | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › keeps the ✕ and \"Jugar\" on screen at 320×568 / 844×390…"; harness browser-check 116/116 @0729355 · *#40 renamed these specs (describe "Conoce más and Comenzar"); this evidence is the #3-era behaviour, see #40's VM-002/VM-004* | Pass |
 | VM-011 | US4 — the `a` ⓘ help says horizontal axis (initial screen and game) | `sandbox.component.spec.ts` "ⓘ a describes horizontal (#3)" + `game.component.spec.ts` "ⓘ a describes the horizontal axis (#3)"; harness browser-check 116/116 @0729355 | Pass |
 | VM-012 | US4 — the `b` ⓘ help says vertical axis | `sandbox.component.spec.ts` "ⓘ b describes vertical (#3)"; harness browser-check 116/116 @0729355 | Pass |
 | VM-013 | US4 — the `θ` ⓘ help says half-turns | `sandbox.component.spec.ts` "ⓘ theta describes medias vueltas (#3)"; harness browser-check 116/116 @0729355 | Pass |
 | VM-014 | US5 — the pop-up opens on load and from the book button and closes as before (#31) | `sandbox.component.spec.ts` #31 pop-up specs (welcome: ✕/Esc/backdrop) + `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › copy › opens again from the book button…"; owner manual §9 | Pass |
 | VM-015 | US5 — the #5 "Bienvenida" guide bubble and layout are unchanged | harness browser-check 116/116 @0729355 "#5 guide bubbles identical (text and position)" at 390×844 and 1280×800; revert guard: only #3 specs fail on dev's pop-up (31) | Pass |
-| VM-016 | US2 — expanded, then closed (✕, Esc, backdrop, Jugar) and reopened: collapsed | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › collapses when the pop-up closes, however it closes" + "starts collapsed again each time the pop-up opens" (6d3e53e) | Pass |
+| VM-016 | US2 — expanded, then closed (✕, Esc, backdrop, Jugar) and reopened: collapsed *(now "Comenzar", #40)* | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › collapses when the pop-up closes, however it closes" + "starts collapsed again each time the pop-up opens" (6d3e53e) · *#40 renamed these specs (describe "Conoce más and Comenzar"); this evidence is the #3-era behaviour, see #40's VM-002/VM-004* | Pass |
 
 ## Success Criteria
 
@@ -324,7 +326,7 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | SC-001 | The welcome pop-up shows short new copy that names the game mode | VM-001, VM-002; owner manual §1–§2 passed 2026-09-30 | Pass |
 | SC-002 | The shell equation renders as MathML, with a working "Ver ecuación completa" expander, readable at 320×568/360/390/1280/844×390 without page side-scroll | VM-003–VM-006, VM-016; harness browser-check 116/116 @0729355; revert guard 16/16 mutations caught | Pass |
 | SC-003 | The equation is readable by a screen reader | DOM-level: VM-007 (spoken versions, MathML aria-hidden, expander aria-expanded); real screen reader not yet checked (manual §12, optional) | Partial |
-| SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game | VM-008, VM-009; owner manual §6 passed 2026-09-30 | Pass |
+| SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)* | VM-008, VM-009; owner manual §6 passed 2026-09-30 · *#40 renamed these specs (describe "Conoce más and Comenzar"); this evidence is the #3-era behaviour, see #40's VM-002/VM-004* | Pass |
 | SC-005 | The pop-up copy and the a/b/θ help wording are approved on this issue before merge | the owner's wording (D9, D10), passed in the manual pass (§2, §3, §8) and the owner's go-ahead to merge 2026-09-30; boxes on approval comment 5916660812 not ticked | Pass |
 | SC-006 | The a/b/θ parameter help matches the equation (a horizontal, b vertical, θ half-turns) on both screens | VM-011–VM-013 (both screens); owner manual §8 passed 2026-09-30 | Pass |
 | SC-007 | #31 (shared modal), #5 (initial-screen guide) and #6 (parameter help) keep working (their specs stay green); before/after screenshots at 390 and 1280 px approved on this issue | 451/451 at 5daeec2 (#31, #5, #6 specs green; revert guard: only #3 specs fail on dev's pop-up); screenshots approved by the owner's go-ahead to merge 2026-09-30 (compare sheets not attached) | Pass |

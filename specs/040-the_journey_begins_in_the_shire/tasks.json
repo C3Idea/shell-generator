@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "feature": "040-the-journey-begins-in-the-shire",
+    "featureName": "Welcome pop-up: Comenzar stays in the sandbox",
+    "version": "1.0",
+    "createdAt": "2026-10-01T19:28:23Z",
+    "lastUpdated": "2026-10-01T19:28:23Z",
+    "specHash": "2f97a397e8d6f0ea9d2346d4b1d365f9",
+    "planHash": "2f8dd8eb4579ef7a03e0daa7a2bcc0c8"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 2,
+    "completedWaves": [
+      0,
+      1,
+      2
+    ],
+    "totalTasks": 3,
+    "completedTasks": 3,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-10-01T13:40:02-06:00",
+    "contextHint": "#intro-start-button 'Comenzar' -> startButtonClick() -> closeIntro() only; no navigation, no initialFocus, no guide. Keep navigateToGame() for the toolbar. Reverses #3 D4. Tests/builds on 2 cores.",
+    "lastUpdated": "2026-10-01T13:37:53-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "US1: Comenzar closes and stays",
+      "story": "US1",
+      "description": "String, template, handler",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T13:33:14-06:00"
+    },
+    {
+      "number": 1,
+      "name": "US1/US2: specs",
+      "story": "US2",
+      "description": "Footer, no navigation, focus, centring, reach",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T13:35:18-06:00"
+    },
+    {
+      "number": 2,
+      "name": "Polish: #3 archive and verification",
+      "description": "Superseded notes; lint, test, build",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T13:37:53-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "In src/app/app-strings.ts replace LABEL_INTRO_PLAY with LABEL_INTRO_START = 'Comenzar'. In src/app/sandbox/sandbox.component.html rename #intro-play-button to #intro-start-button, bind (click)=startButtonClick() and LABEL_INTRO_START, update the <app-modal> comment. In sandbox.component.ts replace playButtonClick() with startButtonClick() that only calls closeIntro(); update closeIntro()'s comment. Keep navigateToGame() (toolbar). No initialFocus.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-007"
+      ],
+      "dependencies": [],
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-10-01T13:33:14-06:00",
+        "commitSha": "1dd4478ef8ef583445094d4f07364643c7ad7d60",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts",
+          "src/app/sandbox/sandbox.component.html",
+          "src/app/sandbox/sandbox.component.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/sandbox/sandbox.component.spec.ts",
+          "redResult": "7 FAILED (#31 footer, #40 button-in-footer, closes-and-stays, centring, on-screen 320x568 and 844x390, expander collapse) on dev's template/handler",
+          "greenResult": "473/473 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "In src/app/sandbox/sandbox.component.spec.ts: #31 footer spec expects only 'Comenzar'; #3 centring spec and 'Conoce más and Comenzar' describe use #intro-start-button; rewrite 'closes the pop-up and opens the game' to 'closes the pop-up and stays in the sandbox' (Router.navigate not called, introOpen false, parameters unchanged); on-screen specs at 320×568/844×390 use the new button; expander 'collapses on every close' clicks Comenzar; add a focus-on-open spec (document.activeElement is not Comenzar). Revert check: dev's template/component/strings fail only the #40 specs.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/sandbox/sandbox.component.spec.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-004",
+        "FR-005"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "story": "US2",
+      "completion": {
+        "timestamp": "2026-10-01T13:35:18-06:00",
+        "commitSha": "a1f4427787d4aff1dd61035a1a370ef7f9690075",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/sandbox/sandbox.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "Add a 'Superseded by #40' note and inline markers to specs/003-to_infinity_and_the_equation/spec.md and plan.md (D4, FR-007, US3, VM-009, VM-010, other 'Jugar' mentions); comment on #3. Run lint, tests (taskset -c 0,1) and build.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/003-to_infinity_and_the_equation/spec.md",
+      "satisfies": [
+        "FR-008"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "completion": {
+        "timestamp": "2026-10-01T13:37:53-06:00",
+        "commitSha": "5b7d9e204a0e81d4764ec70ded6fb47760675304",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/003-to_infinity_and_the_equation/spec.md",
+          "specs/003-to_infinity_and_the_equation/plan.md"
+        ],
+        "satisfaction": "full"
+      }
+    }
+  }
+}

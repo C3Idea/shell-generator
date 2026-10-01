@@ -5,6 +5,8 @@
 **Generated**: 2026-09-30
 **Issue**: #3 — [Initial screen] Welcome pop-up: new copy mentioning the game + show the equation
 
+> **Superseded by #40 (2026-10-01):** the button is now "Comenzar" (`#intro-start-button`, `startButtonClick()` → `closeIntro()` only); it no longer calls `navigateToGame()`. Every "Jugar" in this plan refers to the #3-era button.
+
 ### Technical Context
 
 Angular 17 (NgModule app), TypeScript, Karma/Jasmine + ChromeHeadless (single
@@ -33,8 +35,9 @@ spec were the fixed inputs; D9 (lines after the equation, "Conoce más" last) an
   `[attr.aria-expanded]`/`[attr.aria-controls]` (the a, b, θ ⓘ in `sandbox.component.html`).
   The equation expander reuses that pattern (D8) with a boolean field on
   `SandboxComponent` (e.g. `fullEquationOpen`).
-- **"Jugar"**: the private `SandboxComponent.navigateToGame()` already
+- **"Jugar"**: the private `SandboxComponent.navigateToGame()` already *(#40: now "Comenzar", which closes and stays)*
   does `router.navigate(['game'])`; the button closes the pop-up then calls it.
+
 - **MathML**: MathML Core is baseline in the app's target evergreen browsers (D7); a
   visually-hidden text alternative covers AT and the no-MathML case (FR-009, FR-014).
 - **Current intro spec** (#31's welcome-text spec in `sandbox.component.spec.ts`) asserts
@@ -54,15 +57,15 @@ in `app-strings.ts`:
   `LABEL_INTRO_MORE` ("Conoce más"),
   `LABEL_INTRO_MORE_ARIA` ("Conoce más sobre el modelo en Atractor (se abre en una pestaña nueva)"),
   `LABEL_INTRO_MORE_URL` ("https://www.atractor.pt/mat/conchas/texto1-_en.html"),
-  `LABEL_INTRO_PLAY` ("Jugar").
+  `LABEL_INTRO_PLAY` ("Jugar"). *(#40: now "Comenzar", which closes and stays)*
 - Fix `LABEL_PARAM_A1_HELP_TITLE/CONTENT` (horizontal), `LABEL_PARAM_B_HELP_TITLE/CONTENT`
   (vertical), `LABEL_PARAM_THETA_HELP_TITLE/CONTENT` (half-turns) per the issue's Text table.
 
 ### API Contracts
 
 No network/API. User actions: tap "Ver/Ocultar ecuación completa" → toggles
-`fullEquationOpen`; tap "Conoce más" → browser opens the URL in a new tab; tap "Jugar"
-→ `introOpen=false` then `navigateToGame()`.
+`fullEquationOpen`; tap "Conoce más" → browser opens the URL in a new tab; tap "Jugar" *(#40: now "Comenzar", which closes and stays)*
+→ `introOpen=false` then `navigateToGame()`. *(#40: now "Comenzar", which closes and stays)*
 
 ### Architecture
 
@@ -75,7 +78,7 @@ flowchart TD
   eqshort --> toggle["button aria-expanded=fullEquationOpen"]
   toggle --> eqfull["MathML: full Model IV (hidden until open)"]
   modal --> more["a Conoce más -> atractor (new tab)"]
-  modal --> play["button Jugar -> introOpen=false + navigateToGame()"]
+  modal --> play["button Jugar -> introOpen=false + navigateToGame() — #40: now Comenzar, closes only"]
   strings["app-strings.ts a/b/θ help"] -.shared.-> game["GameComponent ⓘ"]
 ```
 
@@ -85,15 +88,15 @@ flowchart TD
   intro labels, fix a/b/θ help wording.
 - **Modify** `src/app/sandbox/sandbox.component.html` — remove `<img id="img-intro-equation">`;
   add the equation caption, the MathML fragment (short form + hidden full form), the
-  expander button, the "Conoce más" link, the "Jugar" button; rewrite the intro paragraphs.
+  expander button, the "Conoce más" link, the "Jugar" button; rewrite the intro paragraphs. *(#40: now "Comenzar", which closes and stays)*
 - **Modify** `src/app/sandbox/sandbox.component.ts` — add `fullEquationOpen`, a toggle
-  method, and a "Jugar" handler (close + `navigateToGame()`).
+  method, and a "Jugar" handler (close + `navigateToGame()`). *(#40: now "Comenzar", which closes and stays)*
 - **Modify** `src/app/sandbox/sandbox.component.css` — remove `#img-intro-equation`; add
   `#intro-equation` box styles (overflow-x:auto inside the box only), expander and link
   styles, using `--modal-*` tokens; reduced-motion rule for the expander (FR-012).
 - **Modify** `src/app/sandbox/sandbox.component.spec.ts` — replace the `<img>` assertion;
   add specs for the MathML presence, the expander (label + aria-expanded), Conoce más
-  (href/target/rel/aria), Jugar (closes + navigates), a/b/θ help text, no side-scroll at
+  (href/target/rel/aria), Jugar (closes + navigates), a/b/θ help text, no side-scroll at *(#40: now "Comenzar", which closes and stays)*
   the listed sizes, opens on load + book button.
 - **Modify** `src/app/game/game.component.spec.ts` — expect the corrected `a` help text.
 - **Candidate**: extract the MathML into a small presentational component
@@ -109,10 +112,10 @@ flowchart TD
    in a hidden block), lines pre-split for Chromium; text alternative. Decide
    inline-vs-component.
 3. **Wire the pop-up** — edit `#modal-intro`: remove `<img>`, add caption, equation,
-   expander (button + aria, `fullEquationOpen`), Conoce más, Jugar; TS handlers; CSS
+   expander (button + aria, `fullEquationOpen`), Conoce más, Jugar; TS handlers; CSS *(#40: now "Comenzar", which closes and stays)*
    (equation box scroll containment, reduced motion). 
 4. **Specs & verification** — replace the `<img>` spec; add the equation/expander/link/
-   Jugar/help/no-side-scroll/open specs; run lint + tsc + build; keep #31, #5, #6 green.
+   Jugar/help/no-side-scroll/open specs; run lint + tsc + build; keep #31, #5, #6 green. *(#40: now "Comenzar", which closes and stays)*
    Manual: screenshots at 390 & 1280 px (collapsed + expanded); optional screen-reader pass.
 
 ### Constitution Check
@@ -124,7 +127,7 @@ mitigated with `rel="noopener"` and a fixed URL.
 ### Gap Analysis Summary
 
 Everything the plan needs already exists: the shared modal (#31), the aria-expanded ⓘ
-pattern (#5/#6), and `navigateToGame()`. The only genuinely new thing is static MathML
+pattern (#5/#6), and `navigateToGame()`. The only genuinely new thing is static MathML *(#40: now "Comenzar", which closes and stays)*
 markup. Watch points: MathML line-breaking at 320–390 px (contain the sideways scroll to
 the equation box), the shared `a` help text rippling into the game spec, and replacing
 the existing `<img>` assertion.
@@ -146,7 +149,7 @@ Recorded after /vt.review pass 1 (the plan above is kept as planned):
 - **Each equation scrolls on its own** (`app-equation .equation-math`), not the block
   around them (browser-check bug, f179581): the button never slides away.
 - **Owner changes during validation:** D9 (lines 3–4 reworded; "Conoce más" last, after
-  them) and D10 (the shared `.modal-centered`, "Jugar" centred; a no-break space in
+  them) and D10 (the shared `.modal-centered`, "Jugar" centred; a no-break space in *(#40: now "Comenzar", which closes and stays)*
   "¿te animas?").
 - **Review pass 1:** `closeIntro()` collapses the full system on every way out; the
   spoken versions name each sum inside a function.
