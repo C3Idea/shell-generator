@@ -170,11 +170,12 @@ describe('SandboxComponent pop-ups on the shared <dialog> (#31)', () => {
         expect(closeX(d).getAttribute('aria-label')).toBe(AppStrings.LABEL_CLOSE);
       });
 
-      // It closes with the ✕ only; its footer holds just "Jugar" (#3).
-      it('has no Cerrar button, and only "Jugar" in its footer', () => {
+      // It closes with the ✕ only; its footer holds just "Comenzar" (#40; was "Jugar", #3).
+      it('has no Cerrar button, and only "Comenzar" in its footer', () => {
         const d = open();
         const footer = Array.from(d.querySelectorAll('footer button')).map(b => b.textContent?.trim());
-        expect(footer).toEqual([AppStrings.LABEL_INTRO_PLAY]);
+        expect(footer).toEqual([AppStrings.LABEL_INTRO_START]);
+        expect(AppStrings.LABEL_INTRO_START).toBe('Comenzar');
         const texts = Array.from(d.querySelectorAll('button')).map(b => b.textContent?.trim());
         expect(texts).not.toContain(AppStrings.LABEL_CLOSE);
       });
@@ -1044,18 +1045,18 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
     });
 
     // Owner, 2026-09-30: centred, like ¡Victoria! (the shared .modal-centered).
-    it('is centred: title, text and "Jugar", with the ✕ still at the right', () => {
+    it('is centred: title, text and "Comenzar", with the ✕ still at the right', () => {
       expect(el.querySelector('#modal-intro')!.classList).toContain('modal-centered');
       expect(getComputedStyle(intro().querySelector('header > h2')!).textAlign).toBe('center');
       expect(getComputedStyle(intro().querySelector('.modal-body')!).textAlign).toBe('center');
       expect(getComputedStyle(intro().querySelector('footer')!).justifyContent).toBe('center');
       const box = intro().getBoundingClientRect();
       const close = intro().querySelector('header > button')!.getBoundingClientRect();
-      const play = intro().querySelector('#intro-play-button')!.getBoundingClientRect();
+      const start = intro().querySelector('#intro-start-button')!.getBoundingClientRect();
       // The ✕ sits in the header's right padding (within 60 px of the edge);
-      // "Jugar" is centred to 2 px (sub-pixel rounding).
+      // "Comenzar" is centred to 2 px (sub-pixel rounding).
       expect(close.right).toBeGreaterThan(box.right - 60);
-      expect(Math.abs((play.left + play.right) / 2 - (box.left + box.right) / 2)).toBeLessThan(2);
+      expect(Math.abs((start.left + start.right) / 2 - (box.left + box.right) / 2)).toBeLessThan(2);
     });
 
     it('has no equation placeholder and no empty equation image left', () => {
@@ -1082,10 +1083,10 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
     });
   });
 
-  describe('Conoce más and Jugar', () => {
+  describe('Conoce más and Comenzar', () => {
     const viewport = useViewport();
     const link = () => intro().querySelector('#intro-more-link') as HTMLAnchorElement;
-    const play = () => intro().querySelector('#intro-play-button') as HTMLButtonElement;
+    const start = () => intro().querySelector('#intro-start-button') as HTMLButtonElement;
     const onScreen = (e: Element) => {
       const r = e.getBoundingClientRect();
       return r.width > 0 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight + 1 && r.right <= window.innerWidth + 1;
@@ -1112,29 +1113,40 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       expect(link().getAttribute('aria-label')).toBe(AppStrings.LABEL_INTRO_MORE_ARIA);
     });
 
-    it('has a "Jugar" button in the pop-up\'s footer', () => {
-      expect(play().tagName).toBe('BUTTON');
-      expect(play().type).toBe('button');
-      expect(play().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_PLAY);
-      expect(play().closest('footer')).not.toBeNull();
+    it('has a "Comenzar" button in the pop-up\'s footer (#40)', () => {
+      expect(start().tagName).toBe('BUTTON');
+      expect(start().type).toBe('button');
+      expect(start().textContent?.trim()).toBe(AppStrings.LABEL_INTRO_START);
+      expect(start().closest('footer')).not.toBeNull();
+      expect(intro().querySelector('#intro-play-button')).withContext('no "Jugar" button left').toBeNull();
     });
 
-    it('"Jugar" closes the pop-up and opens the game', () => {
+    // #40 (owner, 2026-10-01): "Comenzar" starts exploring; the toolbar's
+    // game button is the way to the game.
+    it('"Comenzar" closes the pop-up and stays in the sandbox (#40)', () => {
       const router = TestBed.inject(Router);
       const navigate = spyOn(router, 'navigate').and.resolveTo(true);
-      play().click();
+      const navigateByUrl = spyOn(router, 'navigateByUrl').and.resolveTo(true);
+      const before = JSON.stringify(component.parameters);
+      start().click();
       render();
       expect(component.introOpen).toBeFalse();
       expect(intro().open).toBeFalse();
-      expect(navigate).toHaveBeenCalledWith(['game']);
+      expect(navigate).not.toHaveBeenCalled();
+      expect(navigateByUrl).not.toHaveBeenCalled();
+      expect(JSON.stringify(component.parameters)).withContext('sliders untouched').toBe(before);
+    });
+
+    it('doesn\'t take the focus when the pop-up opens (#40)', () => {
+      expect(document.activeElement).not.toBe(start());
     });
 
     for (const [width, height] of [[320, 568], [844, 390]]) {
-      it(`keeps the ✕ and "Jugar" on screen at ${width}×${height}, the text scrolling between them`, () => {
+      it(`keeps the ✕ and "Comenzar" on screen at ${width}×${height}, the text scrolling between them`, () => {
         viewport.set(width, height);
         render();
         expect(onScreen(intro().querySelector('header > button')!)).withContext('✕').toBeTrue();
-        expect(onScreen(play())).withContext('Jugar').toBeTrue();
+        expect(onScreen(start())).withContext('Comenzar').toBeTrue();
         const body = intro().querySelector('.modal-body') as HTMLElement;
         expect(getComputedStyle(body).overflowY).toMatch(/auto|scroll/);
       });
@@ -1235,10 +1247,9 @@ describe('SandboxComponent welcome pop-up (#3)', () => {
       render();
       toggle().click();
       render();
-      spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
-      (intro().querySelector('#intro-play-button') as HTMLButtonElement).click();
+      (intro().querySelector('#intro-start-button') as HTMLButtonElement).click();
       render();
-      expect(component.fullEquationOpen).withContext('Jugar').toBeFalse();
+      expect(component.fullEquationOpen).withContext('Comenzar').toBeFalse();
     });
 
     it('is a real button', () => {

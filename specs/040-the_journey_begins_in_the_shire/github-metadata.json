@@ -1,0 +1,18 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 40,
+    "title": "[App] Welcome pop-up: replace \"Jugar\" with \"Comenzar\" (close and stay in the sandbox)",
+    "url": "https://github.com/C3Idea/shell-generator/issues/40",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5938951201",
+  "pr": {
+    "number": 42,
+    "url": "https://github.com/C3Idea/shell-generator/pull/42",
+    "status": "draft",
+    "createdAt": "2026-10-01T19:28:06Z"
+  },
+  "deployed_at": "2026-10-01T19:27:59Z",
+  "cached_from": "github"
+}
