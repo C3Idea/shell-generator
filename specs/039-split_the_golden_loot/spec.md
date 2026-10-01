@@ -46,7 +46,7 @@ flowchart LR
   B -->|was: this.parameters| C[white shell]
   B -->|now: this.targetParameters| D[golden objetivo]
   D --> E[?target=… link]
-  E --> F[recipient: decode + clamp → same objetivo, random non-winning start]
+  E --> F["recipient: decode + clamp, same objetivo, random non-winning start"]
 ```
 
 ### Tech Context
@@ -75,7 +75,7 @@ Issues in English; branch from `dev` (in sync with `main`); specs pin look/behav
 |------|----------|------------|
 | Wrong shell encoded after the change | Medium | Spec pins the link to the target and fails if the player's shell is used (revert check). |
 | Shared link starts already won again | Medium | #12's random-start specs stay green; one spec opens a link built from a target. |
-| Wording specs (tooltip, how-to pop-up) drift | Low | Update the spec at `game.component.spec.ts:~561` and the pinned how-to text at `:~1715`. |
+| Wording specs (tooltip, how-to pop-up) drift | Low | Update the "share button copy" spec and the pinned text in the #10 how-to spec "uses the owner's wording". |
 
 ### Testing Strategy
 - Unit: rewrite "encodes the player's current shell…" to assert the link equals the target (2 decimals) and does not change when the sliders move; clipboard and prompt specs check the objetivo values, not only the prefix; tooltip and how-to specs on the new strings; revert check against the old line.
