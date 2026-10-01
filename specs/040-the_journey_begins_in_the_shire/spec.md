@@ -87,21 +87,21 @@ Issues in English; branch from `dev` (in sync with `main`); Spanish UI strings i
 ## Verification Matrix
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1.1 The footer shows only a centred "Comenzar" | [pending] | Pending |
-| VM-002 | US1.2 "Comenzar" closes the pop-up, no navigation, camera and sliders unchanged | [pending] | Pending |
-| VM-003 | US1.3 The equation is collapsed when the pop-up reopens after "Comenzar" | [pending] | Pending |
-| VM-004 | US1.4 ✕ and "Comenzar" reachable at 320×568 and 844×390 | [pending] | Pending |
-| VM-005 | US2.1 Focus on open is the ✕, not "Comenzar" | [pending] | Pending |
-| VM-006 | US2.2 Esc, ✕ and backdrop still close the pop-up | [pending] | Pending |
-| VM-007 | US2.3 The button is a real button named "Comenzar" | [pending] | Pending |
+| VM-001 | US1.1 The footer shows only a centred "Comenzar" | ✅ #31 spec 'only "Comenzar" in its footer'; #3 spec 'is centred: title, text and "Comenzar"' · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) | Pass |
+| VM-002 | US1.2 "Comenzar" closes the pop-up, no navigation, camera and sliders unchanged | ✅ spec '"Comenzar" closes the pop-up and stays in the sandbox (#40)' (no navigate/navigateByUrl, router.url '/', sliders and guide unchanged, 0a3df1d) · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) (URL, toolbar, shell) | Pass |
+| VM-003 | US1.3 The equation is collapsed when the pop-up reopens after "Comenzar" | ✅ spec 'collapses when the pop-up closes, however it closes' · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) (reopened collapsed) | Pass |
+| VM-004 | US1.4 ✕ and "Comenzar" reachable at 320×568 and 844×390 | ✅ specs 'keeps the ✕ and "Comenzar" on screen at 320×568 / 844×390' · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) | Pass |
+| VM-005 | US2.1 Focus on open is the ✕, not "Comenzar" | ✅ spec 'leaves the focus on the ✕ when the pop-up opens, not on "Comenzar" (#40)' (0a3df1d) · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) (focus 'Cerrar') | Pass |
+| VM-006 | US2.2 Esc, ✕ and backdrop still close the pop-up | ✅ #31 welcome close specs (✕, Esc, backdrop), unchanged and green · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) | Pass |
+| VM-007 | US2.3 The button is a real button named "Comenzar" | ✅ spec 'has a "Comenzar" button in the pop-up's footer (#40)' · browser check 65/65 (validaciones/shell_generator/40, 4 sizes) (a11y tree: button "Comenzar") | Pass |
 
 ## Success Criteria
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | A visitor who presses "Comenzar" stays in the sandbox every time | [pending] | Pending |
-| SC-002 | No "Jugar" button, id, label constant or handler remains in the welcome pop-up or its specs (history comments may mention it) | [pending] | Pending |
-| SC-003 | The rest of the pop-up (copy, equation, Conoce más, centring, close paths) behaves as before | [pending] | Pending |
-| SC-004 | #3's archive and issue point to #40 for the reversed decision | [pending] | Pending |
+| SC-001 | A visitor who presses "Comenzar" stays in the sandbox every time | ✅ VM-002 · revert check: dev's handler fails the 7 #40 specs [fix summary](https://github.com/C3Idea/shell-generator/pull/42#issuecomment-5940516399) | Pass |
+| SC-002 | No "Jugar" button, id, label constant or handler remains in the welcome pop-up or its specs (history comments may mention it) | ✅ grep: no intro-play/playButtonClick/LABEL_INTRO_PLAY in src (one deliberate not-present check) · VM-007 | Pass |
+| SC-003 | The rest of the pop-up (copy, equation, Conoce más, centring, close paths) behaves as before | ✅ #3 copy/equation/Conoce más specs and #31 close specs unchanged and green (473/473) · VM-001, VM-006 | Pass |
+| SC-004 | #3's archive and issue point to #40 for the reversed decision | ✅ #3 archive notes + inline markers (5b7d9e2, d5db2fd); comment issuecomment-5939117313 | Pass |
 
 ## Complexity Considerations
 Small: about 6 code lines, 1 string, ~6 specs, archive notes. No open questions.
