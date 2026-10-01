@@ -1,0 +1,270 @@
+{
+  "meta": {
+    "feature": "010-honey_i_shrunk_the_howto",
+    "featureName": "How-to pop-up in short sections",
+    "version": "2.0",
+    "createdAt": "2026-09-30T21:31:13Z",
+    "lastUpdated": "2026-09-30T21:31:13Z",
+    "specHash": "61fd7fcc8965bd410582fcade31b72e9",
+    "planHash": "6824341d4d5a4de8832af492ce7db0f7"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 5,
+    "completedWaves": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "totalTasks": 6,
+    "completedTasks": 6,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-09-30T16:15:33-06:00",
+    "contextHint": "",
+    "lastUpdated": "2026-09-30T16:10:32-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "Setup",
+      "description": "Baseline",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:38:51-06:00"
+    },
+    {
+      "number": 1,
+      "name": "Foundational: strings",
+      "description": "New LABEL_HOWTO_* strings",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:42:48-06:00"
+    },
+    {
+      "number": 2,
+      "name": "US1+US2: sections",
+      "description": "Goal, five titled sections, closing line",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:50:21-06:00"
+    },
+    {
+      "number": 3,
+      "name": "US3: ¡A jugar!",
+      "description": "Footer button and closing",
+      "tasks": [
+        "T004"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T15:54:04-06:00"
+    },
+    {
+      "number": 4,
+      "name": "US4: sizes",
+      "description": "No sideways scroll; footer reachable",
+      "tasks": [
+        "T005"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T16:01:06-06:00"
+    },
+    {
+      "number": 5,
+      "name": "Polish",
+      "description": "Full suite, lint, build, screenshots",
+      "tasks": [
+        "T006"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-09-30T16:10:32-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "Baseline on the branch: full Karma suite (2 cores), lint, build; record counts.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "package.json",
+      "satisfies": [],
+      "dependencies": [],
+      "completion": {
+        "timestamp": "2026-09-30T15:38:51-06:00",
+        "commitSha": "d04c5a6c38b3e3117adcddc8f2d4eb84a35077f8",
+        "agents": "claude(inline)",
+        "files": [
+          "none (baseline: 451/451",
+          "lint clean",
+          "build OK)"
+        ]
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "Add the LABEL_HOWTO_* strings from the plan's Data Model to src/app/app-strings.ts (goal, section texts, the two new titles, closing, ¡A jugar!); keep LINE1..4 until T003 removes their last use.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/app-strings.ts",
+      "satisfies": [
+        "FR-008",
+        "FR-011"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T15:42:48-06:00",
+        "commitSha": "15eee60c7430164cdcf03adc86a3db30382c9ea6",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/app-strings.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "Rewrite #modal-howto in src/app/game/game.component.html: goal line, five <p class=\"label-howto-section\"><strong>title</strong> · text</p> (three titles bound to GUIDE_GAME_*_TITLE), ⚙ aria-hidden, closing line; remove LABEL_HOWTO_WINDOW_LINE1..4; replace the two old-text specs in game.component.spec.ts with #10 specs for content, order, titles, no position words and no \"amarillo\".",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.html",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-008",
+        "FR-011",
+        "VM-001",
+        "VM-002",
+        "VM-003",
+        "VM-004"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-09-30T15:50:21-06:00",
+        "commitSha": "37d203293badd617da792d5c8ba64ac752a49ed5",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/app-strings.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T004": {
+      "id": "T004",
+      "wave": 3,
+      "description": "Add the \"¡A jugar!\" footer button (#howto-play-button) and howToPlayButtonClick() in game.component.ts; specs: it closes the pop-up, ✕/Esc/backdrop still close it, the book button reopens it and turns the \"?\" guide off.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-006",
+        "FR-009",
+        "VM-005",
+        "VM-006",
+        "VM-007"
+      ],
+      "dependencies": [
+        "T003"
+      ],
+      "story": "US3",
+      "completion": {
+        "timestamp": "2026-09-30T15:54:04-06:00",
+        "commitSha": "1b0b1738f4ae09fa34f79127490b9ca2c2525e11",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.html",
+          "src/app/game/game.component.ts",
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T005": {
+      "id": "T005",
+      "wave": 4,
+      "description": "Specs at 360, 390, 1280 px and 844×390: no sideways scroll of the pop-up or page; at 844×390 ✕ and ¡A jugar! reachable by scrolling inside the pop-up. Adjust game.component.css section spacing only if needed.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-007",
+        "VM-008",
+        "VM-009"
+      ],
+      "dependencies": [
+        "T004"
+      ],
+      "story": "US4",
+      "completion": {
+        "timestamp": "2026-09-30T16:01:06-06:00",
+        "commitSha": "238ff74db194575c17d68bf9c93e3ee3dacc6caa",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T006": {
+      "id": "T006",
+      "wave": 5,
+      "description": "Full Karma suite (2 cores), lint and build green; after screenshots at 390 and 1280 px for the owner's approval on #10 (FR-010).",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "config",
+      "filePath": "package.json",
+      "satisfies": [
+        "FR-010"
+      ],
+      "dependencies": [
+        "T005"
+      ],
+      "completion": {
+        "timestamp": "2026-09-30T16:10:32-06:00",
+        "commitSha": "11bb4a71062de233ee934e464c64c5fe7e4a24b3",
+        "agents": "claude(inline)",
+        "files": [
+          "none (full suite + lint via checkpoint; build OK; after screenshots in validaciones/shell_generator/10)"
+        ],
+        "satisfaction": "partial",
+        "notes": "FR-010 needs the owner's approval of wording and screenshots on #10"
+      }
+    }
+  }
+}

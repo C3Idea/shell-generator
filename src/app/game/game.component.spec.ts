@@ -657,11 +657,11 @@ describe('GameComponent heat bar outside the gear menu (#15)', () => {
       expect(range().getAttribute('aria-label')).toBe('Qué tan cerca estás del objetivo');
     });
 
-    it('the welcome text points at the bottom of the screen', () => {
-      const line3 = el.querySelectorAll('.label-howto-line')[2] as HTMLLabelElement;
-      expect(AppStrings.LABEL_HOWTO_WINDOW_LINE3).toBe(
-        'En la parte inferior de la pantalla encontrarás una barra de calor que te indica qué tan cerca estás de lograrlo.');
-      expect(line3.textContent?.trim()).toBe(AppStrings.LABEL_HOWTO_WINDOW_LINE3);
+    // The how-to names the bar by its guide title, not by where it sits (#10).
+    it('the how-to explains the bar in its Progreso section', () => {
+      const progress = el.querySelector('#howto-progress') as HTMLElement;
+      expect(progress.querySelector('strong')?.textContent?.trim()).toBe(AppStrings.GUIDE_GAME_HEAT_TITLE);
+      expect(progress.textContent).toContain(AppStrings.LABEL_HOWTO_PROGRESS);
     });
   });
 });
@@ -833,12 +833,10 @@ describe('GameComponent pop-ups on the shared <dialog> (#31)', () => {
   });
 
   it('keeps the how-to text as paragraphs', () => {
-    const lines = Array.from(howTo().querySelectorAll('.label-howto-line'));
-    expect(lines.map(l => l.tagName)).toEqual(['P', 'P', 'P', 'P']);
-    expect(lines.map(l => l.textContent?.trim())).toEqual([
-      AppStrings.LABEL_HOWTO_WINDOW_LINE1, AppStrings.LABEL_HOWTO_WINDOW_LINE2,
-      AppStrings.LABEL_HOWTO_WINDOW_LINE3, AppStrings.LABEL_HOWTO_WINDOW_LINE4,
-    ]);
+    const body = howTo().querySelector('.modal-body')!;
+    const paragraphs = Array.from(body.children);
+    expect(paragraphs.length).toBeGreaterThan(0);
+    paragraphs.forEach(p => expect(p.tagName).toBe('P'));
   });
 
   describe('¡Victoria!', () => {
@@ -1648,3 +1646,209 @@ describe('GameComponent control guide (#35)', () => {
     });
   });
 });
+
+// #10: the how-to in short sections, one per control or concept, each opening
+// with its title in bold. The first three titles are the "?" guide's (#35).
+describe('GameComponent how-to pop-up (#10)', () => {
+  let fixture: ComponentFixture<GameComponent>;
+  let component: GameComponent;
+  let el: HTMLElement;
+
+  const howTo = () => el.querySelector('#modal-howto > dialog') as HTMLDialogElement;
+  const body = () => howTo().querySelector('.modal-body') as HTMLElement;
+  const render = () => fixture.detectChanges();
+  const squash = (s: string | null | undefined) => (s ?? '').replace(/\s+/g, ' ').trim();
+  const sections = () => Array.from(body().querySelectorAll('.label-howto-section')) as HTMLElement[];
+  const titleOf = (p: HTMLElement) => squash(p.querySelector('strong')?.textContent);
+  // What a screen reader reads: nothing aria-hidden, and a labelled image
+  // by its label.
+  const spoken = (e: HTMLElement) => {
+    const copy = e.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('[aria-hidden="true"]').forEach(h => h.remove());
+    copy.querySelectorAll('[role="img"][aria-label]').forEach(i => i.replaceWith(i.getAttribute('aria-label')!));
+    return squash(copy.textContent);
+  };
+  const TITLES = [
+    AppStrings.GUIDE_GAME_PARAMETERS_TITLE, AppStrings.GUIDE_GAME_SWITCH_TITLE,
+    AppStrings.GUIDE_GAME_HEAT_TITLE, AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE,
+    AppStrings.LABEL_HOWTO_WHERE_TITLE,
+  ];
+
+  beforeEach(async () => {
+    installFramePump();
+    fixture = await renderGame();
+    component = fixture.componentInstance;
+    el = fixture.nativeElement;
+  });
+
+  afterEach(() => {
+    el.querySelectorAll('dialog').forEach(d => d.open && d.close());
+  });
+
+  describe('sections', () => {
+    it('opens on load with the goal, the five sections in order, then the closing line', () => {
+      expect(howTo().open).toBeTrue();
+      const paragraphs = Array.from(body().children) as HTMLElement[];
+      expect(paragraphs.map(p => p.id)).toEqual([
+        'howto-goal', 'howto-parameters', 'howto-switch', 'howto-progress',
+        'howto-new-game-share', 'howto-where', 'howto-closing',
+      ]);
+      expect(squash(paragraphs[0].textContent)).toBe(AppStrings.LABEL_HOWTO_GOAL);
+      expect(squash(paragraphs[6].textContent)).toBe(AppStrings.LABEL_HOWTO_CLOSING);
+    });
+
+    it('opens each section with a bold title; three are the "?" guide\'s', () => {
+      expect(sections().map(titleOf)).toEqual(TITLES);
+      sections().forEach(p => {
+        expect(p.firstElementChild?.tagName).withContext(p.id).toBe('STRONG');
+        expect(Number(getComputedStyle(p.querySelector('strong')!).fontWeight)).withContext(p.id).toBeGreaterThanOrEqual(600);
+      });
+    });
+
+    // The " · " stays in the spoken text: screen readers pause on it without
+    // reading it, so the title doesn't run into the sentence.
+    it('uses the owner\'s wording (2026-09-30)', () => {
+      expect(sections().map(spoken)).toEqual([
+        'Parámetros · Abre Parámetros y mueve los sliders para cambiar tu caracol.',
+        'Usuario / Objetivo · Cambia la vista entre tu caracol (blanco) y el objetivo (dorado).',
+        'Progreso · La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas!',
+        'Nuevo juego y Compartir · Empieza otra partida, o copia el enlace para retar a alguien con este caracol.',
+        '¿Dónde está cada cosa? · Toca ? para verlo en la pantalla.',
+      ]);
+      expect(AppStrings.LABEL_HOWTO_GOAL).toBe('Te mostramos un caracol objetivo. ¿Puedes reconstruirlo?');
+      expect(AppStrings.LABEL_HOWTO_CLOSING).toBe('¡Suerte y diviértete!');
+      expect(squash(howTo().querySelector('#label-howto-title')?.textContent)).toBe('¡Bienvenido al juego!');
+    });
+
+    it('names both buttons in the Nuevo juego y Compartir title, as the guide does', () => {
+      expect(AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE).toContain(AppStrings.GUIDE_GAME_NEW_GAME_TITLE);
+      expect(AppStrings.LABEL_HOWTO_NEW_GAME_SHARE_TITLE).toContain(AppStrings.GUIDE_GAME_SHARE_TITLE);
+    });
+
+    it('shows the gear as a text glyph between "Abre" and the rest, read as "Parámetros"', () => {
+      const parameters = el.querySelector('#howto-parameters') as HTMLElement;
+      const gear = parameters.querySelector('.howto-gear') as HTMLElement;
+      expect(gear.getAttribute('role')).toBe('img');
+      expect(gear.getAttribute('aria-label')).toBe(AppStrings.GUIDE_GAME_PARAMETERS_TITLE);
+      expect(gear.hasAttribute('aria-hidden')).toBeFalse();
+      expect(gear.textContent).toBe('\u2699\uFE0E');
+      expect(squash(parameters.textContent)).toBe(
+        'Parámetros · Abre \u2699\uFE0E y mueve los sliders para cambiar tu caracol.');
+    });
+  });
+
+  describe('what it covers', () => {
+    it('explains the goal, ⚙, the switch and its colours, the bar, winning, Nuevo juego, Compartir and "?"', () => {
+      const text = squash(body().textContent);
+      for (const words of ['caracol objetivo', '\u2699', 'sliders', 'blanco', 'dorado', 'barra', '✓',
+                           '¡ganas!', 'otra partida', 'enlace', 'Toca ?']) {
+        expect(text).withContext(words).toContain(words);
+      }
+    });
+
+    it('never locates a control by screen position, and never calls the target "amarillo"', () => {
+      const text = squash(body().textContent).toLowerCase();
+      for (const words of ['parte inferior', 'parte superior', 'abajo', 'arriba', 'izquierda', 'derecha',
+                           'esquina', 'amarillo']) {
+        expect(text).withContext(words).not.toContain(words);
+      }
+    });
+
+    it('leaves none of the old four paragraphs behind', () => {
+      expect(body().querySelector('.label-howto-line')).toBeNull();
+      expect(Object.keys(AppStrings).filter(k => k.startsWith('LABEL_HOWTO_WINDOW_LINE'))).toEqual([]);
+    });
+  });
+
+  describe('¡A jugar!', () => {
+    const play = () => howTo().querySelector('#howto-play-button') as HTMLButtonElement;
+    const guideBubbles = () => el.querySelectorAll('.callout-guide').length;
+
+    it('sits in the pop-up\'s footer, the only button there', () => {
+      expect(play().tagName).toBe('BUTTON');
+      expect(play().type).toBe('button');
+      expect(squash(play().textContent)).toBe('¡A jugar!');
+      const footer = play().closest('footer')!;
+      expect(footer).not.toBeNull();
+      expect(Array.from(footer.querySelectorAll('button')).map(b => squash(b.textContent))).toEqual(['¡A jugar!']);
+    });
+
+    it('closes the pop-up and leaves the game ready to play', () => {
+      const target = { ...component.targetParameters };
+      play().click();
+      render();
+      expect(component.howToOpen).toBeFalse();
+      expect(howTo().open).toBeFalse();
+      expect(component.victoryOpen).toBeFalse();
+      expect(component.newGameOpen).toBeFalse();
+      expect({ ...component.targetParameters }).withContext('same game').toEqual(target);
+    });
+
+    it('keeps the first focus on the ✕, like every other pop-up', () => {
+      component.howToOpen = false;
+      render();
+      component.howToButtonClick(new Event('click'));
+      render();
+      expect(document.activeElement).toBe(howTo().querySelector('header > button'));
+    });
+
+    it('comes back with the same sections from the book button, turning the "?" guide off', () => {
+      play().click();
+      render();
+      (el.querySelector('#help-button') as HTMLButtonElement).click();
+      render();
+      expect(guideBubbles()).withContext('guide on').toBeGreaterThan(0);
+      (el.querySelector('#howto-button') as HTMLButtonElement).click();
+      render();
+      expect(howTo().open).toBeTrue();
+      expect(component.guide.on).toBeFalse();
+      expect(guideBubbles()).toBe(0);
+      expect(sections().map(titleOf)).toEqual(TITLES);
+      expect(play()).not.toBeNull();
+    });
+  });
+
+  describe('layout', () => {
+    const viewport = useViewport();
+    const noSideScroll = (e: Element, what: string) =>
+      expect(e.scrollWidth).withContext(`${what} scrolls sideways`).toBeLessThanOrEqual(e.clientWidth + 1);
+    const onScreen = (e: Element) => {
+      const r = e.getBoundingClientRect();
+      return r.width > 0 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight + 1 && r.right <= window.innerWidth + 1;
+    };
+
+    for (const [width, height] of [[320, 568], [360, 800], [390, 844], [1280, 800], [844, 390]]) {
+      it(`never scrolls the pop-up or the page sideways at ${width}×${height}`, () => {
+        viewport.set(width, height);
+        render();
+        noSideScroll(document.documentElement, 'the page');
+        noSideScroll(howTo(), 'the pop-up');
+        noSideScroll(howTo().querySelector('article')!, 'the pop-up box');
+        noSideScroll(body(), 'the pop-up body');
+        expect(howTo().getBoundingClientRect().right).toBeLessThanOrEqual(window.innerWidth + 1);
+        // Every line wraps inside the box: no section wider than the body.
+        Array.from(body().children).forEach(p =>
+          expect(p.getBoundingClientRect().right).withContext(p.id)
+            .toBeLessThanOrEqual(body().getBoundingClientRect().right + 1));
+      });
+    }
+
+    for (const [width, height] of [[320, 568], [844, 390]]) {
+      it(`keeps the ✕ and "¡A jugar!" on screen at ${width}×${height}, the text scrolling between them`, () => {
+        viewport.set(width, height);
+        render();
+        expect(onScreen(howTo().querySelector('header > button')!)).withContext('✕').toBeTrue();
+        expect(onScreen(howTo().querySelector('#howto-play-button')!)).withContext('¡A jugar!').toBeTrue();
+        expect(getComputedStyle(body()).overflowY).toMatch(/auto|scroll/);
+        // The text is taller than the body here, so it really scrolls.
+        expect(body().scrollHeight).withContext('text overflows the body').toBeGreaterThan(body().clientHeight);
+        // The last line is reachable by scrolling the body.
+        body().scrollTop = body().scrollHeight;
+        const closing = body().querySelector('.label-howto-closing')!.getBoundingClientRect();
+        expect(closing.bottom).withContext('closing line after scrolling')
+          .toBeLessThanOrEqual(body().getBoundingClientRect().bottom + 1);
+      });
+    }
+  });
+});
+

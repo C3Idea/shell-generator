@@ -527,6 +527,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showHowToWindow();
   }
 
+  // "¡A jugar!" in the how-to's footer (#10): the game is already set up
+  // underneath, so closing the pop-up is all it takes.
+  howToPlayButtonClick() {
+    this.howToOpen = false;
+  }
+
   // The how-to ends the guide (#35).
   private showHowToWindow() {
     this.guide.close();
