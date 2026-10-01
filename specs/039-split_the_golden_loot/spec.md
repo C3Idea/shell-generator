@@ -85,20 +85,20 @@ Issues in English; branch from `dev` (in sync with `main`); specs pin look/behav
 ## Verification Matrix
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1.1 The link's target values equal the golden shell (2 decimals) | [pending] | Pending |
-| VM-002 | US1.2 The link is identical before and after moving the sliders | [pending] | Pending |
-| VM-003 | US1.3 A fresh session opened from the link has the sender's objetivo and measures the heat bar/distance against it | [pending] | Pending |
-| VM-004 | US1.4 The recipient's start doesn't win and New Game clears `?target` | [pending] | Pending |
-| VM-005 | US2.1 The tooltip reads the new text | [pending] | Pending |
-| VM-006 | US2.2 The how-to line reads the new text | [pending] | Pending |
+| VM-001 | US1.1 The link's target values equal the golden shell (2 decimals) | ✅ spec 'sharing > encodes the objetivo to 2 decimals, not the player's shell' (b531fde, aa9d412) · browser check 15/15 (validaciones/shell_generator/39, PR #41 body) | Pass |
+| VM-002 | US1.2 The link is identical before and after moving the sliders | ✅ spec 'sharing > gives the same link however the sliders move' (asserts the sliders moved, aa9d412) · browser check 15/15 (validaciones/shell_generator/39, PR #41 body) | Pass |
+| VM-003 | US1.3 A fresh session opened from the link has the sender's objetivo and measures the heat bar/distance against it | ✅ spec 'sharing > opens on the sender's objetivo, from a start that doesn't win' (target + distance/heat bar vs objetivo, aa9d412) · browser check 15/15 (validaciones/shell_generator/39, PR #41 body) (fresh session) | Pass |
+| VM-004 | US1.4 The recipient's start doesn't win and New Game clears `?target` | ✅ round-trip spec (non-winning start) + #12 start specs unchanged · Nuevo juego clears ?target: browser check 15/15 (validaciones/shell_generator/39, PR #41 body) (no unit spec) | Pass |
+| VM-005 | US2.1 The tooltip reads the new text | ✅ spec 'share button copy > … tooltip about sharing the objetivo (#39)' · browser check 15/15 (validaciones/shell_generator/39, PR #41 body) | Pass |
+| VM-006 | US2.2 The how-to line reads the new text | ✅ spec '#10 how-to > uses the owner's wording' · browser check 15/15 (validaciones/shell_generator/39, PR #41 body) (390×844 fits) | Pass |
 
 ## Success Criteria
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | A shared link always reproduces the sender's objetivo, whatever the sliders say | [pending] | Pending |
-| SC-002 | The tooltip and the how-to line say "caracol objetivo" and the specs pin them | [pending] | Pending |
-| SC-003 | #12's other behaviour (random non-winning start, clamping, New Game clears `?target`) is unchanged: its specs pass untouched | [pending] | Pending |
-| SC-004 | The old white-shell behaviour is gone: the revert spec fails on dev's old line | [pending] | Pending |
+| SC-001 | A shared link always reproduces the sender's objetivo, whatever the sliders say | ✅ VM-001..003 · revert check: dev's line fails the 7 #39 specs [fix summary](https://github.com/C3Idea/shell-generator/pull/41#issuecomment-5938794042) | Pass |
+| SC-002 | The tooltip and the how-to line say "caracol objetivo" and the specs pin them | ✅ VM-005, VM-006 (strings pinned in specs) | Pass |
+| SC-003 | #12's other behaviour (random non-winning start, clamping, New Game clears `?target`) is unchanged: its specs pass untouched | ✅ #12 'decoding the link' + 'the player's start' specs untouched and green (472/472) · VM-004 | Pass |
+| SC-004 | The old white-shell behaviour is gone: the revert spec fails on dev's old line | ✅ revert check: 7 #39 specs fail on dev's game.component.ts/app-strings.ts, nothing else [fix summary](https://github.com/C3Idea/shell-generator/pull/41#issuecomment-5938794042) | Pass |
 
 ## Complexity Considerations
 Small: about 1 code line, 2 strings, 4-6 specs, docs. No open questions.
