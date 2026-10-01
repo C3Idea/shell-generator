@@ -25,6 +25,13 @@ async function renderGame(): Promise<ComponentFixture<GameComponent>> {
   return fixture;
 }
 
+// The share link's values in their wire order (d, A, α, β, a, b, μ, ω, φ, θ),
+// to 2 decimals. Written out here, not read from the component, so a change to
+// the link format fails the share specs (#39).
+function encodeObjetivo(p: ShellParameters): number[] {
+  return [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
+}
+
 describe('GameComponent', () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
@@ -163,10 +170,8 @@ describe('GameComponent shared challenge link (#12)', () => {
   // not the player's.
   describe('sharing', () => {
     const linkOf = (game: GameComponent): string => (game as any)['getShareableGameLink']();
-    const valuesOf = (link: string): number[] =>
-      decodeURIComponent(link.split('target=')[1]).split(',').map(Number);
-    const encoded = (p: ShellParameters): number[] =>
-      [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
+    const targetOf = (link: string): string => decodeURIComponent(link.split('target=')[1]);
+    const valuesOf = (link: string): number[] => targetOf(link).split(',').map(Number);
 
     it('encodes the objetivo to 2 decimals, not the player\'s shell', () => {
       configure(null);
@@ -175,7 +180,7 @@ describe('GameComponent shared challenge link (#12)', () => {
       const link = linkOf(game);
       expect(link).toContain('#/game?target=');
       const values = valuesOf(link);
-      expect(values).toEqual(encoded(game.targetParameters));
+      expect(values).toEqual(encodeObjetivo(game.targetParameters));
       expect(values.slice(1, 5)).toEqual([11.24, 84.52, 33.33, 2.47]);
       expect(values[1]).not.toBe(+game.parameters.A.toFixed(2));
     });
@@ -184,7 +189,10 @@ describe('GameComponent shared challenge link (#12)', () => {
       configure(null);
       const game = create();
       const before = linkOf(game);
+      const start = [game.parameters.A, game.parameters.alpha, game.parameters.beta, game.parameters.a];
       Object.assign(game.parameters, { A: P.AMax, alpha: P.alphaMax, beta: P.betaMax, a: P.aMax });
+      expect([game.parameters.A, game.parameters.alpha, game.parameters.beta, game.parameters.a])
+        .withContext('the sliders moved').not.toEqual(start);
       expect(linkOf(game)).toBe(before);
     });
 
@@ -193,10 +201,12 @@ describe('GameComponent shared challenge link (#12)', () => {
       const sender = create();
       const link = linkOf(sender);
       TestBed.resetTestingModule();
-      configure(decodeURIComponent(link.split('target=')[1]));
+      configure(targetOf(link));
       const recipient = create();
-      expect(encoded(recipient.targetParameters)).toEqual(encoded(sender.targetParameters));
+      expect(encodeObjetivo(recipient.targetParameters)).toEqual(encodeObjetivo(sender.targetParameters));
       expect(recipient.checkParametersAreSimilar()).toBeFalse();
+      // The heat bar reads this distance: it's measured against the objetivo.
+      expect(recipient.distance).toBe(recipient.parameters.distance(recipient.targetParameters));
     });
   });
 });
@@ -516,11 +526,7 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
     .find(b => b.textContent?.trim() === text) as HTMLButtonElement | undefined;
   // The objetivo's query, built here so the share specs check which shell the
   // link carries (#39), not only its prefix.
-  const objetivoQuery = () => {
-    const t = component.targetParameters;
-    const values = [t.d, t.A, t.alpha, t.beta, t.a, t.b, t.mu, t.omega, t.phi, t.theta].map(v => +v.toFixed(2));
-    return '#/game?target=' + encodeURIComponent(values.join(','));
-  };
+  const objetivoQuery = () => '#/game?target=' + encodeURIComponent(encodeObjetivo(component.targetParameters).join(','));
 
   beforeEach(async () => {
     installFramePump();
