@@ -1,0 +1,272 @@
+{
+ "pass": 1,
+ "pr_number": 41,
+ "pr_title": "fix: Compartir shares the objetivo shell (#39)",
+ "copilot_review_summary": "Copilot review: skipped by config/flag (no .vt/vt.config.yaml in this repo, so review.copilot_integration is not enabled). Visual E2E: no ui-visual-reviewer agent; covered by the Playwright browser check (15/15, validaciones/shell_generator/39). Verification pass: not run (no C/S findings). Security reviewer: no C/S findings (numbers-only query through encodeURIComponent, decode rejects malformed links and clamps, bounded random start, no new dependency). Reviewers: 3 role-scoped `reviewer` instances (security, quality, documentation). Reviewed head: 406b760.",
+ "findings": [
+  {
+   "id": "m1",
+   "title": "The link format's key order is written out twice in the spec",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/game/game.component.spec.ts",
+   "lines": "164-169, 517-522",
+   "description": "`encoded` (the 'sharing' describe) and `objetivoQuery` (the #11 buttons describe) both hard-code `[d, A, alpha, beta, a, b, mu, omega, phi, theta]` and `toFixed(2)`. If the format changes, one helper can be updated and the other forgotten (it would fail loudly, so it's drift, not a hidden bug).",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Hoist one top-level helper `encodeObjetivo(p)` and build both `encoded` and `objetivoQuery` from it.",
+     "rationale": "Keeps the order pinned independently of the component (the point of the test), in one place."
+    },
+    "B": {
+     "approach": "Read `GameComponent['targetParameterKeys']` in the spec.",
+     "rationale": "Removes duplication but mirrors the implementation, so it can't catch an order change."
+    },
+    "C": {
+     "approach": "Leave as is.",
+     "rationale": "The order is deliberately pinned and a mismatch fails."
+    }
+   }
+  },
+  {
+   "id": "m2",
+   "title": "The link-to-query extraction is repeated inline",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/game/game.component.spec.ts",
+   "lines": "193-197",
+   "description": "`valuesOf` already does `decodeURIComponent(link.split('target=')[1])`; the round-trip spec repeats the expression inline because it needs the string form.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Add `targetOf(link)` and use it in `valuesOf` and the round-trip spec.",
+     "rationale": "One parse of the link format in the spec."
+    },
+    "B": {
+     "approach": "Leave as is.",
+     "rationale": "Two short copies of a one-liner."
+    }
+   }
+  },
+  {
+   "id": "m3",
+   "title": "\"Same link however the sliders move\" doesn't prove the sliders moved",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/game/game.component.spec.ts",
+   "lines": "185-192",
+   "description": "The spec assigns the slider maxima and expects an unchanged link, but never checks that the player's shell actually changed. If the start ever equalled the maxima, it would pass vacuously.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Snapshot the player's A/α/β/a before, and assert they differ after the move.",
+     "rationale": "Cheap; makes the intent explicit."
+    },
+    "B": {
+     "approach": "Assert the player-side query would differ.",
+     "rationale": "More elaborate for the same guarantee."
+    }
+   }
+  },
+  {
+   "id": "m4",
+   "title": "Share specs don't positively exclude the player's shell",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Quality reviewer",
+   "file": "src/app/game/game.component.spec.ts",
+   "lines": "538-573",
+   "description": "The clipboard and prompt specs assert the objetivo query is contained; nothing asserts the player's query is absent.",
+   "recommended": "B",
+   "options": {
+    "A": {
+     "approach": "Add `not.toContain` for the player's query (needs m1's helper).",
+     "rationale": "Guards against a link carrying both shells."
+    },
+    "B": {
+     "approach": "Skip it.",
+     "rationale": "The 'sharing' spec already pins the whole value list by exact equality, and the revert check proves the specs tell the shells apart."
+    }
+   }
+  },
+  {
+   "id": "D1",
+   "title": "`deployed_at` is a placeholder timestamp",
+   "severity": "Documentation",
+   "fix_group": "FG-2",
+   "source": "Documentation reviewer",
+   "file": "specs/039-split_the_golden_loot/github-metadata.json",
+   "lines": "16",
+   "description": "`2026-10-01T00:00:00Z` is earlier than the PR's `createdAt` (18:17:25Z), so it's impossible; other archives record a real time 20–40 s before the PR.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Set it to the deployment comment's real time, just before the PR's createdAt.",
+     "rationale": "Matches the other archives."
+    },
+    "B": {
+     "approach": "Use the PR's createdAt.",
+     "rationale": "Simpler, slightly off the convention."
+    },
+    "C": {
+     "approach": "Leave it.",
+     "rationale": "A visible fake."
+    }
+   }
+  },
+  {
+   "id": "D2",
+   "title": "#12 archive: the \"Superseded\" note doesn't reach every stale claim",
+   "severity": "Documentation",
+   "fix_group": "FG-3",
+   "source": "Documentation reviewer",
+   "file": "specs/012-no_instant_snap_wins/spec.md",
+   "lines": "15, 33, 37, 65, 75",
+   "description": "Lines 33/37 say `getShareableGameLink()` is unchanged; VM-002/SC-002 rows still read \"target equals the sharer's shell\" with Pass. A reader of the table alone sees no marker.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Keep the note and add short inline markers \"(superseded by #39: now the objetivo)\" on those lines.",
+     "rationale": "Each line corrects itself where it's read."
+    },
+    "B": {
+     "approach": "Widen the note to list every section it covers.",
+     "rationale": "One place, but the rows still read as current."
+    },
+    "C": {
+     "approach": "Leave it.",
+     "rationale": "The note sits near the top."
+    }
+   }
+  },
+  {
+   "id": "D3",
+   "title": "Plan says \"update the comment above getShareableGameLink\" — there was none",
+   "severity": "Documentation",
+   "fix_group": "FG-2",
+   "source": "Documentation reviewer",
+   "file": "specs/039-split_the_golden_loot/plan.md",
+   "lines": "21, 29",
+   "description": "A new two-line comment was added instead. The same wording is in the issue's plan comment and T001's description.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Reword the plan (archive + issue comment) to \"add a short comment\"; leave tasks.json as the as-executed record.",
+     "rationale": "Plan matches what was built."
+    },
+    "B": {
+     "approach": "Add an \"as built\" note to the plan.",
+     "rationale": "Keeps the original wording."
+    },
+    "C": {
+     "approach": "Leave it.",
+     "rationale": "Minor."
+    }
+   }
+  },
+  {
+   "id": "D4",
+   "title": "Line-number references are inconsistent and point at the pre-change file",
+   "severity": "Documentation",
+   "fix_group": "FG-2",
+   "source": "Documentation reviewer",
+   "file": "specs/039-split_the_golden_loot/spec.md",
+   "lines": "Risk table; plan.md 11-12",
+   "description": "Spec says the tooltip spec is at ~561, plan says ~557; the how-to pin '~1715' is now ~1745. Readers on the branch won't find them.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Cite describe/spec names instead of line numbers.",
+     "rationale": "Names survive edits."
+    },
+    "B": {
+     "approach": "Label numbers \"on dev @8f1ea05\" and unify them.",
+     "rationale": "Accurate but brittle."
+    },
+    "C": {
+     "approach": "Leave it.",
+     "rationale": "Approximate pointers."
+    }
+   }
+  },
+  {
+   "id": "D5",
+   "title": "Plan diagram labels likely break Mermaid",
+   "severity": "Documentation",
+   "fix_group": "FG-2",
+   "source": "Documentation reviewer",
+   "file": "specs/039-split_the_golden_loot/plan.md",
+   "lines": "Architecture",
+   "description": "Unquoted labels with parentheses and `#` (`C[encodeTargetParameters(this.targetParameters)]`, `D[#/game?target=…]`) are Mermaid parse errors.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Quote the labels.",
+     "rationale": "Smallest change that renders."
+    },
+    "B": {
+     "approach": "Reword labels without parentheses or #.",
+     "rationale": "Also renders, loses the exact names."
+    },
+    "C": {
+     "approach": "Replace the diagram with a text flow.",
+     "rationale": "Overkill."
+    }
+   }
+  },
+  {
+   "id": "D6",
+   "title": "Archive and PR body: wave labels, VM-003 evidence, #12 comment trail",
+   "severity": "Documentation",
+   "fix_group": "FG-2",
+   "source": "Documentation reviewer",
+   "file": "specs/039-split_the_golden_loot/plan.md",
+   "lines": "W1–W3; spec.md VM-003",
+   "description": "(a) The plan promises amending #12's comment trail (done: issuecomment-5937440039) but nothing says so; (b) plan waves W1–W3 vs tasks Wave 0–2; (c) VM-003 claims the heat bar/distance use the sender's objetivo, but the round-trip spec only checks the target and a non-winning start (the heat bar part was only seen in the browser check).",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Relabel plan waves W0–W2; extend the round-trip spec to assert the recipient's distance is measured against the objetivo; mention the #12 comment in the PR body.",
+     "rationale": "Every claim gets committed evidence."
+    },
+    "B": {
+     "approach": "Only reword VM-003 to cite the browser check.",
+     "rationale": "Evidence stays outside the repo."
+    },
+    "C": {
+     "approach": "Leave it.",
+     "rationale": "Cosmetic."
+    }
+   }
+  }
+ ],
+ "fix_groups": [
+  {
+   "id": "FG-1",
+   "primary_files": "`src/app/game/game.component.spec.ts`",
+   "finding_ids": "m1, m2, m3, m4",
+   "boundary": "Soft boundary with FG-2 (D6c adds a distance assertion to the same round-trip spec)",
+   "advisory": "Spec tidy-ups only; no production change. m4 recommends no change.",
+   "recommended_disposition": "Fix"
+  },
+  {
+   "id": "FG-2",
+   "primary_files": "`specs/039-split_the_golden_loot/{plan.md,spec.md,github-metadata.json}`, issue #39 spec/plan comments, PR body",
+   "finding_ids": "D1, D3, D4, D5, D6",
+   "boundary": "Hard boundary (docs only), soft with FG-1 for D6c",
+   "advisory": "Keeps the archive and the GitHub comments in sync.",
+   "recommended_disposition": "Fix"
+  },
+  {
+   "id": "FG-3",
+   "primary_files": "`specs/012-no_instant_snap_wins/spec.md`",
+   "finding_ids": "D2",
+   "boundary": "Hard boundary",
+   "advisory": "Inline markers on #12's stale lines.",
+   "recommended_disposition": "Fix"
+  }
+ ]
+}

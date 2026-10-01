@@ -24,7 +24,7 @@ export class AppStrings {
   static BUTTON_SANDBOX_TITLE = "Ir al sandbox";
   static BUTTON_HOW_TO_TITLE  = "Abrir instrucciones del juego";
   static BUTTON_NEW_GAME_TITLE = "Iniciar juego nuevo";
-  static BUTTON_SHARE_GAME_TITLE = "Copiar enlace para retar con tu caracol";
+  static BUTTON_SHARE_GAME_TITLE = "Copiar enlace para retar con el caracol objetivo";
   static LABEL_NEW_GAME = "Nuevo juego";
   static LABEL_SHARE_GAME = "Compartir";
   static LABEL_DISTANCE_BAR = "Qué tan cerca estás del objetivo";
@@ -80,7 +80,7 @@ export class AppStrings {
   static LABEL_HOWTO_SWITCH   = "Cambia la vista entre tu caracol (blanco) y el objetivo (dorado).";
   static LABEL_HOWTO_PROGRESS = "La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas!";
   static LABEL_HOWTO_NEW_GAME_SHARE_TITLE = "Nuevo juego y Compartir";
-  static LABEL_HOWTO_NEW_GAME_SHARE       = "Empieza otra partida, o copia el enlace para retar a alguien con este caracol.";
+  static LABEL_HOWTO_NEW_GAME_SHARE       = "Empieza otra partida, o copia el enlace para retar a alguien con el caracol objetivo.";
   static LABEL_HOWTO_WHERE_TITLE = "¿Dónde está cada cosa?";
   static LABEL_HOWTO_WHERE       = "Toca ? para verlo en la pantalla.";
   static LABEL_HOWTO_CLOSING = "¡Suerte y diviértete!";

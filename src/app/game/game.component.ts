@@ -403,8 +403,10 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     window.alert(AppStrings.LABEL_LINK_COPIED);
   }
 
+  // The link carries the objetivo, so the recipient rebuilds the same golden
+  // shell (#39; #12 had it carry the player's shell).
   private getShareableGameLink(): string {
-    const target = this.encodeTargetParameters(this.parameters);
+    const target = this.encodeTargetParameters(this.targetParameters);
     const pathname = window.location.pathname.replace(/\/$/, '');
     const deploymentPath = pathname.endsWith('/game')
       ? pathname.slice(0, -'/game'.length)

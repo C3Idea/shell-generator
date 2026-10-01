@@ -59,6 +59,8 @@ flowchart TD
 
 **No** changes to `getShareableGameLink()` / `encodeTargetParameters()` (sharing the current shell as challenge is correct).
 
+> **Superseded by #39 (2026-10-01):** `getShareableGameLink()` now encodes `this.targetParameters` (the objetivo).
+
 ### Constitution Check
 
 No `.vt/memory/constitution.md` or `foundational-principles.md` defined — gate not applicable. No architect triggers. Scope is a single-file, additive bug fix with a provably terminating loop; no security or data-integrity concerns.

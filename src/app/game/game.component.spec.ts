@@ -25,6 +25,13 @@ async function renderGame(): Promise<ComponentFixture<GameComponent>> {
   return fixture;
 }
 
+// The share link's values in their wire order (d, A, α, β, a, b, μ, ω, φ, θ),
+// to 2 decimals. Written out here, not read from the component, so a change to
+// the link format fails the share specs (#39).
+function encodeObjetivo(p: ShellParameters): number[] {
+  return [p.d, p.A, p.alpha, p.beta, p.a, p.b, p.mu, p.omega, p.phi, p.theta].map(v => +v.toFixed(2));
+}
+
 describe('GameComponent', () => {
   let component: GameComponent;
   let fixture: ComponentFixture<GameComponent>;
@@ -159,18 +166,47 @@ describe('GameComponent shared challenge link (#12)', () => {
     });
   });
 
+  // #39 reverses #12's choice: the link carries the objetivo (golden shell),
+  // not the player's.
   describe('sharing', () => {
-    it('encodes the player\'s current shell to 2 decimals, not the target', () => {
+    const linkOf = (game: GameComponent): string => (game as any)['getShareableGameLink']();
+    const targetOf = (link: string): string => decodeURIComponent(link.split('target=')[1]);
+    const valuesOf = (link: string): number[] => targetOf(link).split(',').map(Number);
+
+    it('encodes the objetivo to 2 decimals, not the player\'s shell', () => {
       configure(null);
       const game = create();
-      Object.assign(game.parameters, { A: 11.237, alpha: 84.519, beta: 33.333, a: 2.468 });
-      const link: string = (game as any)['getShareableGameLink']();
+      Object.assign(game.targetParameters, { A: 11.237, alpha: 84.519, beta: 33.333, a: 2.468 });
+      const link = linkOf(game);
       expect(link).toContain('#/game?target=');
-      const values = decodeURIComponent(link.split('target=')[1]).split(',').map(Number);
-      const p = game.parameters;
-      expect(values).toEqual([p.d, 11.24, 84.52, 33.33, 2.47, p.b, p.mu, p.omega, p.phi, p.theta]
-        .map(v => +v.toFixed(2)));
-      expect(values[1]).not.toBe(+game.targetParameters.A.toFixed(2));
+      const values = valuesOf(link);
+      expect(values).toEqual(encodeObjetivo(game.targetParameters));
+      expect(values.slice(1, 5)).toEqual([11.24, 84.52, 33.33, 2.47]);
+      expect(values[1]).not.toBe(+game.parameters.A.toFixed(2));
+    });
+
+    it('gives the same link however the sliders move', () => {
+      configure(null);
+      const game = create();
+      const before = linkOf(game);
+      const start = [game.parameters.A, game.parameters.alpha, game.parameters.beta, game.parameters.a];
+      Object.assign(game.parameters, { A: P.AMax, alpha: P.alphaMax, beta: P.betaMax, a: P.aMax });
+      expect([game.parameters.A, game.parameters.alpha, game.parameters.beta, game.parameters.a])
+        .withContext('the sliders moved').not.toEqual(start);
+      expect(linkOf(game)).toBe(before);
+    });
+
+    it('opens on the sender\'s objetivo, from a start that doesn\'t win', () => {
+      configure(null);
+      const sender = create();
+      const link = linkOf(sender);
+      TestBed.resetTestingModule();
+      configure(targetOf(link));
+      const recipient = create();
+      expect(encodeObjetivo(recipient.targetParameters)).toEqual(encodeObjetivo(sender.targetParameters));
+      expect(recipient.checkParametersAreSimilar()).toBeFalse();
+      // The heat bar reads this distance: it's measured against the objetivo.
+      expect(recipient.distance).toBe(recipient.parameters.distance(recipient.targetParameters));
     });
   });
 });
@@ -488,6 +524,9 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
   const actions = () => el.querySelector('#game-actions') as HTMLDivElement | null;
   const actionButton = (text: string) => Array.from(el.querySelectorAll('#game-actions button'))
     .find(b => b.textContent?.trim() === text) as HTMLButtonElement | undefined;
+  // The objetivo's query, built here so the share specs check which shell the
+  // link carries (#39), not only its prefix.
+  const objetivoQuery = () => '#/game?target=' + encodeURIComponent(encodeObjetivo(component.targetParameters).join(','));
 
   beforeEach(async () => {
     installFramePump();
@@ -532,7 +571,7 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
       actionButton(AppStrings.LABEL_SHARE_GAME)!.click();
       await fixture.whenStable();
       expect(write).toHaveBeenCalledTimes(1);
-      expect(write.calls.mostRecent().args[0]).toContain('#/game?target=');
+      expect(write.calls.mostRecent().args[0]).toContain(objetivoQuery());
       expect(window.alert).toHaveBeenCalledWith(AppStrings.LABEL_LINK_COPIED);
     });
 
@@ -540,7 +579,7 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
       spyOn(navigator.clipboard, 'writeText').and.rejectWith(new Error('denied'));
       actionButton(AppStrings.LABEL_SHARE_GAME)!.click();
       await fixture.whenStable();
-      expect(window.prompt).toHaveBeenCalledWith(AppStrings.LABEL_LINK_PROMPT, jasmine.stringContaining('#/game?target='));
+      expect(window.prompt).toHaveBeenCalledWith(AppStrings.LABEL_LINK_PROMPT, jasmine.stringContaining(objetivoQuery()));
       expect(window.alert).not.toHaveBeenCalled();
     });
 
@@ -555,11 +594,11 @@ describe('GameComponent action buttons outside the gear menu (#11)', () => {
   });
 
   describe('share button copy', () => {
-    it('is labelled "Compartir" with a tooltip about sharing your own shell', () => {
+    it('is labelled "Compartir" with a tooltip about sharing the objetivo (#39)', () => {
       const share = actionButton(AppStrings.LABEL_SHARE_GAME)!;
       expect(share.textContent?.trim()).toBe('Compartir');
       expect(share.title).toBe(AppStrings.BUTTON_SHARE_GAME_TITLE);
-      expect(share.title.toLowerCase()).not.toContain('objetivo');
+      expect(share.title).toBe('Copiar enlace para retar con el caracol objetivo');
     });
   });
 });
@@ -1712,7 +1751,7 @@ describe('GameComponent how-to pop-up (#10)', () => {
         'Parámetros · Abre Parámetros y mueve los sliders para cambiar tu caracol.',
         'Usuario / Objetivo · Cambia la vista entre tu caracol (blanco) y el objetivo (dorado).',
         'Progreso · La barra avanza hacia ✓ mientras más te acercas. Cuando tu caracol sea casi idéntico, ¡ganas!',
-        'Nuevo juego y Compartir · Empieza otra partida, o copia el enlace para retar a alguien con este caracol.',
+        'Nuevo juego y Compartir · Empieza otra partida, o copia el enlace para retar a alguien con el caracol objetivo.',
         '¿Dónde está cada cosa? · Toca ? para verlo en la pantalla.',
       ]);
       expect(AppStrings.LABEL_HOWTO_GOAL).toBe('Te mostramos un caracol objetivo. ¿Puedes reconstruirlo?');

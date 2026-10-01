@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "feature": "039-split-the-golden-loot",
+    "featureName": "Compartir shares the objetivo shell",
+    "version": "1.0",
+    "createdAt": "2026-10-01T18:17:45Z",
+    "lastUpdated": "2026-10-01T18:17:45Z",
+    "specHash": "b7abc0a58291539c42306e4c52711994",
+    "planHash": "d81507eb0dbeb56d43ce920411e5b715"
+  },
+  "config": {
+    "tddMode": "pragmatic",
+    "requireReview": true,
+    "maxTasksPerWave": 8
+  },
+  "state": {
+    "currentWave": 2,
+    "completedWaves": [
+      0,
+      1,
+      2
+    ],
+    "totalTasks": 3,
+    "completedTasks": 3,
+    "blockedTasks": 0,
+    "skippedTasks": 0,
+    "lastCheckpoint": "2026-10-01T12:31:22-06:00",
+    "contextHint": "Encode this.targetParameters in getShareableGameLink; strings 'caracol objetivo'. Reverses #12's shared-shell decision; keep #12's random start, clamping, clearTargetFromUrl. Run tests/builds pinned to 2 cores (taskset -c 0,1, NG_BUILD_MAX_WORKERS=2).",
+    "lastUpdated": "2026-10-01T12:29:18-06:00"
+  },
+  "waves": [
+    {
+      "number": 0,
+      "name": "US1: share the objetivo",
+      "story": "US1",
+      "description": "Link encodes the golden shell; tooltip and how-to wording",
+      "tasks": [
+        "T001"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T12:24:44-06:00"
+    },
+    {
+      "number": 1,
+      "name": "US1/US2: specs",
+      "story": "US2",
+      "description": "Specs pin the target link, round trip and new wording",
+      "tasks": [
+        "T002"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T12:26:59-06:00"
+    },
+    {
+      "number": 2,
+      "name": "Polish: docs and verification",
+      "description": "Amend #12's archive; lint, test, build",
+      "tasks": [
+        "T003"
+      ],
+      "gateStatus": "passed",
+      "completedAt": "2026-10-01T12:29:18-06:00"
+    }
+  ],
+  "tasks": {
+    "T001": {
+      "id": "T001",
+      "wave": 0,
+      "description": "In src/app/game/game.component.ts make getShareableGameLink() encode this.targetParameters (not this.parameters) with the existing encodeTargetParameters; update the comment above it. In src/app/app-strings.ts set BUTTON_SHARE_GAME_TITLE to 'Copiar enlace para retar con el caracol objetivo' and LABEL_HOWTO_NEW_GAME_SHARE to 'Empieza otra partida, o copia el enlace para retar a alguien con el caracol objetivo.'. Leave GUIDE_GAME_SHARE_TEXT, decode/clamp, random start and clearTargetFromUrl alone.",
+      "status": "completed",
+      "tdd": true,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "FR-006"
+      ],
+      "dependencies": [],
+      "story": "US1",
+      "completion": {
+        "timestamp": "2026-10-01T12:24:44-06:00",
+        "commitSha": "ad1650b325a5c2ef7a09345743bbe92a20dd113b",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.ts",
+          "src/app/app-strings.ts"
+        ],
+        "testEvidence": {
+          "testFile": "src/app/game/game.component.spec.ts",
+          "redResult": "7 FAILED (the #39 specs only: 3 sharing, clipboard, prompt, tooltip, how-to wording) on the old line",
+          "greenResult": "472/472 SUCCESS"
+        },
+        "satisfaction": "full"
+      }
+    },
+    "T002": {
+      "id": "T002",
+      "wave": 1,
+      "description": "In src/app/game/game.component.spec.ts: rewrite the 'sharing' spec to assert the link equals the target (2 decimals) and is unchanged after moving the sliders; make the clipboard and prompt specs check the objetivo values, not only the '#/game?target=' prefix; add a round-trip spec (second GameComponent built from the link has the same target to 2 decimals and a non-winning start); tooltip spec expects the new text (drop the 'not objetivo' assertion, reword its title); update the pinned how-to text (~line 1715); reword the #12 spec comments. Revert check: restoring this.parameters fails the new specs and nothing else.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "frontend",
+      "filePath": "src/app/game/game.component.spec.ts",
+      "satisfies": [
+        "FR-001",
+        "FR-002",
+        "FR-004",
+        "FR-008"
+      ],
+      "dependencies": [
+        "T001"
+      ],
+      "story": "US2",
+      "completion": {
+        "timestamp": "2026-10-01T12:26:59-06:00",
+        "commitSha": "b531fde698181a64ce8e61ca508a5d9afaaae45b",
+        "agents": "claude(inline)",
+        "files": [
+          "src/app/game/game.component.spec.ts"
+        ],
+        "satisfaction": "full"
+      }
+    },
+    "T003": {
+      "id": "T003",
+      "wave": 2,
+      "description": "Amend specs/012-no_instant_snap_wins/ spec.md and plan.md (and any other archive text) that say the link shares the player's shell so they point to #39 as reversing that decision. Run lint, tests (taskset -c 0,1) and build.",
+      "status": "completed",
+      "tdd": false,
+      "parallel": false,
+      "domain": "documentation",
+      "filePath": "specs/012-no_instant_snap_wins/spec.md",
+      "satisfies": [
+        "FR-007"
+      ],
+      "dependencies": [
+        "T002"
+      ],
+      "completion": {
+        "timestamp": "2026-10-01T12:29:18-06:00",
+        "commitSha": "dce0026bb957176b68c65a2df09ef451df4d83df",
+        "agents": "claude(inline)",
+        "files": [
+          "specs/012-no_instant_snap_wins/spec.md",
+          "specs/012-no_instant_snap_wins/plan.md"
+        ],
+        "satisfaction": "full"
+      }
+    }
+  }
+}
