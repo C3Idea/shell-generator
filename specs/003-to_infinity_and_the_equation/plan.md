@@ -35,6 +35,8 @@ spec were the fixed inputs; D9 (lines after the equation, "Conoce más" last) an
   `SandboxComponent` (e.g. `fullEquationOpen`).
 - **"Jugar"**: the private `SandboxComponent.navigateToGame()` already
   does `router.navigate(['game'])`; the button closes the pop-up then calls it.
+
+> **Superseded by #40 (2026-10-01):** the button is now "Comenzar" (`#intro-start-button`, `startButtonClick()` → `closeIntro()` only); it no longer calls `navigateToGame()`. Every "Jugar" in this plan refers to the #3-era button.
 - **MathML**: MathML Core is baseline in the app's target evergreen browsers (D7); a
   visually-hidden text alternative covers AT and the no-MathML case (FR-009, FR-014).
 - **Current intro spec** (#31's welcome-text spec in `sandbox.component.spec.ts`) asserts

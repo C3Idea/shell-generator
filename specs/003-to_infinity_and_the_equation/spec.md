@@ -15,6 +15,8 @@ link crediting Atractor (new tab) and a **"Jugar"** button that opens the game. 
 same pass fixes the parameter ⓘ help texts, which swap the ellipse's `a`/`b` axes
 and mis-describe `θ`. *(Merged from #4.)*
 
+> **Superseded by #40 (2026-10-01, owner decision):** the welcome pop-up's footer button is now **"Comenzar"** (`#intro-start-button`, `startButtonClick()` → `closeIntro()` only), which closes the pop-up and leaves the visitor in the sandbox. It no longer navigates to the game; the toolbar's game button does. Read every "Jugar" below (D4, US3, FR-007, FR-008, VM-009, VM-010, VM-016, SC-004) with that in mind. The copy that mentions the game, the equation and "Conoce más" are unchanged.
+
 ## User Stories
 
 ### US1 — Copy that mentions the game (P1)
@@ -56,7 +58,7 @@ A visitor wants to see the equation that generates the shells, readable on a pho
 - **Given** the pop-up is open, **When** the visitor taps **"Conoce más"**, **Then**
   Atractor's shells page opens in a new tab (`rel="noopener"`).
 - **Given** the pop-up is open, **When** the visitor taps **"Jugar"**, **Then** the
-  pop-up closes and the game opens (the same route as the toolbar's game button).
+  pop-up closes and the game opens (the same route as the toolbar's game button). *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)*
 - **Given** a short screen where the pop-up is taller than the viewport, **When** the
   visitor scrolls inside the pop-up, **Then** the close button and **"Jugar"** are
   reachable.
@@ -107,7 +109,7 @@ equation now on screen.
   (`target="_blank" rel="noopener"`) with the accessible name "Conoce más sobre el
   modelo en Atractor (se abre en una pestaña nueva)".
 - **FR-007** (MUST): A **"Jugar"** button in the pop-up closes it and navigates to the
-  game route (`['game']`), the same navigation as `#game-button`.
+  game route (`['game']`), the same navigation as `#game-button`. *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)*
 - **FR-008** (MUST): On a screen shorter than the pop-up, the pop-up scrolls
   vertically inside itself (from #31) so the close button and **"Jugar"** stay
   reachable at 320×568 and 844×390.
@@ -222,7 +224,7 @@ Options: (A) `texto1-_en.html`, the shells series' Model I start *(selected)*; (
 Portuguese original. Rationale: the owner asked for the shells "home" so a reader can
 start from the beginning; Atractor has no Spanish version. Label: "Conoce más".
 
-**D4 — Mention the game with copy AND a "Jugar" button (owner, 2026-09-30).**
+**D4 — Mention the game with copy AND a "Jugar" button (owner, 2026-09-30).** *(button part superseded by #40, 2026-10-01: "Comenzar" closes and stays; the copy still mentions the game)*
 Options: (A) copy + button *(selected)*; (B) copy only. Rationale: a button lets a
 visitor jump straight into the game from the first screen they see.
 
@@ -308,8 +310,8 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | VM-006 | US2 — no horizontal scroll of pop-up/page (only each equation, never the block or button) at 320×568, 360, 390, 1280, 844×390, collapsed and expanded | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › layout › never scrolls the pop-up or the page sideways…" (5 sizes × collapsed/expanded, per-equation scroll); harness browser-check 116/116 @0729355 (7 sizes + 125 % window, touch swipe) | Pass |
 | VM-007 | US2 — a screen reader reads the equation (MathML semantics or text alternative) | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › the equation › for a screen reader › …" + `equation.component.spec.ts` "EquationComponent (#3) › says what each function applies to…" (d959406); real screen reader not run (manual §12) | Partial |
 | VM-008 | US3 — "Conoce más" opens the Atractor URL in a new tab with rel=noopener and the accessible name | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › opens the start of Atractor's shells pages in a new tab, safely"; harness browser-check 116/116 @0729355 (new tab, no opener) | Pass |
-| VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › \"Jugar\" closes the pop-up and opens the game"; harness browser-check 116/116 @0729355 | Pass |
-| VM-010 | US3 — on a short screen the close button and "Jugar" stay reachable by scrolling inside the pop-up | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › keeps the ✕ and \"Jugar\" on screen at 320×568 / 844×390…"; harness browser-check 116/116 @0729355 | Pass |
+| VM-009 | US3 — "Jugar" closes the pop-up and navigates to the game *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)* | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › \"Jugar\" closes the pop-up and opens the game"; harness browser-check 116/116 @0729355 | Pass |
+| VM-010 | US3 — on a short screen the close button and "Jugar" stay reachable by scrolling inside the pop-up *(now "Comenzar", #40)* | `sandbox.component.spec.ts` "SandboxComponent welcome pop-up (#3) › Conoce más and Jugar › keeps the ✕ and \"Jugar\" on screen at 320×568 / 844×390…"; harness browser-check 116/116 @0729355 | Pass |
 | VM-011 | US4 — the `a` ⓘ help says horizontal axis (initial screen and game) | `sandbox.component.spec.ts` "ⓘ a describes horizontal (#3)" + `game.component.spec.ts` "ⓘ a describes the horizontal axis (#3)"; harness browser-check 116/116 @0729355 | Pass |
 | VM-012 | US4 — the `b` ⓘ help says vertical axis | `sandbox.component.spec.ts` "ⓘ b describes vertical (#3)"; harness browser-check 116/116 @0729355 | Pass |
 | VM-013 | US4 — the `θ` ⓘ help says half-turns | `sandbox.component.spec.ts` "ⓘ theta describes medias vueltas (#3)"; harness browser-check 116/116 @0729355 | Pass |
@@ -324,7 +326,7 @@ pass (optional). Regression: #31 modal specs, #5 guide specs, #6 parameter-help 
 | SC-001 | The welcome pop-up shows short new copy that names the game mode | VM-001, VM-002; owner manual §1–§2 passed 2026-09-30 | Pass |
 | SC-002 | The shell equation renders as MathML, with a working "Ver ecuación completa" expander, readable at 320×568/360/390/1280/844×390 without page side-scroll | VM-003–VM-006, VM-016; harness browser-check 116/116 @0729355; revert guard 16/16 mutations caught | Pass |
 | SC-003 | The equation is readable by a screen reader | DOM-level: VM-007 (spoken versions, MathML aria-hidden, expander aria-expanded); real screen reader not yet checked (manual §12, optional) | Partial |
-| SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game | VM-008, VM-009; owner manual §6 passed 2026-09-30 | Pass |
+| SC-004 | "Conoce más" credits Atractor (new tab) and "Jugar" opens the game *(superseded by #40: the button is now "Comenzar", which closes the pop-up and stays in the sandbox)* | VM-008, VM-009; owner manual §6 passed 2026-09-30 | Pass |
 | SC-005 | The pop-up copy and the a/b/θ help wording are approved on this issue before merge | the owner's wording (D9, D10), passed in the manual pass (§2, §3, §8) and the owner's go-ahead to merge 2026-09-30; boxes on approval comment 5916660812 not ticked | Pass |
 | SC-006 | The a/b/θ parameter help matches the equation (a horizontal, b vertical, θ half-turns) on both screens | VM-011–VM-013 (both screens); owner manual §8 passed 2026-09-30 | Pass |
 | SC-007 | #31 (shared modal), #5 (initial-screen guide) and #6 (parameter help) keep working (their specs stay green); before/after screenshots at 390 and 1280 px approved on this issue | 451/451 at 5daeec2 (#31, #5, #6 specs green; revert guard: only #3 specs fail on dev's pop-up); screenshots approved by the owner's go-ahead to merge 2026-09-30 (compare sheets not attached) | Pass |
