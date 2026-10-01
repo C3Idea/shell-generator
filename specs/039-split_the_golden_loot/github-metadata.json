@@ -1,0 +1,19 @@
+{
+  "source": "github-issue",
+  "issue": {
+    "number": 39,
+    "title": "[Game] Compartir shares the player's shell instead of the objetivo",
+    "url": "https://github.com/C3Idea/shell-generator/issues/39",
+    "state": "OPEN"
+  },
+  "plan_comment_id": "5937461545",
+  "pr": {
+    "number": 41,
+    "url": "https://github.com/C3Idea/shell-generator/pull/41",
+    "status": "draft",
+    "createdAt": "2026-10-01T18:17:25Z"
+  },
+  "deployed_at": "2026-10-01T00:00:00Z",
+  "cached_from": "github",
+  "task_comment_id": "5937858351"
+}
