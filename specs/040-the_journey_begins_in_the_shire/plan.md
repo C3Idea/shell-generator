@@ -27,9 +27,9 @@ flowchart LR
   C --> D["sandbox, route unchanged"]
 ```
 Waves (tasks, numbered like tasks.json):
-1. **W0 code + string (T001)**: `LABEL_INTRO_START = "Comenzar"` replaces `LABEL_INTRO_PLAY`; template id/handler/label; `startButtonClick()` only calls `closeIntro()`; comments updated.
-2. **W1 specs (T002)**: update the #31 footer spec and the #3 welcome specs to `#intro-start-button` / "Comenzar"; rewrite "closes the pop-up and opens the game" → "closes the pop-up and stays in the sandbox" (router spy not called, parameters unchanged, `introOpen` false); add a focus-on-open spec (active element is not "Comenzar"); rename the describe to "Conoce más and Comenzar". Revert check: dev's template/component/strings fail the #40 specs only.
-3. **W2 docs (T003)**: "Superseded by #40" note + inline markers in `specs/003-to_infinity_and_the_equation/{spec,plan}.md`; comment on #3. Lint, tests, build.
+- **W0 code + string (T001)**: `LABEL_INTRO_START = "Comenzar"` replaces `LABEL_INTRO_PLAY`; template id/handler/label; `startButtonClick()` only calls `closeIntro()`; comments updated.
+- **W1 specs (T002)**: update the #31 footer spec and the #3 welcome specs to `#intro-start-button` / "Comenzar"; rewrite "closes the pop-up and opens the game" → "closes the pop-up and stays in the sandbox" (router spy not called, parameters unchanged, `introOpen` false); add a focus-on-open spec (the ✕ is focused, not "Comenzar"); rename the describe to "Conoce más and Comenzar". Revert check: dev's template/component/strings fail the #40 specs only.
+- **W2 docs (T003)**: "Superseded by #40" note + inline markers in `specs/003-to_infinity_and_the_equation/{spec,plan}.md`; comment on #3. Lint, tests, build.
 
 ### Project Structure
 Modify: `src/app/app-strings.ts`, `src/app/sandbox/sandbox.component.{html,ts,spec.ts}`, `specs/003-to_infinity_and_the_equation/{spec,plan}.md`. Add/remove: none.

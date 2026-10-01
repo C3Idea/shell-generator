@@ -23,7 +23,7 @@ As a visitor, I press "Comenzar" and land in the sandbox, ready to move the slid
 ### Functional Requirements
 - **FR-001** (MUST): The footer button reads `LABEL_INTRO_START = "Comenzar"` and replaces "Jugar"; `LABEL_INTRO_PLAY` is removed.
 - **FR-002** (MUST): Pressing it calls only `closeIntro()` (closes, collapses the expander); it MUST NOT call `navigateToGame()` or the router.
-- **FR-003** (MUST): Rename `#intro-play-button` → `#intro-start-button` and `playButtonClick()` → `startButtonClick()`; comments no longer say "Jugar".
+- **FR-003** (MUST): Rename `#intro-play-button` → `#intro-start-button` and `playButtonClick()` → `startButtonClick()`; no "Jugar" button, id, label constant or handler remains (history comments such as "was #3's Jugar" may mention it).
 - **FR-004** (MUST): Position, centring (`modal-centered`), style and type (`<button type="button">`) unchanged from #3.
 - **FR-005** (MUST): No initial focus is set on open (the ✕ keeps the browser-default focus); "Comenzar" does not open the #5 guide.
 - **FR-006** (MUST): `navigateToGame()` stays for the toolbar game button; `LABEL_PLAY_AGAIN`, `LABEL_START_KEYED_GAME` and the game how-to's "¡A jugar!" are untouched.
@@ -80,7 +80,7 @@ Issues in English; branch from `dev` (in sync with `main`); Spanish UI strings i
 | Stale "Jugar" references (comments, specs, #3 archive) | Low | grep for `intro-play`, `LABEL_INTRO_PLAY`, `playButtonClick`; archive markers. |
 
 ### Testing Strategy
-- Unit (`sandbox.component.spec.ts`, describe "SandboxComponent welcome pop-up (#3)" and the #31 pop-up specs): footer holds only "Comenzar"; it's a `type="button"` in the footer; pressing it closes and does not navigate (router spy) and leaves the parameters unchanged; expander collapsed on reopen; centring; ✕ and "Comenzar" on screen at 320×568 / 844×390; no element other than the browser default gets focus on open.
+- Unit (`sandbox.component.spec.ts`, describe "SandboxComponent welcome pop-up (#3)" and the #31 pop-up specs): footer holds only "Comenzar"; it's a `type="button"` in the footer; pressing it closes and does not navigate (router spy) and leaves the parameters unchanged; expander collapsed on reopen; centring; ✕ and "Comenzar" on screen at 320×568 / 844×390; focus on open is the ✕ (the browser default), not "Comenzar".
 - Revert check: dev's template/component/strings fail the #40 specs only.
 - Browser check (Playwright, own instances, PR vs dev) at 320×568, 390×844, 1280×800, 844×390: label, centring, click stays on `/`, Esc/✕/backdrop, focus on the ✕; before/after footer image.
 
@@ -99,7 +99,7 @@ Issues in English; branch from `dev` (in sync with `main`); Spanish UI strings i
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
 | SC-001 | A visitor who presses "Comenzar" stays in the sandbox every time | [pending] | Pending |
-| SC-002 | No "Jugar" remains in the welcome pop-up, its code or its specs | [pending] | Pending |
+| SC-002 | No "Jugar" button, id, label constant or handler remains in the welcome pop-up or its specs (history comments may mention it) | [pending] | Pending |
 | SC-003 | The rest of the pop-up (copy, equation, Conoce más, centring, close paths) behaves as before | [pending] | Pending |
 | SC-004 | #3's archive and issue point to #40 for the reversed decision | [pending] | Pending |
 
