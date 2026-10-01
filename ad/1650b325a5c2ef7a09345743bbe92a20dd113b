@@ -1,0 +1,8 @@
+vt.idd:task: T001
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: src/app/game/game.component.ts,src/app/app-strings.ts
+vt.idd:tdd: red=7 FAILED (the #39 specs only: 3 sharing, clipboard, prompt, tooltip, how-to wording) on the old line, green=472/472 SUCCESS
+vt.idd:satisfies: full
+vt.idd:wave: 0
+vt.idd:timestamp: 2026-10-01T12:24:44-06:00
