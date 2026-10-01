@@ -7,6 +7,8 @@ Opening a shared challenge link can start the game **already won** — the succe
 
 The share link is a **challenge**: it encodes the sharer's current shell (`this.parameters`) as the target for the recipient to recreate. That behavior is correct and stays. The bug is entirely on the recipient's side.
 
+> **Superseded by #39 (2026-10-01, owner decision):** the share link now carries the **objetivo** (`this.targetParameters`), not the sharer's current shell. Read "the sharer's shell" below (and in VM-002 / SC-002) as "the sharer's objetivo". This issue's recipient-side fixes (random non-winning start, clamping, clearing `?target` on New Game) are unchanged.
+
 ## Expected Behavior
 
 - Opening a link shared without moving any sliders starts an **unsolved** game.
