@@ -10,8 +10,9 @@
   "pr": {
     "number": 44,
     "url": "https://github.com/C3Idea/shell-generator/pull/44",
-    "status": "draft",
-    "createdAt": "2026-10-07T16:25:53Z"
+    "status": "ready",
+    "createdAt": "2026-10-07T16:25:53Z",
+    "readyAt": "2026-10-07T17:38:07Z"
   },
   "deployed_at": "2026-10-07T16:25:34Z",
   "cached_from": "github",
