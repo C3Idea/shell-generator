@@ -1,0 +1,76 @@
+{
+ "pass": 1,
+ "pr_number": 44,
+ "pr_title": "feat: add Open Graph link preview for shared links (#43)",
+ "copilot_review_summary": "Copilot review: skipped by config/flag (no .vt/vt.config.yaml in this repo, so review.copilot_integration is not enabled). Visual E2E: no ui-visual-reviewer agent; covered by the Playwright browser check (36/36: crawler view of app URL and a real Compartir link, og:image 1200×630 JPEG, simulated cards, tab title/lang at 1280×800 and 390×844; validaciones/shell_generator/43). Verification pass: not run (no C/S findings). Reviewers: 1 omnibus `reviewer` instance (477-line diff, under the split threshold). Spec compliance: FR-001..FR-005, FR-008..FR-010 hold. Reviewed head: f335b34.",
+ "findings": [
+  {
+   "id": "m1",
+   "title": "English <noscript> text left under lang=\"es\"",
+   "severity": "Minor",
+   "fix_group": "FG-1",
+   "source": "Omnibus reviewer",
+   "file": "src/index.html",
+   "lines": "~29",
+   "description": "The page now declares `<html lang=\"es\">`, but `<noscript>Please enable JavaScript to continue using this application.</noscript>` is still English. Visitors without JavaScript see English, and screen readers read it with Spanish pronunciation. It is the last Angular scaffold leftover in the file; the PR's purpose (US2, SC-003) is for the page to present itself in Spanish.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Translate it: `<noscript>Activa JavaScript para usar esta aplicación.</noscript>`, and note it in the spec (FR-001 / Project Structure).",
+     "rationale": "Completes the lang change with a one-line, zero-risk edit."
+    },
+    "B": {
+     "approach": "Keep the English text and mark it `lang=\"en\"`.",
+     "rationale": "Metadata correct, but visitors still read English."
+    },
+    "C": {
+     "approach": "Leave it and record a follow-up.",
+     "rationale": "No diff change, visible inconsistency stays."
+    }
+   }
+  },
+  {
+   "id": "D1",
+   "title": "Archive says mozjpeg; the built JPEG is baseline without the mozjpeg preset",
+   "severity": "Documentation",
+   "fix_group": "FG-2",
+   "source": "Omnibus reviewer",
+   "file": "specs/043-the_incredible_link_preview/spec.md",
+   "lines": "45, 74 (plan.md W0/Research; tasks.json T001)",
+   "description": "Spec Technical Summary, plan.md (Research Findings, W0) and T001 say \"JPEG with mozjpeg, quality about 85\". `file src/assets/link_preview.jpg` reports baseline: sharp's mozjpeg preset forces progressive output, so it was dropped. The archive is the only record of how the asset was produced. FR-006/FR-007 don't require mozjpeg, so this is wording, not non-compliance.",
+   "recommended": "A",
+   "options": {
+    "A": {
+     "approach": "Reword spec.md, plan.md and tasks.json (re-render tasks.md) to \"sharp JPEG q85, baseline (no mozjpeg preset, which forces progressive), optimised Huffman + trellis, metadata stripped\"; mirror on the issue's spec/plan comments.",
+     "rationale": "Archive matches the artifact and records why."
+    },
+    "B": {
+     "approach": "Keep the plan text and add a Deviations note.",
+     "rationale": "Documents the delta but leaves contradictory statements."
+    },
+    "C": {
+     "approach": "No change.",
+     "rationale": "Text stays inaccurate."
+    }
+   }
+  }
+ ],
+ "fix_groups": [
+  {
+   "id": "FG-1",
+   "primary_files": "`src/index.html`, `specs/043-the_incredible_link_preview/spec.md`",
+   "finding_ids": "m1",
+   "boundary": "Soft boundary (shares spec.md with FG-2, different sections)",
+   "advisory": "One-line translation plus a spec note.",
+   "recommended_disposition": "Fix"
+  },
+  {
+   "id": "FG-2",
+   "primary_files": "`specs/043-the_incredible_link_preview/{spec.md,plan.md,tasks.json,tasks.md}`",
+   "finding_ids": "D1",
+   "boundary": "Soft boundary (shares spec.md with FG-1, different sections)",
+   "advisory": "Text-only archive correction.",
+   "recommended_disposition": "Fix"
+  }
+ ]
+}
