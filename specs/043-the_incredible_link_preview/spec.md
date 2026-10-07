@@ -24,7 +24,7 @@ As a visitor or a search/preview crawler, I see the page's real name and languag
 
 ## Requirements
 ### Functional Requirements
-- **FR-001** (MUST): `src/index.html` has `<html lang="es">` and `<title>Caracoles: diseña conchas con matemáticas</title>`.
+- **FR-001** (MUST): `src/index.html` has `<html lang="es">` and `<title>Caracoles: diseña conchas con matemáticas</title>`. The `<noscript>` message is Spanish too: `Activa JavaScript para usar esta aplicación.` (added in review, m1).
 - **FR-002** (MUST): `src/index.html` has `<meta name="description" content="Los caracoles y las conchas tienen formas muy distintas, pero todos crecen siguiendo las mismas reglas.">`, the same text as `LABEL_INTRO_LINE1`.
 - **FR-003** (MUST): Open Graph tags: `og:type=website`, `og:site_name=Caracoles`, `og:locale=es_MX`, `og:title` = the title, `og:description` = the description, `og:url=https://mumat.matcuer.unam.mx/biomat/caracoles/`.
 - **FR-004** (MUST): Image tags: `og:image=https://mumat.matcuer.unam.mx/biomat/caracoles/assets/link_preview.jpg`, `og:image:type=image/jpeg`, `og:image:width=1200`, `og:image:height=630`, `og:image:alt=Concha de caracol en espiral generada por la aplicación`.
