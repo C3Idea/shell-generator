@@ -5,3 +5,11 @@ vt.idd:files: src/index.html
 vt.idd:satisfies: full
 vt.idd:wave: 1
 vt.idd:timestamp: 2026-10-07T10:35:38-06:00
+
+vt.idd:task: T003
+vt.idd:domain: frontend
+vt.idd:agents: claude(inline)
+vt.idd:files: dist/shell-generator/index.html (verified, not committed)
+vt.idd:satisfies: full
+vt.idd:wave: 2
+vt.idd:timestamp: 2026-10-07T10:39:27-06:00
