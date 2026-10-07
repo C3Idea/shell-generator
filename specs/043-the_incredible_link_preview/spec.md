@@ -102,20 +102,20 @@ Issues in English; branch from `dev` (not behind `main`); Spanish user-facing te
 ## Verification Matrix
 | ID | Acceptance Scenario | Evidence | Status |
 |----|---------------------|----------|--------|
-| VM-001 | US1.1 Production `index.html` has every OG/Twitter tag with the agreed values and absolute URLs | [pending] | Pending |
-| VM-002 | US1.2 `og:image` resolves to an RGB JPEG of 1200×630 under 300 KB in the build | [pending] | Pending |
-| VM-003 | US1.3 Facebook Sharing Debugger and WhatsApp show the card for the app URL and a challenge link (post-deploy; `Partial` until checked, see Decision 10) | [pending] | Pending |
-| VM-004 | US2.1 The browser tab reads "Caracoles: diseña conchas con matemáticas" | [pending] | Pending |
-| VM-005 | US2.2 `<html lang="es">` and `<meta name="description">` carry the Spanish values | [pending] | Pending |
-| VM-006 | US3.1 Unit suite and production build pass; app, service worker, manifest and share links unchanged | [pending] | Pending |
+| VM-001 | US1.1 Production `index.html` has every OG/Twitter tag with the agreed values and absolute URLs | ✅ crawler view of the app URL and a real "Compartir" link: 13/13 tags with the agreed values, absolute museo URLs · browser check 36/36 at d1981df (validaciones/shell_generator/43) · T003 dist parse (ef96a18) | Pass |
+| VM-002 | US1.2 `og:image` resolves to an RGB JPEG of 1200×630 under 300 KB in the build | ✅ dist/shell-generator/assets/link_preview.jpg: 200 image/jpeg, 89,224 B, 1200×630, 3 components, baseline (bc03504) · browser check 36/36 at d1981df (validaciones/shell_generator/43) | Pass |
+| VM-003 | US1.3 Facebook Sharing Debugger and WhatsApp show the card for the app URL and a challenge link (post-deploy; `Partial` until checked, see Decision 10) | ⏳ post-deploy check pending (Decision 10); simulated WhatsApp/Facebook cards from the crawled tags show image + title + description (capturas/simulated-cards.png) | Partial |
+| VM-004 | US2.1 The browser tab reads "Caracoles: diseña conchas con matemáticas" | ✅ document.title "Caracoles: diseña conchas con matemáticas" at 1280×800 and 390×844 (dev: "ShellGenerator") · browser check 36/36 at d1981df (validaciones/shell_generator/43) | Pass |
+| VM-005 | US2.2 `<html lang="es">` and `<meta name="description">` carry the Spanish values | ✅ lang="es" and meta description equal to LABEL_INTRO_LINE1 in crawler and browser views; <noscript> Spanish (079edd8) · browser check 36/36 at d1981df (validaciones/shell_generator/43) | Pass |
+| VM-006 | US3.1 Unit suite and production build pass; app, service worker, manifest and share links unchanged | ✅ unit 473/473, ng lint, production build after fixes ([fix summary](https://github.com/C3Idea/shell-generator/pull/44#issuecomment-6043358405)); share link, welcome pop-up and game with no console errors; image only in the lazy SW group, never fetched by visitors · browser check 36/36 at d1981df (validaciones/shell_generator/43) | Pass |
 
 ## Success Criteria
 | ID | Criterion | Evidence | Status |
 |----|-----------|----------|--------|
-| SC-001 | Every link to the app (plain or challenge) produces a preview card with image, title and description on WhatsApp and Facebook | [pending] | Pending |
-| SC-002 | The preview image stays within platform limits (1200×630, under 300 KB, RGB) | [pending] | Pending |
-| SC-003 | The page identifies itself in Spanish (language, title, description) | [pending] | Pending |
-| SC-004 | No new dependency and no behavior change in the app | [pending] | Pending |
+| SC-001 | Every link to the app (plain or challenge) produces a preview card with image, title and description on WhatsApp and Facebook | ⏳ VM-003 pending the museo deploy; VM-001 shows every link (plain and challenge) carries the card tags | Partial |
+| SC-002 | The preview image stays within platform limits (1200×630, under 300 KB, RGB) | ✅ VM-002 (87 KB, 1200×630, RGB) | Pass |
+| SC-003 | The page identifies itself in Spanish (language, title, description) | ✅ VM-004, VM-005 (lang, title, description, noscript) | Pass |
+| SC-004 | No new dependency and no behavior change in the app | ✅ package.json/package-lock.json unchanged vs dev; link_preview.png untracked; VM-006 | Pass |
 
 ## Complexity Considerations
 Small: one HTML file (about 15 lines), one generated asset, no TypeScript. The only open item is the post-deploy live check, which depends on the next museo deploy and doesn't block the merge.
