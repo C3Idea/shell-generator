@@ -4,7 +4,7 @@
 # Tasks: Open Graph link preview for shared links
 
 **Source**: `tasks.json` (source of truth)
-**Generated**: 2026-10-07T10:39:27-06:00
+**Generated**: 2026-10-07T11:31:55-06:00
 
 ---
 
@@ -12,7 +12,7 @@
 
 **Purpose**: Optimized JPEG from the owner's PNG
 
-- [x] T001 [W0] [US1] In a scratchpad folder outside the repo, install sharp and convert /home/chemair/00_C3_code/shell-generator/link_preview.png to src/assets/link_preview.jpg: flatten (no alpha), JPEG via mozjpeg at quality ~85, metadata stripped. Verify JPEG, 3 channels, 1200x630, <300 KB; if over, lower quality in steps of 5 (not below 75). Inspect visually. Do not commit the PNG or the scratchpad.
+- [x] T001 [W0] [US1] In a scratchpad folder outside the repo, install sharp and convert /home/chemair/00_C3_code/shell-generator/link_preview.png to src/assets/link_preview.jpg: flatten (no alpha), baseline JPEG at quality 85 (optimised Huffman + trellis; no mozjpeg preset, which forces progressive), metadata stripped. Verify JPEG, 3 channels, 1200x630, <300 KB; if over, lower quality in steps of 5 (not below 75). Inspect visually. Do not commit the PNG or the scratchpad.
 
 **Wave Gate**: passed
 

@@ -42,7 +42,7 @@ As a visitor or a search/preview crawler, I see the page's real name and languag
 
 ## Approach / Architecture
 ### Technical Summary
-Edit `src/index.html`: set the language and title, and add the description, OG and Twitter meta tags. Generate `src/assets/link_preview.jpg` once from the owner's PNG with sharp (flatten → JPEG with mozjpeg, quality about 85), check its size and dimensions, and commit only the JPEG. No TypeScript changes.
+Edit `src/index.html`: set the language and title, and add the description, OG and Twitter meta tags. Generate `src/assets/link_preview.jpg` once from the owner's PNG with sharp (flatten → baseline JPEG, quality 85, optimised Huffman tables and trellis quantisation, no metadata; sharp's mozjpeg preset was not used because it forces progressive output), check its size and dimensions, and commit only the JPEG. No TypeScript changes.
 
 ### Architecture
 ```mermaid
